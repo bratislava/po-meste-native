@@ -8,18 +8,18 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { createStackNavigator } from "@react-navigation/stack"
 import * as React from "react"
 
-import TabOneScreen from "../screens/TabOneScreen"
+import MapScreen from "../screens/MapScreen"
 import TabTwoScreen from "../screens/TabTwoScreen"
-import { BottomTabParamList, TabOneParamList, TabTwoParamList } from "../types"
+import { BottomTabParamList, MapParamList, TabTwoParamList } from "../types"
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>()
 
 export default function BottomTabNavigator() {
   return (
-    <BottomTab.Navigator initialRouteName="TabOne" tabBarOptions={{ activeTintColor: "#FD4344" }}>
+    <BottomTab.Navigator initialRouteName="Map" tabBarOptions={{ activeTintColor: "#FD4344" }}>
       <BottomTab.Screen
-        name="TabOne"
-        component={TabOneNavigator}
+        name="Map"
+        component={MapNavigator}
         options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="ios-code" color={color} />,
         }}
@@ -43,17 +43,17 @@ function TabBarIcon(props: { name: React.ComponentProps<typeof Ionicons>["name"]
 
 // Each tab has its own navigation stack, you can read more about this pattern here:
 // https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
-const TabOneStack = createStackNavigator<TabOneParamList>()
+const MapStack = createStackNavigator<MapParamList>()
 
-function TabOneNavigator() {
+function MapNavigator() {
   return (
-    <TabOneStack.Navigator>
-      <TabOneStack.Screen
-        name="TabOneScreen"
-        component={TabOneScreen}
+    <MapStack.Navigator>
+      <MapStack.Screen
+        name="MapScreen"
+        component={MapScreen}
         options={{ headerTitle: "Tab One Title" }}
       />
-    </TabOneStack.Navigator>
+    </MapStack.Navigator>
   )
 }
 

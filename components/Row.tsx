@@ -1,3 +1,4 @@
+// TODO copied from different project, might need cleanup if we're to use it
 import { colors } from "../utils/theme"
 import React, { ReactElement } from "react"
 import { StyleSheet, TextStyle, TouchableOpacity, View, Text } from "react-native"
@@ -63,24 +64,8 @@ const Row = ({
     <>
       {leftComponent}
       <View style={leftComponent ? styles.textContainer : styles.textContainerNoIcon}>
-        {!!title && (
-          <Text
-            numberOfLines={titleNumberOfLines}
-            lightColor="rgba(0,0,0,0.8)"
-            darkColor="rgba(255,255,255,0.8)"
-          >
-            {title}
-          </Text>
-        )}
-        {!!subtitle && (
-          <Text
-            numberOfLines={subtitleNumberOfLines}
-            lightColor="rgba(0,0,0,0.8)"
-            darkColor="rgba(255,255,255,0.8)"
-          >
-            {subtitle}
-          </Text>
-        )}
+        {!!title && <Text numberOfLines={titleNumberOfLines}>{title}</Text>}
+        {!!subtitle && <Text numberOfLines={subtitleNumberOfLines}>{subtitle}</Text>}
       </View>
       {rightComponent}
     </>

@@ -4,7 +4,6 @@ import { StyleSheet, View, Dimensions, Image } from "react-native";
 import { useQuery } from "react-query";
 import { getMhdStops } from "../utils/api";
 import { apiMhdStops } from "../utils/validation";
-import Svg, { Circle, Rect } from "react-native-svg";
 import TicketSvg from "../assets/images/ticket.svg";
 
 export default function MapScreen() {
@@ -31,7 +30,7 @@ export default function MapScreen() {
             tracksViewChanges={false}
           >
             <View style={styles.marker}>
-              <TicketSvg width={120} height={40} fill={"red"} />
+              <TicketSvg width={30} height={40} fill={"red"} />
             </View>
           </Marker>
         ))}

@@ -1,6 +1,7 @@
-import Constants from "expo-constants"
+import Constants from 'expo-constants'
 
-const host = Constants.manifest?.extra?.host || "https://api.planner.bratislava.sk"
+const host =
+  Constants.manifest?.extra?.host || 'https://api.planner.bratislava.sk'
 
 // we should throw throwables only, so it's useful to extend Error class to contain useful info
 export class ApiError extends Error {
@@ -10,7 +11,7 @@ export class ApiError extends Error {
     super(response.statusText)
     this.status = response.status
     this.response = response
-    this.name = "ApiError"
+    this.name = 'ApiError'
   }
 }
 
@@ -24,4 +25,5 @@ const fetchJsonFromApi = async (path: string, options?: RequestInit) => {
   }
 }
 
-export const getMhdStops = () => fetchJsonFromApi("/otp/routers/default/index/stops")
+export const getMhdStops = () =>
+  fetchJsonFromApi('/otp/routers/default/index/stops')

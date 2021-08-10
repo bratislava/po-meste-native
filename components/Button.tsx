@@ -1,5 +1,5 @@
 // TODO copied from different project, might need cleanup if we're to use it
-import React from "react"
+import React from 'react'
 import {
   GestureResponderEvent,
   StyleProp,
@@ -9,8 +9,8 @@ import {
   View,
   ViewStyle,
   Text,
-} from "react-native"
-import { colors } from "../utils/theme"
+} from 'react-native'
+import { colors } from '../utils/theme'
 
 const styles = StyleSheet.create({
   touchable: {
@@ -27,11 +27,11 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   container: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 16,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   // eslint-disable-next-line react-native/no-unused-styles
   small: {
@@ -56,39 +56,39 @@ const styles = StyleSheet.create({
   },
 })
 
-const disabledAlpha = "40" // 0.25
+const disabledAlpha = '40' // 0.25
 
 const COLORS = {
   backgroundColor: {
     primary: colors.primary,
-    "primary-submit": colors.green,
-    secondary: "transparent",
+    'primary-submit': colors.green,
+    secondary: 'transparent',
     filled: colors.secondary,
-    tertiary: "transparent",
+    tertiary: 'transparent',
     danger: colors.error,
-    chat: "transparent",
+    chat: 'transparent',
   },
   disabledBackgroundColor: {
     primary: colors.gray,
-    "primary-submit": colors.gray,
-    secondary: "transparent",
+    'primary-submit': colors.gray,
+    secondary: 'transparent',
     filled: `${colors.secondary}${disabledAlpha}`,
-    tertiary: "transparent",
+    tertiary: 'transparent',
     danger: `${colors.error}${disabledAlpha}`,
-    chat: "transparent",
+    chat: 'transparent',
   },
   underlayColor: {
     primary: colors.primary,
-    "primary-submit": colors.primary,
+    'primary-submit': colors.primary,
     secondary: colors.secondary,
     filled: colors.secondary,
-    tertiary: "#e5e5e5",
+    tertiary: '#e5e5e5',
     danger: colors.error,
-    chat: "#e5e5e5",
+    chat: '#e5e5e5',
   },
   iconColor: {
     primary: colors.white,
-    "primary-submit": colors.white,
+    'primary-submit': colors.white,
     secondary: colors.secondary,
     tertiary: colors.lightText,
     filled: colors.white,
@@ -97,7 +97,7 @@ const COLORS = {
   },
   textColor: {
     primary: colors.white,
-    "primary-submit": colors.white,
+    'primary-submit': colors.white,
     secondary: colors.secondary,
     tertiary: colors.lightText,
     filled: colors.white,
@@ -105,46 +105,46 @@ const COLORS = {
     chat: colors.darkText,
   },
   borderColor: {
-    primary: "transparent",
-    "primary-submit": "transparent",
+    primary: 'transparent',
+    'primary-submit': 'transparent',
     secondary: colors.secondary,
-    filled: "transparent",
-    tertiary: "transparent",
-    danger: "transparent",
-    chat: "transparent",
+    filled: 'transparent',
+    tertiary: 'transparent',
+    danger: 'transparent',
+    chat: 'transparent',
   },
   disabledBorderColor: {
-    primary: "transparent",
-    "primary-submit": "transparent",
+    primary: 'transparent',
+    'primary-submit': 'transparent',
     secondary: `${colors.secondary}${disabledAlpha}`,
-    filled: "transparent",
-    tertiary: "transparent",
-    danger: "transparent",
-    chat: "transparent",
+    filled: 'transparent',
+    tertiary: 'transparent',
+    danger: 'transparent',
+    chat: 'transparent',
   },
 }
 
 type FontWeightType =
-  | "normal"
-  | "bold"
-  | "100"
-  | "200"
-  | "300"
-  | "400"
-  | "500"
-  | "600"
-  | "700"
-  | "800"
-  | "900"
+  | 'normal'
+  | 'bold'
+  | '100'
+  | '200'
+  | '300'
+  | '400'
+  | '500'
+  | '600'
+  | '700'
+  | '800'
+  | '900'
 
 const FONT_WEIGHT: { [key: string]: FontWeightType } = {
-  primary: "normal",
-  "primary-submit": "bold",
-  secondary: "normal",
-  tertiary: "normal",
-  filled: "normal",
-  danger: "normal",
-  chat: "normal",
+  primary: 'normal',
+  'primary-submit': 'bold',
+  secondary: 'normal',
+  tertiary: 'normal',
+  filled: 'normal',
+  danger: 'normal',
+  chat: 'normal',
 }
 interface ButtonProps {
   onPress: (event: GestureResponderEvent) => void
@@ -152,8 +152,15 @@ interface ButtonProps {
   icon?: IconName
   isGrouped?: boolean
   isFullWidth?: boolean
-  variant?: "primary" | "primary-submit" | "secondary" | "tertiary" | "filled" | "danger" | "chat"
-  size?: "small" | "medium" | "large"
+  variant?:
+    | 'primary'
+    | 'primary-submit'
+    | 'secondary'
+    | 'tertiary'
+    | 'filled'
+    | 'danger'
+    | 'chat'
+  size?: 'small' | 'medium' | 'large'
   style?: StyleProp<ViewStyle>
   titleStyle?: StyleProp<TextStyle>
   disabled?: boolean
@@ -164,11 +171,11 @@ interface ButtonProps {
 const Button = ({
   title,
   onPress,
-  variant = "primary",
+  variant = 'primary',
   icon,
   isGrouped,
   isFullWidth,
-  size = "medium",
+  size = 'medium',
   disabled,
   style,
   titleStyle,
@@ -185,7 +192,7 @@ const Button = ({
       style={[
         styles.touchable,
         isGrouped && styles.touchableGrouped,
-        isGrouped && size === "small" && styles.touchableGroupedSmall,
+        isGrouped && size === 'small' && styles.touchableGroupedSmall,
         isFullWidth && styles.touchableFullWidth,
         {
           backgroundColor: showDisabledStyle
@@ -203,7 +210,10 @@ const Button = ({
         {loading ? (
           <Text
             style={[
-              { color: COLORS.textColor[variant], fontWeight: FONT_WEIGHT[variant] },
+              {
+                color: COLORS.textColor[variant],
+                fontWeight: FONT_WEIGHT[variant],
+              },
               titleStyle,
             ]}
           >
@@ -214,7 +224,10 @@ const Button = ({
             {!!title && (
               <Text
                 style={[
-                  { color: COLORS.textColor[variant], fontWeight: FONT_WEIGHT[variant] },
+                  {
+                    color: COLORS.textColor[variant],
+                    fontWeight: FONT_WEIGHT[variant],
+                  },
                   titleStyle,
                 ]}
               >

@@ -1,15 +1,16 @@
-import React, { useMemo } from "react"
-import MapView, { Marker } from "react-native-maps"
-import { StyleSheet, Text, View, Dimensions } from "react-native"
-import { useQuery } from "react-query"
-import { getMhdStops } from "../utils/api"
-import { apiMhdStops } from "../utils/validation"
+import React, { useMemo } from "react";
+import MapView, { Marker } from "react-native-maps";
+import { StyleSheet, View, Dimensions, Image } from "react-native";
+import { useQuery } from "react-query";
+import { getMhdStops } from "../utils/api";
+import { apiMhdStops } from "../utils/validation";
+import TicketSvg from "../assets/images/ticket.svg";
 
 export default function MapScreen() {
   // TODO handle loading / error
-  const { data } = useQuery("getMhdStops", getMhdStops)
+  const { data } = useQuery("getMhdStops", getMhdStops);
 
-  const validatedStops = useMemo(() => apiMhdStops.validateSync(data), [data])
+  const validatedStops = useMemo(() => apiMhdStops.validateSync(data), [data]);
 
   return (
     <View style={styles.container}>
@@ -23,11 +24,19 @@ export default function MapScreen() {
         }}
       >
         {validatedStops?.map((stop) => (
-          <Marker coordinate={{ latitude: stop.lat, longitude: stop.lon }} />
+          <Marker
+            key={stop.id}
+            coordinate={{ latitude: stop.lat, longitude: stop.lon }}
+            tracksViewChanges={false}
+          >
+            <View style={styles.marker}>
+              <TicketSvg width={30} height={40} fill={"red"} />
+            </View>
+          </Marker>
         ))}
       </MapView>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -37,8 +46,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  marker: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   map: {
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
   },
-})
+});

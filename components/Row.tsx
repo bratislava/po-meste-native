@@ -1,21 +1,27 @@
 // TODO copied from different project, might need cleanup if we're to use it
-import { colors } from "../utils/theme"
-import React, { ReactElement } from "react"
-import { StyleSheet, TextStyle, TouchableOpacity, View, Text } from "react-native"
+import { colors } from '../utils/theme'
+import React, { ReactElement } from 'react'
+import {
+  StyleSheet,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  Text,
+} from 'react-native'
 
 const styles = StyleSheet.create({
   row: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     height: 72,
   },
   icon: {
-    backgroundColor: "#f2f5f8",
+    backgroundColor: '#f2f5f8',
     width: 40,
     height: 40,
     borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   textContainer: {
     flex: 1,
@@ -38,10 +44,17 @@ interface RowProps {
   subtitle?: string
   rightComponent?: ReactElement
   leftComponent?: ReactElement
-  titleVariant?: "headline" | "body" | "light" | "button" | "error" | "text14" | "text12"
+  titleVariant?:
+    | 'headline'
+    | 'body'
+    | 'light'
+    | 'button'
+    | 'error'
+    | 'text14'
+    | 'text12'
   titleStyle?: TextStyle
   titleNumberOfLines?: number
-  subtitleVariant?: "headline" | "body" | "light" | "button" | "error"
+  subtitleVariant?: 'headline' | 'body' | 'light' | 'button' | 'error'
   subtitleNumberOfLines?: number
   onPress?: () => void
   testID?: string
@@ -63,16 +76,27 @@ const Row = ({
   const rowChildren = (
     <>
       {leftComponent}
-      <View style={leftComponent ? styles.textContainer : styles.textContainerNoIcon}>
+      <View
+        style={
+          leftComponent ? styles.textContainer : styles.textContainerNoIcon
+        }
+      >
         {!!title && <Text numberOfLines={titleNumberOfLines}>{title}</Text>}
-        {!!subtitle && <Text numberOfLines={subtitleNumberOfLines}>{subtitle}</Text>}
+        {!!subtitle && (
+          <Text numberOfLines={subtitleNumberOfLines}>{subtitle}</Text>
+        )}
       </View>
       {rightComponent}
     </>
   )
 
   return onPress ? (
-    <TouchableOpacity style={styles.row} onPress={onPress} disabled={!onPress} testID={testID}>
+    <TouchableOpacity
+      style={styles.row}
+      onPress={onPress}
+      disabled={!onPress}
+      testID={testID}
+    >
       {rowChildren}
     </TouchableOpacity>
   ) : (

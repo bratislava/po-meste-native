@@ -1,13 +1,15 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import MapView, { Marker } from 'react-native-maps'
-import { StyleSheet, View, Dimensions, Image } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { useQuery } from 'react-query'
 import { getMhdStops } from '../utils/api'
 import { apiMhdStops } from '../utils/validation'
 import TicketSvg from '../assets/images/ticket.svg'
+import SearchBar from './ui/SearchBar/SearchBar'
 
 export default function MapScreen() {
   // TODO handle loading / error
+  const [searchText, setSearchText] = useState('')
   const { data } = useQuery('getMhdStops', getMhdStops)
 
   const validatedStops = useMemo(() => apiMhdStops.validateSync(data), [data])
@@ -35,6 +37,13 @@ export default function MapScreen() {
           </Marker>
         ))}
       </MapView>
+      <SearchBar
+        value={searchText}
+        onChangeText={(changedValue) => {
+          setSearchText(changedValue)
+        }}
+        cancelComponent={<View>X</View>}
+      />
     </View>
   )
 }
@@ -52,7 +61,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
 })

@@ -1,26 +1,57 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { useState } from 'react'
+import { View, Platform, StyleSheet, TouchableOpacity } from 'react-native'
 import TicketSvg from '../../../assets/images/ticket.svg'
 
 const VehicleBar = () => {
+  const [vehicleTypes, setVehicleTypes] = useState([
+    {
+      id: 'car',
+      show: true,
+      icon: (color: string) => <TicketSvg fill={color} />, //TODO change for vehicle icon
+    },
+    {
+      id: 'bike',
+      show: true,
+      icon: (color: string) => <TicketSvg fill={color} />, //TODO change for vehicle icon
+    },
+    {
+      id: 'mhd',
+      show: true,
+      icon: (color: string) => <TicketSvg fill={color} />, //TODO change for vehicle icon
+    },
+    {
+      id: 'chargers',
+      show: true,
+      icon: (color: string) => <TicketSvg fill={color} />, //TODO change for vehicle icon
+    },
+  ])
+
+  const onVehicleClick = (id: string) => {
+    setVehicleTypes((oldVehicleTypes) => {
+      const newVehicleTypes = oldVehicleTypes.map((vehicleType) => {
+        return {
+          ...vehicleType,
+          show: id === vehicleType.id ? true : false,
+        }
+      })
+      return newVehicleTypes
+    })
+  }
+
   return (
     <View style={styles.vehicleBar}>
-      <View style={styles.iconLeft}>
-        {/* TODO change for vehicle icon */}
-        <TicketSvg fill={'green'} />
-      </View>
-      <View>
-        {/* TODO change for vehicle icon */}
-        <TicketSvg fill={'green'} />
-      </View>
-      <View>
-        {/* TODO change for vehicle icon */}
-        <TicketSvg fill={'green'} />
-      </View>
-      <View style={styles.iconRight}>
-        {/* TODO change for vehicle icon */}
-        <TicketSvg fill={'green'} />
-      </View>
+      {vehicleTypes.map((vehicleType, index) => {
+        const { id, icon, show } = vehicleType
+        return (
+          <TouchableOpacity
+            style={index === 0 ? styles.iconLeft : {}}
+            onPress={() => onVehicleClick(id)}
+          >
+            {icon(show ? 'red' : 'grey')}
+          </TouchableOpacity>
+        )
+      })}
     </View>
   )
 }

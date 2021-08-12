@@ -1,32 +1,27 @@
-import React, { ReactElement } from 'react'
-import { StyleSheet, TextInput, View } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import React from 'react'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 import TicketSvg from '../../../assets/images/ticket.svg'
 
-interface SearchBarProps {
-  value: string
-  onChangeText: (value: string) => void
-  cancelComponent: ReactElement
-}
+interface SearchBarProps {}
 
-const SearchBar = ({
-  value,
-  onChangeText,
-  cancelComponent,
-}: SearchBarProps) => {
+const SearchBar = ({}: SearchBarProps) => {
+  const navigation = useNavigation()
   return (
-    <View style={styles.searchBar}>
-      <TextInput
-        style={styles.searchInput}
-        value={value}
-        placeholder={'Where to'} // TODO change for formattedMessage
-        onChangeText={onChangeText}
-      />
+    <TouchableOpacity
+      style={styles.searchBar}
+      onPress={() => navigation.navigate('TabTwo')}
+    >
+      <Text style={styles.searchInput}>
+        {/* TODO change for formattedMessage */}
+        {'Where to'}
+      </Text>
       <View style={styles.searchButton}>
         {/* TODO change for search icon */}
         <TicketSvg fill={'gray'} />
       </View>
-    </View>
+    </TouchableOpacity>
   )
 }
 

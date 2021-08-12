@@ -37,13 +37,7 @@ export default function MapScreen() {
           </Marker>
         ))}
       </MapView>
-      <SearchBar
-        value={searchText}
-        onChangeText={(changedValue) => {
-          setSearchText(changedValue)
-        }}
-        cancelComponent={<View>X</View>}
-      />
+      <SearchBar />
     </View>
   )
 }

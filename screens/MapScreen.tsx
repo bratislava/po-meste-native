@@ -6,6 +6,7 @@ import { getMhdStops } from '../utils/api'
 import { apiMhdStops } from '../utils/validation'
 import TicketSvg from '../assets/images/ticket.svg'
 import SearchBar from './ui/SearchBar/SearchBar'
+import VehicleBar from './ui/VehicleBar/VehicleBar'
 
 export default function MapScreen() {
   // TODO handle loading / error
@@ -38,6 +39,7 @@ export default function MapScreen() {
         ))}
       </MapView>
       <SearchBar />
+      <VehicleBar />
     </View>
   )
 }

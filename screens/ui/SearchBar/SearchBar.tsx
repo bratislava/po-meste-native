@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flex: 1,
     position: 'absolute',
-    top: '0',
+    top: 0,
     marginTop: 30,
     width: '90%',
     height: 50,

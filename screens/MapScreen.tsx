@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import MapView, { Marker } from 'react-native-maps'
 import { StyleSheet, View } from 'react-native'
 import { useQuery } from 'react-query'
@@ -10,7 +10,6 @@ import VehicleBar from './ui/VehicleBar/VehicleBar'
 
 export default function MapScreen() {
   // TODO handle loading / error
-  const [searchText, setSearchText] = useState('')
   const { data } = useQuery('getMhdStops', getMhdStops)
 
   const validatedStops = useMemo(() => apiMhdStops.validateSync(data), [data])

@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react'
 import MapView, { Marker } from 'react-native-maps'
-import { StyleSheet, View, Dimensions, Image } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { useQuery } from 'react-query'
 import { getMhdStops } from '../utils/api'
 import { apiMhdStops } from '../utils/validation'
 import TicketSvg from '../assets/images/ticket.svg'
+import SearchBar from './ui/SearchBar/SearchBar'
 import VehicleBar from './ui/VehicleBar/VehicleBar'
 
 export default function MapScreen() {
@@ -36,6 +37,7 @@ export default function MapScreen() {
           </Marker>
         ))}
       </MapView>
+      <SearchBar />
       <VehicleBar />
     </View>
   )

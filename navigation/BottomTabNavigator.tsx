@@ -6,9 +6,10 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
 import * as React from 'react'
+import i18n from 'i18n-js'
+
 import MapSvg from '../assets/images/map.svg'
 import TicketSvg from '../assets/images/ticket.svg'
-
 import MapScreen from '../screens/MapScreen'
 import TabTwoScreen from '../screens/TabTwoScreen'
 import { BottomTabParamList, MapParamList, TabTwoParamList } from '../types'
@@ -25,6 +26,7 @@ export default function BottomTabNavigator() {
         name="Map"
         component={MapNavigator}
         options={{
+          title: i18n.t('map'),
           tabBarIcon: ({ color }) => <MapSvg fill={color} />,
         }}
       />
@@ -32,6 +34,7 @@ export default function BottomTabNavigator() {
         name="TabTwo"
         component={TabTwoNavigator}
         options={{
+          title: i18n.t('tabTwo'),
           tabBarIcon: ({ color }) => <TicketSvg fill={color} />,
         }}
       />
@@ -49,7 +52,7 @@ function MapNavigator() {
       <MapStack.Screen
         name="MapScreen"
         component={MapScreen}
-        options={{ headerTitle: 'Tab One Title' }}
+        options={{ headerTitle: i18n.t('tabOneTitle') }}
       />
     </MapStack.Navigator>
   )
@@ -63,7 +66,7 @@ function TabTwoNavigator() {
       <TabTwoStack.Screen
         name="TabTwoScreen"
         component={TabTwoScreen}
-        options={{ headerTitle: 'Tab Two Title' }}
+        options={{ headerTitle: i18n.t('tabTwoTitle') }}
       />
     </TabTwoStack.Navigator>
   )

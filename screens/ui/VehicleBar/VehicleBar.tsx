@@ -45,6 +45,7 @@ const VehicleBar = () => {
         const { id, icon, show } = vehicleType
         return (
           <TouchableOpacity
+            key={id}
             style={index === 0 ? styles.iconLeft : {}}
             onPress={() => onVehicleClick(id)}
           >

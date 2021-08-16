@@ -7,13 +7,19 @@ import { apiMhdStops } from '../utils/validation'
 import TicketSvg from '../assets/images/ticket.svg'
 import SearchBar from './ui/SearchBar/SearchBar'
 import VehicleBar from './ui/VehicleBar/VehicleBar'
+import useRekolaData from '../hooks/useRekolaData'
+import LoadingView from './ui/LoadingView/LoadingView'
 
 export default function MapScreen() {
   // TODO handle loading / error
-  const { data } = useQuery('getMhdStops', getMhdStops)
+  const { data: dataMhd } = useQuery('getMhdStops', getMhdStops)
 
-  const validatedStops = useMemo(() => apiMhdStops.validateSync(data), [data])
+  const validatedMhdStops = useMemo(
+    () => apiMhdStops.validateSync(dataMhd),
+    [dataMhd]
+  )
 
+  const { dataMerged: dataMergedRekola, loading } = useRekolaData()
   return (
     <View style={styles.container}>
       <MapView
@@ -25,7 +31,7 @@ export default function MapScreen() {
           longitudeDelta: 0.0421,
         }}
       >
-        {validatedStops?.map((stop) => (
+        {validatedMhdStops?.map((stop) => (
           <Marker
             key={stop.id}
             coordinate={{ latitude: stop.lat, longitude: stop.lon }}
@@ -36,7 +42,27 @@ export default function MapScreen() {
             </View>
           </Marker>
         ))}
+        {dataMergedRekola?.reduce<JSX.Element[]>((accumulator, station) => {
+          if (station.lat && station.lon && station.station_id) {
+            const marker = (
+              <Marker
+                key={station.station_id}
+                coordinate={{ latitude: station.lat, longitude: station.lon }}
+                tracksViewChanges={false}
+              >
+                <View style={styles.marker}>
+                  <TicketSvg width={30} height={40} fill={'pink'} />
+                </View>
+              </Marker>
+            )
+            return accumulator.concat(marker)
+          }
+          return accumulator
+        }, [])}
       </MapView>
+
+      {loading ? <LoadingView /> : null}
+
       <SearchBar />
       <VehicleBar />
     </View>

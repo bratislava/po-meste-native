@@ -29,5 +29,6 @@ export default {
   },
   extra: {
     apiHost: 'https://api.planner.bratislava.sk',
+    apiBikeHost: 'https://live.planner.bratislava.sk',
   },
 }

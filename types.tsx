@@ -19,4 +19,12 @@ export type MapParamList = {
 
 export type TabTwoParamList = {
   TabTwoScreen: undefined
+  SmsScreen: undefined
+}
+
+export const enum SmsTicketNumbers {
+  ticket40min = '1140',
+  ticket70min = '1100',
+  ticket24hours = '1124',
+  ticketDuplicate = '1101',
 }

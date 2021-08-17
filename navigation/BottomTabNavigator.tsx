@@ -13,6 +13,7 @@ import TicketSvg from '../assets/images/ticket.svg'
 import MapScreen from '../screens/MapScreen'
 import TabTwoScreen from '../screens/TabTwoScreen'
 import { BottomTabParamList, MapParamList, TabTwoParamList } from '../types'
+import SmsScreen from '../screens/SmsScreen'
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>()
 
@@ -48,7 +49,7 @@ const MapStack = createStackNavigator<MapParamList>()
 
 function MapNavigator() {
   return (
-    <MapStack.Navigator>
+    <MapStack.Navigator screenOptions={{ headerShown: false }}>
       <MapStack.Screen
         name="MapScreen"
         component={MapScreen}
@@ -62,11 +63,16 @@ const TabTwoStack = createStackNavigator<TabTwoParamList>()
 
 function TabTwoNavigator() {
   return (
-    <TabTwoStack.Navigator>
+    <TabTwoStack.Navigator screenOptions={{ headerShown: false }}>
       <TabTwoStack.Screen
         name="TabTwoScreen"
         component={TabTwoScreen}
         options={{ headerTitle: i18n.t('tabTwoTitle') }}
+      />
+      <TabTwoStack.Screen
+        name="SmsScreen"
+        component={SmsScreen}
+        options={{ headerTitle: i18n.t('smsTicketTitle') }}
       />
     </TabTwoStack.Navigator>
   )

@@ -106,14 +106,13 @@ export default function MapScreen() {
 
         {renderStations(dataMergedRekola, 'pink')}
         {renderStations(dataMergedSlovnaftbajk, 'yellow')}
-
-        {isLoadingMhd ||
-        isLoadingRekola ||
-        isLoadingSlovnaftbajk ||
-        isLoadingTier ? (
-          <LoadingView />
-        ) : null}
       </MapView>
+      {isLoadingMhd ||
+      isLoadingRekola ||
+      isLoadingSlovnaftbajk ||
+      isLoadingTier ? (
+        <LoadingView />
+      ) : null}
       <SearchBar />
       <VehicleBar />
     </View>

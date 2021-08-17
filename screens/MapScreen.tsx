@@ -9,6 +9,7 @@ import SearchBar from './ui/SearchBar/SearchBar'
 import VehicleBar from './ui/VehicleBar/VehicleBar'
 import useRekolaData from '../hooks/useRekolaData'
 import LoadingView from './ui/LoadingView/LoadingView'
+import useTierData from '../hooks/useTierData'
 
 export default function MapScreen() {
   // TODO handle loading / error
@@ -20,6 +21,8 @@ export default function MapScreen() {
   )
 
   const { dataMerged: dataMergedRekola, loading } = useRekolaData()
+  const { data: dataTier, isLoading: isLoadingTier } = useTierData()
+
   return (
     <View style={styles.container}>
       <MapView
@@ -59,9 +62,22 @@ export default function MapScreen() {
           }
           return accumulator
         }, [])}
+        {dataTier?.map((vehicle) => {
+          return (
+            <Marker
+              key={vehicle.bike_id}
+              coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
+              tracksViewChanges={false}
+            >
+              <View style={styles.marker}>
+                <TicketSvg width={30} height={40} fill={'blue'} />
+              </View>
+            </Marker>
+          )
+        })}
       </MapView>
 
-      {loading ? <LoadingView /> : null}
+      {loading || isLoadingTier ? <LoadingView /> : null}
 
       <SearchBar />
       <VehicleBar />

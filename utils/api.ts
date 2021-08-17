@@ -50,3 +50,6 @@ export const getSlovnaftBikeStopsStationInformation = () =>
   fetchJsonFromLivePlanner('/rekola/station_information.json')
 export const getSlovnaftBikeStopsStationStatus = () =>
   fetchJsonFromLivePlanner('/rekola/station_status.json')
+
+export const getTierFreeBikeStatus = () =>
+  fetchJsonFromLivePlanner('/tier/free_bike_status.json')

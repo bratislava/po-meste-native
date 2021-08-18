@@ -1,25 +1,30 @@
 import _ from 'lodash'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
 import { getTierFreeBikeStatus } from '../utils/api'
 import { apiFreeBikeStatus } from '../utils/validation'
 
-export default function UseTierData() {
-  // TODO handle loading / error
-  const {
-    data: dataTierFreeBikeStatus,
-    isLoading: isLoadingTierFreeBikeStatus,
-  } = useQuery('getTierFreeBikeStatus', getTierFreeBikeStatus)
+export default function useTierData() {
+  const [validationErrors, setValidationErrors] = useState()
+  const { data, isLoading, error } = useQuery(
+    'getTierFreeBikeStatus',
+    getTierFreeBikeStatus
+  )
 
   const validatedTier = useMemo(() => {
-    const validatedStationInformation = apiFreeBikeStatus.validateSync(
-      dataTierFreeBikeStatus
-    ).data.bikes
-    return validatedStationInformation
-  }, [dataTierFreeBikeStatus])
+    try {
+      const validatedStationInformation =
+        apiFreeBikeStatus.validateSync(data).data.bikes
+      return validatedStationInformation
+    } catch (e) {
+      setValidationErrors(e.errors)
+      console.log(e)
+    }
+  }, [data])
 
   return {
     data: validatedTier,
-    isLoading: isLoadingTierFreeBikeStatus,
+    isLoading: isLoading,
+    errors: error || validationErrors,
   }
 }

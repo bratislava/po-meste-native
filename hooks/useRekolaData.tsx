@@ -5,9 +5,8 @@ import {
 
 import useStationData from './useStationsData'
 
-export default function UseRekolaData() {
-  // TODO handle loading / error
-  const { dataMerged, isLoading } = useStationData({
+export default function useRekolaData() {
+  const { data, isLoading, error } = useStationData({
     stationInformationQueryKey: 'getRekolaStationInformation',
     getStationInformation: getRekolaStationInformation,
     stationStatusQueryKey: 'getRekolaStationStatus',
@@ -15,7 +14,8 @@ export default function UseRekolaData() {
   })
 
   return {
-    dataMerged,
+    data,
     isLoading,
+    error,
   }
 }

@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
 
 import {
@@ -14,48 +14,57 @@ interface StationDataProps {
   getStationStatus: () => void
 }
 
-export default function UseStationsData({
+export default function useStationsData({
   stationInformationQueryKey,
   getStationInformation,
   stationStatusQueryKey,
   getStationStatus,
 }: StationDataProps) {
-  // TODO handle loading / error
+  const [validationErrors, setValidationErrors] = useState()
   const {
     data: dataStationInformation,
     isLoading: isLoadingStationInformation,
+    error: errorStationInformation,
   } = useQuery(stationInformationQueryKey, getStationInformation)
 
-  const { data: dataStationStatus, isLoading: isLoadingStationStatus } =
-    useQuery(stationStatusQueryKey, getStationStatus, {
-      enabled: !!dataStationInformation,
-    })
+  const {
+    data: dataStationStatus,
+    isLoading: isLoadingStationStatus,
+    error: errorStationStatus,
+  } = useQuery(stationStatusQueryKey, getStationStatus)
 
-  const validatedRekola = useMemo(() => {
-    const validatedStationInformation =
-      apiRekolaStationInformation.validateSync(dataStationInformation).data
-        .stations
-    const validatedStatus =
-      apiRekolaStationStatus.validateSync(dataStationStatus).data.stations || []
+  const validatedData = useMemo(() => {
+    try {
+      const validatedStationInformation =
+        apiRekolaStationInformation.validateSync(dataStationInformation).data
+          .stations
 
-    if (validatedStationInformation && validatedStatus) {
-      const merged = validatedStatus.map((stationStatus) => {
-        const sameStationInformation = validatedStationInformation.find(
-          (stationInformationTmp) =>
-            stationInformationTmp.station_id === stationStatus.station_id
-        )
-        const mergedStation = {
-          ...stationStatus,
-          ...sameStationInformation,
-        }
-        return mergedStation
-      })
-      return merged
+      const validatedStationStatus =
+        apiRekolaStationStatus.validateSync(dataStationStatus).data.stations
+
+      if (validatedStationInformation && validatedStationStatus) {
+        const merged = validatedStationStatus.map((stationStatus) => {
+          const sameStationInformation = validatedStationInformation.find(
+            (stationInformationTmp) =>
+              stationInformationTmp.station_id === stationStatus.station_id
+          )
+          const mergedStation = {
+            ...stationStatus,
+            ...sameStationInformation,
+          }
+          return mergedStation
+        })
+        return merged
+      }
+    } catch (e) {
+      setValidationErrors(e.errors)
+      console.log(e)
     }
   }, [dataStationStatus, dataStationInformation])
 
   return {
-    dataMerged: validatedRekola,
+    data: validatedData,
     isLoading: isLoadingStationInformation || isLoadingStationStatus,
+    error: errorStationInformation || errorStationStatus || validationErrors,
   }
 }

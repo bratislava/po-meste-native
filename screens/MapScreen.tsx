@@ -1,18 +1,62 @@
-import React, { useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import MapView, { Marker } from 'react-native-maps'
 import { StyleSheet, View } from 'react-native'
 import { useQuery } from 'react-query'
+
 import { getMhdStops } from '../utils/api'
 import { apiMhdStops } from '../utils/validation'
 import TicketSvg from '../assets/images/ticket.svg'
 import SearchBar from './ui/SearchBar/SearchBar'
 import VehicleBar from './ui/VehicleBar/VehicleBar'
+import LoadingView from './ui/LoadingView/LoadingView'
+import useRekolaData from '../hooks/useRekolaData'
+import useSlovnaftbajkData from '../hooks/useSlovnaftbajkData'
+import useTierData from '../hooks/useTierData'
+import useMhdData from '../hooks/useMhdData'
+
+interface DataStations {
+  station_id: string
+  name?: string | undefined
+  lat?: number | undefined
+  lon?: number | undefined
+  is_virtual_station?: boolean | undefined
+  num_bikes_available: number
+  is_installed: number
+  is_renting: number
+  is_returning: number
+  last_reported: string
+}
 
 export default function MapScreen() {
   // TODO handle loading / error
-  const { data } = useQuery('getMhdStops', getMhdStops)
+  const { data: dataMhd, isLoading: isLoadingMhd } = useMhdData()
+  const { data: dataTier, isLoading: isLoadingTier } = useTierData()
+  const { data: dataMergedRekola, isLoading: isLoadingRekola } = useRekolaData()
+  const { data: dataMergedSlovnaftbajk, isLoading: isLoadingSlovnaftbajk } =
+    useSlovnaftbajkData()
 
-  const validatedStops = useMemo(() => apiMhdStops.validateSync(data), [data])
+  const renderStations = useCallback(
+    (data: DataStations[] | undefined, color: string) => {
+      return data?.reduce<JSX.Element[]>((accumulator, station) => {
+        if (station.lat && station.lon && station.station_id) {
+          const marker = (
+            <Marker
+              key={station.station_id}
+              coordinate={{ latitude: station.lat, longitude: station.lon }}
+              tracksViewChanges={false}
+            >
+              <View style={styles.marker}>
+                <TicketSvg width={30} height={40} fill={color} />
+              </View>
+            </Marker>
+          )
+          return accumulator.concat(marker)
+        }
+        return accumulator
+      }, [])
+    },
+    []
+  )
 
   return (
     <View style={styles.container}>
@@ -25,7 +69,7 @@ export default function MapScreen() {
           longitudeDelta: 0.0421,
         }}
       >
-        {validatedStops?.map((stop) => (
+        {dataMhd?.map((stop) => (
           <Marker
             key={stop.stationStopId}
             coordinate={{
@@ -39,7 +83,29 @@ export default function MapScreen() {
             </View>
           </Marker>
         ))}
+        {dataTier?.map((vehicle) => {
+          return (
+            <Marker
+              key={vehicle.bike_id}
+              coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
+              tracksViewChanges={false}
+            >
+              <View style={styles.marker}>
+                <TicketSvg width={30} height={40} fill={'blue'} />
+              </View>
+            </Marker>
+          )
+        })}
+
+        {renderStations(dataMergedRekola, 'pink')}
+        {renderStations(dataMergedSlovnaftbajk, 'yellow')}
       </MapView>
+      {isLoadingMhd ||
+      isLoadingRekola ||
+      isLoadingSlovnaftbajk ||
+      isLoadingTier ? (
+        <LoadingView />
+      ) : null}
       <SearchBar />
       <VehicleBar />
     </View>

@@ -46,7 +46,10 @@ const VehicleBar = () => {
         return (
           <TouchableOpacity
             key={id}
-            style={index === 0 ? styles.iconLeft : {}}
+            style={[
+              index === 0 ? styles.iconLeft : {},
+              index === vehicleTypes.length - 1 ? styles.iconRight : {},
+            ]}
             onPress={() => onVehicleClick(id)}
           >
             {icon(show ? 'red' : 'grey')}
@@ -65,7 +68,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flex: 1,
     position: 'absolute',
-    bottom: '0%',
+    bottom: 0,
     marginBottom: 10,
     padding: 10,
     width: '90%',

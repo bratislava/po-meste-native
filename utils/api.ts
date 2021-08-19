@@ -26,3 +26,16 @@ const fetchJsonFromApi = async (path: string, options?: RequestInit) => {
 }
 
 export const getMhdStops = () => fetchJsonFromApi('/mhd/stops')
+
+export const getRekolaStationInformation = () =>
+  fetchJsonFromApi('/rekola/station_information.json')
+export const getRekolaStationStatus = () =>
+  fetchJsonFromApi('/rekola/station_status.json')
+
+export const getSlovnaftbajkStationInformation = () =>
+  fetchJsonFromApi('/slovnaftbajk/station_information.json')
+export const getSlovnaftbajkStationStatus = () =>
+  fetchJsonFromApi('/slovnaftbajk/station_status.json')
+
+export const getTierFreeBikeStatus = () =>
+  fetchJsonFromApi('/tier/free_bike_status.json')

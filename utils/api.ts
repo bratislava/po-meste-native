@@ -1,7 +1,10 @@
 import Constants from 'expo-constants'
+import zseApiKeys from '../api-key'
 
 const host =
   Constants.manifest?.extra?.host || 'https://live.planner.bratislava.sk'
+
+const zseHost = 'https://zsedrive.sk/third-party/api/v1/localities'
 
 // we should throw throwables only, so it's useful to extend Error class to contain useful info
 export class ApiError extends Error {
@@ -25,6 +28,15 @@ const fetchJsonFromApi = async (path: string, options?: RequestInit) => {
   }
 }
 
+const fetchJsonFromZseApi = async (options?: RequestInit) => {
+  const response = await fetch(`${zseHost}`, options)
+  if (response.ok) {
+    return response.json()
+  } else {
+    throw new ApiError(response)
+  }
+}
+
 export const getMhdStops = () => fetchJsonFromApi('/mhd/stops')
 
 export const getRekolaStationInformation = () =>
@@ -39,3 +51,6 @@ export const getSlovnaftbajkStationStatus = () =>
 
 export const getTierFreeBikeStatus = () =>
   fetchJsonFromApi('/tier/free_bike_status.json')
+
+export const getChargersStops = () =>
+  fetchJsonFromZseApi({ headers: { ...zseApiKeys } })

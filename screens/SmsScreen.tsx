@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, Alert } from 'react-native'
 import * as SMS from 'expo-sms'
 import i18n from 'i18n-js'
 
@@ -14,7 +14,12 @@ export default function SmsScreen() {
     if (isAvailable) {
       await SMS.sendSMSAsync(receiverNumber, '.')
     } else {
-      // misfortune... there's no SMS available on this device
+      Alert.alert('', i18n.t('smsNotAvailable'), [
+        {
+          text: i18n.t('smsOK'),
+          onPress: () => {},
+        },
+      ])
     }
   }
 

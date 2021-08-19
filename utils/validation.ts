@@ -7,11 +7,13 @@ export const apiMhdStops = yup
     yup
       .object()
       .shape({
-        id: yup.string().required('error-malformed'),
-        code: yup.string().required('error-malformed'),
+        stationStopId: yup.number().required('error-malformed'),
+        stationId: yup.number().required('error-malformed'),
         name: yup.string().required('error-malformed'),
-        lat: yup.number().required('error-malformed'),
-        lon: yup.number().required('error-malformed'),
+        address: yup.string().nullable(true), // if required it throws error, doesn't needed at time of implementation
+        gpsLon: yup.string().required('error-malformed'),
+        gpsLat: yup.string().required('error-malformed'),
+        tag: yup.string().required('error-malformed'),
       })
       .noUnknown()
   )

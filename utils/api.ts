@@ -1,7 +1,7 @@
 import Constants from 'expo-constants'
 
 const host =
-  Constants.manifest?.extra?.host || 'https://api.planner.bratislava.sk'
+  Constants.manifest?.extra?.host || 'https://live.planner.bratislava.sk'
 
 // we should throw throwables only, so it's useful to extend Error class to contain useful info
 export class ApiError extends Error {
@@ -25,5 +25,4 @@ const fetchJsonFromApi = async (path: string, options?: RequestInit) => {
   }
 }
 
-export const getMhdStops = () =>
-  fetchJsonFromApi('/otp/routers/default/index/stops')
+export const getMhdStops = () => fetchJsonFromApi('/mhd/stops')

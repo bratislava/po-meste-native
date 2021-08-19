@@ -5,9 +5,8 @@ import {
 
 import useStationData from './useStationsData'
 
-export default function UseSlovnaftbajkData() {
-  // TODO handle loading / error
-  const { dataMerged, isLoading } = useStationData({
+export default function useSlovnaftbajkData() {
+  const { data, isLoading, error } = useStationData({
     stationInformationQueryKey: 'getSlovnaftbajkStationInformation',
     getStationInformation: getSlovnaftbajkStationInformation,
     stationStatusQueryKey: 'getSlovnaftbajkStationStatus',
@@ -15,7 +14,8 @@ export default function UseSlovnaftbajkData() {
   })
 
   return {
-    dataMerged,
+    data,
     isLoading,
+    error,
   }
 }

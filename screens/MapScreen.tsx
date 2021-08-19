@@ -12,6 +12,7 @@ import LoadingView from './ui/LoadingView/LoadingView'
 import useRekolaData from '../hooks/useRekolaData'
 import useSlovnaftbajkData from '../hooks/useSlovnaftbajkData'
 import useTierData from '../hooks/useTierData'
+import useMhdData from '../hooks/useMhdData'
 
 interface DataStations {
   station_id: string
@@ -28,23 +29,11 @@ interface DataStations {
 
 export default function MapScreen() {
   // TODO handle loading / error
-  const { data: dataMhd, isLoading: isLoadingMhd } = useQuery(
-    'getMhdStops',
-    getMhdStops
-  )
-
-  const validatedMhdStops = useMemo(
-    () => apiMhdStops.validateSync(dataMhd),
-    [dataMhd]
-  )
-
+  const { data: dataMhd, isLoading: isLoadingMhd } = useMhdData()
   const { data: dataTier, isLoading: isLoadingTier } = useTierData()
-  const { dataMerged: dataMergedRekola, isLoading: isLoadingRekola } =
-    useRekolaData()
-  const {
-    dataMerged: dataMergedSlovnaftbajk,
-    isLoading: isLoadingSlovnaftbajk,
-  } = useSlovnaftbajkData()
+  const { data: dataMergedRekola, isLoading: isLoadingRekola } = useRekolaData()
+  const { data: dataMergedSlovnaftbajk, isLoading: isLoadingSlovnaftbajk } =
+    useSlovnaftbajkData()
 
   const renderStations = useCallback(
     (data: DataStations[] | undefined, color: string) => {
@@ -80,7 +69,7 @@ export default function MapScreen() {
           longitudeDelta: 0.0421,
         }}
       >
-        {validatedMhdStops?.map((stop) => (
+        {dataMhd?.map((stop) => (
           <Marker
             key={stop.id}
             coordinate={{ latitude: stop.lat, longitude: stop.lon }}

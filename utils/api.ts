@@ -1,9 +1,7 @@
 import Constants from 'expo-constants'
 
 const host =
-  Constants.manifest?.extra?.host || 'https://api.planner.bratislava.sk'
-const liveplannerHost =
-  Constants.manifest?.extra?.apiBikeHost || 'https://live.planner.bratislava.sk'
+  Constants.manifest?.extra?.host || 'https://live.planner.bratislava.sk'
 
 // we should throw throwables only, so it's useful to extend Error class to contain useful info
 export class ApiError extends Error {
@@ -27,31 +25,17 @@ const fetchJsonFromApi = async (path: string, options?: RequestInit) => {
   }
 }
 
-// helper with a common fetch pattern for json endpoints & baked in host
-const fetchJsonFromLivePlanner = async (
-  path: string,
-  options?: RequestInit
-) => {
-  const response = await fetch(`${liveplannerHost}${path}`, options)
-  if (response.ok) {
-    return response.json()
-  } else {
-    throw new ApiError(response)
-  }
-}
-
-export const getMhdStops = () =>
-  fetchJsonFromApi('/otp/routers/default/index/stops')
+export const getMhdStops = () => fetchJsonFromApi('/mhd/stops')
 
 export const getRekolaStationInformation = () =>
-  fetchJsonFromLivePlanner('/rekola/station_information.json')
+  fetchJsonFromApi('/rekola/station_information.json')
 export const getRekolaStationStatus = () =>
-  fetchJsonFromLivePlanner('/rekola/station_status.json')
+  fetchJsonFromApi('/rekola/station_status.json')
 
 export const getSlovnaftbajkStationInformation = () =>
-  fetchJsonFromLivePlanner('/slovnaftbajk/station_information.json')
+  fetchJsonFromApi('/slovnaftbajk/station_information.json')
 export const getSlovnaftbajkStationStatus = () =>
-  fetchJsonFromLivePlanner('/slovnaftbajk/station_status.json')
+  fetchJsonFromApi('/slovnaftbajk/station_status.json')
 
 export const getTierFreeBikeStatus = () =>
-  fetchJsonFromLivePlanner('/tier/free_bike_status.json')
+  fetchJsonFromApi('/tier/free_bike_status.json')

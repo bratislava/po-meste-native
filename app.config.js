@@ -28,7 +28,6 @@ export default {
     favicon: './assets/images/favicon.png',
   },
   extra: {
-    apiHost: 'https://api.planner.bratislava.sk',
-    apiBikeHost: 'https://live.planner.bratislava.sk',
+    apiHost: 'https://live.planner.bratislava.sk',
   },
 }

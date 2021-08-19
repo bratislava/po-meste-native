@@ -71,8 +71,11 @@ export default function MapScreen() {
       >
         {dataMhd?.map((stop) => (
           <Marker
-            key={stop.id}
-            coordinate={{ latitude: stop.lat, longitude: stop.lon }}
+            key={stop.stationStopId}
+            coordinate={{
+              latitude: parseFloat(stop.gpsLat),
+              longitude: parseFloat(stop.gpsLon),
+            }}
             tracksViewChanges={false}
           >
             <View style={styles.marker}>

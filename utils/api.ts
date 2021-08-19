@@ -42,11 +42,16 @@ const fetchJsonFromLivePlanner = async (
 
 export const getMhdStops = () =>
   fetchJsonFromApi('/otp/routers/default/index/stops')
+
 export const getRekolaStationInformation = () =>
   fetchJsonFromLivePlanner('/rekola/station_information.json')
 export const getRekolaStationStatus = () =>
   fetchJsonFromLivePlanner('/rekola/station_status.json')
+
 export const getSlovnaftbajkStationInformation = () =>
   fetchJsonFromLivePlanner('/slovnaftbajk/station_information.json')
 export const getSlovnaftbajkStationStatus = () =>
   fetchJsonFromLivePlanner('/slovnaftbajk/station_status.json')
+
+export const getTierFreeBikeStatus = () =>
+  fetchJsonFromLivePlanner('/tier/free_bike_status.json')

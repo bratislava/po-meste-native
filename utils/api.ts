@@ -2,6 +2,7 @@ import Constants from 'expo-constants'
 
 const host =
   Constants.manifest?.extra?.host || 'https://live.planner.bratislava.sk'
+const otpPlanner = 'https://api.planner.bratislava.sk/otp/routers/default'
 
 // we should throw throwables only, so it's useful to extend Error class to contain useful info
 export class ApiError extends Error {
@@ -25,6 +26,15 @@ const fetchJsonFromApi = async (path: string, options?: RequestInit) => {
   }
 }
 
+const fetchJsonFromOtpApi = async (path: string) => {
+  const response = await fetch(`${otpPlanner}${path}`)
+  if (response.ok) {
+    return response.json()
+  } else {
+    throw new ApiError(response)
+  }
+}
+
 export const getMhdStops = () => fetchJsonFromApi('/mhd/stops')
 
 export const getRekolaStationInformation = () =>
@@ -41,3 +51,10 @@ export const getTierFreeBikeStatus = () =>
   fetchJsonFromApi('/tier/free_bike_status.json')
 
 export const getChargersStops = () => fetchJsonFromApi('/zse')
+export const getTripPlanner = (from: string, to: string) => {
+  return fetchJsonFromOtpApi(
+    `/plan?fromPlace=${encodeURIComponent(from)}&toPlace=${encodeURIComponent(
+      to
+    )}&time=10%3A21pm&date=10-28-2021&mode=BUS%2CWALK&maxWalkDistance=4828.032&arriveBy=false&wheelchair=false&debugItineraryFilter=false&locale=en`
+  )
+}

@@ -14,6 +14,7 @@ import MapScreen from '../screens/MapScreen'
 import TabTwoScreen from '../screens/TabTwoScreen'
 import { BottomTabParamList, MapParamList, TabTwoParamList } from '../types'
 import SmsScreen from '../screens/SmsScreen'
+import FromToScreen from '../screens/FromToScreen'
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>()
 
@@ -55,6 +56,11 @@ function MapNavigator() {
       <MapStack.Screen
         name="MapScreen"
         component={MapScreen}
+        options={{ headerTitle: i18n.t('tabOneTitle') }}
+      />
+      <MapStack.Screen
+        name="FromToScreen"
+        component={FromToScreen}
         options={{ headerTitle: i18n.t('tabOneTitle') }}
       />
     </MapStack.Navigator>

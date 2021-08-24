@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native'
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import i18n from 'i18n-js'
 
 import TicketSvg from '../../../assets/images/ticket.svg'
 
@@ -9,12 +10,9 @@ const SearchBar = () => {
   return (
     <TouchableOpacity
       style={styles.searchBar}
-      onPress={() => navigation.navigate('TabTwo')}
+      onPress={() => navigation.navigate('FromToScreen')}
     >
-      <Text style={styles.searchInput}>
-        {/* TODO change for formattedMessage */}
-        Where to
-      </Text>
+      <Text style={styles.searchInput}>{i18n.t('whereTo')}</Text>
       <View style={styles.searchButton}>
         {/* TODO change for search icon */}
         <TicketSvg fill="gray" />

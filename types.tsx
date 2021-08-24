@@ -15,6 +15,7 @@ export type BottomTabParamList = {
 
 export type MapParamList = {
   MapScreen: undefined
+  FromToScreen: undefined
 }
 
 export type TabTwoParamList = {

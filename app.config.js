@@ -1,3 +1,5 @@
+import 'dotenv/config'
+
 export default {
   name: 'hybaj',
   slug: 'hybaj',
@@ -29,5 +31,6 @@ export default {
   },
   extra: {
     apiHost: 'https://live.planner.bratislava.sk',
+    googlePlacesApiKey: process.env.GOOGLE_PLACES_API_KEY,
   },
 }

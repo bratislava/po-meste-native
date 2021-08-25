@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import {
   StyleSheet,
   Text,
@@ -7,14 +7,20 @@ import {
   TouchableOpacity,
 } from 'react-native'
 import i18n from 'i18n-js'
-
-import { default as CustomButton } from '../components/Button'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ScrollView } from 'react-native-gesture-handler'
-import { getTripPlanner } from '../utils/api'
 import { useQuery } from 'react-query'
-import { apiOtpPlanner } from '../utils/validation'
 import { useNavigation } from '@react-navigation/native'
+import {
+  GooglePlaceData,
+  GooglePlaceDetail,
+  GooglePlacesAutocomplete,
+} from 'react-native-google-places-autocomplete'
+import Constants from 'expo-constants'
+
+import { default as CustomButton } from '../components/Button'
+import { getTripPlanner } from '../utils/api'
+import { apiOtpPlanner } from '../utils/validation'
 
 export default function FromToScreen() {
   const navigation = useNavigation()
@@ -32,6 +38,10 @@ export default function FromToScreen() {
     refetch()
   }
 
+  useEffect(() => {
+    refetch()
+  }, [from, to])
+
   const validatedOtpData = useMemo(() => {
     try {
       const validatedData = apiOtpPlanner.validateSync(data)
@@ -42,59 +52,99 @@ export default function FromToScreen() {
     }
   }, [data])
 
+  const onPlaceChosen = (
+    details: GooglePlaceDetail | null = null,
+    set: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    if (details?.geometry.location.lat && details?.geometry.location.lng) {
+      set(`${details?.geometry.location.lat},${details?.geometry.location.lng}`)
+    }
+  }
+
+  const onPlaceFromChosen = (
+    _data: GooglePlaceData,
+    details: GooglePlaceDetail | null = null
+  ) => {
+    onPlaceChosen(details, setFrom)
+  }
+
+  const onPlaceToChosen = (
+    _data: GooglePlaceData,
+    details: GooglePlaceDetail | null = null
+  ) => {
+    onPlaceChosen(details, setTo)
+  }
+
   return (
-    <SafeAreaView style={styles.container}>
-      <TextInput
-        style={styles.title}
-        onChangeText={setFrom}
-        value={from}
+    <>
+      <GooglePlacesAutocomplete
+        fetchDetails
+        styles={styles.googleFrom}
         placeholder={i18n.t('from')}
+        onPress={onPlaceFromChosen}
+        query={{
+          key: Constants.manifest?.extra?.googlePlacesApiKey,
+          language: 'sk',
+          components: 'country:sk',
+        }}
       />
-      <TextInput
-        style={styles.title}
-        onChangeText={setTo}
-        value={to}
+      <GooglePlacesAutocomplete
+        fetchDetails
+        styles={styles.googleFrom}
         placeholder={i18n.t('to')}
+        onPress={onPlaceToChosen}
+        query={{
+          key: Constants.manifest?.extra?.googlePlacesApiKey,
+          language: 'sk',
+          components: 'country:sk',
+        }}
       />
-      <View style={styles.buttonFullWidth}>
-        <CustomButton
-          style={styles.ticketButton}
-          title={i18n.t('findRoute')}
-          onPress={() => planTrip()}
-          isFullWidth
-          size="large"
-        />
-      </View>
-      <ScrollView contentContainerStyle={styles.scrollView}>
-        {validatedOtpData?.plan?.itineraries?.map((tripChoice, index) => {
-          return (
-            <View style={styles.trip} key={index}>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('PlannerScreen', {
-                    legs: tripChoice?.legs,
-                  })
-                }
-              >
-                <Text>{`trip ${index} duration: ${tripChoice.duration}`}</Text>
-                <Text>{tripChoice.endTime}</Text>
-              </TouchableOpacity>
-            </View>
-          )
-        })}
-      </ScrollView>
-    </SafeAreaView>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.buttonFullWidth}>
+          <CustomButton
+            style={styles.ticketButton}
+            title={i18n.t('findRoute')}
+            onPress={() => planTrip()}
+            isFullWidth
+            size="large"
+          />
+        </View>
+        <ScrollView contentContainerStyle={styles.scrollView}>
+          {validatedOtpData?.plan?.itineraries?.map((tripChoice, index) => {
+            return (
+              <View style={styles.trip} key={index}>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('PlannerScreen', {
+                      legs: tripChoice?.legs,
+                    })
+                  }
+                >
+                  <Text>{`trip ${index} duration: ${tripChoice.duration}`}</Text>
+                  <Text>{tripChoice.endTime}</Text>
+                </TouchableOpacity>
+              </View>
+            )
+          })}
+        </ScrollView>
+      </SafeAreaView>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'stretch',
     justifyContent: 'center',
+    marginHorizontal: 20,
   },
   scrollView: {
     minWidth: '100%',
+    borderWidth: 1,
+  },
+  googleFrom: {
+    flex: 1,
     borderWidth: 1,
   },
   title: {

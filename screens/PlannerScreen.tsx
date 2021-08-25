@@ -30,7 +30,7 @@ export default function PlannerScreen({
   useEffect(() => {
     setTimeout(() => {
       mapRef.current?.fitToCoordinates(allMarkers)
-    }, 500)
+    }, 250)
   }, [allMarkers, mapRef])
 
   return (

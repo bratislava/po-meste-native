@@ -62,6 +62,61 @@ export const apiFreeBikeStatus = yup.object().shape({
   }),
 })
 
+const leg = yup.object().shape({
+  startTime: yup.string(), //1629715140000,
+  endTime: yup.number(), //1629715287000,
+  departureDelay: yup.number(), //0,
+  arrivalDelay: yup.number(), //0,
+  realTime: yup.bool(), //false,
+  distance: yup.number(), //581.766,
+  pathway: yup.bool(), //false,
+  mode: yup.string().required('error-malformed'),
+  duration: yup.number().required('error-malformed'),
+  transitLeg: yup.bool(), //false,
+  route: yup.string(), //'',
+  agencyTimeZoneOffset: yup.number(), //7200000,
+  interlineWithPreviousLeg: yup.bool(), //false,
+  from: yup.object().shape({
+    name: yup.string(), //'Origin',
+    lon: yup.number(), //17.114381790161133,
+    lat: yup.number(), //48.11598432875021,
+    departure: yup.number(), //1629715140000,
+    vertexType: yup.string(), //'NORMAL',
+  }),
+  to: yup.object().shape({
+    name: yup.string(), //"corner of sidewalk and service road",
+    lon: yup.number(), //17.1122924,
+    lat: yup.number(), //48.118943900000005,
+    arrival: yup.number(), //1629715287000,
+    departure: yup.number(), //1629715287000,
+    vertexType: yup.string(), //"NORMAL"
+  }),
+  legGeometry: yup.object().shape({
+    points: yup.string(), //"ystdH{smgBByA?I@q@IAG??Q?SAICGCCEAYAc@AUAMDUNGDEDQLiAv@qBvABP[AEBg@?KNEVCbCG~EOAs@?_@A?b@YA",
+    length: yup.number(), //35
+  }),
+  steps: yup
+    .array()
+    .ensure()
+    .of(
+      yup.object().shape({
+        distance: yup.number(), //326.82599999999996,
+        relativeDirection: yup.string(), //"DEPART",
+        streetName: yup.string(), //"path",
+        absoluteDirection: yup.string(), //"EAST",
+        stayOn: yup.bool(), //false,
+        area: yup.bool(), //false,
+        bogusName: yup.bool(), //false,
+        lon: yup.number(), //17.114380723574783,
+        lat: yup.number(), //48.11597108360832,
+        elevation: yup.string(), //""
+      })
+    ),
+  rentedBike: yup.bool(), //false,
+})
+
+export type LegProps = yup.TypeOf<typeof leg>
+
 export const apiOtpPlanner = yup.object().shape({
   requestParameters: yup.object().shape({
     date: yup.string(), // "08-23-2021"
@@ -113,63 +168,7 @@ export const apiOtpPlanner = yup.object().shape({
             fare: yup.object().shape({}),
             details: yup.object().shape({}),
           }),
-          legs: yup
-            .array()
-            .ensure()
-            .of(
-              yup.object().shape({
-                startTime: yup.string(), //1629715140000,
-                endTime: yup.number(), //1629715287000,
-                departureDelay: yup.number(), //0,
-                arrivalDelay: yup.number(), //0,
-                realTime: yup.bool(), //false,
-                distance: yup.number(), //581.766,
-                pathway: yup.bool(), //false,
-                mode: yup.string().required('error-malformed'),
-                duration: yup.number().required('error-malformed'),
-                transitLeg: yup.bool(), //false,
-                route: yup.string(), //'',
-                agencyTimeZoneOffset: yup.number(), //7200000,
-                interlineWithPreviousLeg: yup.bool(), //false,
-                from: yup.object().shape({
-                  name: yup.string(), //'Origin',
-                  lon: yup.number(), //17.114381790161133,
-                  lat: yup.number(), //48.11598432875021,
-                  departure: yup.number(), //1629715140000,
-                  vertexType: yup.string(), //'NORMAL',
-                }),
-                to: yup.object().shape({
-                  name: yup.string(), //"corner of sidewalk and service road",
-                  lon: yup.number(), //17.1122924,
-                  lat: yup.number(), //48.118943900000005,
-                  arrival: yup.number(), //1629715287000,
-                  departure: yup.number(), //1629715287000,
-                  vertexType: yup.string(), //"NORMAL"
-                }),
-                legGeometry: yup.object().shape({
-                  points: yup.string(), //"ystdH{smgBByA?I@q@IAG??Q?SAICGCCEAYAc@AUAMDUNGDEDQLiAv@qBvABP[AEBg@?KNEVCbCG~EOAs@?_@A?b@YA",
-                  length: yup.number(), //35
-                }),
-                steps: yup
-                  .array()
-                  .ensure()
-                  .of(
-                    yup.object().shape({
-                      distance: yup.number(), //326.82599999999996,
-                      relativeDirection: yup.string(), //"DEPART",
-                      streetName: yup.string(), //"path",
-                      absoluteDirection: yup.string(), //"EAST",
-                      stayOn: yup.bool(), //false,
-                      area: yup.bool(), //false,
-                      bogusName: yup.bool(), //false,
-                      lon: yup.number(), //17.114380723574783,
-                      lat: yup.number(), //48.11597108360832,
-                      elevation: yup.string(), //""
-                    })
-                  ),
-                rentedBike: yup.bool(), //false,
-              })
-            ),
+          legs: yup.array().ensure().of(leg),
         })
       ),
   }),

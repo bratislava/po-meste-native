@@ -14,8 +14,10 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { getTripPlanner } from '../utils/api'
 import { useQuery } from 'react-query'
 import { apiOtpPlanner } from '../utils/validation'
+import { useNavigation } from '@react-navigation/native'
 
 export default function FromToScreen() {
+  const navigation = useNavigation()
   const [validationErrors, setValidationErrors] = useState()
   const [from, setFrom] = useState('48.1268706888398,17.173025608062744')
   const [to, setTo] = useState('48.1611619575192,17.165794372558594')
@@ -29,11 +31,6 @@ export default function FromToScreen() {
   )
   const planTrip = () => {
     setLoadOtpData(true)
-    // setOtpData(data)
-    // data.plan.iteneraries multiple ways to get to destination
-    // data.plan.iteneraries[0].legs parts of journey (example 3 parts, 1. by foot , 2. via bicycle, 3. by foot)
-    // data.plan.iteneraries[0].legs[0].steps - points on map
-    // on click on trip navigate to map and show route
   }
 
   const validatedOtpData = useMemo(() => {
@@ -73,7 +70,13 @@ export default function FromToScreen() {
         {validatedOtpData?.plan?.itineraries?.map((tripChoice, index) => {
           return (
             <View style={styles.trip} key={index}>
-              <TouchableOpacity onPress={() => {}}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('PlannerScreen', {
+                    legs: tripChoice?.legs,
+                  })
+                }
+              >
                 <Text>{`trip ${index} duration: ${tripChoice.duration}`}</Text>
                 <Text>{tripChoice.endTime}</Text>
               </TouchableOpacity>

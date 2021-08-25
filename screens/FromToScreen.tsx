@@ -21,16 +21,15 @@ export default function FromToScreen() {
   const [validationErrors, setValidationErrors] = useState()
   const [from, setFrom] = useState('48.1268706888398,17.173025608062744')
   const [to, setTo] = useState('48.1611619575192,17.165794372558594')
-  const [loadOtpData, setLoadOtpData] = useState(false)
-  const { data, isLoading, error } = useQuery(
+  const { data, isLoading, error, refetch } = useQuery(
     'getOtpData',
     () => getTripPlanner(from, to),
     {
-      enabled: loadOtpData,
+      enabled: false,
     }
   )
   const planTrip = () => {
-    setLoadOtpData(true)
+    refetch()
   }
 
   const validatedOtpData = useMemo(() => {

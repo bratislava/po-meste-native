@@ -3,6 +3,8 @@
  * https://reactnavigation.org/docs/typescript/
  */
 
+import { LegProps } from './utils/validation'
+
 export type RootStackParamList = {
   Root: undefined
   NotFound: undefined
@@ -16,6 +18,7 @@ export type BottomTabParamList = {
 export type MapParamList = {
   MapScreen: undefined
   FromToScreen: undefined
+  PlannerScreen: { legs: LegProps[] }
 }
 
 export type TabTwoParamList = {

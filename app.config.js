@@ -1,5 +1,6 @@
 export default {
   name: 'hybaj',
+  owner: 'bratislava',
   slug: 'hybaj',
   version: '1.0.0',
   orientation: 'portrait',
@@ -29,5 +30,21 @@ export default {
   },
   extra: {
     apiHost: 'https://live.planner.bratislava.sk',
+  },
+  packagerOpts: {
+    config: 'metro.config.js',
+    sourceExts: [
+      'expo.ts',
+      'expo.tsx',
+      'expo.js',
+      'expo.jsx',
+      'ts',
+      'tsx',
+      'js',
+      'jsx',
+      'json',
+      'wasm',
+      'svg',
+    ],
   },
 }

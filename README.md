@@ -1,6 +1,6 @@
 # Hybaj
 
-React Native Expo app. Bootstraped with expo typescript tabs example. 
+React Native Expo app. Bootstraped with expo typescript tabs example.
 
 ## Development
 
@@ -18,7 +18,7 @@ yarn start
 
 This will guide you how to open it locally on iOs simulator (if available) or Android emulator (also if available). Running in web browser is possible but discouraged (react-native-mapview is still experimental in browser).
 
-If you want to develop on your device,  from [Expo Go](https://expo.io/client) application (downlaoaded from Play store).  ping Martin Pinter to get it.
+If you want to develop on your device, from [Expo Go](https://expo.io/client) application (downlaoaded from Play store). ping Martin Pinter to get it.
 
 ### Running on device
 
@@ -35,10 +35,10 @@ We use [React Query](https://react-query.tanstack.com) to fetch data - it's givi
 Fetching with React Query looks something like the following:
 
 ```ts
-const {isLoading, data, error} = useQuery('uniqueKey', fetcherFunction)
+const { isLoading, data, error } = useQuery('uniqueKey', fetcherFunction)
 ```
 
-The first (key) param is used as the cache key - `useQuery` used in two different places with the same key should 
+The first (key) param is used as the cache key - `useQuery` used in two different places with the same key should
 
 The fetcher functions reside in `api.ts` - please use the name of the fn as the key (as long as they all reside in same file this should guarantee uniqueness) - if the resource uses a parameter (i.e. you're fetching a resource by it's id), the key should be an array with the name of the functions and all parameters used:
 

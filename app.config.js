@@ -2,6 +2,7 @@ import 'dotenv/config'
 
 export default {
   name: 'hybaj',
+  owner: 'bratislava',
   slug: 'hybaj',
   version: '1.0.0',
   orientation: 'portrait',
@@ -32,5 +33,21 @@ export default {
   extra: {
     apiHost: 'https://live.planner.bratislava.sk',
     googlePlacesApiKey: process.env.GOOGLE_PLACES_API_KEY,
+  },
+  packagerOpts: {
+    config: 'metro.config.js',
+    sourceExts: [
+      'expo.ts',
+      'expo.tsx',
+      'expo.js',
+      'expo.jsx',
+      'ts',
+      'tsx',
+      'js',
+      'jsx',
+      'json',
+      'wasm',
+      'svg',
+    ],
   },
 }

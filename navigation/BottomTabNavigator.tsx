@@ -30,6 +30,7 @@ export default function BottomTabNavigator() {
         component={MapNavigator}
         options={{
           title: i18n.t('map'),
+          // eslint-disable-next-line react/prop-types
           tabBarIcon: ({ color }) => <MapSvg fill={color} />,
         }}
       />
@@ -38,6 +39,7 @@ export default function BottomTabNavigator() {
         component={TabTwoNavigator}
         options={{
           title: i18n.t('tabTwo'),
+          // eslint-disable-next-line react/prop-types
           tabBarIcon: ({ color }) => <TicketSvg fill={color} />,
         }}
       />

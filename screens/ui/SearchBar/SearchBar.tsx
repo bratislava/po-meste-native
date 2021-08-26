@@ -4,9 +4,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 import TicketSvg from '../../../assets/images/ticket.svg'
 
-interface SearchBarProps {}
-
-const SearchBar = ({}: SearchBarProps) => {
+const SearchBar = () => {
   const navigation = useNavigation()
   return (
     <TouchableOpacity
@@ -15,11 +13,11 @@ const SearchBar = ({}: SearchBarProps) => {
     >
       <Text style={styles.searchInput}>
         {/* TODO change for formattedMessage */}
-        {'Where to'}
+        Where to
       </Text>
       <View style={styles.searchButton}>
         {/* TODO change for search icon */}
-        <TicketSvg fill={'gray'} />
+        <TicketSvg fill="gray" />
       </View>
     </TouchableOpacity>
   )

@@ -5,9 +5,7 @@ import i18n from 'i18n-js'
 
 import TicketSvg from '../../../assets/images/ticket.svg'
 
-interface SearchBarProps {}
-
-const SearchBar = ({}: SearchBarProps) => {
+const SearchBar = () => {
   const navigation = useNavigation()
   return (
     <TouchableOpacity
@@ -17,7 +15,7 @@ const SearchBar = ({}: SearchBarProps) => {
       <Text style={styles.searchInput}>{i18n.t('whereTo')}</Text>
       <View style={styles.searchButton}>
         {/* TODO change for search icon */}
-        <TicketSvg fill={'gray'} />
+        <TicketSvg fill="gray" />
       </View>
     </TouchableOpacity>
   )

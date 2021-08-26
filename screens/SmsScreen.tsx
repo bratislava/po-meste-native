@@ -17,7 +17,6 @@ export default function SmsScreen() {
       Alert.alert('', i18n.t('smsNotAvailable'), [
         {
           text: i18n.t('smsOK'),
-          onPress: () => {},
         },
       ])
     }

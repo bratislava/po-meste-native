@@ -32,3 +32,10 @@ export const enum SmsTicketNumbers {
   ticket24hours = '1124',
   ticketDuplicate = '1101',
 }
+
+export const enum VehicleType {
+  mhd = 'mhd',
+  bicycle = 'bicycle',
+  scooter = 'scooter',
+  chargers = 'chargers',
+}

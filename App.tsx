@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import useCachedResources from './hooks/useCachedResources'
 import useColorScheme from './hooks/useColorScheme'
 import Navigation from './navigation'
+import GlobalStateProvider from './screens/ui/VehicleBar/GlobalStateProvider'
 
 i18n.translations = translations
 
@@ -26,12 +27,14 @@ export default function App() {
     return null
   } else {
     return (
-      <QueryClientProvider client={queryClient}>
-        <SafeAreaProvider>
-          <Navigation colorScheme={colorScheme} />
-          <StatusBar />
-        </SafeAreaProvider>
-      </QueryClientProvider>
+      <GlobalStateProvider>
+        <QueryClientProvider client={queryClient}>
+          <SafeAreaProvider>
+            <Navigation colorScheme={colorScheme} />
+            <StatusBar />
+          </SafeAreaProvider>
+        </QueryClientProvider>
+      </GlobalStateProvider>
     )
   }
 }

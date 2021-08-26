@@ -1,10 +1,7 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback } from 'react'
 import MapView, { Marker } from 'react-native-maps'
 import { StyleSheet, View } from 'react-native'
-import { useQuery } from 'react-query'
 
-import { getMhdStops } from '../utils/api'
-import { apiMhdStops } from '../utils/validation'
 import TicketSvg from '../assets/images/ticket.svg'
 import SearchBar from './ui/SearchBar/SearchBar'
 import VehicleBar from './ui/VehicleBar/VehicleBar'
@@ -79,7 +76,7 @@ export default function MapScreen() {
             tracksViewChanges={false}
           >
             <View style={styles.marker}>
-              <TicketSvg width={30} height={40} fill={'red'} />
+              <TicketSvg width={30} height={40} fill="red" />
             </View>
           </Marker>
         ))}
@@ -91,7 +88,7 @@ export default function MapScreen() {
               tracksViewChanges={false}
             >
               <View style={styles.marker}>
-                <TicketSvg width={30} height={40} fill={'blue'} />
+                <TicketSvg width={30} height={40} fill="blue" />
               </View>
             </Marker>
           )

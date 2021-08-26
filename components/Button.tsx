@@ -48,9 +48,11 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 24,
   },
+  // eslint-disable-next-line react-native/no-unused-styles
   iconSpacing: {
     marginRight: 4,
   },
+  // eslint-disable-next-line react-native/no-unused-styles
   lottieView: {
     height: 15,
   },
@@ -149,7 +151,7 @@ const FONT_WEIGHT: { [key: string]: FontWeightType } = {
 interface ButtonProps {
   onPress: (event: GestureResponderEvent) => void
   title?: string
-  icon?: IconName
+  // icon?: IconName
   isGrouped?: boolean
   isFullWidth?: boolean
   variant?:
@@ -172,7 +174,6 @@ const Button = ({
   title,
   onPress,
   variant = 'primary',
-  icon,
   isGrouped,
   isFullWidth,
   size = 'medium',

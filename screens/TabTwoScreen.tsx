@@ -13,7 +13,7 @@ export default function TabTwoScreen() {
       <Text style={styles.title}>Tab Two</Text>
       <View style={styles.separator} />
       <EditScreenInfo path="/screens/TabTwoScreen.tsx" />
-      <Button title={'sms'} onPress={() => navigation.navigate('SmsScreen')} />
+      <Button title="sms" onPress={() => navigation.navigate('SmsScreen')} />
     </View>
   )
 }

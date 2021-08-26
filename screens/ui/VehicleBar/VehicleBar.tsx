@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-import { View, Platform, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import TicketSvg from '../../../assets/images/ticket.svg'
 
 const VehicleBar = () => {
@@ -61,9 +61,6 @@ const VehicleBar = () => {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   vehicleBar: {
     display: 'flex',
     flex: 1,

@@ -1,7 +1,8 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useContext } from 'react'
 import MapView, { Marker } from 'react-native-maps'
 import { StyleSheet, View } from 'react-native'
 
+import { VehicleType } from '../types'
 import TicketSvg from '../assets/images/ticket.svg'
 import SearchBar from './ui/SearchBar/SearchBar'
 import VehicleBar from './ui/VehicleBar/VehicleBar'
@@ -10,6 +11,8 @@ import useRekolaData from '../hooks/useRekolaData'
 import useSlovnaftbajkData from '../hooks/useSlovnaftbajkData'
 import useTierData from '../hooks/useTierData'
 import useMhdData from '../hooks/useMhdData'
+import { GlobalStateContext } from './ui/VehicleBar/GlobalStateProvider'
+import MhdSvg from '../assets/images/mhd.svg'
 
 interface DataStations {
   station_id: string
@@ -31,6 +34,7 @@ export default function MapScreen() {
   const { data: dataMergedRekola, isLoading: isLoadingRekola } = useRekolaData()
   const { data: dataMergedSlovnaftbajk, isLoading: isLoadingSlovnaftbajk } =
     useSlovnaftbajkData()
+  const vehiclesContext = useContext(GlobalStateContext)
 
   const renderStations = useCallback(
     (data: DataStations[] | undefined, color: string) => {
@@ -66,36 +70,46 @@ export default function MapScreen() {
           longitudeDelta: 0.0421,
         }}
       >
-        {dataMhd?.map((stop) => (
-          <Marker
-            key={stop.stationStopId}
-            coordinate={{
-              latitude: parseFloat(stop.gpsLat),
-              longitude: parseFloat(stop.gpsLon),
-            }}
-            tracksViewChanges={false}
-          >
-            <View style={styles.marker}>
-              <TicketSvg width={30} height={40} fill="red" />
-            </View>
-          </Marker>
-        ))}
-        {dataTier?.map((vehicle) => {
-          return (
+        {vehiclesContext.vehicleTypes?.find(
+          (vehicleType) => vehicleType.id === VehicleType.mhd
+        )?.show &&
+          dataMhd?.map((stop) => (
             <Marker
-              key={vehicle.bike_id}
-              coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
+              key={stop.stationStopId}
+              coordinate={{
+                latitude: parseFloat(stop.gpsLat),
+                longitude: parseFloat(stop.gpsLon),
+              }}
               tracksViewChanges={false}
             >
               <View style={styles.marker}>
-                <TicketSvg width={30} height={40} fill="blue" />
+                <MhdSvg width={30} height={40} fill="red" />
               </View>
             </Marker>
-          )
-        })}
+          ))}
+        {vehiclesContext.vehicleTypes?.find(
+          (vehicleType) => vehicleType.id === VehicleType.scooter
+        )?.show &&
+          dataTier?.map((vehicle) => {
+            return (
+              <Marker
+                key={vehicle.bike_id}
+                coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
+                tracksViewChanges={false}
+              >
+                <View style={styles.marker}>
+                  <TicketSvg width={30} height={40} fill="blue" />
+                </View>
+              </Marker>
+            )
+          })}
 
-        {renderStations(dataMergedRekola, 'pink')}
-        {renderStations(dataMergedSlovnaftbajk, 'yellow')}
+        {vehiclesContext.vehicleTypes?.find(
+          (vehicleType) => vehicleType.id === VehicleType.bicycle
+        )?.show && renderStations(dataMergedRekola, 'pink')}
+        {vehiclesContext.vehicleTypes?.find(
+          (vehicleType) => vehicleType.id === VehicleType.bicycle
+        )?.show && renderStations(dataMergedSlovnaftbajk, 'yellow')}
       </MapView>
       {isLoadingMhd ||
       isLoadingRekola ||

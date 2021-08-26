@@ -1,34 +1,12 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useContext } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import TicketSvg from '../../../assets/images/ticket.svg'
+import { GlobalStateContext } from './GlobalStateProvider'
 
 const VehicleBar = () => {
-  const [vehicleTypes, setVehicleTypes] = useState([
-    {
-      id: 'car',
-      show: true,
-      icon: (color: string) => <TicketSvg fill={color} />, //TODO change for vehicle icon
-    },
-    {
-      id: 'bike',
-      show: true,
-      icon: (color: string) => <TicketSvg fill={color} />, //TODO change for vehicle icon
-    },
-    {
-      id: 'mhd',
-      show: true,
-      icon: (color: string) => <TicketSvg fill={color} />, //TODO change for vehicle icon
-    },
-    {
-      id: 'chargers',
-      show: true,
-      icon: (color: string) => <TicketSvg fill={color} />, //TODO change for vehicle icon
-    },
-  ])
+  const vehiclesContext = useContext(GlobalStateContext)
 
   const onVehicleClick = (id: string) => {
-    setVehicleTypes((oldVehicleTypes) => {
+    vehiclesContext.setVehicleTypes((oldVehicleTypes) => {
       const newVehicleTypes = oldVehicleTypes.map((vehicleType) => {
         return {
           ...vehicleType,
@@ -41,14 +19,16 @@ const VehicleBar = () => {
 
   return (
     <View style={styles.vehicleBar}>
-      {vehicleTypes.map((vehicleType, index) => {
+      {vehiclesContext.vehicleTypes?.map((vehicleType, index) => {
         const { id, icon, show } = vehicleType
         return (
           <TouchableOpacity
             key={id}
             style={[
               index === 0 ? styles.iconLeft : {},
-              index === vehicleTypes.length - 1 ? styles.iconRight : {},
+              index === vehiclesContext.vehicleTypes.length - 1
+                ? styles.iconRight
+                : {},
             ]}
             onPress={() => onVehicleClick(id)}
           >

@@ -1,5 +1,11 @@
 import React, { useMemo, useState, useEffect } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  StatusBar,
+} from 'react-native'
 import i18n from 'i18n-js'
 
 import { Button } from '../components'
@@ -14,7 +20,6 @@ import {
 } from 'react-native-google-places-autocomplete'
 import Constants from 'expo-constants'
 
-import { default as CustomButton } from '../components/Button'
 import { getTripPlanner } from '../utils/api'
 import { apiOtpPlanner } from '../utils/validation'
 
@@ -30,9 +35,6 @@ export default function FromToScreen() {
       enabled: false,
     }
   )
-  const planTrip = () => {
-    refetch()
-  }
 
   useEffect(() => {
     refetch()
@@ -73,34 +75,41 @@ export default function FromToScreen() {
 
   return (
     <>
-      <GooglePlacesAutocomplete
-        fetchDetails
-        styles={styles.googleFrom}
-        placeholder={i18n.t('from')}
-        onPress={onPlaceFromChosen}
-        query={{
-          key: Constants.manifest?.extra?.googlePlacesApiKey,
-          language: 'sk',
-          components: 'country:sk',
-        }}
-      />
-      <GooglePlacesAutocomplete
-        fetchDetails
-        styles={styles.googleFrom}
-        placeholder={i18n.t('to')}
-        onPress={onPlaceToChosen}
-        query={{
-          key: Constants.manifest?.extra?.googlePlacesApiKey,
-          language: 'sk',
-          components: 'country:sk',
-        }}
-      />
       <SafeAreaView style={styles.container}>
+        <View style={styles.googleFrom}>
+          <GooglePlacesAutocomplete
+            styles={autoCompleteStyles}
+            enablePoweredByContainer={false}
+            fetchDetails
+            placeholder={i18n.t('from')}
+            onPress={onPlaceFromChosen}
+            query={{
+              key: Constants.manifest?.extra?.googlePlacesApiKey,
+              language: 'sk',
+              components: 'country:sk',
+            }}
+          />
+        </View>
+        <View style={styles.googleFrom}>
+          <GooglePlacesAutocomplete
+            styles={autoCompleteStyles}
+            enablePoweredByContainer={false}
+            fetchDetails
+            placeholder={i18n.t('to')}
+            onPress={onPlaceToChosen}
+            query={{
+              key: Constants.manifest?.extra?.googlePlacesApiKey,
+              language: 'sk',
+              components: 'country:sk',
+            }}
+          />
+        </View>
+
         <View style={styles.buttonFullWidth}>
           <Button
             style={styles.ticketButton}
             title={i18n.t('findRoute')}
-            onPress={() => planTrip()}
+            onPress={() => refetch()}
             isFullWidth
             size="large"
           />
@@ -141,16 +150,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   googleFrom: {
-    flex: 1,
-    borderWidth: 1,
-  },
-  title: {
-    marginTop: 33,
-    textTransform: 'uppercase',
+    flexDirection: 'row',
+    marginHorizontal: 10,
   },
   buttonFullWidth: {
     flexDirection: 'row',
-    marginHorizontal: 20,
+    marginHorizontal: 10,
     margin: 10,
   },
   trip: {
@@ -162,8 +167,18 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
   },
-  row: {
-    flex: 1,
+})
+
+const autoCompleteStyles = StyleSheet.create({
+  // eslint-disable-next-line react-native/no-unused-styles
+  container: {
     width: '100%',
+  },
+  // eslint-disable-next-line react-native/no-unused-styles
+  listView: {
+    position: 'absolute',
+    top: 50,
+    elevation: 5,
+    zIndex: 5,
   },
 })

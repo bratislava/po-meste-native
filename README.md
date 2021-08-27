@@ -20,6 +20,13 @@ This will guide you how to open it locally on iOs simulator (if available) or An
 
 If you want to develop on your device, from [Expo Go](https://expo.io/client) application (downlaoaded from Play store). ping Martin Pinter to get it.
 
+To get Env keys:
+    1. GOOGLE_PLACES_API_KEY 
+        1. Log into google account "inovacie.bratislava@gmail.com"
+        2. Proceed to https://console.cloud.google.com/google/maps-apis/credentials?pli=1&project=dopravna-aplikacia&folder=&organizationId=
+
+For help reach to @mpinter (Martin Pinter) or @Balros (Adam Grund)
+
 ### Running on device
 
 You need the [Expo Go](https://expo.io/client) application installed on your device. With Android you only need to scan the QR shown to you after `yarn start`. On iOs you may need access to the bratislava expo organisation - ping Martin Pinter to get it.

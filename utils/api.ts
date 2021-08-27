@@ -1,8 +1,9 @@
 import Constants from 'expo-constants'
+import qs from 'qs'
 
 const host =
   Constants.manifest?.extra?.host || 'https://live.planner.bratislava.sk'
-const otpPlanner = 'https://api.planner.bratislava.sk/otp/routers/default'
+const otpPlanner = 'https://api.planner.bratislava.sk/otp/routers/default/plan'
 
 // we should throw throwables only, so it's useful to extend Error class to contain useful info
 export class ApiError extends Error {
@@ -50,10 +51,25 @@ export const getSlovnaftbajkStationStatus = () =>
 export const getTierFreeBikeStatus = () =>
   fetchJsonFromApi('/tier/free_bike_status.json')
 
-export const getTripPlanner = (from: string, to: string) => {
+export const getTripPlanner = (
+  from: string,
+  to: string,
+  dateTime: Date = new Date()
+) => {
   return fetchJsonFromOtpApi(
-    `/plan?fromPlace=${encodeURIComponent(from)}&toPlace=${encodeURIComponent(
-      to
-    )}&time=10%3A21pm&date=10-28-2021&mode=BUS%2CWALK&maxWalkDistance=4828.032&arriveBy=false&wheelchair=false&debugItineraryFilter=false&locale=en`
+    qs.stringify(
+      {
+        fromPlace: from,
+        toPlace: to,
+        time: dateTime.toISOString(),
+        mode: 'BUS,WALK',
+        maxWalkDistance: '4828.032',
+        arriveBy: 'false',
+        wheelchair: 'false',
+        debugItineraryFilter: 'false',
+        locale: 'en',
+      },
+      { addQueryPrefix: true }
+    )
   )
 }

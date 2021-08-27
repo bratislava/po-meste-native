@@ -3,6 +3,7 @@ import qs from 'qs'
 
 const host =
   Constants.manifest?.extra?.host || 'https://live.planner.bratislava.sk'
+// TODO change otpPlanner url from 'api.planner' to 'live.planner' when endpoint is available
 const otpPlanner = 'https://api.planner.bratislava.sk/otp/routers/default/plan'
 
 // we should throw throwables only, so it's useful to extend Error class to contain useful info

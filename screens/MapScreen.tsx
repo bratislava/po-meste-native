@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react'
 import MapView, { Marker } from 'react-native-maps'
 import { StyleSheet, View } from 'react-native'
-
 import TicketSvg from '../assets/images/ticket.svg'
 import SearchBar from './ui/SearchBar/SearchBar'
 import VehicleBar from './ui/VehicleBar/VehicleBar'

@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native'
 import * as React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import Button from '../components/Button'
+import { Button } from '../components'
 
 import EditScreenInfo from '../components/EditScreenInfo'
 

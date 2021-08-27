@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react'
 import MapView, { Marker } from 'react-native-maps'
 import { StyleSheet, View } from 'react-native'
-
 import TicketSvg from '../assets/images/ticket.svg'
 import SearchBar from './ui/SearchBar/SearchBar'
 import VehicleBar from './ui/VehicleBar/VehicleBar'
@@ -10,6 +9,7 @@ import useRekolaData from '../hooks/useRekolaData'
 import useSlovnaftbajkData from '../hooks/useSlovnaftbajkData'
 import useTierData from '../hooks/useTierData'
 import useMhdData from '../hooks/useMhdData'
+import useZseChargersData from '../hooks/useZseChargersData'
 
 interface DataStations {
   station_id: string
@@ -28,6 +28,8 @@ export default function MapScreen() {
   // TODO handle loading / error
   const { data: dataMhd, isLoading: isLoadingMhd } = useMhdData()
   const { data: dataTier, isLoading: isLoadingTier } = useTierData()
+  const { data: dataZseChargers, isLoading: isLoadingZseChargers } =
+    useZseChargersData()
   const { data: dataMergedRekola, isLoading: isLoadingRekola } = useRekolaData()
   const { data: dataMergedSlovnaftbajk, isLoading: isLoadingSlovnaftbajk } =
     useSlovnaftbajkData()
@@ -96,11 +98,32 @@ export default function MapScreen() {
 
         {renderStations(dataMergedRekola, 'pink')}
         {renderStations(dataMergedSlovnaftbajk, 'yellow')}
+        {dataZseChargers?.reduce<JSX.Element[]>((accumulator, charger) => {
+          if (charger.coordinates.latitude && charger.coordinates.longitude) {
+            const marker = (
+              <Marker
+                key={charger.id}
+                coordinate={{
+                  latitude: charger.coordinates.latitude,
+                  longitude: charger.coordinates.longitude,
+                }}
+                tracksViewChanges={false}
+              >
+                <View style={styles.marker}>
+                  <TicketSvg width={30} height={40} fill="green" />
+                </View>
+              </Marker>
+            )
+            return accumulator.concat(marker)
+          } else return accumulator
+        }, [])}
       </MapView>
+
       {isLoadingMhd ||
       isLoadingRekola ||
       isLoadingSlovnaftbajk ||
-      isLoadingTier ? (
+      isLoadingTier ||
+      isLoadingZseChargers ? (
         <LoadingView />
       ) : null}
       <SearchBar />

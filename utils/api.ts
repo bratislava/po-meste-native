@@ -39,3 +39,5 @@ export const getSlovnaftbajkStationStatus = () =>
 
 export const getTierFreeBikeStatus = () =>
   fetchJsonFromApi('/tier/free_bike_status.json')
+
+export const getChargersStops = () => fetchJsonFromApi('/zse')

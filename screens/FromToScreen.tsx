@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import i18n from 'i18n-js'
 
-import { default as CustomButton } from '../components/Button'
+import { Button } from '../components'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ScrollView } from 'react-native-gesture-handler'
 import { getTripPlanner } from '../utils/api'
@@ -57,7 +57,7 @@ export default function FromToScreen() {
         placeholder={i18n.t('to')}
       />
       <View style={styles.buttonFullWidth}>
-        <CustomButton
+        <Button
           style={styles.ticketButton}
           title={i18n.t('findRoute')}
           onPress={() => planTrip()}
@@ -77,7 +77,8 @@ export default function FromToScreen() {
                 }
               >
                 <Text>{`trip ${index} duration: ${tripChoice.duration}`}</Text>
-                <Text>{tripChoice.endTime}</Text>
+                <Text>{new Date(tripChoice.startTime).toISOString()}</Text>
+                <Text>{new Date(tripChoice.endTime).toISOString()}</Text>
               </TouchableOpacity>
             </View>
           )

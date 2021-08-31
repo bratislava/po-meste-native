@@ -1,30 +1,35 @@
 import * as yup from 'yup'
 
-export const apiMhdStops = yup
-  .array()
-  .ensure()
-  .of(
-    yup
-      .object()
-      .shape({
-        stationStopId: yup.number().required('error-malformed'),
-        stationId: yup.number().required('error-malformed'),
-        name: yup.string().required('error-malformed'),
-        address: yup.string().nullable(true), // if required it throws error, doesn't needed at time of implementation
-        gpsLon: yup.string().required('error-malformed'),
-        gpsLat: yup.string().required('error-malformed'),
-        tag: yup.string().required('error-malformed'),
-      })
-      .noUnknown()
-  )
+export const mhdStop = yup
+  .object()
+  .shape({
+    stationStopId: yup.number().required('error-malformed'),
+    stationId: yup.number().required('error-malformed'),
+    name: yup.string().required('error-malformed'),
+    address: yup.string().nullable(true), // if required it throws error, doesn't needed at time of implementation
+    gpsLon: yup.string().required('error-malformed'),
+    gpsLat: yup.string().required('error-malformed'),
+    tag: yup.string().required('error-malformed'),
+  })
+  .noUnknown()
 
-export const stationInformationSchema = yup.object().shape({
-  station_id: yup.string().required('error-malformed'),
-  name: yup.string().required('error-malformed'),
-  lat: yup.number().required('error-malformed'),
-  lon: yup.number().required('error-malformed'),
-  is_virtual_station: yup.boolean().required('error-malformed'),
-})
+export type MhdStopProps = yup.TypeOf<typeof mhdStop>
+export const apiMhdStops = yup.array().ensure().of(mhdStop)
+
+export const stationInformationSchema = yup
+  .object()
+  .shape({
+    station_id: yup.string().required('error-malformed'),
+    name: yup.string().required('error-malformed'),
+    lat: yup.number().required('error-malformed'),
+    lon: yup.number().required('error-malformed'),
+    is_virtual_station: yup.boolean().required('error-malformed'),
+  })
+  .noUnknown()
+
+export type StationInformationProps = yup.TypeOf<
+  typeof stationInformationSchema
+>
 
 export const apiRekolaStationInformation = yup.object().shape({
   data: yup.object().shape({
@@ -32,14 +37,19 @@ export const apiRekolaStationInformation = yup.object().shape({
   }),
 })
 
-export const stationStatusSchema = yup.object().shape({
-  station_id: yup.string().required('error-malformed'),
-  num_bikes_available: yup.number().required('error-malformed'),
-  is_installed: yup.number().required('error-malformed'),
-  is_renting: yup.number().required('error-malformed'),
-  is_returning: yup.number().required('error-malformed'),
-  last_reported: yup.string().required('error-malformed'),
-})
+export const stationStatusSchema = yup
+  .object()
+  .shape({
+    station_id: yup.string().required('error-malformed'),
+    num_bikes_available: yup.number().required('error-malformed'),
+    is_installed: yup.number().required('error-malformed'),
+    is_renting: yup.number().required('error-malformed'),
+    is_returning: yup.number().required('error-malformed'),
+    last_reported: yup.string().required('error-malformed'),
+  })
+  .noUnknown()
+
+export type StationStatusProps = yup.TypeOf<typeof stationStatusSchema>
 
 export const apiRekolaStationStatus = yup.object().shape({
   data: yup.object().shape({
@@ -211,6 +221,43 @@ export const apiZseChargers = yup.object().shape({
         // number_parallel_charging_vehicles: yup.number(), //6,
         opening_times: yup.string().nullable(), //'24/7',
         reserved_capacity: yup.string().nullable(), //null,
+      })
+    ),
+})
+
+export const apiMhdStopStatus = yup.object().shape({
+  stationStop: yup.object().shape({
+    stationStopId: yup.number().required('error-malformed-stationStopId'), // 26089,
+    stationId: yup.number(), // 910,
+    name: yup.string(), // '1_2DPAE Krasňany',
+    address: yup.string().nullable(), // null,
+    gpsLon: yup.string(), // '17.13476563',
+    gpsLat: yup.string(), // '48.1885376',
+    tag: yup.string(), // '091002',
+  }),
+  departures: yup
+    .array()
+    .ensure()
+    .of(
+      yup.object().shape({
+        time: yup.string().required('error-malformed-time'), //'2021-08-30T13:42:00',
+        timetableTime: yup.string().required('error-malformed-timetableTime'), //'2021-08-30T13:42:00',
+        hours: yup.number().required('error-malformed-hours'), //13,
+        minutes: yup.number().required('error-malformed-minutes'), //42,
+        timetableHours: yup.number().required('error-malformed-timetableHours'), //13,
+        timetableMinutes: yup
+          .number()
+          .required('error-malformed-timetableMinutes'), //42,
+        lineNumber: yup.number().required('error-malformed-lineNumber'), //7,
+        delay: yup.number().required('error-malformed-delay'), //0,
+        dynamicData: yup.number().required('error-malformed-dynamicData'), //1,
+        finalStationStopId: yup
+          .number()
+          .required('error-malformed-finalStationStopId'), //27784,
+        finalStationStopName: yup
+          .string()
+          .required('error-malformed-finalStationStopName'), //'Hlavná stanica',
+        wheelchairAccessible: yup.bool(), //false,
       })
     ),
 })

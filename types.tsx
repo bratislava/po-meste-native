@@ -39,3 +39,18 @@ export const enum VehicleType {
   scooter = 'scooter',
   chargers = 'chargers',
 }
+
+export interface StationData {
+  station_id: string
+  name?: string | undefined
+  lat?: number | undefined
+  lon?: number | undefined
+  is_virtual_station?: boolean | undefined
+  num_bikes_available: number
+  is_installed: number
+  is_renting: number
+  is_returning: number
+  last_reported: string
+}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// interface StationData extends StationInformationProps, StationStatusProps {}

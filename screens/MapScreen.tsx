@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useState } from 'react'
 import MapView, { Marker } from 'react-native-maps'
 import { StyleSheet, View } from 'react-native'
 
-import { StationData, VehicleType } from '../types'
+import { VehicleType } from '../types'
 import SearchBar from './ui/SearchBar/SearchBar'
 import VehicleBar from './ui/VehicleBar/VehicleBar'
 import LoadingView from './ui/LoadingView/LoadingView'
@@ -14,11 +14,7 @@ import useZseChargersData from '../hooks/useZseChargersData'
 import { GlobalStateContext } from './ui/VehicleBar/GlobalStateProvider'
 import TicketSvg from '../assets/images/ticket.svg'
 import MhdSvg from '../assets/images/mhd.svg'
-import {
-  MhdStopProps,
-  StationInformationProps,
-  StationStatusProps,
-} from '../utils/validation'
+import { MhdStopProps, StationProps } from '../utils/validation'
 import StationMhdInfo from './ui/StationMhdInfo'
 
 export default function MapScreen() {
@@ -32,13 +28,13 @@ export default function MapScreen() {
     useSlovnaftbajkData()
   const vehiclesContext = useContext(GlobalStateContext)
   const [selectedStation, setSelectedStation] = useState<
-    StationData | undefined
+    StationProps | undefined
   >(undefined)
   const [selectedMhdStation, setSelectedMhdStation] = useState<
     MhdStopProps | undefined
   >(undefined)
 
-  const renderStations = useCallback((data: StationData[], color: string) => {
+  const renderStations = useCallback((data: StationProps[], color: string) => {
     return data?.reduce<JSX.Element[]>((accumulator, station) => {
       if (station.lat && station.lon && station.station_id) {
         const marker = (

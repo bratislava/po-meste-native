@@ -4,16 +4,14 @@ import { getMhdStopStatusData } from '../utils/api'
 import { apiMhdStopStatus } from '../utils/validation'
 
 interface StationStatusDataProps {
-  id?: number
+  id: number
 }
 
 export default function useMhdStopStatusData({ id }: StationStatusDataProps) {
   const [validationErrors, setValidationErrors] = useState()
   const { data, isLoading, error } = useQuery(
     ['getMhdStopStatusData', id],
-    () => id && getMhdStopStatusData(id),
-    //TODO erase enabled, don't let undefined as id somehow
-    { enabled: !!id }
+    () => getMhdStopStatusData(id)
   )
 
   const validatedTier = useMemo(() => {

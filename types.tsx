@@ -19,6 +19,7 @@ export type MapParamList = {
   MapScreen: undefined
   FromToScreen: undefined
   PlannerScreen: { legs: LegProps[] }
+  LineTimeline: undefined
 }
 
 export type TabTwoParamList = {

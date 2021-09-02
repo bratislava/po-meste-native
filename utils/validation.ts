@@ -1,30 +1,35 @@
 import * as yup from 'yup'
 
-export const apiMhdStops = yup
-  .array()
-  .ensure()
-  .of(
-    yup
-      .object()
-      .shape({
-        stationStopId: yup.number().required('error-malformed'),
-        stationId: yup.number().required('error-malformed'),
-        name: yup.string().required('error-malformed'),
-        address: yup.string().nullable(true), // if required it throws error, doesn't needed at time of implementation
-        gpsLon: yup.string().required('error-malformed'),
-        gpsLat: yup.string().required('error-malformed'),
-        tag: yup.string().required('error-malformed'),
-      })
-      .noUnknown()
-  )
+export const mhdStop = yup
+  .object()
+  .shape({
+    stationStopId: yup.number().required('error-malformed-stationStopId'),
+    stationId: yup.number().required('error-malformed-stationId'),
+    name: yup.string().required('error-malformed-name'),
+    address: yup.string().nullable(true), // if required it throws error, doesn't needed at time of implementation
+    gpsLon: yup.string().required('error-malformed-gpsLon'),
+    gpsLat: yup.string().required('error-malformed-gpsLat'),
+    tag: yup.string().required('error-malformed-tag'),
+  })
+  .noUnknown()
 
-export const stationInformationSchema = yup.object().shape({
-  station_id: yup.string().required('error-malformed'),
-  name: yup.string().required('error-malformed'),
-  lat: yup.number().required('error-malformed'),
-  lon: yup.number().required('error-malformed'),
-  is_virtual_station: yup.boolean().required('error-malformed'),
-})
+export type MhdStopProps = yup.Asserts<typeof mhdStop>
+export const apiMhdStops = yup.array().ensure().of(mhdStop)
+
+const stationInformationObject = {
+  station_id: yup.string().required('error-malformed-station_id'),
+  name: yup.string().required('error-malformed-name'),
+  lat: yup.number().required('error-malformed-lat'),
+  lon: yup.number().required('error-malformed-lon'),
+  is_virtual_station: yup
+    .boolean()
+    .required('error-malformed-is_virtual_station'),
+}
+
+export const stationInformationSchema = yup
+  .object()
+  .shape(stationInformationObject)
+  .noUnknown()
 
 export const apiRekolaStationInformation = yup.object().shape({
   data: yup.object().shape({
@@ -32,28 +37,42 @@ export const apiRekolaStationInformation = yup.object().shape({
   }),
 })
 
-export const stationStatusSchema = yup.object().shape({
-  station_id: yup.string().required('error-malformed'),
-  num_bikes_available: yup.number().required('error-malformed'),
-  is_installed: yup.number().required('error-malformed'),
-  is_renting: yup.number().required('error-malformed'),
-  is_returning: yup.number().required('error-malformed'),
-  last_reported: yup.string().required('error-malformed'),
-})
+const stationStatusObject = {
+  station_id: yup.string().required('error-malformed-station_id'),
+  num_bikes_available: yup
+    .number()
+    .required('error-malformed-num_bikes_available'),
+  is_installed: yup.number().required('error-malformed-is_installed'),
+  is_renting: yup.number().required('error-malformed-is_renting'),
+  is_returning: yup.number().required('error-malformed-is_returning'),
+  last_reported: yup.string().required('error-malformed-last_reported'),
+}
+
+export const stationStatusSchema = yup
+  .object()
+  .shape(stationStatusObject)
+  .noUnknown()
+
+export const StationSchema = yup
+  .object()
+  .shape({ ...stationStatusObject, ...stationInformationObject })
+  .noUnknown()
+
+export type StationProps = yup.Asserts<typeof StationSchema>
 
 export const apiRekolaStationStatus = yup.object().shape({
   data: yup.object().shape({
-    stations: yup.array().ensure().of(stationStatusSchema),
+    stations: yup.array().ensure().of(StationSchema),
   }),
 })
 
 export const freeBikeStatusSchema = yup.object().shape({
-  bike_id: yup.string().required('error-malformed'),
-  lat: yup.number().required('error-malformed'),
-  lon: yup.number().required('error-malformed'),
-  is_reserved: yup.boolean().required('error-malformed'),
-  is_disabled: yup.boolean().required('error-malformed'),
-  last_reported: yup.string().required('error-malformed'),
+  bike_id: yup.string().required('error-malformed-bike_id'),
+  lat: yup.number().required('error-malformed-lat'),
+  lon: yup.number().required('error-malformed-lon'),
+  is_reserved: yup.boolean().required('error-malformed-is_reserved'),
+  is_disabled: yup.boolean().required('error-malformed-is_disabled'),
+  last_reported: yup.string().required('error-malformed-last_reported'),
 })
 
 export const apiFreeBikeStatus = yup.object().shape({
@@ -70,8 +89,8 @@ const leg = yup.object().shape({
   realTime: yup.bool(), //false,
   distance: yup.number(), //581.766,
   pathway: yup.bool(), //false,
-  mode: yup.string().required('error-malformed'),
-  duration: yup.number().required('error-malformed'),
+  mode: yup.string().required('error-malformed-mode'),
+  duration: yup.number().required('error-malformed-duration'),
   transitLeg: yup.bool(), //false,
   route: yup.string(), //'',
   agencyTimeZoneOffset: yup.number(), //7200000,
@@ -153,9 +172,9 @@ export const apiOtpPlanner = yup.object().shape({
       .ensure()
       .of(
         yup.object().shape({
-          duration: yup.number().required('error-malformed'),
-          startTime: yup.number().required('error-malformed'),
-          endTime: yup.number().required('error-malformed'),
+          duration: yup.number().required('error-malformed-duration'),
+          startTime: yup.number().required('error-malformed-startTime'),
+          endTime: yup.number().required('error-malformed-endTime'),
           walkTime: yup.number(), //1240,
           transitTime: yup.number(), //0,
           waitingTime: yup.number(), //0,

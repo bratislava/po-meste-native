@@ -14,19 +14,7 @@ import useMhdData from '../hooks/useMhdData'
 import useZseChargersData from '../hooks/useZseChargersData'
 import { GlobalStateContext } from './ui/VehicleBar/GlobalStateProvider'
 import MhdSvg from '../assets/images/mhd.svg'
-
-interface DataStations {
-  station_id: string
-  name?: string | undefined
-  lat?: number | undefined
-  lon?: number | undefined
-  is_virtual_station?: boolean | undefined
-  num_bikes_available: number
-  is_installed: number
-  is_renting: number
-  is_returning: number
-  last_reported: string
-}
+import { StationProps } from '../utils/validation'
 
 export default function MapScreen() {
   // TODO handle loading / error
@@ -40,7 +28,7 @@ export default function MapScreen() {
   const vehiclesContext = useContext(GlobalStateContext)
 
   const renderStations = useCallback(
-    (data: DataStations[] | undefined, color: string) => {
+    (data: StationProps[] | undefined, color: string) => {
       return data?.reduce<JSX.Element[]>((accumulator, station) => {
         if (station.lat && station.lon && station.station_id) {
           const marker = (

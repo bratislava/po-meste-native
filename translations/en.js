@@ -18,4 +18,5 @@ export default {
   from: 'From...',
   to: 'To...',
   findRoute: 'Find route',
+  lineTimeline: 'Timeline line %{lineNumber}',
 }

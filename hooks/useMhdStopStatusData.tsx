@@ -16,11 +16,11 @@ export default function useMhdStopStatusData({ id }: StationStatusDataProps) {
     { enabled: !!id }
   )
 
-  const validatedTier = useMemo(() => {
+  const validatedData = useMemo(() => {
     // console.log(data)
     try {
-      const validatedStationInformation = apiMhdStopStatus.validateSync(data)
-      return validatedStationInformation
+      const validatedStopStatusData = apiMhdStopStatus.validateSync(data)
+      return validatedStopStatusData
     } catch (e) {
       setValidationErrors(e.errors)
       // console.log(e)
@@ -28,7 +28,7 @@ export default function useMhdStopStatusData({ id }: StationStatusDataProps) {
   }, [data, setValidationErrors])
 
   return {
-    data: validatedTier,
+    data: validatedData,
     isLoading: isLoading,
     errors: error || validationErrors,
   }

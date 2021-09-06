@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
   View,
   StyleSheet,
@@ -6,15 +6,20 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
 import { MhdStopProps } from '../../utils/validation'
 import TicketSvg from '../../assets/images/ticket.svg'
 import useMhdStopStatusData from '../../hooks/useMhdStopStatusData'
+import { GlobalStateContext } from './VehicleBar/GlobalStateProvider'
 
 interface StationMhdInfoProps {
   station: MhdStopProps
 }
 const StationMhdInfo = ({ station }: StationMhdInfoProps) => {
+  const navigation = useNavigation()
+  const globalstateContext = useContext(GlobalStateContext)
+
   const { data, isLoading, errors } = useMhdStopStatusData({
     id: station.stationStopId,
   })
@@ -32,11 +37,7 @@ const StationMhdInfo = ({ station }: StationMhdInfoProps) => {
             </View>
             <TouchableOpacity
               style={styles.navigateToIcon}
-              onPress={() =>
-                console.log(
-                  'TODO redirect => planner with filled from field of stop'
-                )
-              }
+              onPress={() => navigation.navigate('FromToScreen')} // TODO add gps coordinates to navigate from
             >
               <TicketSvg fill="blue" />
             </TouchableOpacity>
@@ -77,7 +78,10 @@ const StationMhdInfo = ({ station }: StationMhdInfoProps) => {
               <TouchableOpacity
                 key={index}
                 style={styles.lineDeparture}
-                onPress={() => console.log('TODO redirect => timeline')}
+                onPress={() => {
+                  globalstateContext.setTimeLineNumber(departure.lineNumber)
+                  navigation.navigate('LineTimeline')
+                }}
               >
                 <View style={styles.departureLeft}>
                   <View key={index} style={styles.busStopIcon}>

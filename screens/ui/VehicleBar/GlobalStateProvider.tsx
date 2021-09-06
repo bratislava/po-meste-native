@@ -16,11 +16,14 @@ interface VehicleProps {
 interface VehicleFilterContextProps {
   vehicleTypes: VehicleProps[]
   setVehicleTypes: Dispatch<SetStateAction<VehicleProps[]>>
+  timeLineNumber?: number
+  setTimeLineNumber: React.Dispatch<React.SetStateAction<number | undefined>>
 }
 
 export const GlobalStateContext = createContext({} as VehicleFilterContextProps)
 
 export default function GlobalStateProvider({ children }: VehicleFilterProps) {
+  const [timeLineNumber, setTimeLineNumber] = useState<number>()
   const [vehicleTypes, setVehicleTypes] = useState<VehicleProps[]>([
     {
       id: VehicleType.mhd,
@@ -45,7 +48,14 @@ export default function GlobalStateProvider({ children }: VehicleFilterProps) {
   ])
 
   return (
-    <GlobalStateContext.Provider value={{ vehicleTypes, setVehicleTypes }}>
+    <GlobalStateContext.Provider
+      value={{
+        vehicleTypes,
+        setVehicleTypes,
+        timeLineNumber,
+        setTimeLineNumber,
+      }}
+    >
       {children}
     </GlobalStateContext.Provider>
   )

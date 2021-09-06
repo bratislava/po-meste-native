@@ -16,6 +16,9 @@ import { BottomTabParamList, MapParamList, TabTwoParamList } from '../types'
 import SmsScreen from '../screens/SmsScreen'
 import FromToScreen from '../screens/FromToScreen'
 import PlannerScreen from '../screens/PlannerScreen'
+import LineTimeline from '../screens/LineTimeline'
+import { useContext } from 'react'
+import { GlobalStateContext } from '../screens/ui/VehicleBar/GlobalStateProvider'
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>()
 
@@ -52,12 +55,13 @@ export default function BottomTabNavigator() {
 const MapStack = createStackNavigator<MapParamList>()
 
 function MapNavigator() {
+  const globalstateContext = useContext(GlobalStateContext)
   return (
-    <MapStack.Navigator screenOptions={{ headerShown: false }}>
+    <MapStack.Navigator screenOptions={{}}>
       <MapStack.Screen
         name="MapScreen"
         component={MapScreen}
-        options={{ headerTitle: i18n.t('tabOneTitle') }}
+        options={{ headerTitle: i18n.t('tabOneTitle'), headerShown: false }}
       />
       <MapStack.Screen
         name="FromToScreen"
@@ -68,6 +72,15 @@ function MapNavigator() {
         name="PlannerScreen"
         component={PlannerScreen}
         options={{ headerTitle: i18n.t('tabOneTitle') }}
+      />
+      <MapStack.Screen
+        name="LineTimeline"
+        component={LineTimeline}
+        options={{
+          headerTitle: i18n.t('lineTimeline', {
+            lineNumber: globalstateContext.timeLineNumber,
+          }),
+        }}
       />
     </MapStack.Navigator>
   )

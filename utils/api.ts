@@ -38,6 +38,8 @@ const fetchJsonFromOtpApi = async (path: string) => {
 }
 
 export const getMhdStops = () => fetchJsonFromApi('/mhd/stops')
+export const getMhdStopStatusData = (id: number) =>
+  fetchJsonFromApi(`/mhd/stop/${id}`)
 
 export const getRekolaStationInformation = () =>
   fetchJsonFromApi('/rekola/station_information.json')

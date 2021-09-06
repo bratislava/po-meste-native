@@ -1,3 +1,5 @@
+import 'dotenv/config'
+
 export default {
   name: 'hybaj',
   owner: 'bratislava',
@@ -30,6 +32,7 @@ export default {
   },
   extra: {
     apiHost: 'https://live.planner.bratislava.sk',
+    googlePlacesApiKey: process.env.GOOGLE_PLACES_API_KEY,
   },
   packagerOpts: {
     config: 'metro.config.js',

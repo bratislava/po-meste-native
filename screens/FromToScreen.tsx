@@ -1,20 +1,27 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   TouchableOpacity,
+  StatusBar,
 } from 'react-native'
 import i18n from 'i18n-js'
 
 import { Button } from '../components'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ScrollView } from 'react-native-gesture-handler'
-import { getTripPlanner } from '../utils/api'
 import { useQuery } from 'react-query'
-import { apiOtpPlanner } from '../utils/validation'
 import { useNavigation } from '@react-navigation/native'
+import {
+  GooglePlaceData,
+  GooglePlaceDetail,
+  GooglePlacesAutocomplete,
+} from 'react-native-google-places-autocomplete'
+import Constants from 'expo-constants'
+
+import { getTripPlanner } from '../utils/api'
+import { apiOtpPlanner } from '../utils/validation'
 
 export default function FromToScreen() {
   const navigation = useNavigation()
@@ -28,9 +35,10 @@ export default function FromToScreen() {
       enabled: false,
     }
   )
-  const planTrip = () => {
+
+  useEffect(() => {
     refetch()
-  }
+  }, [from, to])
 
   const validatedOtpData = useMemo(() => {
     try {
@@ -42,69 +50,112 @@ export default function FromToScreen() {
     }
   }, [data])
 
+  const onPlaceChosen = (
+    details: GooglePlaceDetail | null = null,
+    set: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    if (details?.geometry.location.lat && details?.geometry.location.lng) {
+      set(`${details?.geometry.location.lat},${details?.geometry.location.lng}`)
+    }
+  }
+
+  const onPlaceFromChosen = (
+    _data: GooglePlaceData,
+    details: GooglePlaceDetail | null = null
+  ) => {
+    onPlaceChosen(details, setFrom)
+  }
+
+  const onPlaceToChosen = (
+    _data: GooglePlaceData,
+    details: GooglePlaceDetail | null = null
+  ) => {
+    onPlaceChosen(details, setTo)
+  }
+
   return (
-    <SafeAreaView style={styles.container}>
-      <TextInput
-        style={styles.title}
-        onChangeText={setFrom}
-        value={from}
-        placeholder={i18n.t('from')}
-      />
-      <TextInput
-        style={styles.title}
-        onChangeText={setTo}
-        value={to}
-        placeholder={i18n.t('to')}
-      />
-      <View style={styles.buttonFullWidth}>
-        <Button
-          style={styles.ticketButton}
-          title={i18n.t('findRoute')}
-          onPress={() => planTrip()}
-          isFullWidth
-          size="large"
-        />
-      </View>
-      <ScrollView contentContainerStyle={styles.scrollView}>
-        {validatedOtpData?.plan?.itineraries?.map((tripChoice, index) => {
-          return (
-            <View style={styles.trip} key={index}>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('PlannerScreen', {
-                    legs: tripChoice?.legs,
-                  })
-                }
-              >
-                <Text>{`trip ${index} duration: ${tripChoice.duration}`}</Text>
-                <Text>{new Date(tripChoice.startTime).toISOString()}</Text>
-                <Text>{new Date(tripChoice.endTime).toISOString()}</Text>
-              </TouchableOpacity>
-            </View>
-          )
-        })}
-      </ScrollView>
-    </SafeAreaView>
+    <>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.googleFrom}>
+          <GooglePlacesAutocomplete
+            styles={autoCompleteStyles}
+            enablePoweredByContainer={false}
+            fetchDetails
+            placeholder={i18n.t('from')}
+            onPress={onPlaceFromChosen}
+            query={{
+              key: Constants.manifest?.extra?.googlePlacesApiKey,
+              language: 'sk',
+              components: 'country:sk',
+            }}
+          />
+        </View>
+        <View style={styles.googleFrom}>
+          <GooglePlacesAutocomplete
+            styles={autoCompleteStyles}
+            enablePoweredByContainer={false}
+            fetchDetails
+            placeholder={i18n.t('to')}
+            onPress={onPlaceToChosen}
+            query={{
+              key: Constants.manifest?.extra?.googlePlacesApiKey,
+              language: 'sk',
+              components: 'country:sk',
+            }}
+          />
+        </View>
+
+        <View style={styles.buttonFullWidth}>
+          <Button
+            style={styles.ticketButton}
+            title={i18n.t('findRoute')}
+            onPress={() => refetch()}
+            isFullWidth
+            size="large"
+          />
+        </View>
+        <ScrollView contentContainerStyle={styles.scrollView}>
+          {validatedOtpData?.plan?.itineraries?.map((tripChoice, index) => {
+            return (
+              <View style={styles.trip} key={index}>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('PlannerScreen', {
+                      legs: tripChoice?.legs,
+                    })
+                  }
+                >
+                  <Text>{`trip ${index} duration: ${tripChoice.duration}`}</Text>
+                  <Text>{new Date(tripChoice.startTime).toISOString()}</Text>
+                  <Text>{new Date(tripChoice.endTime).toISOString()}</Text>
+                </TouchableOpacity>
+              </View>
+            )
+          })}
+        </ScrollView>
+      </SafeAreaView>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'stretch',
     justifyContent: 'center',
+    marginHorizontal: 20,
   },
   scrollView: {
     minWidth: '100%',
     borderWidth: 1,
   },
-  title: {
-    marginTop: 33,
-    textTransform: 'uppercase',
+  googleFrom: {
+    flexDirection: 'row',
+    marginHorizontal: 10,
   },
   buttonFullWidth: {
     flexDirection: 'row',
-    marginHorizontal: 20,
+    marginHorizontal: 10,
     margin: 10,
   },
   trip: {
@@ -116,8 +167,18 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
   },
-  row: {
-    flex: 1,
+})
+
+const autoCompleteStyles = StyleSheet.create({
+  // eslint-disable-next-line react-native/no-unused-styles
+  container: {
     width: '100%',
+  },
+  // eslint-disable-next-line react-native/no-unused-styles
+  listView: {
+    position: 'absolute',
+    top: 50,
+    elevation: 5,
+    zIndex: 5,
   },
 })

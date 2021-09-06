@@ -52,5 +52,3 @@ export interface StationData {
   is_returning: number
   last_reported: string
 }
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-// interface StationData extends StationInformationProps, StationStatusProps {}

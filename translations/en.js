@@ -19,4 +19,8 @@ export default {
   to: 'To...',
   findRoute: 'Find route',
   lineTimeline: 'Timeline line %{lineNumber}',
+  timetable: 'Timetable line %{lineNumber}',
+  workDays: 'Working weeks',
+  weekend: 'Weekend',
+  holidays: 'Holidays',
 }

@@ -12,6 +12,7 @@ import { MhdStopProps } from '../../utils/validation'
 import TicketSvg from '../../assets/images/ticket.svg'
 import useMhdStopStatusData from '../../hooks/useMhdStopStatusData'
 import { GlobalStateContext } from './VehicleBar/GlobalStateProvider'
+import { s } from '../../utils/globalStyles'
 
 interface StationMhdInfoProps {
   station: MhdStopProps
@@ -30,7 +31,7 @@ const StationMhdInfo = ({ station }: StationMhdInfoProps) => {
         <View style={styles.header}>
           <View style={styles.firstRow}>
             <View style={styles.start}>
-              <View style={styles.busStopIcon}>
+              <View style={s.icon}>
                 <TicketSvg fill="red" />
               </View>
               <Text>{station.name}</Text>
@@ -57,10 +58,10 @@ const StationMhdInfo = ({ station }: StationMhdInfoProps) => {
                 ]}
                 onPress={() => console.log('TODO filter line')}
               >
-                <View style={styles.busStopIcon}>
+                <View style={s.icon}>
                   <TicketSvg fill="white" />
                 </View>
-                <Text style={styles.whiteText}>{departure.value}</Text>
+                <Text style={s.whiteText}>{departure.value}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -84,13 +85,13 @@ const StationMhdInfo = ({ station }: StationMhdInfoProps) => {
                 }}
               >
                 <View style={styles.departureLeft}>
-                  <View key={index} style={styles.busStopIcon}>
+                  <View key={index} style={s.icon}>
                     <TicketSvg width={30} height={40} fill="red" />
                   </View>
-                  <Text style={[styles.lineNumber, styles.whiteText]}>
+                  <Text style={[s.lineNumber, s.bgRed, s.whiteText]}>
                     {departure.lineNumber}
                   </Text>
-                  <Text style={styles.finalStation}>
+                  <Text style={[s.blackText, styles.finalStation]}>
                     {departure.finalStationStopName}
                   </Text>
                 </View>
@@ -160,35 +161,22 @@ const styles = StyleSheet.create({
   },
   departureLeft: {
     display: 'flex',
-    alignItems: 'center',
     flexDirection: 'row',
+    alignItems: 'center',
   },
   departureRight: {
     display: 'flex',
-    justifyContent: 'space-between',
     flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  lineNumber: {
-    backgroundColor: 'red',
-    height: '100%',
-    borderRadius: 5,
-    paddingHorizontal: 20,
-    paddingVertical: 7,
-  },
+
   finalStation: {
-    color: 'black',
     marginLeft: 10,
-  },
-  whiteText: {
-    color: 'white',
   },
   start: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  busStopIcon: {
-    marginRight: 10,
   },
   navigateToIcon: {
     alignItems: 'center',

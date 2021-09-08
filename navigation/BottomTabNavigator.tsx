@@ -3,9 +3,9 @@
  * https://reactnavigation.org/docs/bottom-tab-navigator
  */
 
+import React, { useContext } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
-import * as React from 'react'
 import i18n from 'i18n-js'
 
 import MapSvg from '../assets/images/map.svg'
@@ -17,8 +17,8 @@ import SmsScreen from '../screens/SmsScreen'
 import FromToScreen from '../screens/FromToScreen'
 import PlannerScreen from '../screens/PlannerScreen'
 import LineTimeline from '../screens/LineTimeline'
-import { useContext } from 'react'
 import { GlobalStateContext } from '../screens/ui/VehicleBar/GlobalStateProvider'
+import Timetable from '../screens/Timetable'
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>()
 
@@ -78,6 +78,15 @@ function MapNavigator() {
         component={LineTimeline}
         options={{
           headerTitle: i18n.t('lineTimeline', {
+            lineNumber: globalstateContext.timeLineNumber,
+          }),
+        }}
+      />
+      <MapStack.Screen
+        name="Timetable"
+        component={Timetable}
+        options={{
+          headerTitle: i18n.t('timetable', {
             lineNumber: globalstateContext.timeLineNumber,
           }),
         }}

@@ -19,4 +19,8 @@ export default {
   to: 'Kam...',
   findRoute: 'Nájdi trasu',
   lineTimeline: 'Časová os linky %{lineNumber}',
+  timetable: 'Grafikon linky %{lineNumber}',
+  workDays: 'Pracovný týždeň',
+  weekend: 'Víkend',
+  holidays: 'Prázdniny, sviatky',
 }

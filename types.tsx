@@ -40,3 +40,8 @@ export const enum VehicleType {
   scooter = 'scooter',
   chargers = 'chargers',
 }
+
+export enum BikeProvider {
+  rekola = 'rekola',
+  slovnaftbajk = 'slovnaftbajk',
+}

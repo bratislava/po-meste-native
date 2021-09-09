@@ -1,8 +1,8 @@
 import React, { useCallback, useContext, useState } from 'react'
-import MapView, { Marker } from 'react-native-maps'
+import MapView, { Marker, Region } from 'react-native-maps'
 import { StyleSheet, View } from 'react-native'
 
-import { VehicleType } from '../types'
+import { BikeProvider, VehicleType } from '../types'
 import SearchBar from './ui/SearchBar/SearchBar'
 import VehicleBar from './ui/VehicleBar/VehicleBar'
 import LoadingView from './ui/LoadingView/LoadingView'
@@ -12,9 +12,12 @@ import useTierData from '../hooks/useTierData'
 import useMhdData from '../hooks/useMhdStopsData'
 import useZseChargersData from '../hooks/useZseChargersData'
 import { GlobalStateContext } from './ui/VehicleBar/GlobalStateProvider'
-import TicketSvg from '../assets/images/ticket.svg'
-import MhdSvg from '../assets/images/mhd.svg'
-import { MhdStopProps, StationProps } from '../utils/validation'
+import {
+  FreeBikeStatusProps,
+  LocalitiesProps,
+  MhdStopProps,
+  StationProps,
+} from '../utils/validation'
 import StationMhdInfo from './ui/StationMhdInfo'
 
 export default function MapScreen() {
@@ -33,27 +36,123 @@ export default function MapScreen() {
   const [selectedMhdStation, setSelectedMhdStation] = useState<
     MhdStopProps | undefined
   >(undefined)
+  const [region, setRegion] = useState<Region | null>({
+    latitude: 48.1512015,
+    longitude: 17.1110118,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  })
 
-  const renderStations = useCallback((data: StationProps[], color: string) => {
-    return data?.reduce<JSX.Element[]>((accumulator, station) => {
-      if (station.lat && station.lon && station.station_id) {
-        const marker = (
-          <Marker
-            key={station.station_id}
-            coordinate={{ latitude: station.lat, longitude: station.lon }}
-            tracksViewChanges={false}
-            onPress={() => setSelectedStation(station)}
-          >
-            <View style={styles.marker}>
-              <TicketSvg width={30} height={40} fill={color} />
-            </View>
-          </Marker>
-        )
-        return accumulator.concat(marker)
+  const filterInView = useCallback(
+    (pointLat: number, pointLon: number, region: Region) => {
+      const latOk =
+        pointLat > region.latitude - region.latitudeDelta / 2 &&
+        pointLat < region.latitude + region.latitudeDelta / 2
+      const lonOk =
+        pointLon > region.longitude - region.longitudeDelta / 2 &&
+        pointLon < region.longitude + region.longitudeDelta / 2
+      return latOk && lonOk
+    },
+    []
+  )
+
+  const filterMhdInView = useCallback(
+    (data: MhdStopProps[]) => {
+      if (region) {
+        const inRange = data.filter((stop) => {
+          return filterInView(
+            parseFloat(stop.gpsLat),
+            parseFloat(stop.gpsLon),
+            region
+          )
+        })
+        return inRange
       }
-      return accumulator
-    }, [])
-  }, [])
+      return []
+    },
+    [filterInView, region]
+  )
+
+  const filterBikeInView = useCallback(
+    (data: StationProps[]) => {
+      if (region) {
+        const inRange = data.filter((stop) => {
+          if (stop.lat && stop.lon) {
+            return filterInView(stop.lat, stop.lon, region)
+          }
+          return false
+        })
+        return inRange
+      }
+      return []
+    },
+    [filterInView, region]
+  )
+
+  const filterTierInView = useCallback(
+    (data: FreeBikeStatusProps[]) => {
+      if (region) {
+        const inRange = data.filter((stop) => {
+          if (stop.lat && stop.lon) {
+            return filterInView(stop.lat, stop.lon, region)
+          }
+          return false
+        })
+        return inRange
+      }
+      return []
+    },
+    [filterInView, region]
+  )
+
+  const filterZseChargersInView = useCallback(
+    (data: LocalitiesProps) => {
+      if (region && data) {
+        const inRange = data.filter((stop) => {
+          if (stop?.coordinates.latitude && stop?.coordinates.longitude) {
+            return filterInView(
+              stop?.coordinates.latitude,
+              stop?.coordinates.longitude,
+              region
+            )
+          }
+          return false
+        })
+        return inRange
+      }
+      return []
+    },
+    [filterInView, region]
+  )
+
+  const renderStations = useCallback(
+    (data: StationProps[], bikeProvider: BikeProvider) => {
+      return filterBikeInView(data).reduce<JSX.Element[]>(
+        (accumulator, station) => {
+          if (station.lat && station.lon && station.station_id) {
+            const marker = (
+              <Marker
+                key={station.station_id}
+                coordinate={{ latitude: station.lat, longitude: station.lon }}
+                tracksViewChanges={false}
+                onPress={() => setSelectedStation(station)}
+                icon={
+                  (bikeProvider === BikeProvider.rekola &&
+                    require('../assets/images/rekolo.png')) ||
+                  (bikeProvider === BikeProvider.slovnaftbajk &&
+                    require('../assets/images/slovnaftbajk.png'))
+                }
+              />
+            )
+            return accumulator.concat(marker)
+          }
+          return accumulator
+        },
+        []
+      )
+    },
+    [filterBikeInView]
+  )
 
   return (
     <View style={styles.container}>
@@ -65,11 +164,13 @@ export default function MapScreen() {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
+        onRegionChangeComplete={(region) => setRegion(region)}
       >
         {vehiclesContext.vehicleTypes?.find(
           (vehicleType) => vehicleType.id === VehicleType.mhd
         )?.show &&
-          dataMhd?.map((stop) => (
+          dataMhd &&
+          filterMhdInView(dataMhd).map((stop) => (
             <Marker
               key={stop.stationStopId}
               coordinate={{
@@ -78,26 +179,21 @@ export default function MapScreen() {
               }}
               tracksViewChanges={false}
               onPress={() => setSelectedMhdStation(stop)}
-            >
-              <View style={styles.marker}>
-                <MhdSvg width={30} height={40} fill="red" />
-              </View>
-            </Marker>
+              icon={require('../assets/images/mhd-icon.png')}
+            />
           ))}
         {vehiclesContext.vehicleTypes?.find(
           (vehicleType) => vehicleType.id === VehicleType.scooter
         )?.show &&
-          dataTier?.map((vehicle) => {
+          dataTier &&
+          filterTierInView(dataTier).map((vehicle) => {
             return (
               <Marker
                 key={vehicle.bike_id}
                 coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
                 tracksViewChanges={false}
-              >
-                <View style={styles.marker}>
-                  <TicketSvg width={30} height={40} fill="blue" />
-                </View>
-              </Marker>
+                icon={require('../assets/images/scooter.png')}
+              />
             )
           })}
 
@@ -105,34 +201,37 @@ export default function MapScreen() {
           (vehicleType) => vehicleType.id === VehicleType.bicycle
         )?.show &&
           dataMergedRekola &&
-          renderStations(dataMergedRekola, 'pink')}
+          renderStations(dataMergedRekola, BikeProvider.rekola)}
         {vehiclesContext.vehicleTypes?.find(
           (vehicleType) => vehicleType.id === VehicleType.bicycle
         )?.show &&
           dataMergedSlovnaftbajk &&
-          renderStations(dataMergedSlovnaftbajk, 'yellow')}
+          renderStations(dataMergedSlovnaftbajk, BikeProvider.slovnaftbajk)}
         {vehiclesContext.vehicleTypes?.find(
           (vehicleType) => vehicleType.id === VehicleType.chargers
         )?.show &&
-          dataZseChargers?.reduce<JSX.Element[]>((accumulator, charger) => {
-            if (charger.coordinates.latitude && charger.coordinates.longitude) {
-              const marker = (
-                <Marker
-                  key={charger.id}
-                  coordinate={{
-                    latitude: charger.coordinates.latitude,
-                    longitude: charger.coordinates.longitude,
-                  }}
-                  tracksViewChanges={false}
-                >
-                  <View style={styles.marker}>
-                    <TicketSvg width={30} height={40} fill="green" />
-                  </View>
-                </Marker>
-              )
-              return accumulator.concat(marker)
-            } else return accumulator
-          }, [])}
+          dataZseChargers &&
+          filterZseChargersInView(dataZseChargers).reduce<JSX.Element[]>(
+            (accumulator, charger) => {
+              if (
+                charger.coordinates.latitude &&
+                charger.coordinates.longitude
+              ) {
+                const marker = (
+                  <Marker
+                    key={charger.id}
+                    coordinate={{
+                      latitude: charger.coordinates.latitude,
+                      longitude: charger.coordinates.longitude,
+                    }}
+                    tracksViewChanges={false}
+                  />
+                )
+                return accumulator.concat(marker)
+              } else return accumulator
+            },
+            []
+          )}
       </MapView>
 
       {isLoadingMhd ||
@@ -153,11 +252,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  marker: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },

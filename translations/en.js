@@ -19,4 +19,7 @@ export default {
   to: 'To...',
   findRoute: 'Find route',
   lineTimeline: 'Timeline line %{lineNumber}',
+  myLocation: 'Position',
+  locationChoose: 'Find place',
+  confirmLocation: 'Confirm location',
 }

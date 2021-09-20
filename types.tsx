@@ -17,9 +17,14 @@ export type BottomTabParamList = {
 
 export type MapParamList = {
   MapScreen: undefined
-  FromToScreen: undefined
+  FromToScreen: { from: { name: string; latitude: number; longitude: number } }
   PlannerScreen: { legs: LegProps[] }
   LineTimeline: undefined
+  ChooseLocation: {
+    latitude?: number
+    longitude?: number
+    onConfirm: (latitude?: number, longitude?: number) => void
+  }
 }
 
 export type TabTwoParamList = {

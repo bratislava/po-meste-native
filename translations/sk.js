@@ -19,4 +19,7 @@ export default {
   to: 'Kam...',
   findRoute: 'Nájdi trasu',
   lineTimeline: 'Časová os linky %{lineNumber}',
+  myLocation: 'Moja pozícia',
+  locationChoose: 'Vyhľadaj miesto',
+  confirmLocation: 'Potvrdiť miesto ',
 }

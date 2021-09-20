@@ -19,6 +19,7 @@ import PlannerScreen from '../screens/PlannerScreen'
 import LineTimeline from '../screens/LineTimeline'
 import { useContext } from 'react'
 import { GlobalStateContext } from '../screens/ui/VehicleBar/GlobalStateProvider'
+import ChooseLocation from '../screens/ChooseLocation'
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>()
 
@@ -82,6 +83,7 @@ function MapNavigator() {
           }),
         }}
       />
+      <MapStack.Screen name="ChooseLocation" component={ChooseLocation} />
     </MapStack.Navigator>
   )
 }

@@ -18,12 +18,10 @@ export const apiMhdStops = yup.array().ensure().of(mhdStop)
 
 const stationInformationObject = {
   station_id: yup.string().required('error-malformed-station_id'),
-  name: yup.string().required('error-malformed-name'),
-  lat: yup.number().required('error-malformed-lat'),
-  lon: yup.number().required('error-malformed-lon'),
-  is_virtual_station: yup
-    .boolean()
-    .required('error-malformed-is_virtual_station'),
+  name: yup.string(),
+  lat: yup.number(),
+  lon: yup.number(),
+  is_virtual_station: yup.boolean(),
 }
 
 export const stationInformationSchema = yup

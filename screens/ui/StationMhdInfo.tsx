@@ -37,7 +37,15 @@ const StationMhdInfo = ({ station }: StationMhdInfoProps) => {
             </View>
             <TouchableOpacity
               style={styles.navigateToIcon}
-              onPress={() => navigation.navigate('FromToScreen')} // TODO add gps coordinates to navigate from
+              onPress={() =>
+                navigation.navigate('FromToScreen', {
+                  from: {
+                    name: station.name,
+                    latitude: parseFloat(station.gpsLat),
+                    longitude: parseFloat(station.gpsLon),
+                  },
+                })
+              }
             >
               <TicketSvg fill="blue" />
             </TouchableOpacity>

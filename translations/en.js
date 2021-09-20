@@ -23,4 +23,7 @@ export default {
   workDays: 'Working weeks',
   weekend: 'Weekend',
   holidays: 'Holidays',
+  myLocation: 'Position',
+  locationChoose: 'Find place',
+  confirmLocation: 'Confirm location',
 }

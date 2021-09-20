@@ -23,4 +23,7 @@ export default {
   workDays: 'Pracovný týždeň',
   weekend: 'Víkend',
   holidays: 'Prázdniny, sviatky',
+  myLocation: 'Moja pozícia',
+  locationChoose: 'Vyhľadaj miesto',
+  confirmLocation: 'Potvrdiť miesto ',
 }

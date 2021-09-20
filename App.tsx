@@ -11,6 +11,8 @@ import useCachedResources from './hooks/useCachedResources'
 import useColorScheme from './hooks/useColorScheme'
 import Navigation from './navigation'
 import GlobalStateProvider from './screens/ui/VehicleBar/GlobalStateProvider'
+import * as Location from 'expo-location'
+import Constants from 'expo-constants'
 
 i18n.translations = translations
 
@@ -18,6 +20,8 @@ i18n.locale = Localization.locale
 i18n.fallbacks = true
 
 const queryClient = new QueryClient()
+
+Location.setGoogleApiKey(Constants.manifest?.extra?.googlePlacesApiKey)
 
 export default function App() {
   const isLoadingComplete = useCachedResources()

@@ -47,3 +47,8 @@ export enum TimetableType {
   weekend = 'weekend',
   holidays = 'holidays',
 }
+
+export enum BikeProvider {
+  rekola = 'rekola',
+  slovnaftbajk = 'slovnaftbajk',
+}

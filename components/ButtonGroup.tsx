@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
 })
 
 interface ButtonGroupProps {
-  children: (JSX.Element | false)[] | JSX.Element
+  children: (JSX.Element | undefined)[] | JSX.Element
   style?: ViewStyle
   fillSpace?: boolean
   vertical?: boolean

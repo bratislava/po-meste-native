@@ -36,10 +36,7 @@ export default function FromToScreen({
     [fromProp]
   )
 
-  const fromPropName = useMemo(
-    () => (fromProp?.name && fromProp?.name) || undefined,
-    [fromProp]
-  )
+  const fromPropName = fromProp?.name
 
   const navigation = useNavigation()
   const [validationErrors, setValidationErrors] = useState()
@@ -131,7 +128,7 @@ export default function FromToScreen({
 
   const getLocationAsync = async (
     setLocation: (location: { latitude: number; longitude: number }) => void,
-    setGeocode: (locatoion: LocationGeocodedAddress[]) => void
+    setGeocode: (location: LocationGeocodedAddress[]) => void
   ) => {
     const { status } = await Location.requestForegroundPermissionsAsync()
 

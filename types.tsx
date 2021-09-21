@@ -20,6 +20,7 @@ export type MapParamList = {
   FromToScreen: undefined
   PlannerScreen: { legs: LegProps[] }
   LineTimeline: undefined
+  Timetable: undefined
 }
 
 export type TabTwoParamList = {
@@ -27,16 +28,22 @@ export type TabTwoParamList = {
   SmsScreen: undefined
 }
 
-export const enum SmsTicketNumbers {
+export enum SmsTicketNumbers {
   ticket40min = '1140',
   ticket70min = '1100',
   ticket24hours = '1124',
   ticketDuplicate = '1101',
 }
 
-export const enum VehicleType {
+export enum VehicleType {
   mhd = 'mhd',
   bicycle = 'bicycle',
   scooter = 'scooter',
   chargers = 'chargers',
+}
+
+export enum TimetableType {
+  workDays = 'workDays',
+  weekend = 'weekend',
+  holidays = 'holidays',
 }

@@ -7,122 +7,46 @@ import {
   View,
 } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack'
+import { useNavigation } from '@react-navigation/native'
 
 import { MapParamList } from '../types'
 import TicketSvg from '../assets/images/ticket.svg'
-
-const dummyData = {
-  lineNumber: 4,
-  finalStationStopName: 'Dúbravka',
-  timeline: [
-    {
-      dateTime: '2021-09-02T09:40:13.541Z',
-      stopName: 'Lúčanka',
-      active: false,
-    },
-    {
-      dateTime: '2021-09-02T09:41:13.541Z',
-      stopName: 'Strečnianska',
-      active: false,
-    },
-    {
-      dateTime: '2021-09-02T09:42:13.541Z',
-      stopName: 'Šintavská',
-      active: false,
-    },
-    {
-      dateTime: '2021-09-02T09:43:13.541Z',
-      stopName: 'Topoľčianska',
-      active: false,
-    },
-    {
-      dateTime: '2021-09-02T09:44:13.541Z',
-      stopName: 'TECHNOpol',
-      active: false,
-    },
-    {
-      dateTime: '2021-09-02T09:40:13.541Z',
-      stopName: 'Lúčanka',
-      active: false,
-    },
-    {
-      dateTime: '2021-09-02T09:41:13.541Z',
-      stopName: 'Strečnianska',
-      active: false,
-    },
-    {
-      dateTime: '2021-09-02T09:42:13.541Z',
-      stopName: 'Šintavská',
-      active: false,
-    },
-    {
-      dateTime: '2021-09-02T09:43:13.541Z',
-      stopName: 'Topoľčianska',
-      active: false,
-    },
-    {
-      dateTime: '2021-09-02T09:44:13.541Z',
-      stopName: 'TECHNOpol',
-      active: false,
-    },
-    {
-      dateTime: '2021-09-02T09:40:13.541Z',
-      stopName: 'Lúčanka',
-      active: false,
-    },
-    {
-      dateTime: '2021-09-02T09:41:13.541Z',
-      stopName: 'Strečnianska',
-      active: false,
-    },
-    {
-      dateTime: '2021-09-02T09:42:13.541Z',
-      stopName: 'Šintavská',
-      active: false,
-    },
-    {
-      dateTime: '2021-09-02T09:43:13.541Z',
-      stopName: 'Topoľčianska',
-      active: true,
-    },
-    {
-      dateTime: '2021-09-02T09:44:13.541Z',
-      stopName: 'TECHNOpol',
-      active: false,
-    },
-  ],
-}
+import { dummyDataLineTimeline } from '../dummyData'
+import { s } from '../utils/globalStyles'
+import { colors } from '../utils/theme'
 
 export default function LineTimeline({
   route,
 }: StackScreenProps<MapParamList, 'LineTimeline'>) {
-  const activeIndex = useMemo(
-    () => dummyData.timeline.findIndex((departure) => departure.active),
-    [dummyData]
-  )
+  const navigation = useNavigation()
   const [elementPosition, setElementPosition] = useState<number>()
   const scrollViewRef = useRef<ScrollView | null>(null)
 
+  const activeIndex = useMemo(
+    () =>
+      dummyDataLineTimeline.timeline.findIndex((departure) => departure.active),
+    [dummyDataLineTimeline]
+  )
   useEffect(() => {
     scrollViewRef.current?.scrollTo({ y: elementPosition, animated: true })
   }, [elementPosition, scrollViewRef])
 
-  const combineStyles = StyleSheet.flatten([styles.columns, styles.content])
+  const combineStyles = StyleSheet.flatten([styles.columns, s.horizontalMargin])
 
   return (
-    <View style={styles.vehicleBar}>
+    <View style={s.container}>
       <View style={styles.column}>
         <View style={styles.headerGrey}>
-          <View style={styles.content}>
+          <View style={s.horizontalMargin}>
             <View style={styles.header}>
-              <View style={styles.busStopIcon}>
+              <View style={s.icon}>
                 <TicketSvg width={30} height={40} fill="red" />
               </View>
-              <Text style={[styles.lineNumber, styles.whiteText]}>
-                {dummyData.lineNumber}
+              <Text style={[s.lineNumber, s.bgRed, s.whiteText]}>
+                {dummyDataLineTimeline.lineNumber}
               </Text>
-              <Text style={styles.finalStation}>
-                {dummyData.finalStationStopName}
+              <Text style={[styles.finalStation, s.blackText]}>
+                {dummyDataLineTimeline.finalStationStopName}
               </Text>
             </View>
           </View>
@@ -130,12 +54,12 @@ export default function LineTimeline({
         <ScrollView ref={scrollViewRef} contentContainerStyle={combineStyles}>
           <View style={styles.line}></View>
           <View style={styles.departures}>
-            {dummyData.timeline.map((spot, index) => (
+            {dummyDataLineTimeline.timeline.map((spot, index) => (
               <TouchableOpacity
                 key={index}
                 style={styles.departureLine}
                 onPress={() => {
-                  //TODO add connection to Grafikon
+                  navigation.navigate('Timetable')
                 }}
                 onLayout={(event) =>
                   setElementPosition(event.nativeEvent.layout.y)
@@ -147,7 +71,7 @@ export default function LineTimeline({
                       ? styles.greyText
                       : spot.active
                       ? styles.redText
-                      : styles.blackText,
+                      : s.blackText,
                     styles.time,
                   ]}
                 >
@@ -161,7 +85,7 @@ export default function LineTimeline({
                       ? styles.greyText
                       : spot.active
                       ? styles.redText
-                      : styles.blackText,
+                      : s.blackText,
                     styles.underlineText,
                   ]}
                 >
@@ -177,15 +101,6 @@ export default function LineTimeline({
 }
 
 const styles = StyleSheet.create({
-  content: {
-    marginHorizontal: 30,
-  },
-  vehicleBar: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    backgroundColor: 'white',
-  },
   column: {
     flex: 1,
   },
@@ -197,23 +112,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
   },
-  busStopIcon: {
-    marginRight: 10,
-  },
-  lineNumber: {
-    backgroundColor: 'red',
-    borderRadius: 5,
-    paddingHorizontal: 20,
-    paddingVertical: 7,
-  },
-  blackText: {
-    color: 'black',
-  },
-  whiteText: {
-    color: 'white',
-  },
   redText: {
-    color: 'red',
+    color: colors.error,
     fontWeight: 'bold',
     fontSize: 25,
   },
@@ -224,7 +124,6 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   finalStation: {
-    color: 'black',
     marginLeft: 10,
   },
   departureLine: {

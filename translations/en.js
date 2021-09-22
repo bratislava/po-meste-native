@@ -2,7 +2,8 @@ export default {
   tabOneTitle: 'Tab One Title',
   tabTwoTitle: 'Tab Two Title',
   map: 'Map',
-  tabTwo: 'TabTwo',
+  tabTwo: 'Tab Two',
+  tickets: 'Tickets',
   ticket40: 'Ticket 40 minutes / 1,00 €',
   ticket70: 'Ticket 70 minutes / 1,40 €',
   ticketDay: 'Ticket 24 hours / 4,50 €',
@@ -26,4 +27,6 @@ export default {
   myLocation: 'Position',
   locationChoose: 'Find place',
   confirmLocation: 'Confirm location',
+  searching: 'Searching',
+  settings: 'Settings',
 }

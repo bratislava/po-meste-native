@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useState } from 'react'
-import MapView, { Marker, Region } from 'react-native-maps'
+import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps'
 import { StyleSheet, View } from 'react-native'
 
 import { BikeProvider, VehicleType } from '../types'
@@ -157,6 +157,7 @@ export default function MapScreen() {
   return (
     <View style={styles.container}>
       <MapView
+        provider={PROVIDER_GOOGLE}
         style={styles.map}
         initialRegion={{
           latitude: 48.1512015,

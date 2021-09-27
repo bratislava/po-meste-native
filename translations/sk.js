@@ -26,7 +26,7 @@ export default {
   myLocation: 'Moja pozícia',
   locationChoose: 'Vyhľadaj miesto',
   confirmLocation: 'Potvrdiť miesto ',
-  doYouWantToContinue: 'Do you want to continue?',
+  doYouWantToContinue: 'Chcete pokračovať?',
   cancel: 'Zrušiť',
   continue: 'Pokračovať',
   presentPrice: '{{price}}€',

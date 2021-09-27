@@ -8,7 +8,6 @@ import ConfirmationModal, {
   ConfirmationModalProps,
 } from './ui/ConfirmationModal/ConfirmationModal'
 import { SmsTicketNumbers, SmsTicketPrices } from '../types'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { ScrollView } from 'react-native-gesture-handler'
 import { presentPrice } from '../utils/presentPrice'
 

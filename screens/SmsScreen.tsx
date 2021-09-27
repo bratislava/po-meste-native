@@ -106,7 +106,7 @@ export default function SmsScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollView}>
         <Text style={styles.title}>{i18n.t('smsTicketTitle')}</Text>
         <Text style={styles.smsInfo}>{i18n.t('smsInfo')}</Text>
@@ -142,7 +142,7 @@ export default function SmsScreen() {
         onClose={() => setConfirmationModalVisible(false)}
         title={i18n.t('screens.ticketsScreen.SmsModal.title')}
       />
-    </SafeAreaView>
+    </View>
   )
 }
 

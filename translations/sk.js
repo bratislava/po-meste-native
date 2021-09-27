@@ -1,8 +1,9 @@
 export default {
   tabOneTitle: 'Záložka jedna titulok',
   tabTwoTitle: 'Zalozka dva titulok',
-  map: 'Map',
-  tabTwo: 'TabTwo',
+  map: 'Mapa',
+  tabTwo: 'Tab Dva',
+  tickets: 'Lístky',
   ticket40: 'Lístok 40 minút / 1,00 €',
   ticket70: 'Lístok 70 minút / 1,40 €',
   ticketDay: 'Lístok 24 hodín / 4,50 €',
@@ -26,4 +27,6 @@ export default {
   myLocation: 'Moja pozícia',
   locationChoose: 'Vyhľadaj miesto',
   confirmLocation: 'Potvrdiť miesto ',
+  searching: 'Vyhľadávanie',
+  settings: 'Nastavenia',
 }

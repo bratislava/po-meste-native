@@ -31,7 +31,12 @@ export default function ConfirmationModal({
   dismissText,
 }: ConfirmationModalProps) {
   return (
-    <Modal animationType="fade" transparent visible={visible}>
+    <Modal
+      statusBarTranslucent
+      animationType="fade"
+      transparent
+      visible={visible}
+    >
       <View style={styles.modalWrapper}>
         <TouchableWithoutFeedback onPress={onClose}>
           <View style={styles.modalBackground}></View>

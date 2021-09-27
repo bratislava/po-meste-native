@@ -53,4 +53,6 @@ export default {
       },
     },
   },
+  searching: 'Searching',
+  settings: 'Settings',
 }

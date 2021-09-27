@@ -11,8 +11,13 @@ export type RootStackParamList = {
 }
 
 export type BottomTabParamList = {
+  Tickets: undefined
   Map: undefined
   TabTwo: undefined
+}
+
+export type TicketsParamList = {
+  TicketsScreen: undefined
 }
 
 export type MapParamList = {

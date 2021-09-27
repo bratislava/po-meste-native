@@ -8,11 +8,19 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
 import i18n from 'i18n-js'
 
-import MapSvg from '../assets/images/map.svg'
-import TicketSvg from '../assets/images/ticket.svg'
+import HomeSearchSvg from '../assets/images/home-search.svg'
+import TicketSvg from '../assets/images/ticket-alt.svg'
+import BurgerMenuSvg from '../assets/images/burger-menu.svg'
+
+import TicketsScreen from '../screens/TicketsScreen'
 import MapScreen from '../screens/MapScreen'
 import TabTwoScreen from '../screens/TabTwoScreen'
-import { BottomTabParamList, MapParamList, TabTwoParamList } from '../types'
+import {
+  BottomTabParamList,
+  TicketsParamList,
+  MapParamList,
+  TabTwoParamList,
+} from '../types'
 import SmsScreen from '../screens/SmsScreen'
 import FromToScreen from '../screens/FromToScreen'
 import PlannerScreen from '../screens/PlannerScreen'
@@ -21,30 +29,41 @@ import { GlobalStateContext } from '../screens/ui/VehicleBar/GlobalStateProvider
 import Timetable from '../screens/Timetable'
 import ChooseLocation from '../screens/ChooseLocation'
 
+import TabBar from './TabBar'
+
 const BottomTab = createBottomTabNavigator<BottomTabParamList>()
 
 export default function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
       initialRouteName="Map"
-      tabBarOptions={{ activeTintColor: '#FD4344' }}
+      tabBarOptions={{
+        activeTintColor: '#FD4344',
+      }}
+      tabBar={(props) => <TabBar {...props} />}
     >
+      <BottomTab.Screen
+        name="Tickets"
+        component={TicketsNavigator}
+        options={{
+          title: i18n.t('tickets'),
+          tabBarIcon: TicketSvg,
+        }}
+      />
       <BottomTab.Screen
         name="Map"
         component={MapNavigator}
         options={{
-          title: i18n.t('map'),
-          // eslint-disable-next-line react/prop-types
-          tabBarIcon: ({ color }) => <MapSvg fill={color} />,
+          title: i18n.t('searching'),
+          tabBarIcon: HomeSearchSvg,
         }}
       />
       <BottomTab.Screen
         name="TabTwo"
         component={TabTwoNavigator}
         options={{
-          title: i18n.t('tabTwo'),
-          // eslint-disable-next-line react/prop-types
-          tabBarIcon: ({ color }) => <TicketSvg fill={color} />,
+          title: i18n.t('settings'),
+          tabBarIcon: BurgerMenuSvg,
         }}
       />
     </BottomTab.Navigator>
@@ -53,6 +72,20 @@ export default function BottomTabNavigator() {
 
 // Each tab has its own navigation stack, you can read more about this pattern here:
 // https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
+const TicketsStack = createStackNavigator<TicketsParamList>()
+
+function TicketsNavigator() {
+  return (
+    <TicketsStack.Navigator screenOptions={{}}>
+      <TicketsStack.Screen
+        name="TicketsScreen"
+        component={TicketsScreen}
+        options={{ headerTitle: i18n.t('tabOneTitle'), headerShown: false }}
+      />
+    </TicketsStack.Navigator>
+  )
+}
+
 const MapStack = createStackNavigator<MapParamList>()
 
 function MapNavigator() {

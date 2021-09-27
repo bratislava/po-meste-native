@@ -40,6 +40,12 @@ export enum SmsTicketNumbers {
   ticketDuplicate = '1101',
 }
 
+export enum SmsTicketPrices {
+  ticket40min = 100,
+  ticket70min = 140,
+  ticket24hours = 450,
+}
+
 export enum VehicleType {
   mhd = 'mhd',
   bicycle = 'bicycle',

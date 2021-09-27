@@ -26,4 +26,34 @@ export default {
   myLocation: 'Moja pozícia',
   locationChoose: 'Vyhľadaj miesto',
   confirmLocation: 'Potvrdiť miesto ',
+  doYouWantToContinue: 'Do you want to continue?',
+  cancel: 'Zrušiť',
+  continue: 'Pokračovať',
+  presentPrice: '{{price}}€',
+  screens: {
+    ticketsScreen: {
+      SmsModal: {
+        title: 'Spoplatnená služba',
+        bodyTexts: {
+          ticket40min:
+            'SMS lístok 40 minút je spoplatnená služba. Bude vám účtovaná suma {{price}} prostredníctvom vášho operátora..',
+          ticket70min:
+            'SMS lístok 70 minút je spoplatnená služba. Bude vám účtovaná suma {{price}} prostredníctvom vášho operátora.',
+          ticket24hours:
+            'SMS lístok 24 hodín je spoplatnená služba. Bude vám účtovaná suma {{price}} prostredníctvom vášho operátora.',
+        },
+      },
+      tickets: {
+        ticket40min: {
+          name: 'Lístok 40 minút',
+        },
+        ticket70min: {
+          name: 'Lístok 70 minút',
+        },
+        ticket24hours: {
+          name: 'Lístok 24 hodín',
+        },
+      },
+    },
+  },
 }

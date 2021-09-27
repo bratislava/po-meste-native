@@ -3,9 +3,6 @@ export default {
   tabTwoTitle: 'Tab Two Title',
   map: 'Map',
   tabTwo: 'TabTwo',
-  ticket40: 'Ticket 40 minutes / 1,00 €',
-  ticket70: 'Ticket 70 minutes / 1,40 €',
-  ticketDay: 'Ticket 24 hours / 4,50 €',
   ticketDuplicateDescription:
     'SMS ticket not received in 10 minutes or did you accidentally deleted it? No worries, have a duplicate sent to you.',
   ticketDuplicate: 'Send duplicate / 0 €',
@@ -26,4 +23,34 @@ export default {
   myLocation: 'Position',
   locationChoose: 'Find place',
   confirmLocation: 'Confirm location',
+  doYouWantToContinue: 'Do you want to continue?',
+  cancel: 'Cancel',
+  continue: 'Continue',
+  presentPrice: '€{{price}}',
+  screens: {
+    ticketsScreen: {
+      SmsModal: {
+        title: 'Paid service',
+        bodyTexts: {
+          ticket40min:
+            'SMS ticket 40 minutes is a charged service. You will be charged {{price}} through your mobile carrier.',
+          ticket70min:
+            'SMS ticket 70 minutes is a charged service. You will be charged {{price}} through your mobile carrier.',
+          ticket24hours:
+            'SMS ticket 24 hours is a charged service. You will be charged {{price}} through your mobile carrier.',
+        },
+      },
+      tickets: {
+        ticket40min: {
+          name: 'Ticket 40 minutes',
+        },
+        ticket70min: {
+          name: 'Ticket 70 minutes',
+        },
+        ticket24hours: {
+          name: 'Ticket 24 hours',
+        },
+      },
+    },
+  },
 }

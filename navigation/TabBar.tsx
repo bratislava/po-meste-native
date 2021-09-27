@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
+import TicketSvg from '../assets/images/ticket-alt.svg'
 
 import { StyleSheet, View, Text, TouchableWithoutFeedback } from 'react-native'
 
@@ -25,24 +26,13 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
           }
         }
 
-        const onLongPress = () => {
-          navigation.emit({
-            type: 'tabLongPress',
-            target: route.key,
-          })
-        }
-
         return (
-          <TouchableWithoutFeedback
-            key={index}
-            onPress={onPress}
-            onLongPress={onLongPress}
-          >
+          <TouchableWithoutFeedback key={index} onPress={onPress}>
             <View>
               <TabItem
                 label={label}
                 isFocused={isFocused}
-                IconComponent={options.tabBarIcon}
+                IconComponent={(options.tabBarIcon || TicketSvg) as React.FC}
               />
             </View>
           </TouchableWithoutFeedback>
@@ -61,7 +51,7 @@ const TabItem = ({
 }: {
   label: string
   isFocused: boolean
-  IconComponent: any
+  IconComponent: React.FC<{ fill: string }>
 }) => {
   return (
     <View style={styles.tabItemWrapper}>

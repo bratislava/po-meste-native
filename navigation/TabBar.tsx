@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     ...shadowStyles,
   },
   tabItemWrapper: {
-    width: 80,
+    width: 90,
     height: 80,
     position: 'relative',
   },
@@ -111,17 +111,19 @@ const styles = StyleSheet.create({
     height: 80,
     position: 'absolute',
     top: 1,
+    left: 5,
     backgroundColor: '#fff',
     borderRadius: 40,
     ...shadowStyles,
   },
   tabItemBackground: {
-    width: 95,
+    width: 105,
     height: 80,
     position: 'absolute',
     top: 12.5,
     left: -10,
     backgroundColor: '#fff',
+    borderRadius: 10,
   },
   tabItem: {
     flex: 1,
@@ -130,7 +132,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 2,
-    width: 80,
+    width: 90,
     height: 80,
   },
 })

@@ -17,6 +17,8 @@ import { RootStackParamList } from '../types'
 import BottomTabNavigator from './BottomTabNavigator'
 import LinkingConfiguration from './LinkingConfiguration'
 
+import { SafeAreaView } from 'react-native-safe-area-context'
+
 export default function Navigation({
   colorScheme,
 }: {
@@ -38,13 +40,15 @@ const Stack = createStackNavigator<RootStackParamList>()
 
 function RootNavigator() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Root" component={BottomTabNavigator} />
-      <Stack.Screen
-        name="NotFound"
-        component={NotFoundScreen}
-        options={{ title: 'Oops!' }}
-      />
-    </Stack.Navigator>
+    <SafeAreaView style={{ flex: 1 }} edges={['right', 'bottom', 'left']}>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Root" component={BottomTabNavigator} />
+        <Stack.Screen
+          name="NotFound"
+          component={NotFoundScreen}
+          options={{ title: 'Oops!' }}
+        />
+      </Stack.Navigator>
+    </SafeAreaView>
   )
 }

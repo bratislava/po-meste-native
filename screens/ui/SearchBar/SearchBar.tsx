@@ -5,11 +5,18 @@ import i18n from 'i18n-js'
 
 import TicketSvg from '../../../assets/images/ticket.svg'
 
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+
 const SearchBar = () => {
   const navigation = useNavigation()
+
+  const insets = useSafeAreaInsets()
   return (
     <TouchableOpacity
-      style={styles.searchBar}
+      style={{
+        ...styles.searchBar,
+        marginTop: Math.max(insets.top, 30),
+      }}
       onPress={() => navigation.navigate('FromToScreen')}
     >
       <Text style={styles.searchInput}>{i18n.t('whereTo')}</Text>
@@ -27,7 +34,6 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'absolute',
     top: 0,
-    marginTop: 30,
     width: '90%',
     height: 50,
     flexDirection: 'row',

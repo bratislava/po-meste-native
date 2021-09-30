@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useState,
+  useMemo,
+  useRef,
+} from 'react'
 import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps'
 import { StyleSheet, View } from 'react-native'
 
@@ -18,7 +24,12 @@ import {
   MhdStopProps,
   StationProps,
 } from '../utils/validation'
-import StationMhdInfo from './ui/StationMhdInfo'
+import StationMhdInfo from './ui/StationMhdInfo/StationMhdInfo'
+
+import BottomSheet from '@gorhom/bottom-sheet'
+import { s } from '../utils/globalStyles'
+import { colors } from '../utils/theme'
+import { useEffect } from 'react'
 
 export default function MapScreen() {
   // TODO handle loading / error
@@ -29,7 +40,9 @@ export default function MapScreen() {
   const { data: dataMergedRekola, isLoading: isLoadingRekola } = useRekolaData()
   const { data: dataMergedSlovnaftbajk, isLoading: isLoadingSlovnaftbajk } =
     useSlovnaftbajkData()
+
   const vehiclesContext = useContext(GlobalStateContext)
+
   const [selectedStation, setSelectedStation] = useState<
     StationProps | undefined
   >(undefined)
@@ -42,6 +55,29 @@ export default function MapScreen() {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   })
+  const [bottomSheetFullyExpanded, setBottomSheetFullyExpanded] =
+    useState<boolean>(true)
+
+  const bottomSheetRef = useRef<BottomSheet>(null)
+
+  const bottomSheetSnapPoints = useMemo(() => ['60%', '100%'], [])
+
+  useEffect(() => {
+    bottomSheetRef.current?.snapToIndex(0)
+  }, [selectedMhdStation])
+
+  const handleSheetChanges = useCallback((index: number) => {
+    //deselect station when closed
+    if (index === -1) {
+      setSelectedMhdStation(undefined)
+    }
+    //disable border radius when sheet is fully expanded
+    if (index === 1) {
+      setBottomSheetFullyExpanded(true)
+    } else {
+      setBottomSheetFullyExpanded(false)
+    }
+  }, [])
 
   const filterInView = useCallback(
     (pointLat: number, pointLon: number, region: Region) => {
@@ -234,7 +270,6 @@ export default function MapScreen() {
             []
           )}
       </MapView>
-
       {isLoadingMhd ||
       isLoadingRekola ||
       isLoadingSlovnaftbajk ||
@@ -244,7 +279,25 @@ export default function MapScreen() {
       ) : null}
       <SearchBar />
       <VehicleBar />
-      {selectedMhdStation && <StationMhdInfo station={selectedMhdStation} />}
+      {selectedMhdStation && (
+        <BottomSheet
+          onChange={handleSheetChanges}
+          ref={bottomSheetRef}
+          backgroundStyle={[
+            styles.bottomSheetBackgroundStyle,
+            bottomSheetFullyExpanded
+              ? styles.bottomSheetBackgroundStyleFullyExpanded
+              : {},
+          ]}
+          enablePanDownToClose
+          snapPoints={bottomSheetSnapPoints}
+          handleStyle={styles.bottomSheetHandleStyle}
+          handleIndicatorStyle={styles.bottomSheetHandleIndicatorStyle}
+          bottomInset={50}
+        >
+          <StationMhdInfo station={selectedMhdStation} />
+        </BottomSheet>
+      )}
     </View>
   )
 }
@@ -256,11 +309,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  bottomSheetBackgroundStyle: {
+    ...s.shadow,
+    borderTopLeftRadius: 7,
+    borderTopRightRadius: 7,
+  },
+  bottomSheetBackgroundStyleFullyExpanded: {
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+  },
   map: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
+  },
+  bottomSheetHandleStyle: {
+    paddingVertical: 16,
+  },
+  bottomSheetHandleIndicatorStyle: {
+    width: 64,
+    height: 4,
+    backgroundColor: colors.lightGray,
+    borderRadius: 2,
   },
 })

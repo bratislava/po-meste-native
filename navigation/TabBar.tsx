@@ -5,6 +5,8 @@ import TicketSvg from '../assets/images/ticket-alt.svg'
 
 import { StyleSheet, View, Text, TouchableWithoutFeedback } from 'react-native'
 
+import { s } from '../utils/globalStyles'
+
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
   return (
     <View style={styles.tabBar}>
@@ -70,12 +72,6 @@ const TabItem = ({
   )
 }
 
-const shadowStyles = {
-  shadowColor: '#000',
-  shadowRadius: 5,
-  shadowOpacity: 0.2,
-}
-
 const styles = StyleSheet.create({
   tabBar: {
     display: 'flex',
@@ -89,7 +85,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: '100%',
-    ...shadowStyles,
+    ...s.shadow,
   },
   tabItemWrapper: {
     width: 90,
@@ -104,7 +100,7 @@ const styles = StyleSheet.create({
     left: 5,
     backgroundColor: '#fff',
     borderRadius: 40,
-    ...shadowStyles,
+    ...s.shadow,
   },
   tabItemBackground: {
     width: 105,

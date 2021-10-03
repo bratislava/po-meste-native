@@ -27,6 +27,8 @@ export default {
   myLocation: 'Position',
   locationChoose: 'Find place',
   confirmLocation: 'Confirm location',
+  moveTheMapAndSelectTheDesiredPoint:
+    'Move the map and select the desired point.',
   searching: 'Searching',
   settings: 'Settings',
 }

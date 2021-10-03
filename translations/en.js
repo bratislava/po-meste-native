@@ -30,7 +30,7 @@ export default {
   presentPrice: '€{{price}}',
   screens: {
     ticketsScreen: {
-      SmsModal: {
+      smsModal: {
         title: 'Paid service',
         bodyTexts: {
           ticket40min:
@@ -40,6 +40,7 @@ export default {
           ticket24hours:
             'SMS ticket 24 hours is a charged service. You will be charged {{price}} through your mobile carrier.',
         },
+        checkboxText: "I understand, don't ask next time.",
       },
       tickets: {
         ticket40min: {

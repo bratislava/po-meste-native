@@ -30,7 +30,7 @@ export default {
   presentPrice: '{{price}}€',
   screens: {
     ticketsScreen: {
-      SmsModal: {
+      smsModal: {
         title: 'Spoplatnená služba',
         bodyTexts: {
           ticket40min:
@@ -40,6 +40,7 @@ export default {
           ticket24hours:
             'SMS lístok 24 hodín je spoplatnená služba. Bude vám účtovaná suma {{price}} prostredníctvom vášho operátora.',
         },
+        checkboxText: 'Rozumiem, nabudúce sa nepýtať.',
       },
       tickets: {
         ticket40min: {

@@ -3,10 +3,11 @@ import { StyleSheet, Text, View, Alert } from 'react-native'
 import * as SMS from 'expo-sms'
 import i18n from 'i18n-js'
 
-import { Button } from '../components'
-import ConfirmationModal, {
+import {
+  Button,
+  ConfirmationModal,
   ConfirmationModalProps,
-} from './ui/ConfirmationModal/ConfirmationModal'
+} from '../components'
 import { SmsTicketNumbers, SmsTicketPrices } from '../types'
 import { ScrollView } from 'react-native-gesture-handler'
 import { presentPrice } from '../utils/presentPrice'

@@ -1,13 +1,16 @@
 import React, { useRef, useState } from 'react'
-import MapView, { Region } from 'react-native-maps'
-import { StyleSheet, View } from 'react-native'
+import MapView, { PROVIDER_GOOGLE, Region } from 'react-native-maps'
+import { StyleSheet, View, Text } from 'react-native'
 import i18n from 'i18n-js'
 import { useNavigation } from '@react-navigation/native'
 
-import TicketSvg from '../assets/images/ticket.svg'
+import MarkerSvg from '../assets/images/map-pin-marker.svg'
 import { Button } from '../components'
 import { StackScreenProps } from '@react-navigation/stack'
 import { MapParamList } from '../types'
+import { colors } from '../utils/theme'
+//todo: import shadows
+import { s } from '../utils/globalStyles'
 
 export default function ChooseLocation({
   route,
@@ -19,36 +22,48 @@ export default function ChooseLocation({
 
   return (
     <View style={styles.container}>
-      <MapView
-        ref={ref}
-        style={styles.map}
-        initialRegion={
-          (route?.params?.latitude &&
-            route?.params?.longitude && {
-              latitude: route?.params?.latitude,
-              longitude: route?.params?.longitude,
-              latitudeDelta: 0.0461,
-              longitudeDelta: 0.02105,
-            }) || {
-            latitude: 48.1512015,
-            longitude: 17.1110118,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
+      <View style={styles.mapWrapper}>
+        <MapView
+          provider={PROVIDER_GOOGLE}
+          ref={ref}
+          style={styles.map}
+          initialRegion={
+            (route?.params?.latitude &&
+              route?.params?.longitude && {
+                latitude: route?.params?.latitude,
+                longitude: route?.params?.longitude,
+                latitudeDelta: 0.0461,
+                longitudeDelta: 0.02105,
+              }) || {
+              latitude: 48.1512015,
+              longitude: 17.1110118,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }
           }
-        }
-        onRegionChange={(region) => setRegion(region)}
-      />
-      <View style={styles.searchBar} pointerEvents="none">
-        <TicketSvg fill="red" />
+          onRegionChange={(region) => {
+            setRegion(region)
+          }}
+        />
+        <View style={styles.markerWrapper} pointerEvents="none">
+          <MarkerSvg fill={colors.primary} width={32} height={32} />
+        </View>
       </View>
-      <Button
-        style={styles.confirm}
-        title={i18n.t('confirmLocation')}
-        onPress={() => {
-          route?.params?.onConfirm(region?.latitude, region?.longitude)
-          navigation.goBack()
-        }}
-      ></Button>
+      <View style={styles.sheet}>
+        <Text>{i18n.t('moveTheMapAndSelectTheDesiredPoint')}</Text>
+        <View style={styles.addressWrapper}>
+          <MarkerSvg fill={colors.black} width={20} height={20} />
+          <Text style={styles.addressText}>{'{ address placeholder }'}</Text>
+        </View>
+        <Button
+          style={styles.confirm}
+          title={i18n.t('confirmLocation')}
+          onPress={() => {
+            route?.params?.onConfirm(region?.latitude, region?.longitude)
+            navigation.goBack()
+          }}
+        ></Button>
+      </View>
     </View>
   )
 }
@@ -60,7 +75,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  searchBar: {
+  markerWrapper: {
     display: 'flex',
     position: 'absolute',
     marginTop: '50%',
@@ -69,15 +84,40 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  confirm: {
-    display: 'flex',
+  sheet: {
+    //todo: use shadows
     flex: 1,
-    position: 'absolute',
-    bottom: 0,
-    marginBottom: 10,
-    marginTop: 30,
-    width: '90%',
-    height: 50,
+    backgroundColor: colors.white,
+    marginTop: -7,
+    width: '100%',
+    display: 'flex',
+    paddingHorizontal: 20,
+    paddingTop: 30,
+    paddingBottom: 80,
+    alignItems: 'center',
+    borderTopLeftRadius: 7,
+    borderTopRightRadius: 7,
+  },
+  addressWrapper: {
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginVertical: 20,
+  },
+  addressText: {
+    marginLeft: 5,
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  confirm: {},
+  mapWrapper: {
+    position: 'relative',
+    display: 'flex',
+    width: '100%',
+    flex: 2,
+    backgroundColor: 'yellow',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   map: {
     position: 'absolute',

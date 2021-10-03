@@ -45,7 +45,7 @@ export default function SmsScreen() {
           setConfirmationModalVisible(false)
         },
         bodyText: i18n.t(
-          'screens.ticketsScreen.SmsModal.bodyTexts.ticket40min',
+          'screens.ticketsScreen.smsModal.bodyTexts.ticket40min',
           {
             price: presentPrice(SmsTicketPrices.ticket40min),
           }
@@ -64,7 +64,7 @@ export default function SmsScreen() {
           setConfirmationModalVisible(false)
         },
         bodyText: i18n.t(
-          'screens.ticketsScreen.SmsModal.bodyTexts.ticket70min',
+          'screens.ticketsScreen.smsModal.bodyTexts.ticket70min',
           {
             price: presentPrice(SmsTicketPrices.ticket70min),
           }
@@ -83,7 +83,7 @@ export default function SmsScreen() {
           setConfirmationModalVisible(false)
         },
         bodyText: i18n.t(
-          'screens.ticketsScreen.SmsModal.bodyTexts.ticket24hours',
+          'screens.ticketsScreen.smsModal.bodyTexts.ticket24hours',
           {
             price: presentPrice(SmsTicketPrices.ticket24hours),
           }
@@ -139,7 +139,10 @@ export default function SmsScreen() {
         {...confirmationModalProps}
         visible={confirmationModalVisible}
         onClose={() => setConfirmationModalVisible(false)}
-        title={i18n.t('screens.ticketsScreen.SmsModal.title')}
+        title={i18n.t('screens.ticketsScreen.smsModal.title')}
+        requiredCheckboxText={i18n.t(
+          'screens.ticketsScreen.smsModal.checkboxText'
+        )}
       />
     </View>
   )

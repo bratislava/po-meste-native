@@ -1,5 +1,5 @@
 import i18n from 'i18n-js'
-import * as React from 'react'
+import React, { useState } from 'react'
 import {
   StyleSheet,
   Text,
@@ -8,8 +8,9 @@ import {
   Modal,
 } from 'react-native'
 import { Button, Link } from '../../../components'
-
+import CheckBox from 'react-native-check-box'
 import { colors } from '../../../utils/theme'
+import { useEffect } from 'react'
 
 export type ConfirmationModalProps = {
   visible?: boolean
@@ -19,6 +20,7 @@ export type ConfirmationModalProps = {
   bodyText?: string
   confirmText?: string
   dismissText?: string
+  requiredCheckboxText?: string
 }
 
 export default function ConfirmationModal({
@@ -29,7 +31,14 @@ export default function ConfirmationModal({
   bodyText,
   confirmText,
   dismissText,
+  requiredCheckboxText,
 }: ConfirmationModalProps) {
+  const [isChecked, setChecked] = useState(false)
+
+  useEffect(() => {
+    setChecked(false)
+  }, [visible])
+
   return (
     <Modal
       statusBarTranslucent
@@ -45,14 +54,28 @@ export default function ConfirmationModal({
           {title && <Text style={styles.modalTitle}>{title}</Text>}
           {bodyText && <Text style={styles.modalText}>{bodyText}</Text>}
           <Text style={styles.modalText}>{i18n.t('doYouWantToContinue')}</Text>
+          {requiredCheckboxText && (
+            <CheckBox
+              onClick={() => setChecked(!isChecked)}
+              isChecked={isChecked}
+              style={styles.modalCheckbox}
+              rightText={requiredCheckboxText}
+              rightTextStyle={styles.modalCheckboxText}
+              checkedCheckBoxColor={colors.primary}
+              uncheckedCheckBoxColor={colors.gray}
+            />
+          )}
           <Button
+            disabled={requiredCheckboxText ? !isChecked : false}
             style={styles.modalButton}
             onPress={onConfirm}
             title={confirmText ?? i18n.t('continue')}
           />
           <Link
             style={styles.modalDismiss}
-            onPress={onClose}
+            onPress={() => {
+              onClose()
+            }}
             title={dismissText ?? i18n.t('cancel')}
           />
         </View>
@@ -91,6 +114,13 @@ const styles = StyleSheet.create({
   },
   modalText: {
     marginBottom: 20,
+    color: colors.darkText,
+  },
+  modalCheckbox: {
+    marginBottom: 20,
+    alignItems: 'flex-start',
+  },
+  modalCheckboxText: {
     color: colors.darkText,
   },
   modalButton: {

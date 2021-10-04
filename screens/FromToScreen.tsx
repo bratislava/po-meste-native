@@ -1,5 +1,12 @@
 import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  TextInput,
+  KeyboardAvoidingView,
+} from 'react-native'
 import i18n from 'i18n-js'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -206,26 +213,13 @@ export default function FromToScreen({
         <View style={s.horizontalMargin}>
           <View style={styles.header}>
             <FromToSelector
-              fromPlaceText="from place set"
-              fromPlaceTextPlaceholder="Odkiaľ idete?"
-              toPlaceTextPlaceholder="Kamže, kam?"
+              onFromPlacePress={() => fromBottomSheetRef?.current?.snapTo(0)}
+              onToPlacePress={() => toBottomSheetRef?.current?.snapTo(0)}
+              fromPlaceText={fromName}
+              toPlaceText={toName}
+              fromPlaceTextPlaceholder={i18n.t('fromPlaceholder')}
+              toPlaceTextPlaceholder={i18n.t('toPlaceholder')}
             />
-          </View>
-          <View style={styles.googleFrom}>
-            <Text
-              style={styles.input}
-              onPress={() => fromBottomSheetRef?.current?.snapTo(0)}
-            >
-              {fromName || i18n.t('from')}
-            </Text>
-          </View>
-          <View style={styles.googleFrom}>
-            <Text
-              style={styles.input}
-              onPress={() => toBottomSheetRef?.current?.snapTo(0)}
-            >
-              {toName || i18n.t('to')}
-            </Text>
           </View>
           <ScrollView contentContainerStyle={styles.scrollView}>
             {validatedOtpData?.plan?.itineraries?.map((tripChoice, index) => {
@@ -266,7 +260,7 @@ export default function FromToScreen({
               },
             })
           }
-          inputPlaceholder={i18n.t('from')}
+          inputPlaceholder={i18n.t('fromPlaceholder')}
         />
         <SearchFromToScreen
           sheetRef={toBottomSheetRef}
@@ -283,7 +277,7 @@ export default function FromToScreen({
               },
             })
           }
-          inputPlaceholder={i18n.t('to')}
+          inputPlaceholder={i18n.t('toPlaceholder')}
         />
       </SafeAreaView>
     </>
@@ -304,17 +298,8 @@ const styles = StyleSheet.create({
     minWidth: '100%',
     borderWidth: 1,
   },
-  googleFrom: {
-    flexDirection: 'row',
-    marginHorizontal: 10,
-  },
   trip: {
     paddingHorizontal: 10,
     borderWidth: 1,
-  },
-  input: {
-    flex: 1,
-    borderWidth: 1,
-    backgroundColor: 'white',
   },
 })

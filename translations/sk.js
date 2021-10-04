@@ -49,4 +49,8 @@ export default {
   },
   searching: 'Vyhľadávanie',
   settings: 'Nastavenia',
+  myAddresses: 'Moje adresy',
+  myStops: 'Moje zastávky',
+  history: 'História',
+  choosePlaceFromMap: 'Vybrať na mape',
 }

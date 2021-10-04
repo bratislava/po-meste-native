@@ -53,7 +53,9 @@ export default function ChooseLocation({
         <Text>{i18n.t('moveTheMapAndSelectTheDesiredPoint')}</Text>
         <View style={styles.addressWrapper}>
           <MarkerSvg fill={colors.black} width={20} height={20} />
-          <Text style={styles.addressText}>{'{ address placeholder }'}</Text>
+          <Text style={styles.addressText}>
+            {region?.latitude}, {region?.longitude}
+          </Text>
         </View>
         <Button
           style={styles.confirm}

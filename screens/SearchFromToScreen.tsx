@@ -4,9 +4,7 @@ import {
   Text,
   View,
   TouchableOpacity,
-  KeyboardAvoidingView,
   Dimensions,
-  StatusBar,
 } from 'react-native'
 import i18n from 'i18n-js'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -20,7 +18,6 @@ import {
 import Constants from 'expo-constants'
 import { Ionicons } from '@expo/vector-icons'
 
-import { Button } from '../components'
 import { dummyDataPlaceHistory } from '../dummyData'
 import { s } from '../utils/globalStyles'
 import { colors } from '../utils/theme'

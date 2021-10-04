@@ -50,4 +50,8 @@ export default {
   },
   searching: 'Searching',
   settings: 'Settings',
+  myAddresses: 'My addresses',
+  myStops: 'My stops',
+  history: 'History',
+  choosePlaceFromMap: 'Choose from map',
 }

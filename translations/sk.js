@@ -26,4 +26,8 @@ export default {
   myLocation: 'Moja pozícia',
   locationChoose: 'Vyhľadaj miesto',
   confirmLocation: 'Potvrdiť miesto ',
+  myAddresses: 'Moje adresy',
+  myStops: 'Moje zastávky',
+  history: 'História',
+  choosePlaceFromMap: 'Vybrať na mape',
 }

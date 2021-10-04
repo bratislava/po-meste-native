@@ -26,4 +26,8 @@ export default {
   myLocation: 'Position',
   locationChoose: 'Find place',
   confirmLocation: 'Confirm location',
+  myAddresses: 'My addresses',
+  myStops: 'My stops',
+  history: 'History',
+  choosePlaceFromMap: 'Choose from map',
 }

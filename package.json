@@ -49,6 +49,7 @@
     "react-native-svg-transformer": "^0.14.3",
     "react-native-web": "~0.13.12",
     "react-query": "^3.19.0",
+    "reanimated-bottom-sheet": "^1.0.0-alpha.22",
     "yup": "^0.32.9"
   },
   "devDependencies": {

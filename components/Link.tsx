@@ -1,4 +1,3 @@
-// TODO copied from different project, might need cleanup if we're to use it
 import React from 'react'
 import {
   GestureResponderEvent,
@@ -9,13 +8,6 @@ import {
   Text,
 } from 'react-native'
 import { colors } from '../utils/theme'
-
-const styles = StyleSheet.create({
-  link: {
-    textDecorationLine: 'underline',
-    color: colors.darkText,
-  },
-})
 
 interface LinkProps {
   onPress: (event: GestureResponderEvent) => void
@@ -30,5 +22,12 @@ const Link = ({ onPress, title, style }: LinkProps) => {
     </TouchableHighlight>
   )
 }
+
+const styles = StyleSheet.create({
+  link: {
+    textDecorationLine: 'underline',
+    color: colors.darkText,
+  },
+})
 
 export default Link

@@ -1,11 +1,5 @@
 import React from 'react'
 import { Text, View, StyleSheet, useWindowDimensions } from 'react-native'
-
-import { MhdStopProps } from '../../../utils/validation'
-
-import UpcomingDepartures from './UpcomingDepartures'
-import Timetables from './Timetables'
-
 import {
   TabView,
   TabBar,
@@ -13,6 +7,12 @@ import {
   NavigationState,
   Route,
 } from 'react-native-tab-view'
+
+import { MhdStopProps } from '../../../utils/validation'
+
+import UpcomingDepartures from './UpcomingDepartures'
+import Timetables from './Timetables'
+
 import { colors } from '../../../utils/theme'
 
 const renderTabBar = (
@@ -20,38 +20,21 @@ const renderTabBar = (
 ) => (
   <TabBar
     {...props}
-    indicatorStyle={{ display: 'none' }}
-    style={{
-      borderBottomColor: colors.primary,
-      borderBottomWidth: 2,
-    }}
-    tabStyle={{
-      backgroundColor: 'white',
-      display: 'flex',
-      alignItems: 'stretch',
-      padding: 0,
-      height: 36,
-    }}
+    indicatorStyle={styles.tabBarIndicator}
+    style={styles.tabBar}
+    tabStyle={styles.tabBarTab}
     renderLabel={({ route, focused }) => (
       <View
-        style={{
-          backgroundColor: focused ? colors.primary : 'transparent',
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '100%',
-          borderTopLeftRadius: 3,
-          borderTopRightRadius: 3,
-        }}
+        style={[
+          styles.tabBarTabLabel,
+          focused ? styles.tabBarTabLabelFocused : {},
+        ]}
       >
         <Text
-          style={{
-            textTransform: 'uppercase',
-            color: focused ? 'white' : colors.darkText,
-            position: 'absolute',
-            top: 12,
-          }}
+          style={[
+            styles.tabBarTabLabelText,
+            focused ? styles.tabBarTabLabelTextFocused : {},
+          ]}
         >
           {route.title}
         </Text>
@@ -101,6 +84,40 @@ const StationMhdInfo = ({ station }: StationMhdInfoProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  tabBar: {
+    borderBottomColor: colors.primary,
+    borderBottomWidth: 2,
+  },
+  tabBarIndicator: { display: 'none' },
+  tabBarTab: {
+    backgroundColor: 'white',
+    display: 'flex',
+    alignItems: 'stretch',
+    padding: 0,
+    height: 36,
+  },
+  tabBarTabLabel: {
+    backgroundColor: 'transparent',
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+    borderTopLeftRadius: 3,
+    borderTopRightRadius: 3,
+  },
+  tabBarTabLabelFocused: {
+    backgroundColor: colors.primary,
+  },
+  tabBarTabLabelText: {
+    textTransform: 'uppercase',
+    color: colors.darkText,
+    position: 'absolute',
+    top: 12,
+  },
+  tabBarTabLabelTextFocused: {
+    color: 'white',
   },
 })
 

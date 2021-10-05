@@ -8,12 +8,11 @@ import {
   Route,
 } from 'react-native-tab-view'
 
-import { MhdStopProps } from '../../../utils/validation'
+import { MhdStopProps } from '@utils/validation'
+import { colors } from '@utils/theme'
 
 import UpcomingDepartures from './UpcomingDepartures'
 import Timetables from './Timetables'
-
-import { colors } from '../../../utils/theme'
 
 const renderTabBar = (
   props: SceneRendererProps & { navigationState: NavigationState<Route> }

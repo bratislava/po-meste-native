@@ -4,11 +4,11 @@ import { useNavigation } from '@react-navigation/native'
 
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 
-import { MhdStopProps } from '../../../utils/validation'
-import TicketSvg from '../../../assets/images/ticket.svg'
-import useMhdStopStatusData from '../../../hooks/useMhdStopStatusData'
+import { MhdStopProps } from '@utils/validation'
+import TicketSvg from '@assets/images/ticket.svg'
+import useMhdStopStatusData from '@hooks/useMhdStopStatusData'
 import { GlobalStateContext } from '../VehicleBar/GlobalStateProvider'
-import { s } from '../../../utils/globalStyles'
+import { s } from '@utils/globalStyles'
 
 interface UpcomingDeparturesProps {
   station: MhdStopProps

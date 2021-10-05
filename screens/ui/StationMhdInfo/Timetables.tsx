@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 
-import { MhdStopProps } from '../../../utils/validation'
+import { MhdStopProps } from '@utils/validation'
 
 interface TimetablesProps {
   station: MhdStopProps

@@ -54,10 +54,10 @@ const renderTabBar = (
 const StationMhdInfo = ({ station }: StationMhdInfoProps) => {
   const layout = useWindowDimensions()
   const [index, setIndex] = React.useState(0)
-  const [routes] = React.useState([
+  const routes = [
     { key: Routes.upcomingDepartures, title: 'Upcoming Departures' },
     { key: Routes.timetables, title: 'Timetables' },
-  ])
+  ]
 
   const renderScene = ({
     route,

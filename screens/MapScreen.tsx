@@ -108,7 +108,7 @@ export default function MapScreen() {
 
   useEffect(() => {
     bottomSheetRef.current?.snapToIndex(0)
-  }, [selectedMhdStation])
+  }, [selectedMhdStation, bottomSheetRef])
 
   const handleSheetChanges = (index: number) => {
     //deselect station when closed

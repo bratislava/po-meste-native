@@ -7,8 +7,8 @@ import React, {
   useRef,
 } from 'react'
 import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps'
-import { StyleSheet, View, ImageURISource } from 'react-native'
-import BottomSheet from '@gorhom/bottom-sheet'
+import { StyleSheet, View, Text, ImageURISource } from 'react-native'
+import BottomSheet from 'reanimated-bottom-sheet'
 
 import { BikeProvider, VehicleType } from '../types'
 import SearchBar from './ui/SearchBar/SearchBar'
@@ -104,23 +104,18 @@ export default function MapScreen() {
 
   const bottomSheetRef = useRef<BottomSheet>(null)
 
-  const bottomSheetSnapPoints = useMemo(() => ['60%', '100%'], [])
+  const bottomSheetSnapPoints = useMemo(() => ['100%', '60%', 0], [])
 
   useEffect(() => {
-    bottomSheetRef.current?.snapToIndex(0)
+    if (selectedMhdStation) {
+      bottomSheetRef.current?.snapTo(1)
+    } else {
+      bottomSheetRef.current?.snapTo(2)
+    }
   }, [selectedMhdStation, bottomSheetRef])
 
-  const handleSheetChanges = (index: number) => {
-    //deselect station when closed
-    if (index === -1) {
-      setSelectedMhdStation(undefined)
-    }
-    //disable border radius when sheet is fully expanded
-    if (index === 1) {
-      setBottomSheetFullyExpanded(true)
-    } else {
-      setBottomSheetFullyExpanded(false)
-    }
+  const handleSheetClose = () => {
+    setSelectedMhdStation(undefined)
   }
 
   const getIcon = useCallback(
@@ -344,25 +339,34 @@ export default function MapScreen() {
       ) : null}
       <SearchBar />
       <VehicleBar />
-      {selectedMhdStation && (
-        <BottomSheet
-          onChange={handleSheetChanges}
-          ref={bottomSheetRef}
-          backgroundStyle={[
-            styles.bottomSheetBackgroundStyle,
-            bottomSheetFullyExpanded
-              ? styles.bottomSheetBackgroundStyleFullyExpanded
-              : {},
-          ]}
-          enablePanDownToClose
-          snapPoints={bottomSheetSnapPoints}
-          handleStyle={styles.bottomSheetHandleStyle}
-          handleIndicatorStyle={styles.bottomSheetHandleIndicatorStyle}
-          bottomInset={50}
-        >
-          <StationMhdInfo station={selectedMhdStation} />
-        </BottomSheet>
-      )}
+      <BottomSheet
+        ref={bottomSheetRef}
+        onCloseEnd={handleSheetClose}
+        snapPoints={bottomSheetSnapPoints}
+        renderHeader={() => {
+          return (
+            <View style={styles.bottomSheetHandleStyle}>
+              <View style={styles.bottomSheetHandleIndicatorStyle}></View>
+            </View>
+          )
+        }}
+        renderContent={() => {
+          return (
+            <View
+              style={
+                styles.bottomSheetBackgroundStyle
+                // bottomSheetFullyExpanded
+                //   ? styles.bottomSheetBackgroundStyleFullyExpanded
+                //   : {},
+              }
+            >
+              {selectedMhdStation && (
+                <StationMhdInfo station={selectedMhdStation} />
+              )}
+            </View>
+          )
+        }}
+      ></BottomSheet>
     </View>
   )
 }
@@ -376,13 +380,15 @@ const styles = StyleSheet.create({
   },
   bottomSheetBackgroundStyle: {
     ...s.shadow,
-    borderTopLeftRadius: 7,
-    borderTopRightRadius: 7,
+    backgroundColor: '#fff',
+    height: '100%',
+    display: 'flex',
+    paddingBottom: 50,
   },
-  bottomSheetBackgroundStyleFullyExpanded: {
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
-  },
+  // bottomSheetBackgroundStyleFullyExpanded: {
+  //   borderTopLeftRadius: 0,
+  //   borderTopRightRadius: 0,
+  // },
   map: {
     position: 'absolute',
     top: 0,
@@ -392,6 +398,10 @@ const styles = StyleSheet.create({
   },
   bottomSheetHandleStyle: {
     paddingVertical: 16,
+    backgroundColor: 'white',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   bottomSheetHandleIndicatorStyle: {
     width: 64,

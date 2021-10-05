@@ -2,13 +2,12 @@ import React, { useContext } from 'react'
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
-import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
-
 import { MhdStopProps } from '@utils/validation'
 import TicketSvg from '@images/ticket.svg'
 import useMhdStopStatusData from '@hooks/useMhdStopStatusData'
 import { GlobalStateContext } from '../VehicleBar/GlobalStateProvider'
 import { s } from '@utils/globalStyles'
+import { ScrollView } from 'react-native-gesture-handler'
 
 interface UpcomingDeparturesProps {
   station: MhdStopProps
@@ -66,9 +65,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
           ))}
         </View>
       </View>
-      <BottomSheetScrollView
-        contentContainerStyle={styles.scrollingVehiclesData}
-      >
+      <ScrollView contentContainerStyle={styles.scrollingVehiclesData}>
         {data?.departures?.map((departure, index) => {
           const now = new Date()
           const departureTime = new Date(departure.time)
@@ -103,7 +100,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
             </TouchableOpacity>
           )
         })}
-      </BottomSheetScrollView>
+      </ScrollView>
     </View>
   )
 }
@@ -139,9 +136,13 @@ const styles = StyleSheet.create({
   scrollingVehiclesData: {
     paddingHorizontal: 10,
     paddingVertical: 5,
+    // display: 'flex',
+    // flexDirection: 'column',
+    // alignItems: 'stretch',
+    // justifyContent: 'flex-start',
+    // flex: 1,
   },
   lineDeparture: {
-    flex: 1,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',

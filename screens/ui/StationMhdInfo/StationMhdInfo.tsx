@@ -83,6 +83,7 @@ const StationMhdInfo = ({ station }: StationMhdInfoProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    display: 'flex',
   },
   tabBar: {
     borderBottomColor: colors.primary,

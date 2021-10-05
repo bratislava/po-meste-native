@@ -51,26 +51,26 @@ export default function SmsScreen() {
     ticket40min: {
       onClose: onModalClose,
       onConfirm: () => onModalConfirm(SmsTicketNumbers.ticket40min),
-      bodyText: i18n.t('screens.ticketsScreen.smsModal.bodyTexts.ticket40min', {
+      bodyText: i18n.t('screens.ticketsScreen.smsModal.bodyText', {
+        ticketName: i18n.t('screens.ticketsScreen.tickets.ticket40min.name'),
         price: presentPrice(SmsTicketPrices.ticket40min),
       }),
     },
     ticket70min: {
       onClose: onModalClose,
       onConfirm: () => onModalConfirm(SmsTicketNumbers.ticket70min),
-      bodyText: i18n.t('screens.ticketsScreen.smsModal.bodyTexts.ticket70min', {
+      bodyText: i18n.t('screens.ticketsScreen.smsModal.bodyText', {
+        ticketName: i18n.t('screens.ticketsScreen.tickets.ticket70min.name'),
         price: presentPrice(SmsTicketPrices.ticket70min),
       }),
     },
     ticket24hours: {
       onClose: onModalClose,
       onConfirm: () => onModalConfirm(SmsTicketNumbers.ticket24hours),
-      bodyText: i18n.t(
-        'screens.ticketsScreen.smsModal.bodyTexts.ticket24hours',
-        {
-          price: presentPrice(SmsTicketPrices.ticket24hours),
-        }
-      ),
+      bodyText: i18n.t('screens.ticketsScreen.smsModal.bodyText', {
+        ticketName: i18n.t('screens.ticketsScreen.tickets.ticket24hours.name'),
+        price: presentPrice(SmsTicketPrices.ticket24hours),
+      }),
     },
   }
 

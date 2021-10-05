@@ -32,14 +32,8 @@ export default {
     ticketsScreen: {
       smsModal: {
         title: 'Paid service',
-        bodyTexts: {
-          ticket40min:
-            'SMS ticket 40 minutes is a charged service. You will be charged {{price}} through your mobile carrier.',
-          ticket70min:
-            'SMS ticket 70 minutes is a charged service. You will be charged {{price}} through your mobile carrier.',
-          ticket24hours:
-            'SMS ticket 24 hours is a charged service. You will be charged {{price}} through your mobile carrier.',
-        },
+        bodyTexts:
+          'SMS {{ticketName}} is a charged service. You will be charged {{price}} through your mobile carrier.',
         checkboxText: "I understand, don't ask next time.",
       },
       tickets: {

@@ -32,14 +32,8 @@ export default {
     ticketsScreen: {
       smsModal: {
         title: 'Spoplatnená služba',
-        bodyTexts: {
-          ticket40min:
-            'SMS lístok 40 minút je spoplatnená služba. Bude vám účtovaná suma {{price}} prostredníctvom vášho operátora..',
-          ticket70min:
-            'SMS lístok 70 minút je spoplatnená služba. Bude vám účtovaná suma {{price}} prostredníctvom vášho operátora.',
-          ticket24hours:
-            'SMS lístok 24 hodín je spoplatnená služba. Bude vám účtovaná suma {{price}} prostredníctvom vášho operátora.',
-        },
+        bodyText:
+          'SMS {{ticketName}} je spoplatnená služba. Bude vám účtovaná suma {{price}} prostredníctvom vášho operátora.',
         checkboxText: 'Rozumiem, nabudúce sa nepýtať.',
       },
       tickets: {

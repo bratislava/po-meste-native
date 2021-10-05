@@ -65,9 +65,9 @@ const StationMhdInfo = ({ station }: StationMhdInfoProps) => {
     route: Route
   }) => {
     switch (route.key) {
-      case 'upcomingDepartures':
+      case Routes.upcomingDepartures:
         return <UpcomingDepartures station={station} />
-      case 'timetables':
+      case Routes.timetables:
         return <Timetables station={station} />
     }
   }

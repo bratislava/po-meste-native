@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState } from 'react'
+import { StyleSheet, View, ImageURISource } from 'react-native'
 import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps'
-import { StyleSheet, View } from 'react-native'
 
 import { BikeProvider, VehicleType } from '../types'
 import SearchBar from './ui/SearchBar/SearchBar'
@@ -19,7 +19,6 @@ import {
   StationProps,
 } from '../utils/validation'
 import StationMhdInfo from './ui/StationMhdInfo'
-import { ImageURISource } from 'react-native'
 
 const MIN_DELTA_FOR_XS_MARKER = 0.05
 const MIN_DELTA_FOR_SM_MARKER = 0.03

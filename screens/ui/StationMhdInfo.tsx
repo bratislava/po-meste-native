@@ -8,11 +8,11 @@ import {
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
-import { MhdStopProps } from '../../utils/validation'
-import TicketSvg from '../../assets/images/ticket.svg'
-import useMhdStopStatusData from '../../hooks/useMhdStopStatusData'
+import { MhdStopProps } from '@utils/validation'
+import TicketSvg from '@images/ticket.svg'
+import useMhdStopStatusData from '@hooks/useMhdStopStatusData'
 import { GlobalStateContext } from './VehicleBar/GlobalStateProvider'
-import { s } from '../../utils/globalStyles'
+import { s } from '@utils/globalStyles'
 
 interface StationMhdInfoProps {
   station: MhdStopProps

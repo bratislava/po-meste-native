@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState } from 'react'
+import { StyleSheet, View, ImageURISource } from 'react-native'
 import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps'
-import { StyleSheet, View } from 'react-native'
 
 import { BikeProvider, VehicleType } from '../types'
 import SearchBar from './ui/SearchBar/SearchBar'
@@ -19,6 +19,50 @@ import {
   StationProps,
 } from '../utils/validation'
 import StationMhdInfo from './ui/StationMhdInfo'
+
+const MIN_DELTA_FOR_XS_MARKER = 0.05
+const MIN_DELTA_FOR_SM_MARKER = 0.03
+const MIN_DELTA_FOR_MD_MARKER = 0.01
+
+type markerIcon = {
+  xs: ImageURISource
+  sm: ImageURISource
+  md: ImageURISource
+  lg: ImageURISource
+}
+
+const markerIcons: { [index: string]: markerIcon } = {
+  mhd: {
+    xs: require('../assets/images/map/mhd/xs.png'),
+    sm: require('../assets/images/map/mhd/sm.png'),
+    md: require('../assets/images/map/mhd/md.png'),
+    lg: require('../assets/images/map/mhd/lg.png'),
+  },
+  scooter: {
+    xs: require('../assets/images/map/scooter/xs.png'),
+    sm: require('../assets/images/map/scooter/sm.png'),
+    md: require('../assets/images/map/scooter/md.png'),
+    lg: require('../assets/images/map/scooter/lg.png'),
+  },
+  slovnaftbajk: {
+    xs: require('../assets/images/map/slovnaftbajk/xs.png'),
+    sm: require('../assets/images/map/slovnaftbajk/sm.png'),
+    md: require('../assets/images/map/slovnaftbajk/md.png'),
+    lg: require('../assets/images/map/slovnaftbajk/lg.png'),
+  },
+  rekola: {
+    xs: require('../assets/images/map/rekola/xs.png'),
+    sm: require('../assets/images/map/rekola/sm.png'),
+    md: require('../assets/images/map/rekola/md.png'),
+    lg: require('../assets/images/map/rekola/lg.png'),
+  },
+  charger: {
+    xs: require('../assets/images/map/charger/xs.png'),
+    sm: require('../assets/images/map/charger/sm.png'),
+    md: require('../assets/images/map/charger/md.png'),
+    lg: require('../assets/images/map/charger/lg.png'),
+  },
+}
 
 export default function MapScreen() {
   // TODO handle loading / error
@@ -42,6 +86,25 @@ export default function MapScreen() {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   })
+
+  const getIcon = useCallback(
+    (name: 'mhd' | 'scooter' | 'slovnaftbajk' | 'rekola' | 'charger') => {
+      const latDelta = region?.latitudeDelta
+      const icons = markerIcons[name]
+      if (latDelta) {
+        return latDelta >= MIN_DELTA_FOR_XS_MARKER
+          ? icons.xs
+          : latDelta >= MIN_DELTA_FOR_SM_MARKER
+          ? icons.sm
+          : latDelta >= MIN_DELTA_FOR_MD_MARKER
+          ? icons.md
+          : icons.lg
+      } else {
+        return undefined
+      }
+    },
+    [region]
+  )
 
   const filterInView = useCallback(
     (pointLat: number, pointLon: number, region: Region) => {
@@ -137,10 +200,11 @@ export default function MapScreen() {
                 tracksViewChanges={false}
                 onPress={() => setSelectedStation(station)}
                 icon={
-                  (bikeProvider === BikeProvider.rekola &&
-                    require('../assets/images/rekolo.png')) ||
-                  (bikeProvider === BikeProvider.slovnaftbajk &&
-                    require('../assets/images/slovnaftbajk.png'))
+                  bikeProvider === BikeProvider.rekola
+                    ? getIcon('rekola')
+                    : bikeProvider === BikeProvider.slovnaftbajk
+                    ? getIcon('slovnaftbajk')
+                    : undefined
                 }
               />
             )
@@ -151,7 +215,7 @@ export default function MapScreen() {
         []
       )
     },
-    [filterBikeInView]
+    [filterBikeInView, getIcon]
   )
 
   return (
@@ -180,7 +244,7 @@ export default function MapScreen() {
               }}
               tracksViewChanges={false}
               onPress={() => setSelectedMhdStation(stop)}
-              icon={require('../assets/images/mhd-icon.png')}
+              icon={getIcon('mhd')}
             />
           ))}
         {vehiclesContext.vehicleTypes?.find(
@@ -193,7 +257,7 @@ export default function MapScreen() {
                 key={vehicle.bike_id}
                 coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
                 tracksViewChanges={false}
-                icon={require('../assets/images/scooter.png')}
+                icon={getIcon('scooter')}
               />
             )
           })}
@@ -226,6 +290,7 @@ export default function MapScreen() {
                       longitude: charger.coordinates.longitude,
                     }}
                     tracksViewChanges={false}
+                    icon={getIcon('charger')}
                   />
                 )
                 return accumulator.concat(marker)

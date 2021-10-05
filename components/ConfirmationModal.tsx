@@ -1,16 +1,16 @@
+import React, { useState, useEffect } from 'react'
 import i18n from 'i18n-js'
-import React, { useState } from 'react'
 import { StyleSheet, Text } from 'react-native'
-import { Button, Link } from '.'
 import CheckBox from 'react-native-check-box'
-import { colors } from '../utils/theme'
-import { useEffect } from 'react'
+
 import { Modal } from './index'
+import { Button, Link } from '.'
+import { colors } from '../utils/theme'
 
 export type ConfirmationModalProps = {
   visible?: boolean
-  onClose?: () => void
-  onConfirm?: () => void
+  onClose: () => void
+  onConfirm: () => void
   title?: string
   bodyText?: string
   confirmText?: string
@@ -20,8 +20,8 @@ export type ConfirmationModalProps = {
 
 export default function ConfirmationModal({
   visible = true,
-  onClose = () => void 0,
-  onConfirm = () => void 0,
+  onClose,
+  onConfirm,
   title,
   bodyText,
   confirmText,

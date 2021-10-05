@@ -118,9 +118,11 @@ export default function SmsScreen() {
         </View>
       </ScrollView>
       <ConfirmationModal
-        {...confirmationModalProps}
         visible={confirmationModalVisible}
+        onClose={confirmationModalProps.onClose}
+        onConfirm={confirmationModalProps.onConfirm}
         title={i18n.t('screens.ticketsScreen.smsModal.title')}
+        bodyText={confirmationModalProps.bodyText}
         requiredCheckboxText={i18n.t(
           'screens.ticketsScreen.smsModal.checkboxText'
         )}

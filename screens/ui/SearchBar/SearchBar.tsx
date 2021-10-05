@@ -3,7 +3,7 @@ import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import i18n from 'i18n-js'
 
-import TicketSvg from '../../../assets/images/ticket.svg'
+import TicketSvg from '@images/ticket.svg'
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 

@@ -1,6 +1,6 @@
 import React, { useState, createContext, Dispatch, SetStateAction } from 'react'
-import TicketSvg from '../../../assets/images/ticket.svg'
-import MhdSvg from '../../../assets/images/mhd.svg'
+import TicketSvg from '@images/ticket.svg'
+import MhdSvg from '@images/mhd.svg'
 import { VehicleType } from '../../../types'
 
 interface VehicleFilterProps {

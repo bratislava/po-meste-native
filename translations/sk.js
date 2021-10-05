@@ -2,7 +2,6 @@ export default {
   tabOneTitle: 'Záložka jedna titulok',
   tabTwoTitle: 'Zalozka dva titulok',
   map: 'Mapa',
-  tabTwo: 'Tab Dva',
   tickets: 'Lístky',
   ticketDuplicateDescription:
     'SMS lístok nedorazil do 10 minút alebo si ho omylom vymazal? Nevadí, nechaj si zaslať duplikát.',

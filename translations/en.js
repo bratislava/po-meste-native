@@ -2,7 +2,6 @@ export default {
   tabOneTitle: 'Tab One Title',
   tabTwoTitle: 'Tab Two Title',
   map: 'Map',
-  tabTwo: 'TabTwo',
   tickets: 'Tickets',
   ticketDuplicateDescription:
     'SMS ticket not received in 10 minutes or did you accidentally deleted it? No worries, have a duplicate sent to you.',

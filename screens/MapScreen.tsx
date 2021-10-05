@@ -343,26 +343,17 @@ export default function MapScreen() {
         ref={bottomSheetRef}
         onCloseEnd={handleSheetClose}
         snapPoints={bottomSheetSnapPoints}
-        renderHeader={() => {
-          return (
-            <View style={styles.bottomSheetHandleStyle}>
-              <View style={styles.bottomSheetHandleIndicatorStyle}></View>
-            </View>
-          )
-        }}
         renderContent={() => {
           return (
-            <View
-              style={
-                styles.bottomSheetBackgroundStyle
-                // bottomSheetFullyExpanded
-                //   ? styles.bottomSheetBackgroundStyleFullyExpanded
-                //   : {},
-              }
-            >
-              {selectedMhdStation && (
-                <StationMhdInfo station={selectedMhdStation} />
-              )}
+            <View style={styles.bottomSheet}>
+              <View style={styles.bottomSheetHandleStyle}>
+                <View style={styles.bottomSheetHandleIndicatorStyle}></View>
+              </View>
+              <View style={styles.bottomSheetInnerStyle}>
+                {selectedMhdStation && (
+                  <StationMhdInfo station={selectedMhdStation} />
+                )}
+              </View>
             </View>
           )
         }}
@@ -378,17 +369,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  bottomSheetBackgroundStyle: {
+  bottomSheet: {
+    marginTop: 10,
     ...s.shadow,
+    borderTopLeftRadius: 7,
+    borderTopRightRadius: 7,
     backgroundColor: '#fff',
+  },
+  bottomSheetInnerStyle: {
     height: '100%',
     display: 'flex',
     paddingBottom: 50,
   },
-  // bottomSheetBackgroundStyleFullyExpanded: {
-  //   borderTopLeftRadius: 0,
-  //   borderTopRightRadius: 0,
-  // },
   map: {
     position: 'absolute',
     top: 0,
@@ -398,7 +390,6 @@ const styles = StyleSheet.create({
   },
   bottomSheetHandleStyle: {
     paddingVertical: 16,
-    backgroundColor: 'white',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

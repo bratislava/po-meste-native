@@ -207,7 +207,9 @@ export default function FromToScreen({
             query={{
               key: Constants.manifest?.extra?.googlePlacesApiKey,
               language: 'sk',
-              components: 'country:sk',
+              location: '48.1512015, 17.1110118',
+              radius: '22000', //22 km
+              strictbounds: true,
             }}
           />
           <Button
@@ -239,7 +241,9 @@ export default function FromToScreen({
             query={{
               key: Constants.manifest?.extra?.googlePlacesApiKey,
               language: 'sk',
-              components: 'country:sk',
+              location: '48.1512015, 17.1110118',
+              radius: '22000', //22 km
+              strictbounds: true,
             }}
           />
           <Button

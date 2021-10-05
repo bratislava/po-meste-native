@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Alert } from 'react-native'
 import * as SMS from 'expo-sms'
 import i18n from 'i18n-js'
 
-import { Button } from '../components'
+import { Button } from '@components/index'
 import { SmsTicketNumbers } from '../types'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ScrollView } from 'react-native-gesture-handler'

@@ -26,13 +26,6 @@ export default function SmsScreen() {
     }
   }
 
-  type ticketDataType = {
-    button: {
-      title: string
-    }
-    modal: ConfirmationModalProps
-  }
-
   const onModalClose = () => {
     setConfirmationModalVisible(false)
   }

@@ -2,11 +2,13 @@ import React, {
   useCallback,
   useContext,
   useState,
+  useEffect,
   useMemo,
   useRef,
 } from 'react'
 import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps'
 import { StyleSheet, View } from 'react-native'
+import BottomSheet from '@gorhom/bottom-sheet'
 
 import { BikeProvider, VehicleType } from '../types'
 import SearchBar from './ui/SearchBar/SearchBar'
@@ -26,10 +28,8 @@ import {
 } from '../utils/validation'
 import StationMhdInfo from './ui/StationMhdInfo/StationMhdInfo'
 
-import BottomSheet from '@gorhom/bottom-sheet'
 import { s } from '../utils/globalStyles'
 import { colors } from '../utils/theme'
-import { useEffect } from 'react'
 
 export default function MapScreen() {
   // TODO handle loading / error
@@ -66,7 +66,7 @@ export default function MapScreen() {
     bottomSheetRef.current?.snapToIndex(0)
   }, [selectedMhdStation])
 
-  const handleSheetChanges = useCallback((index: number) => {
+  const handleSheetChanges = (index: number) => {
     //deselect station when closed
     if (index === -1) {
       setSelectedMhdStation(undefined)
@@ -77,7 +77,7 @@ export default function MapScreen() {
     } else {
       setBottomSheetFullyExpanded(false)
     }
-  }, [])
+  }
 
   const filterInView = useCallback(
     (pointLat: number, pointLon: number, region: Region) => {

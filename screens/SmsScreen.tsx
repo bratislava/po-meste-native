@@ -8,7 +8,7 @@ import {
   ConfirmationModal,
   ConfirmationModalProps,
 } from '../components'
-import { SmsTicketNumbers, SmsTicketPrices } from '../types'
+import { SmsTicketNumbers, SmsTicketPrices, TicketName } from '../types'
 import { ScrollView } from 'react-native-gesture-handler'
 import { presentPrice } from '../utils/presentPrice'
 
@@ -26,82 +26,70 @@ export default function SmsScreen() {
     }
   }
 
-  type ticketData = {
+  type ticketDataType = {
     button: {
       title: string
     }
     modal: ConfirmationModalProps
   }
 
-  const ticketsData: ticketData[] = [
-    {
-      button: {
-        title: `${i18n.t(
-          'screens.ticketsScreen.tickets.ticket40min.name'
-        )} / ${presentPrice(SmsTicketPrices.ticket40min)}`,
-      },
-      modal: {
-        onConfirm: async () => {
-          handleSend(SmsTicketNumbers.ticket40min)
-          setConfirmationModalVisible(false)
-        },
-        bodyText: i18n.t(
-          'screens.ticketsScreen.smsModal.bodyTexts.ticket40min',
-          {
-            price: presentPrice(SmsTicketPrices.ticket40min),
-          }
-        ),
-      },
-    },
-    {
-      button: {
-        title: `${i18n.t(
-          'screens.ticketsScreen.tickets.ticket70min.name'
-        )} / ${presentPrice(SmsTicketPrices.ticket70min)}`,
-      },
-      modal: {
-        onConfirm: async () => {
-          handleSend(SmsTicketNumbers.ticket70min)
-          setConfirmationModalVisible(false)
-        },
-        bodyText: i18n.t(
-          'screens.ticketsScreen.smsModal.bodyTexts.ticket70min',
-          {
-            price: presentPrice(SmsTicketPrices.ticket70min),
-          }
-        ),
-      },
-    },
-    {
-      button: {
-        title: `${i18n.t(
-          'screens.ticketsScreen.tickets.ticket24hours.name'
-        )} / ${presentPrice(SmsTicketPrices.ticket24hours)}`,
-      },
-      modal: {
-        onConfirm: async () => {
-          handleSend(SmsTicketNumbers.ticket24hours)
-          setConfirmationModalVisible(false)
-        },
-        bodyText: i18n.t(
-          'screens.ticketsScreen.smsModal.bodyTexts.ticket24hours',
-          {
-            price: presentPrice(SmsTicketPrices.ticket24hours),
-          }
-        ),
-      },
-    },
+  const onModalClose = () => {
+    setConfirmationModalVisible(false)
+  }
+
+  const onModalConfirm = async (phoneNumber: string) => {
+    await handleSend(phoneNumber)
+    setConfirmationModalVisible(false)
+  }
+
+  const ticketNames: TicketName[] = [
+    'ticket40min',
+    'ticket70min',
+    'ticket24hours',
   ]
+
+  const getTicketButtonTitle = (ticketName: TicketName) => {
+    return `${i18n.t(
+      `screens.ticketsScreen.tickets.${ticketName}.name`
+    )} / ${presentPrice(SmsTicketPrices[ticketName])}`
+  }
+
+  const modalData: { [key in TicketName]: ConfirmationModalProps } = {
+    ticket40min: {
+      onClose: onModalClose,
+      onConfirm: () => onModalConfirm(SmsTicketNumbers.ticket40min),
+      bodyText: i18n.t('screens.ticketsScreen.smsModal.bodyTexts.ticket40min', {
+        price: presentPrice(SmsTicketPrices.ticket40min),
+      }),
+    },
+    ticket70min: {
+      onClose: onModalClose,
+      onConfirm: () => onModalConfirm(SmsTicketNumbers.ticket70min),
+      bodyText: i18n.t('screens.ticketsScreen.smsModal.bodyTexts.ticket70min', {
+        price: presentPrice(SmsTicketPrices.ticket70min),
+      }),
+    },
+    ticket24hours: {
+      onClose: onModalClose,
+      onConfirm: () => onModalConfirm(SmsTicketNumbers.ticket24hours),
+      bodyText: i18n.t(
+        'screens.ticketsScreen.smsModal.bodyTexts.ticket24hours',
+        {
+          price: presentPrice(SmsTicketPrices.ticket24hours),
+        }
+      ),
+    },
+  }
 
   const [confirmationModalVisible, setConfirmationModalVisible] =
     useState(false)
 
   const [confirmationModalProps, setConfirmationModalProps] = useState(
-    ticketsData[0].modal
+    modalData.ticket40min
   )
 
-  const ticketButtonClickHandler = (ticketData: ticketData) => {
-    setConfirmationModalProps(ticketData.modal)
+  const ticketButtonClickHandler = (ticketName: TicketName) => {
+    setConfirmationModalProps(modalData[ticketName])
     setConfirmationModalVisible(true)
   }
 
@@ -110,12 +98,12 @@ export default function SmsScreen() {
       <ScrollView contentContainerStyle={styles.scrollView}>
         <Text style={styles.title}>{i18n.t('smsTicketTitle')}</Text>
         <Text style={styles.smsInfo}>{i18n.t('smsInfo')}</Text>
-        {ticketsData.map((ticketData, i) => {
+        {ticketNames.map((ticketName, i) => {
           return (
             <View key={i} style={styles.buttonFullWidth}>
               <Button
-                title={ticketData.button.title}
-                onPress={() => ticketButtonClickHandler(ticketData)}
+                title={getTicketButtonTitle(ticketName)}
+                onPress={() => ticketButtonClickHandler(ticketName)}
                 isFullWidth
                 size="large"
               />
@@ -139,7 +127,6 @@ export default function SmsScreen() {
       <ConfirmationModal
         {...confirmationModalProps}
         visible={confirmationModalVisible}
-        onClose={() => setConfirmationModalVisible(false)}
         title={i18n.t('screens.ticketsScreen.smsModal.title')}
         requiredCheckboxText={i18n.t(
           'screens.ticketsScreen.smsModal.checkboxText'

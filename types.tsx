@@ -5,6 +5,8 @@
 
 import { LegProps } from './utils/validation'
 
+export type TicketName = 'ticket40min' | 'ticket70min' | 'ticket24hours'
+
 export type RootStackParamList = {
   Root: undefined
   NotFound: undefined

@@ -14,6 +14,15 @@ import { colors } from '@utils/theme'
 import UpcomingDepartures from './UpcomingDepartures'
 import Timetables from './Timetables'
 
+interface StationMhdInfoProps {
+  station: MhdStopProps
+}
+
+enum Routes {
+  upcomingDepartures = 'upcomingDepartures',
+  timetables = 'timetables',
+}
+
 const renderTabBar = (
   props: SceneRendererProps & { navigationState: NavigationState<Route> }
 ) => (
@@ -42,16 +51,12 @@ const renderTabBar = (
   />
 )
 
-interface StationMhdInfoProps {
-  station: MhdStopProps
-}
-
 const StationMhdInfo = ({ station }: StationMhdInfoProps) => {
   const layout = useWindowDimensions()
   const [index, setIndex] = React.useState(0)
   const [routes] = React.useState([
-    { key: 'upcomingDepartures', title: 'Upcoming Departures' },
-    { key: 'timetables', title: 'Timetables' },
+    { key: Routes.upcomingDepartures, title: 'Upcoming Departures' },
+    { key: Routes.timetables, title: 'Timetables' },
   ])
 
   const renderScene = ({

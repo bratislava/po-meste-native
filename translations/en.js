@@ -31,7 +31,7 @@ export default {
     ticketsScreen: {
       smsModal: {
         title: 'Paid service',
-        bodyTexts:
+        bodyText:
           'SMS {{ticketName}} is a charged service. You will be charged {{price}} through your mobile carrier.',
         checkboxText: "I understand, don't ask next time.",
       },

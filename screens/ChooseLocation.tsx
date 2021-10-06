@@ -9,7 +9,6 @@ import { Button } from '../components'
 import { StackScreenProps } from '@react-navigation/stack'
 import { MapParamList } from '../types'
 import { colors } from '../utils/theme'
-//todo: import shadows
 import { s } from '../utils/globalStyles'
 
 export default function ChooseLocation({
@@ -87,7 +86,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sheet: {
-    //todo: use shadows
+    ...s.shadow,
     flex: 1,
     backgroundColor: colors.white,
     marginTop: -7,

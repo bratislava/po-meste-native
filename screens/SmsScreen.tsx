@@ -1,12 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, Text, View, Alert } from 'react-native'
 import * as SMS from 'expo-sms'
 import i18n from 'i18n-js'
 
-import { Button } from '@components/index'
-import { SmsTicketNumbers } from '../types'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import {
+  Button,
+  ConfirmationModal,
+  ConfirmationModalProps,
+} from '../components'
+import { SmsTicketNumbers, SmsTicketPrices, TicketName } from '../types'
 import { ScrollView } from 'react-native-gesture-handler'
+import { presentPrice } from '../utils/presentPrice'
 
 export default function SmsScreen() {
   async function handleSend(receiverNumber: string) {
@@ -22,45 +26,89 @@ export default function SmsScreen() {
     }
   }
 
+  const onModalClose = () => {
+    setConfirmationModalVisible(false)
+  }
+
+  const onModalConfirm = async (phoneNumber: string) => {
+    await handleSend(phoneNumber)
+    setConfirmationModalVisible(false)
+  }
+
+  const ticketNames: TicketName[] = [
+    'ticket40min',
+    'ticket70min',
+    'ticket24hours',
+  ]
+
+  const getTicketButtonTitle = (ticketName: TicketName) => {
+    return `${i18n.t(
+      `screens.ticketsScreen.tickets.${ticketName}.name`
+    )} / ${presentPrice(SmsTicketPrices[ticketName])}`
+  }
+
+  const modalData: { [key in TicketName]: ConfirmationModalProps } = {
+    ticket40min: {
+      onClose: onModalClose,
+      onConfirm: () => onModalConfirm(SmsTicketNumbers.ticket40min),
+      bodyText: i18n.t('screens.ticketsScreen.smsModal.bodyText', {
+        ticketName: i18n.t('screens.ticketsScreen.tickets.ticket40min.name'),
+        price: presentPrice(SmsTicketPrices.ticket40min),
+      }),
+    },
+    ticket70min: {
+      onClose: onModalClose,
+      onConfirm: () => onModalConfirm(SmsTicketNumbers.ticket70min),
+      bodyText: i18n.t('screens.ticketsScreen.smsModal.bodyText', {
+        ticketName: i18n.t('screens.ticketsScreen.tickets.ticket70min.name'),
+        price: presentPrice(SmsTicketPrices.ticket70min),
+      }),
+    },
+    ticket24hours: {
+      onClose: onModalClose,
+      onConfirm: () => onModalConfirm(SmsTicketNumbers.ticket24hours),
+      bodyText: i18n.t('screens.ticketsScreen.smsModal.bodyText', {
+        ticketName: i18n.t('screens.ticketsScreen.tickets.ticket24hours.name'),
+        price: presentPrice(SmsTicketPrices.ticket24hours),
+      }),
+    },
+  }
+
+  const [confirmationModalVisible, setConfirmationModalVisible] =
+    useState(false)
+
+  const [confirmationModalProps, setConfirmationModalProps] = useState(
+    modalData.ticket40min
+  )
+
+  const ticketButtonClickHandler = (ticketName: TicketName) => {
+    setConfirmationModalProps(modalData[ticketName])
+    setConfirmationModalVisible(true)
+  }
+
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollView}>
         <Text style={styles.title}>{i18n.t('smsTicketTitle')}</Text>
         <Text style={styles.smsInfo}>{i18n.t('smsInfo')}</Text>
-        <View style={styles.buttonFullWidth}>
-          <Button
-            style={styles.ticketButton}
-            title={i18n.t('ticket40')}
-            onPress={() => handleSend(SmsTicketNumbers.ticket40min)}
-            isFullWidth
-            size="large"
-          />
-        </View>
-        <View style={styles.buttonFullWidth}>
-          <Button
-            style={styles.ticketButton}
-            title={i18n.t('ticket70')}
-            onPress={() => handleSend(SmsTicketNumbers.ticket70min)}
-            isFullWidth
-            size="small"
-          />
-        </View>
-        <View style={styles.buttonFullWidth}>
-          <Button
-            style={styles.ticketButton}
-            title={i18n.t('ticketDay')}
-            onPress={() => handleSend(SmsTicketNumbers.ticket24hours)}
-            isFullWidth
-            size="small"
-          />
-        </View>
+        {ticketNames.map((ticketName, i) => {
+          return (
+            <View key={i} style={styles.buttonFullWidth}>
+              <Button
+                title={getTicketButtonTitle(ticketName)}
+                onPress={() => ticketButtonClickHandler(ticketName)}
+                isFullWidth
+                size="large"
+              />
+            </View>
+          )
+        })}
         <View style={styles.separator}></View>
         <Text style={styles.smsInfo}>
           {i18n.t('ticketDuplicateDescription')}
         </Text>
         <View style={[styles.buttonFullWidth, { marginHorizontal: 71 }]}>
           <Button
-            style={styles.ticketButton}
             title={i18n.t('ticketDuplicate')}
             onPress={() => handleSend(SmsTicketNumbers.ticketDuplicate)}
             isFullWidth
@@ -69,7 +117,17 @@ export default function SmsScreen() {
           />
         </View>
       </ScrollView>
-    </SafeAreaView>
+      <ConfirmationModal
+        visible={confirmationModalVisible}
+        onClose={confirmationModalProps.onClose}
+        onConfirm={confirmationModalProps.onConfirm}
+        title={i18n.t('screens.ticketsScreen.smsModal.title')}
+        bodyText={confirmationModalProps.bodyText}
+        requiredCheckboxText={i18n.t(
+          'screens.ticketsScreen.smsModal.checkboxText'
+        )}
+      />
+    </View>
   )
 }
 
@@ -102,14 +160,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginHorizontal: 20,
     margin: 10,
-  },
-  ticketButton: {
-    height: 60,
-    borderRadius: 12,
-    justifyContent: 'center',
-    // fontWeight: '500',
-    // fontSize: 22,
-    // lineHeight: 26,
   },
   separator: {
     // marginTop: 45,

@@ -11,7 +11,7 @@ export const colors = {
   lightLightGray: '#F5F5F5', //TODO can we merge it from lightergray?
   lightGray: '#dae1e6',
   lightText: '#83919b',
-  darkText: '#081c2b',
+  darkText: '#454545',
   white: '#ffffff',
   black: '#000000',
   transparentBlack: 'rgba(0, 0, 0, 0.5)',

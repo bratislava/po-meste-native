@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const disabledAlpha = '40' // 0.25
+const disabledAlpha = '50' // 0.25
 
 const COLORS = {
   backgroundColor: {
@@ -71,7 +71,7 @@ const COLORS = {
     chat: 'transparent',
   },
   disabledBackgroundColor: {
-    primary: colors.gray,
+    primary: `${colors.primary}${disabledAlpha}`,
     'primary-submit': colors.gray,
     secondary: 'transparent',
     filled: `${colors.secondary}${disabledAlpha}`,

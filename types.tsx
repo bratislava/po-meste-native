@@ -5,6 +5,8 @@
 
 import { LegProps } from './utils/validation'
 
+export type TicketName = 'ticket40min' | 'ticket70min' | 'ticket24hours'
+
 export type RootStackParamList = {
   Root: undefined
   NotFound: undefined
@@ -43,6 +45,12 @@ export enum SmsTicketNumbers {
   ticket70min = '1100',
   ticket24hours = '1124',
   ticketDuplicate = '1101',
+}
+
+export enum SmsTicketPrices {
+  ticket40min = 100,
+  ticket70min = 140,
+  ticket24hours = 450,
 }
 
 export enum VehicleType {

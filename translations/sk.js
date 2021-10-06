@@ -1,12 +1,6 @@
 export default {
-  tabOneTitle: 'Záložka jedna titulok',
-  tabTwoTitle: 'Zalozka dva titulok',
   map: 'Mapa',
-  tabTwo: 'Tab Dva',
   tickets: 'Lístky',
-  ticket40: 'Lístok 40 minút / 1,00 €',
-  ticket70: 'Lístok 70 minút / 1,40 €',
-  ticketDay: 'Lístok 24 hodín / 4,50 €',
   ticketDuplicateDescription:
     'SMS lístok nedorazil do 10 minút alebo si ho omylom vymazal? Nevadí, nechaj si zaslať duplikát.',
   ticketDuplicate: 'Zaslať duplikát / 0 €',
@@ -28,6 +22,31 @@ export default {
   locationChoose: 'Vyhľadaj miesto',
   confirmLocation: 'Potvrdiť miesto ',
   moveTheMapAndSelectTheDesiredPoint: 'Pohnite mapou a zvoľte požadovaný bod.',
+  doYouWantToContinue: 'Chcete pokračovať?',
+  cancel: 'Zrušiť',
+  continue: 'Pokračovať',
+  presentPrice: '{{price}}€',
+  screens: {
+    ticketsScreen: {
+      smsModal: {
+        title: 'Spoplatnená služba',
+        bodyText:
+          'SMS {{ticketName}} je spoplatnená služba. Bude vám účtovaná suma {{price}} prostredníctvom vášho operátora.',
+        checkboxText: 'Rozumiem, nabudúce sa nepýtať.',
+      },
+      tickets: {
+        ticket40min: {
+          name: 'Lístok 40 minút',
+        },
+        ticket70min: {
+          name: 'Lístok 70 minút',
+        },
+        ticket24hours: {
+          name: 'Lístok 24 hodín',
+        },
+      },
+    },
+  },
   searching: 'Vyhľadávanie',
   settings: 'Nastavenia',
 }

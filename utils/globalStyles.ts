@@ -30,4 +30,10 @@ export const s = StyleSheet.create({
   horizontalMargin: {
     marginHorizontal: 20,
   },
+
+  shadow: {
+    shadowColor: '#000',
+    shadowRadius: 5,
+    shadowOpacity: 0.2,
+  },
 })

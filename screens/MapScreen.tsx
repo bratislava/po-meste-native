@@ -1,6 +1,14 @@
-import React, { useCallback, useContext, useState } from 'react'
-import { StyleSheet, View, ImageURISource } from 'react-native'
+import React, {
+  useCallback,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react'
 import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps'
+import { StyleSheet, View, Text, ImageURISource } from 'react-native'
+import BottomSheet from 'reanimated-bottom-sheet'
 
 import { BikeProvider, VehicleType } from '../types'
 import SearchBar from './ui/SearchBar/SearchBar'
@@ -18,7 +26,10 @@ import {
   MhdStopProps,
   StationProps,
 } from '../utils/validation'
-import StationMhdInfo from './ui/StationMhdInfo'
+import StationMhdInfo from './ui/StationMhdInfo/StationMhdInfo'
+
+import { s } from '../utils/globalStyles'
+import { colors } from '../utils/theme'
 
 const MIN_DELTA_FOR_XS_MARKER = 0.05
 const MIN_DELTA_FOR_SM_MARKER = 0.03
@@ -73,7 +84,9 @@ export default function MapScreen() {
   const { data: dataMergedRekola, isLoading: isLoadingRekola } = useRekolaData()
   const { data: dataMergedSlovnaftbajk, isLoading: isLoadingSlovnaftbajk } =
     useSlovnaftbajkData()
+
   const vehiclesContext = useContext(GlobalStateContext)
+
   const [selectedStation, setSelectedStation] = useState<
     StationProps | undefined
   >(undefined)
@@ -86,6 +99,24 @@ export default function MapScreen() {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   })
+  const [bottomSheetFullyExpanded, setBottomSheetFullyExpanded] =
+    useState<boolean>(true)
+
+  const bottomSheetRef = useRef<BottomSheet>(null)
+
+  const bottomSheetSnapPoints = useMemo(() => ['100%', '60%', 0], [])
+
+  useEffect(() => {
+    if (selectedMhdStation) {
+      bottomSheetRef.current?.snapTo(1)
+    } else {
+      bottomSheetRef.current?.snapTo(2)
+    }
+  }, [selectedMhdStation, bottomSheetRef])
+
+  const handleSheetClose = () => {
+    setSelectedMhdStation(undefined)
+  }
 
   const getIcon = useCallback(
     (name: 'mhd' | 'scooter' | 'slovnaftbajk' | 'rekola' | 'charger') => {
@@ -299,7 +330,6 @@ export default function MapScreen() {
             []
           )}
       </MapView>
-
       {isLoadingMhd ||
       isLoadingRekola ||
       isLoadingSlovnaftbajk ||
@@ -309,7 +339,25 @@ export default function MapScreen() {
       ) : null}
       <SearchBar />
       <VehicleBar />
-      {selectedMhdStation && <StationMhdInfo station={selectedMhdStation} />}
+      <BottomSheet
+        ref={bottomSheetRef}
+        onCloseEnd={handleSheetClose}
+        snapPoints={bottomSheetSnapPoints}
+        renderContent={() => {
+          return (
+            <View style={styles.bottomSheet}>
+              <View style={styles.bottomSheetHandleStyle}>
+                <View style={styles.bottomSheetHandleIndicatorStyle}></View>
+              </View>
+              <View style={styles.bottomSheetInnerStyle}>
+                {selectedMhdStation && (
+                  <StationMhdInfo station={selectedMhdStation} />
+                )}
+              </View>
+            </View>
+          )
+        }}
+      ></BottomSheet>
     </View>
   )
 }
@@ -321,11 +369,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  bottomSheet: {
+    marginTop: 10,
+    ...s.shadow,
+    borderTopLeftRadius: 7,
+    borderTopRightRadius: 7,
+    backgroundColor: '#fff',
+  },
+  bottomSheetInnerStyle: {
+    height: '100%',
+    display: 'flex',
+    paddingBottom: 50,
+  },
   map: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
+  },
+  bottomSheetHandleStyle: {
+    paddingVertical: 16,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bottomSheetHandleIndicatorStyle: {
+    width: 64,
+    height: 4,
+    backgroundColor: colors.lightGray,
+    borderRadius: 2,
   },
 })

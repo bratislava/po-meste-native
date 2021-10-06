@@ -21,6 +21,8 @@ export default {
   myLocation: 'Position',
   locationChoose: 'Find place',
   confirmLocation: 'Confirm location',
+  moveTheMapAndSelectTheDesiredPoint:
+    'Move the map and select the desired point.',
   doYouWantToContinue: 'Do you want to continue?',
   cancel: 'Cancel',
   continue: 'Continue',
@@ -29,7 +31,7 @@ export default {
     ticketsScreen: {
       smsModal: {
         title: 'Paid service',
-        bodyTexts:
+        bodyText:
           'SMS {{ticketName}} is a charged service. You will be charged {{price}} through your mobile carrier.',
         checkboxText: "I understand, don't ask next time.",
       },

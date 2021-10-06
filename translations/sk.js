@@ -21,6 +21,7 @@ export default {
   myLocation: 'Moja pozícia',
   locationChoose: 'Vyhľadaj miesto',
   confirmLocation: 'Potvrdiť miesto ',
+  moveTheMapAndSelectTheDesiredPoint: 'Pohnite mapou a zvoľte požadovaný bod.',
   doYouWantToContinue: 'Chcete pokračovať?',
   cancel: 'Zrušiť',
   continue: 'Pokračovať',

@@ -3,8 +3,9 @@ import i18n from 'i18n-js'
 import { StyleSheet, Text } from 'react-native'
 import CheckBox from 'react-native-check-box'
 
-import { Modal } from './index'
-import { Button, Link } from '.'
+import Modal from './Modal'
+import Button from './Button'
+import Link from './Link'
 import { colors } from '../utils/theme'
 
 export type ConfirmationModalProps = {

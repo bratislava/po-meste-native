@@ -27,6 +27,7 @@ export default {
   cancel: 'Cancel',
   continue: 'Continue',
   send: 'Send',
+  thankYou: 'Thank you',
   presentPrice: '€{{price}}',
   screens: {
     ticketsScreen: {

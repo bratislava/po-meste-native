@@ -25,6 +25,8 @@ export default {
   doYouWantToContinue: 'Chcete pokračovať?',
   cancel: 'Zrušiť',
   continue: 'Pokračovať',
+  send: 'Odoslať',
+  thankYou: 'Ďakujeme',
   presentPrice: '{{price}}€',
   screens: {
     ticketsScreen: {
@@ -45,6 +47,23 @@ export default {
           name: 'Lístok 24 hodín',
         },
       },
+    },
+    feedbackScreen: {
+      title: 'Ajaj. Čo nefungovalo?',
+      text: 'Mrzí nás, že navrhované trasy nesplnili vaše očakávania :(',
+      textAreaPlaceholder:
+        'Popíšte, prosím, čo nefungovalo alebo nám napíšte návrh na zlepšenie...',
+      thankYouText:
+        'Vďaka vašej odozve sme schopní appku stále vylepšovať a prinášať vám relevantnejšie trasy.',
+      backToSearch: 'Späť na vyhľadávanie',
+    },
+  },
+  components: {
+    feedbackAsker: {
+      title: 'Váš názor je pre nás dôležitý!',
+      text: 'Ako hodnotíte navrhnuté trasy?',
+      thankYouTitle: 'Ďakujeme za hodnotenie!',
+      thankYouText: 'Vaša odozva nám pomáha zlepšovať appku :)',
     },
   },
   searching: 'Vyhľadávanie',

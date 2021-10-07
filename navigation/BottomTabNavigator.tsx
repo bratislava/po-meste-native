@@ -8,26 +8,27 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
 import i18n from 'i18n-js'
 
-import HomeSearchSvg from '../assets/images/home-search.svg'
-import TicketSvg from '../assets/images/ticket-alt.svg'
-import BurgerMenuSvg from '../assets/images/burger-menu.svg'
+import HomeSearchSvg from '@images/home-search.svg'
+import TicketSvg from '@images/ticket-alt.svg'
+import BurgerMenuSvg from '@images/burger-menu.svg'
 
-import TicketsScreen from '../screens/TicketsScreen'
-import MapScreen from '../screens/MapScreen'
-import TabTwoScreen from '../screens/TabTwoScreen'
+import TicketsScreen from '@screens/TicketsScreen'
+import MapScreen from '@screens/MapScreen'
+import TabTwoScreen from '@screens/TabTwoScreen'
 import {
   BottomTabParamList,
   TicketsParamList,
   MapParamList,
   TabTwoParamList,
 } from '../types'
-import SmsScreen from '../screens/SmsScreen'
-import FromToScreen from '../screens/FromToScreen'
-import PlannerScreen from '../screens/PlannerScreen'
-import LineTimeline from '../screens/LineTimeline'
-import { GlobalStateContext } from '../screens/ui/VehicleBar/GlobalStateProvider'
-import Timetable from '../screens/Timetable'
-import ChooseLocation from '../screens/ChooseLocation'
+import SmsScreen from '@screens/SmsScreen'
+import FromToScreen from '@screens/FromToScreen'
+import PlannerScreen from '@screens/PlannerScreen'
+import LineTimeline from '@screens/LineTimeline'
+import { GlobalStateContext } from '@screens/ui/VehicleBar/GlobalStateProvider'
+import Timetable from '@screens/Timetable'
+import ChooseLocation from '@screens/ChooseLocation'
+import Feedback from '@screens/FeedbackScreen'
 
 import TabBar from './TabBar'
 
@@ -126,6 +127,11 @@ function MapNavigator() {
         }}
       />
       <MapStack.Screen name="ChooseLocation" component={ChooseLocation} />
+      <MapStack.Screen
+        name="Feedback"
+        component={Feedback}
+        options={{ headerShown: false }}
+      />
     </MapStack.Navigator>
   )
 }

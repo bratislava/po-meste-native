@@ -1,4 +1,11 @@
-import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react'
+import React, {
+  useMemo,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useContext,
+} from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import i18n from 'i18n-js'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -15,11 +22,13 @@ import Constants from 'expo-constants'
 import { StackScreenProps } from '@react-navigation/stack'
 import * as Location from 'expo-location'
 
-import { Button } from '../components'
-import { getTripPlanner } from '../utils/api'
-import { apiOtpPlanner } from '../utils/validation'
+import { Button } from '@components/index'
+import { getTripPlanner } from '@utils/api'
+import { apiOtpPlanner } from '@utils/validation'
 import { MapParamList } from '../types'
-import { LocationGeocodedAddress } from 'expo-location'
+import FeedbackAsker from './ui/FeedbackAsker/FeedbackAsker'
+
+import { GlobalStateContext } from '@components/GlobalStateProvider'
 
 export default function FromToScreen({
   route,
@@ -83,7 +92,7 @@ export default function FromToScreen({
   const getGeocodeAsync = useCallback(
     async (
       location: { latitude: number; longitude: number },
-      setGeocode: (locatoion: LocationGeocodedAddress[]) => void
+      setGeocode: (locatoion: Location.LocationGeocodedAddress[]) => void
     ) => {
       const { status } = await Location.requestForegroundPermissionsAsync()
       if (status !== 'granted') {
@@ -128,7 +137,7 @@ export default function FromToScreen({
 
   const getLocationAsync = async (
     setLocation: (location: { latitude: number; longitude: number }) => void,
-    setGeocode: (location: LocationGeocodedAddress[]) => void
+    setGeocode: (location: Location.LocationGeocodedAddress[]) => void
   ) => {
     const { status } = await Location.requestForegroundPermissionsAsync()
 
@@ -191,6 +200,12 @@ export default function FromToScreen({
     details: GooglePlaceDetail | null = null
   ) => {
     onGooglePlaceChosen(details, setToCoordinates)
+  }
+
+  const { setFeedbackSent } = useContext(GlobalStateContext)
+
+  const handlePositiveFeedback = () => {
+    setFeedbackSent(true)
   }
 
   return (
@@ -282,6 +297,12 @@ export default function FromToScreen({
               </View>
             )
           })}
+          <FeedbackAsker
+            onNegativeFeedbackPress={() => {
+              navigation.navigate('Feedback')
+            }}
+            onPositiveFeedbackPress={handlePositiveFeedback}
+          />
         </ScrollView>
       </SafeAreaView>
     </>
@@ -291,13 +312,12 @@ export default function FromToScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'stretch',
-    justifyContent: 'center',
-    marginHorizontal: 20,
+    height: '100%',
+    paddingBottom: 55,
+    backgroundColor: 'white',
   },
   scrollView: {
-    minWidth: '100%',
-    borderWidth: 1,
+    flex: 1,
   },
   googleFrom: {
     flexDirection: 'row',

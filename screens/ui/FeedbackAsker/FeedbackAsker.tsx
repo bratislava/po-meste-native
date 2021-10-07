@@ -7,6 +7,7 @@ import ThumbUp from '@images/thumb-up.svg'
 import ThumbDown from '@images/thumb-down.svg'
 
 import { colors } from '@utils/theme'
+import i18n from 'i18n-js'
 
 export type FeedbackProps = {
   onPositiveFeedbackPress: () => void
@@ -23,8 +24,12 @@ const Feedback = ({
     return (
       <View style={styles.container}>
         <View style={styles.textContainer}>
-          <Text style={styles.title}>Váš názor je pre nás dôležitý!</Text>
-          <Text style={styles.subtitle}>Ako hodnotíte navrhnuté trasy?</Text>
+          <Text style={styles.title}>
+            {i18n.t('components.feedbackAsker.title')}
+          </Text>
+          <Text style={styles.subtitle}>
+            {i18n.t('components.feedbackAsker.text')}
+          </Text>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity
@@ -61,9 +66,11 @@ const Feedback = ({
           />
         </View>
         <View style={styles.textContainer}>
-          <Text style={styles.title}>Ďakujeme za hodnotenie!</Text>
+          <Text style={styles.title}>
+            {i18n.t('components.feedbackAsker.thankYouTitle')}
+          </Text>
           <Text style={styles.subtitle}>
-            Vaša odozva nám pomáha zlepšovať appku :)
+            {i18n.t('components.feedbackAsker.thankYouText')}
           </Text>
         </View>
       </View>

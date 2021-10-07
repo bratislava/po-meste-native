@@ -18,6 +18,7 @@ import XIcon from '@images/x.svg'
 import Button from '@components/Button'
 import { colors } from '@utils/theme'
 import { useNavigation } from '@react-navigation/native'
+import i18n from 'i18n-js'
 
 const FeedbackScreen = () => {
   const [feedbackText, setFeedbackText] = useState('')
@@ -47,21 +48,23 @@ const FeedbackScreen = () => {
           </TouchableOpacity>
           <ThumbDown style={styles.icon} width={48} height={48} fill={c.icon} />
           <View>
-            <Text style={styles.title}>Ajaj. Čo nefungovalo?</Text>
+            <Text style={styles.title}>
+              {i18n.t('screens.feedbackScreen.title')}
+            </Text>
             <Text style={styles.text}>
-              Mrzí nás, že navrhované trasy nesplnili vaše očakávania :(
+              {i18n.t('screens.feedbackScreen.text')}
             </Text>
           </View>
           <TextInput
             style={styles.textArea}
             multiline
             onChangeText={(text) => setFeedbackText(text)}
-            placeholder="Popíšte, prosím, čo nefungovalo alebo nám napíšte návrh na zlepšenie..."
+            placeholder={i18n.t('screens.feedbackScreen.textAreaPlaceholder')}
           />
           <Button
             style={styles.button}
             onPress={handleFeedbackSent}
-            title="Odoslať"
+            title={i18n.t('send')}
             disabled={!feedbackText.length}
           />
         </ScrollView>
@@ -79,16 +82,15 @@ const FeedbackScreen = () => {
             />
           </TouchableOpacity>
           <View>
-            <Text style={styles.title}>Ďakujeme!</Text>
+            <Text style={styles.title}>{i18n.t('thankYou')}!</Text>
             <Text style={styles.text}>
-              Vďaka vašej odozve sme schopní appku stále vylepšovať a prinášať
-              vám relevantnejšie trasy.
+              {i18n.t('screens.feedbackScreen.thankYouText')}
             </Text>
           </View>
           <Button
             style={styles.button}
             onPress={navigation.goBack}
-            title="Späť na vyhľadávanie"
+            title={i18n.t('screens.feedbackScreen.backToSearch')}
           />
         </ScrollView>
       )}

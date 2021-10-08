@@ -4,7 +4,7 @@ export default {
   name: 'hybaj',
   owner: 'bratislava',
   slug: 'hybaj',
-  version: '1.0.0',
+  version: '2.0.0',
   orientation: 'portrait',
   icon: './assets/images/icon.png',
   scheme: 'myapp',
@@ -23,9 +23,16 @@ export default {
   },
   android: {
     softwareKeyboardLayoutMode: 'pan',
+    package: 'com.bratislava.hybaj',
+    versionCode: 2,
     adaptiveIcon: {
       foregroundImage: './assets/images/adaptive-icon.png',
       backgroundColor: '#ffffff',
+    },
+    config: {
+      googleMaps: {
+        apiKey: process.env.GOOGLE_MAPS_API_KEY,
+      },
     },
   },
   web: {
@@ -49,6 +56,19 @@ export default {
       'json',
       'wasm',
       'svg',
+    ],
+  },
+  plugins: ['sentry-expo'],
+  hooks: {
+    postPublish: [
+      {
+        file: 'sentry-expo/upload-sourcemaps',
+        config: {
+          organization: 'bratislava-city-hall', // Sentry Organization settings tab
+          project: 'hybaj-react-native', //Sentry Settings > General Settings tab
+          authToken: process.env.SENTRY_AUTH_TOKEN,
+        },
+      },
     ],
   },
 }

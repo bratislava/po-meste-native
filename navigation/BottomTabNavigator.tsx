@@ -100,7 +100,7 @@ function MapNavigator() {
       <MapStack.Screen
         name="FromToScreen"
         component={FromToScreen}
-        options={{ headerTitle: i18n.t('tabOneTitle') }}
+        options={{ headerTitle: i18n.t('tabOneTitle'), headerShown: false }}
       />
       <MapStack.Screen
         name="PlannerScreen"

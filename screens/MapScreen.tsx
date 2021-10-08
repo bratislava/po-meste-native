@@ -7,7 +7,7 @@ import React, {
   useRef,
 } from 'react'
 import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps'
-import { StyleSheet, View, Text, ImageURISource } from 'react-native'
+import { StyleSheet, View, ImageURISource } from 'react-native'
 import BottomSheet from 'reanimated-bottom-sheet'
 
 import { BikeProvider, VehicleType } from '../types'

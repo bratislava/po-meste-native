@@ -10,6 +10,7 @@ import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps'
 import { StyleSheet, View, ImageURISource } from 'react-native'
 import BottomSheet from 'reanimated-bottom-sheet'
 
+import ErrorView from '@components/ErrorView/ErrorView'
 import { BikeProvider, VehicleType } from '../types'
 import SearchBar from './ui/SearchBar/SearchBar'
 import VehicleBar from './ui/VehicleBar/VehicleBar'
@@ -77,7 +78,11 @@ const markerIcons: { [index: string]: markerIcon } = {
 
 export default function MapScreen() {
   // TODO handle loading / error
-  const { data: dataMhd, isLoading: isLoadingMhd } = useMhdData()
+  const {
+    data: dataMhd,
+    isLoading: isLoadingMhd,
+    errors: errorsMhd,
+  } = useMhdData()
   const { data: dataTier, isLoading: isLoadingTier } = useTierData()
   const { data: dataZseChargers, isLoading: isLoadingZseChargers } =
     useZseChargersData()
@@ -99,8 +104,6 @@ export default function MapScreen() {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   })
-  const [bottomSheetFullyExpanded, setBottomSheetFullyExpanded] =
-    useState<boolean>(true)
 
   const bottomSheetRef = useRef<BottomSheet>(null)
 
@@ -251,85 +254,89 @@ export default function MapScreen() {
 
   return (
     <View style={styles.container}>
-      <MapView
-        provider={PROVIDER_GOOGLE}
-        style={styles.map}
-        initialRegion={{
-          latitude: 48.1512015,
-          longitude: 17.1110118,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
-        onRegionChangeComplete={(region) => setRegion(region)}
-      >
-        {vehiclesContext.vehicleTypes?.find(
-          (vehicleType) => vehicleType.id === VehicleType.mhd
-        )?.show &&
-          dataMhd &&
-          filterMhdInView(dataMhd).map((stop) => (
-            <Marker
-              key={stop.stationStopId}
-              coordinate={{
-                latitude: parseFloat(stop.gpsLat),
-                longitude: parseFloat(stop.gpsLon),
-              }}
-              tracksViewChanges={false}
-              onPress={() => setSelectedMhdStation(stop)}
-              icon={getIcon('mhd')}
-            />
-          ))}
-        {vehiclesContext.vehicleTypes?.find(
-          (vehicleType) => vehicleType.id === VehicleType.scooter
-        )?.show &&
-          dataTier &&
-          filterTierInView(dataTier).map((vehicle) => {
-            return (
+      {errorsMhd ? (
+        <ErrorView error={errorsMhd} />
+      ) : (
+        <MapView
+          provider={PROVIDER_GOOGLE}
+          style={styles.map}
+          initialRegion={{
+            latitude: 48.1512015,
+            longitude: 17.1110118,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+          onRegionChangeComplete={(region) => setRegion(region)}
+        >
+          {vehiclesContext.vehicleTypes?.find(
+            (vehicleType) => vehicleType.id === VehicleType.mhd
+          )?.show &&
+            dataMhd &&
+            filterMhdInView(dataMhd).map((stop) => (
               <Marker
-                key={vehicle.bike_id}
-                coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
+                key={stop.stationStopId}
+                coordinate={{
+                  latitude: parseFloat(stop.gpsLat),
+                  longitude: parseFloat(stop.gpsLon),
+                }}
                 tracksViewChanges={false}
-                icon={getIcon('scooter')}
+                onPress={() => setSelectedMhdStation(stop)}
+                icon={getIcon('mhd')}
               />
-            )
-          })}
+            ))}
+          {vehiclesContext.vehicleTypes?.find(
+            (vehicleType) => vehicleType.id === VehicleType.scooter
+          )?.show &&
+            dataTier &&
+            filterTierInView(dataTier).map((vehicle) => {
+              return (
+                <Marker
+                  key={vehicle.bike_id}
+                  coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
+                  tracksViewChanges={false}
+                  icon={getIcon('scooter')}
+                />
+              )
+            })}
 
-        {vehiclesContext.vehicleTypes?.find(
-          (vehicleType) => vehicleType.id === VehicleType.bicycle
-        )?.show &&
-          dataMergedRekola &&
-          renderStations(dataMergedRekola, BikeProvider.rekola)}
-        {vehiclesContext.vehicleTypes?.find(
-          (vehicleType) => vehicleType.id === VehicleType.bicycle
-        )?.show &&
-          dataMergedSlovnaftbajk &&
-          renderStations(dataMergedSlovnaftbajk, BikeProvider.slovnaftbajk)}
-        {vehiclesContext.vehicleTypes?.find(
-          (vehicleType) => vehicleType.id === VehicleType.chargers
-        )?.show &&
-          dataZseChargers &&
-          filterZseChargersInView(dataZseChargers).reduce<JSX.Element[]>(
-            (accumulator, charger) => {
-              if (
-                charger.coordinates.latitude &&
-                charger.coordinates.longitude
-              ) {
-                const marker = (
-                  <Marker
-                    key={charger.id}
-                    coordinate={{
-                      latitude: charger.coordinates.latitude,
-                      longitude: charger.coordinates.longitude,
-                    }}
-                    tracksViewChanges={false}
-                    icon={getIcon('charger')}
-                  />
-                )
-                return accumulator.concat(marker)
-              } else return accumulator
-            },
-            []
-          )}
-      </MapView>
+          {vehiclesContext.vehicleTypes?.find(
+            (vehicleType) => vehicleType.id === VehicleType.bicycle
+          )?.show &&
+            dataMergedRekola &&
+            renderStations(dataMergedRekola, BikeProvider.rekola)}
+          {vehiclesContext.vehicleTypes?.find(
+            (vehicleType) => vehicleType.id === VehicleType.bicycle
+          )?.show &&
+            dataMergedSlovnaftbajk &&
+            renderStations(dataMergedSlovnaftbajk, BikeProvider.slovnaftbajk)}
+          {vehiclesContext.vehicleTypes?.find(
+            (vehicleType) => vehicleType.id === VehicleType.chargers
+          )?.show &&
+            dataZseChargers &&
+            filterZseChargersInView(dataZseChargers).reduce<JSX.Element[]>(
+              (accumulator, charger) => {
+                if (
+                  charger.coordinates.latitude &&
+                  charger.coordinates.longitude
+                ) {
+                  const marker = (
+                    <Marker
+                      key={charger.id}
+                      coordinate={{
+                        latitude: charger.coordinates.latitude,
+                        longitude: charger.coordinates.longitude,
+                      }}
+                      tracksViewChanges={false}
+                      icon={getIcon('charger')}
+                    />
+                  )
+                  return accumulator.concat(marker)
+                } else return accumulator
+              },
+              []
+            )}
+        </MapView>
+      )}
       {isLoadingMhd ||
       isLoadingRekola ||
       isLoadingSlovnaftbajk ||

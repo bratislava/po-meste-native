@@ -50,4 +50,17 @@ export default {
       'svg',
     ],
   },
+  plugins: ['sentry-expo'],
+  hooks: {
+    postPublish: [
+      {
+        file: 'sentry-expo/upload-sourcemaps',
+        config: {
+          organization: 'bratislava-city-hall', // Sentry Organization settings tab
+          project: 'hybaj-react-native', //Sentry Settings > General Settings tab
+          authToken: process.env.SENTRY_AUTH_TOKEN,
+        },
+      },
+    ],
+  },
 }

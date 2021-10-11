@@ -72,15 +72,9 @@ const FromToSelector = ({
   )
 }
 
-const c = {
-  border: colors.lightGray,
-  placeholder: colors.gray,
-  path: colors.gray,
-}
-
 const styles = StyleSheet.create({
   container: {
-    borderColor: c.border,
+    borderColor: colors.lightGray,
     borderWidth: 1,
     backgroundColor: 'white',
     borderRadius: 7,
@@ -95,7 +89,7 @@ const styles = StyleSheet.create({
   },
   dashedLine: {
     flex: 1,
-    borderColor: c.path,
+    borderColor: colors.gray,
     borderWidth: 1,
     width: 0,
     borderRadius: 1,
@@ -124,10 +118,10 @@ const styles = StyleSheet.create({
   line: {
     width: '100%',
     height: 1,
-    backgroundColor: c.border,
+    backgroundColor: colors.lightGray,
   },
   inputTextPlaceholder: {
-    color: c.placeholder,
+    color: colors.gray,
   },
 })
 

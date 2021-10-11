@@ -66,3 +66,21 @@ useQuery(['getStationById', id], () => getStationsById(id))
 ## Validating data
 
 We use [yup](https://github.com/jquense/yup). Useful not only as a sanity check but also to provide you with types and autocomplete. Validations reside in `validation.ts`.
+
+## Release
+
+To release new `.apk` to Play Store:
+    1. `yarn create-production-apk`
+    2. wait for Expo to build new `.apk` `https://expo.dev/accounts/bratislava/projects/hybaj/builds`
+    3. Download produced `.apk`
+    3. Create new release to desired release channels, e.g. Internal testing 
+        `https://play.google.com/console/u/1/developers/5957584533981072671/app/4975790424614272614/app-dashboard?timespan=thirtyDays`
+    4. Upload new `.apk`
+
+To release application through `expo publish`:
+    1. `app.config.js` property `version` MUST be moddified
+    2. `expo publish --release-channel production`
+
+## Additional info
+
+When aplication is installed from play store, version installed is always from last `.apk` file uploaded to store, then OTA updates is applied.

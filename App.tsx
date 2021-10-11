@@ -14,6 +14,7 @@ import Navigation from '@navigation/index'
 import GlobalStateProvider from '@screens/ui/VehicleBar/GlobalStateProvider'
 import * as Location from 'expo-location'
 import Constants from 'expo-constants'
+import * as Sentry from 'sentry-expo'
 
 i18n.translations = translations
 

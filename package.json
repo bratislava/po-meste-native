@@ -9,7 +9,8 @@
     "test": "jest --watchAll",
     "check-eslint": "eslint --max-warnings 0 ./components ./hooks ./navigation ./screens ./translations ./utils ./App.tsx",
     "check-ts": "tsc --noEmit --skipLibCheck",
-    "check-code": "yarn check-eslint && yarn check-ts"
+    "check-code": "yarn check-eslint && yarn check-ts",
+    "create-production-apk": "expo build:android --release-channel production -t apk"
   },
   "jest": {
     "preset": "jest-expo"

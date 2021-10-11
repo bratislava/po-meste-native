@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import i18n from 'i18n-js'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -253,9 +253,6 @@ export default function FromToScreen({
           toPlaceText={toName}
           fromPlaceTextPlaceholder={i18n.t('fromPlaceholder')}
           toPlaceTextPlaceholder={i18n.t('toPlaceholder')}
-          fromPlaceText="from place set"
-          fromPlaceTextPlaceholder="Odkiaľ idete?"
-          toPlaceTextPlaceholder="Kamže, kam?"
         />
       </View>
 
@@ -264,75 +261,6 @@ export default function FromToScreen({
           vehicles={vehicles}
           onVehicleChange={onVehicleChange}
           selectedVehicle={selectedVehicle}
-        />
-      </View>
-
-      <View style={styles.googleFrom}>
-        <GooglePlacesAutocomplete
-          ref={fromRef}
-          styles={autoCompleteStyles}
-          enablePoweredByContainer={false}
-          fetchDetails
-          placeholder={i18n.t('from')}
-          onPress={onGooglePlaceFromChosen}
-          query={{
-            key: Constants.manifest?.extra?.googlePlacesApiKey,
-            language: 'sk',
-            location: '48.1512015, 17.1110118',
-            radius: '22000', //22 km
-            strictbounds: true,
-          }}
-        />
-        <Button
-          onPress={() => getLocationAsync(setFromCoordinates, setFromGeocode)}
-          title={i18n.t('myLocation')}
-        />
-        <Button
-          onPress={() =>
-            navigation.navigate('ChooseLocation', {
-              latitude: fromCoordinates?.latitude,
-              longitude: fromCoordinates?.longitude,
-              onConfirm: (latitude: number, longitude: number) => {
-                setFromName(`${latitude}, ${longitude}`)
-                setFromCoordinates({ latitude, longitude })
-              },
-            })
-          }
-          title={i18n.t('locationChoose')}
-        />
-      </View>
-      <View style={styles.googleFrom}>
-        <GooglePlacesAutocomplete
-          ref={toRef}
-          styles={autoCompleteStyles}
-          enablePoweredByContainer={false}
-          fetchDetails
-          placeholder={i18n.t('to')}
-          onPress={onGooglePlaceToChosen}
-          query={{
-            key: Constants.manifest?.extra?.googlePlacesApiKey,
-            language: 'sk',
-            location: '48.1512015, 17.1110118',
-            radius: '22000', //22 km
-            strictbounds: true,
-          }}
-        />
-        <Button
-          onPress={() => getLocationAsync(setToCoordinates, setToGeocode)}
-          title={i18n.t('myLocation')}
-        />
-        <Button
-          onPress={() =>
-            navigation.navigate('ChooseLocation', {
-              latitude: toCoordinates?.latitude,
-              longitude: toCoordinates?.longitude,
-              onConfirm: (latitude: number, longitude: number) => {
-                setToName(`${latitude}, ${longitude}`)
-                setToCoordinates({ latitude, longitude })
-              },
-            })
-          }
-          title={i18n.t('locationChoose')}
         />
       </View>
       <ScrollView contentContainerStyle={styles.scrollView}>
@@ -411,13 +339,5 @@ const styles = StyleSheet.create({
   scrollView: {
     minWidth: '100%',
     padding: 20,
-  },
-  trip: {
-    paddingHorizontal: 10,
-    borderWidth: 1,
-  },
-  googleFrom: {
-    flexDirection: 'row',
-    marginHorizontal: 10,
   },
 })

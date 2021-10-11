@@ -10,7 +10,6 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import useCachedResources from '@hooks/useCachedResources'
 import useColorScheme from '@hooks/useColorScheme'
 import Navigation from '@navigation/index'
-import VehicleGlobalStateProvider from '@screens/ui/VehicleBar/GlobalStateProvider'
 import GlobalStateProvider from '@components/GlobalStateProvider'
 import * as Location from 'expo-location'
 import Constants from 'expo-constants'
@@ -33,14 +32,12 @@ export default function App() {
   } else {
     return (
       <GlobalStateProvider>
-        <VehicleGlobalStateProvider>
-          <QueryClientProvider client={queryClient}>
-            <SafeAreaProvider>
-              <Navigation colorScheme={colorScheme} />
-              <StatusBar />
-            </SafeAreaProvider>
-          </QueryClientProvider>
-        </VehicleGlobalStateProvider>
+        <QueryClientProvider client={queryClient}>
+          <SafeAreaProvider>
+            <Navigation colorScheme={colorScheme} />
+            <StatusBar />
+          </SafeAreaProvider>
+        </QueryClientProvider>
       </GlobalStateProvider>
     )
   }

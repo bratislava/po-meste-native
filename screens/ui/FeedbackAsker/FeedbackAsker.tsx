@@ -38,7 +38,7 @@ const Feedback = ({
           >
             <ThumbDown
               fill={colors.primary}
-              stroke={c.background}
+              stroke={colors.lightLightGray}
               strokeWidth={1}
             />
           </TouchableOpacity>
@@ -48,7 +48,7 @@ const Feedback = ({
           >
             <ThumbUp
               fill={colors.primary}
-              stroke={c.background}
+              stroke={colors.lightLightGray}
               strokeWidth={1}
             />
           </TouchableOpacity>
@@ -61,7 +61,7 @@ const Feedback = ({
         <View style={styles.thumbUpButtonAfterFeedback}>
           <ThumbUp
             fill={colors.primary}
-            stroke={c.background}
+            stroke={colors.lightLightGray}
             strokeWidth={1}
           />
         </View>
@@ -78,15 +78,9 @@ const Feedback = ({
   }
 }
 
-const c = {
-  background: colors.lightLightGray,
-  title: colors.primary,
-  subtitle: colors.darkText,
-}
-
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: c.background,
+    backgroundColor: colors.lightLightGray,
     paddingHorizontal: 20,
     paddingVertical: 16,
     display: 'flex',
@@ -98,10 +92,10 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   title: {
-    color: c.title,
+    color: colors.primary,
   },
   subtitle: {
-    color: c.subtitle,
+    color: colors.darkText,
   },
   buttonContainer: {
     display: 'flex',

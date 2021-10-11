@@ -13,7 +13,6 @@ import * as Sentry from 'sentry-expo'
 import useCachedResources from '@hooks/useCachedResources'
 import useColorScheme from '@hooks/useColorScheme'
 import Navigation from '@navigation/index'
-import VehicleGlobalStateProvider from '@screens/ui/VehicleBar/GlobalStateProvider'
 import GlobalStateProvider from '@components/GlobalStateProvider'
 
 i18n.translations = translations
@@ -40,14 +39,12 @@ export default function App() {
   } else {
     return (
       <GlobalStateProvider>
-        <VehicleGlobalStateProvider>
-          <QueryClientProvider client={queryClient}>
-            <SafeAreaProvider>
-              <Navigation colorScheme={colorScheme} />
-              <StatusBar />
-            </SafeAreaProvider>
-          </QueryClientProvider>
-        </VehicleGlobalStateProvider>
+        <QueryClientProvider client={queryClient}>
+          <SafeAreaProvider>
+            <Navigation colorScheme={colorScheme} />
+            <StatusBar />
+          </SafeAreaProvider>
+        </QueryClientProvider>
       </GlobalStateProvider>
     )
   }

@@ -20,6 +20,7 @@ import { getTripPlanner } from '../utils/api'
 import { apiOtpPlanner } from '../utils/validation'
 import { MapParamList } from '../types'
 import { LocationGeocodedAddress } from 'expo-location'
+import TripMiniature from './ui/TripMiniature/TripMiniature'
 
 export default function FromToScreen({
   route,
@@ -267,19 +268,25 @@ export default function FromToScreen({
         <ScrollView contentContainerStyle={styles.scrollView}>
           {validatedOtpData?.plan?.itineraries?.map((tripChoice, index) => {
             return (
-              <View style={styles.trip} key={index}>
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate('PlannerScreen', {
-                      legs: tripChoice?.legs,
-                    })
-                  }
-                >
-                  <Text>{`trip ${index} duration: ${tripChoice.duration}`}</Text>
-                  <Text>{new Date(tripChoice.startTime).toISOString()}</Text>
-                  <Text>{new Date(tripChoice.endTime).toISOString()}</Text>
-                </TouchableOpacity>
-              </View>
+              // <View style={styles.trip} key={index}>
+              //   <TouchableOpacity
+              //     onPress={() =>
+              //       navigation.navigate('PlannerScreen', {
+              //         legs: tripChoice?.legs,
+              //       })
+              //     }
+              //   >
+              //     <Text>{`trip ${index} duration: ${tripChoice.duration}`}</Text>
+              //     <Text>{new Date(tripChoice.startTime).toISOString()}</Text>
+              //     <Text>{new Date(tripChoice.endTime).toISOString()}</Text>
+              //   </TouchableOpacity>
+              // </View>
+              <TripMiniature
+                key={index}
+                duration={tripChoice.duration}
+                startTime={tripChoice.startTime}
+                endTime={tripChoice.endTime}
+              />
             )
           })}
         </ScrollView>

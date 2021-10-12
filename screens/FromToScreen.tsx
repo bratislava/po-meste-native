@@ -213,29 +213,22 @@ export default function FromToScreen({
           toPlaceTextPlaceholder={i18n.t('toPlaceholder')}
         />
         <ScrollView contentContainerStyle={styles.scrollView}>
-          <TripMiniature duration={1} startTime={1} endTime={2} />
-
           {validatedOtpData?.plan?.itineraries?.map((tripChoice, index) => {
             return (
-              // <View style={styles.trip} key={index}>
-              //   <TouchableOpacity
-              //     onPress={() =>
-              //       navigation.navigate('PlannerScreen', {
-              //         legs: tripChoice?.legs,
-              //       })
-              //     }
-              //   >
-              //     <Text>{`trip ${index} duration: ${tripChoice.duration}`}</Text>
-              //     <Text>{new Date(tripChoice.startTime).toISOString()}</Text>
-              //     <Text>{new Date(tripChoice.endTime).toISOString()}</Text>
-              //   </TouchableOpacity>
-              // </View>
-              <TripMiniature
-                key={index}
-                duration={tripChoice.duration}
-                startTime={tripChoice.startTime}
-                endTime={tripChoice.endTime}
-              />
+              <>
+                <TripMiniature
+                  key={index}
+                  onPress={() =>
+                    navigation.navigate('PlannerScreen', {
+                      legs: tripChoice?.legs,
+                    })
+                  }
+                  duration={tripChoice.duration}
+                  departureTime={tripChoice.startTime}
+                  ariveTime={tripChoice.endTime}
+                  legs={tripChoice.legs}
+                />
+              </>
             )
           })}
         </ScrollView>
@@ -295,10 +288,14 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     minWidth: '100%',
-    padding: 10,
+    padding: 20,
   },
   trip: {
     paddingHorizontal: 10,
     borderWidth: 1,
+  },
+  googleFrom: {
+    flexDirection: 'row',
+    marginHorizontal: 10,
   },
 })

@@ -275,6 +275,8 @@ export default function FromToScreen({
           />
         </View>
         <ScrollView contentContainerStyle={styles.scrollView}>
+          <TripMiniature duration={1} startTime={1} endTime={2} />
+
           {validatedOtpData?.plan?.itineraries?.map((tripChoice, index) => {
             return (
               // <View style={styles.trip} key={index}>
@@ -316,7 +318,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     minWidth: '100%',
-    borderWidth: 1,
+    padding: 10,
   },
   googleFrom: {
     flexDirection: 'row',

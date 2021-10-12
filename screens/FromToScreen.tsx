@@ -213,6 +213,8 @@ export default function FromToScreen({
           toPlaceTextPlaceholder={i18n.t('toPlaceholder')}
         />
         <ScrollView contentContainerStyle={styles.scrollView}>
+          <TripMiniature duration={1} startTime={1} endTime={2} />
+
           {validatedOtpData?.plan?.itineraries?.map((tripChoice, index) => {
             return (
               // <View style={styles.trip} key={index}>
@@ -293,7 +295,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     minWidth: '100%',
-    borderWidth: 1,
+    padding: 10,
   },
   trip: {
     paddingHorizontal: 10,

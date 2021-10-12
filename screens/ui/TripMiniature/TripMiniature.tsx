@@ -1,21 +1,64 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import Moment from 'react-moment'
 
 import { colors } from '@utils/theme'
 
-import ArrowRightSvg from '@images/arrow-right.svg'
+import ChevronRightSvg from '@images/chevron-right-small.svg'
+import WalkingSvg from '@images/walking.svg'
+import CyclingSvg from '@images/cycling.svg'
 
-type StepProps = { number: number; color: string; isLast?: boolean }
+import { LegProps } from '@utils/validation'
+import { Modes } from '../../../types'
 
-const Step = ({ number, color, isLast = false }: StepProps) => {
+type LegComponentProps = {
+  number?: number | string
+  color?: string
+  isLast?: boolean
+  duration?: number
+  mode?: Modes
+}
+
+const LegComponent = ({
+  mode = Modes.bus,
+  number,
+  color,
+  isLast = false,
+  duration = 0,
+}: LegComponentProps) => {
+  const isIndividualTransport = mode == Modes.walk || mode == Modes.bicycle
+
   return (
-    <View style={styles.step}>
-      <View style={[styles.stepBox, { backgroundColor: color }]}>
-        <Text style={styles.stepNumber}>{number}</Text>
-      </View>
+    <View style={styles.leg}>
+      {(isIndividualTransport && (
+        <View style={styles.legWalkingContainer}>
+          {(mode == Modes.walk && (
+            <WalkingSvg width={20} height={20} fill="black" />
+          )) ||
+            (mode == Modes.bicycle && (
+              <CyclingSvg width={30} height={20} fill="black" />
+            ))}
+          <View style={styles.legDurationContainer}>
+            <Text style={styles.legDurationNumber}>
+              {Math.round(duration / 60)}
+            </Text>
+            <Text>min</Text>
+          </View>
+        </View>
+      )) || (
+        <View
+          style={[
+            styles.legBox,
+            { backgroundColor: color ? `#${color}` : 'black' },
+          ]}
+        >
+          <Text style={styles.legNumber}>{number ?? '?'}</Text>
+        </View>
+      )}
+
       {!isLast && (
-        <View style={styles.stepArrowContainer}>
-          <ArrowRightSvg fill={colors.gray} />
+        <View style={styles.legArrowContainer}>
+          <ChevronRightSvg width={12} height={12} fill={colors.gray} />
         </View>
       )}
     </View>
@@ -24,37 +67,94 @@ const Step = ({ number, color, isLast = false }: StepProps) => {
 
 type Props = {
   duration: number
-  startTime: number
-  endTime: number
+  departureTime: number
+  ariveTime: number
+  legs?: LegProps[]
+  onPress: () => void
 }
 
-const TripMiniature = ({ duration }: Props) => {
+const TripMiniature = ({
+  duration,
+  departureTime,
+  ariveTime,
+  legs,
+  onPress,
+}: Props) => {
+  const [displayedDuration, setDisplayedDuration] = useState(0)
+  const [displayedDeparture, setDisplayedDeparture] = useState<Date>(new Date())
+  const [displayedArive, setDisplayedArive] = useState<Date>(new Date())
+  const [displayedStartStationName, setStartStationName] = useState('')
+
+  useEffect(() => {
+    setDisplayedDuration(Math.round(duration / 60))
+  }, [duration])
+
+  useEffect(() => {
+    setDisplayedDeparture(new Date(departureTime))
+  }, [departureTime])
+
+  useEffect(() => {
+    setDisplayedArive(new Date(ariveTime))
+  }, [ariveTime])
+
+  useEffect(() => {
+    if (legs) {
+      setStartStationName(
+        legs.find((leg) => leg.mode == Modes.bus)?.headsign || ''
+      )
+    }
+  }, [legs])
+
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity onPress={onPress} style={styles.container}>
       <View style={styles.containerInner}>
         <View style={styles.leftContainer}>
-          <View style={styles.stepsContainer}>
-            <Step color="#A79ECD" number={33} />
-            <Step color="#7690C9" number={4} />
-            <Step color="#A79ECD" number={33} />
-            <Step color="#7690C9" number={4} />
-            <Step isLast color="#5DB56E" number={39} />
-          </View>
-          <View style={styles.atTimeContainer}>
-            <Text style={styles.atTime}>o 13 min</Text>
-            <Text> z </Text>
-            <Text>Dlhé diely</Text>
-          </View>
+          {legs && (
+            <View style={styles.legsContainer}>
+              {legs.map((leg, index) => {
+                if (leg.mode == Modes.bus) {
+                  console.log(leg)
+                }
+                return (
+                  <LegComponent
+                    key={index}
+                    isLast={++index == legs.length}
+                    mode={leg.mode as Modes}
+                    duration={leg.duration}
+                    color={leg.routeColor}
+                    number={leg.routeShortName}
+                  />
+                )
+              })}
+            </View>
+          )}
+          {displayedStartStationName.length > 0 && (
+            <View style={styles.atTimeContainer}>
+              <Moment
+                element={Text}
+                style={styles.atTime}
+                interval={5000}
+                date={departureTime}
+                trim
+                fromNow
+              />
+              <Text numberOfLines={1}>z {displayedStartStationName}</Text>
+            </View>
+          )}
         </View>
         <View style={styles.rightContainer}>
           <View style={styles.durationContainer}>
-            <Text style={styles.durationNumber}>25</Text>
+            <Text style={styles.durationNumber}>{displayedDuration}</Text>
             <Text style={styles.durationMin}>min</Text>
           </View>
           <View style={styles.fromToTime}>
-            <Text>14:52</Text>
+            <Moment element={Text} format="HH:mm">
+              {displayedDeparture}
+            </Moment>
             <Text> - </Text>
-            <Text>15:40</Text>
+            <Moment element={Text} format="HH:mm">
+              {displayedArive}
+            </Moment>
           </View>
           <View style={styles.rightContainerBackground}></View>
         </View>
@@ -69,6 +169,7 @@ const styles = StyleSheet.create({
     shadowRadius: 16,
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 4 },
+    marginBottom: 10,
   },
   containerInner: {
     flex: 1,
@@ -79,14 +180,15 @@ const styles = StyleSheet.create({
   },
   leftContainer: {
     flex: 1,
-    padding: 10,
+    paddingVertical: 10,
+    paddingLeft: 10,
   },
   rightContainer: {
     position: 'relative',
-    width: 110,
-    justifyContent: 'space-around',
+    width: 100,
+    justifyContent: 'space-between',
     alignItems: 'flex-end',
-    paddingRight: 10,
+    padding: 10,
   },
   rightContainerBackground: {
     flex: 1,
@@ -97,34 +199,43 @@ const styles = StyleSheet.create({
     left: 30,
     right: -10,
     backgroundColor: colors.lightGray,
-    transform: [{ rotate: '20deg' }, { scale: 1.5 }],
+    transform: [{ rotate: '15deg' }, { scale: 1.5 }],
   },
-  stepsContainer: {
+  legsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
     marginBottom: 10,
   },
-  step: {
+  leg: {
     alignItems: 'center',
     flexDirection: 'row',
     marginTop: 10,
   },
-  stepBox: {
-    width: 32,
-    height: 32,
+  legBox: {
+    width: 28,
+    height: 28,
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  stepArrowContainer: {
+  legArrowContainer: {
     alignItems: 'center',
     padding: 4,
   },
-  stepNumber: {
+  legNumber: {
     color: 'white',
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
+  },
+  legDurationContainer: {},
+  legWalkingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  legDurationNumber: {
+    fontWeight: 'bold',
+    marginBottom: -4,
   },
   durationContainer: {
     flexDirection: 'row',
@@ -147,12 +258,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: 'relative',
     zIndex: 10,
+    marginBottom: 5,
   },
   atTimeContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 5,
+    paddingRight: 10,
   },
   atTime: {
     fontWeight: 'bold',
+    marginRight: 5,
   },
 })
 

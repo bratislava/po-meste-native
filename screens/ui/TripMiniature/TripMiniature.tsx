@@ -4,66 +4,10 @@ import Moment from 'react-moment'
 
 import { colors } from '@utils/theme'
 
-import ChevronRightSvg from '@images/chevron-right-small.svg'
-import WalkingSvg from '@images/walking.svg'
-import CyclingSvg from '@images/cycling.svg'
-
 import { LegProps } from '@utils/validation'
 import { Modes } from '../../../types'
 
-type LegComponentProps = {
-  number?: number | string
-  color?: string
-  isLast?: boolean
-  duration?: number
-  mode?: Modes
-}
-
-const LegComponent = ({
-  mode = Modes.bus,
-  number,
-  color,
-  isLast = false,
-  duration = 0,
-}: LegComponentProps) => {
-  const isIndividualTransport = mode == Modes.walk || mode == Modes.bicycle
-
-  return (
-    <View style={styles.leg}>
-      {(isIndividualTransport && (
-        <View style={styles.legWalkingContainer}>
-          {(mode == Modes.walk && (
-            <WalkingSvg width={20} height={20} fill="black" />
-          )) ||
-            (mode == Modes.bicycle && (
-              <CyclingSvg width={30} height={20} fill="black" />
-            ))}
-          <View style={styles.legDurationContainer}>
-            <Text style={styles.legDurationNumber}>
-              {Math.round(duration / 60)}
-            </Text>
-            <Text>min</Text>
-          </View>
-        </View>
-      )) || (
-        <View
-          style={[
-            styles.legBox,
-            { backgroundColor: color ? `#${color}` : 'black' },
-          ]}
-        >
-          <Text style={styles.legNumber}>{number ?? '?'}</Text>
-        </View>
-      )}
-
-      {!isLast && (
-        <View style={styles.legArrowContainer}>
-          <ChevronRightSvg width={12} height={12} fill={colors.gray} />
-        </View>
-      )}
-    </View>
-  )
-}
+import Leg from './Leg'
 
 type Props = {
   duration: number
@@ -116,7 +60,7 @@ const TripMiniature = ({
                   console.log(leg)
                 }
                 return (
-                  <LegComponent
+                  <Leg
                     key={index}
                     isLast={++index == legs.length}
                     mode={leg.mode as Modes}
@@ -206,36 +150,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexWrap: 'wrap',
     marginBottom: 10,
-  },
-  leg: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginTop: 10,
-  },
-  legBox: {
-    width: 28,
-    height: 28,
-    borderRadius: 4,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  legArrowContainer: {
-    alignItems: 'center',
-    padding: 4,
-  },
-  legNumber: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  legDurationContainer: {},
-  legWalkingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  legDurationNumber: {
-    fontWeight: 'bold',
-    marginBottom: -4,
   },
   durationContainer: {
     flexDirection: 'row',

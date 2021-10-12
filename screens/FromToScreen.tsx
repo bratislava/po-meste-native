@@ -336,10 +336,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flex: 1,
   },
-  header: {
-    backgroundColor: 'white',
-    padding: 20,
-  },
   scrollView: {
     minWidth: '100%',
     padding: 20,

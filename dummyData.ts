@@ -470,7 +470,7 @@ export const dummyDataPlaceHistory = [
     location: { lat: 48.143790966468266, lon: 17.110766155720967 },
   },
   {
-    text: 'Krížna',
+    text: 'Krížna final, Krížna final Krížna final Krížna final',
     location: { lat: 48.15525939712473, lon: 17.12428358270609 },
   },
 ]

@@ -26,16 +26,19 @@ import { s } from '../utils/globalStyles'
 import { colors } from '../utils/theme'
 import MhdSvg from '../assets/images/mhd.svg'
 import HistorySvg from '../assets/images/history-search.svg'
+import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@navigation/TabBar'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 interface SearchFromToScreen {
   sheetRef: MutableRefObject<BottomSheet | null>
-  getMyLocation: () => void
+  getMyLocation?: () => void
   onGooglePlaceChosen: (
     _data: GooglePlaceData,
     details: GooglePlaceDetail | null
   ) => void
   googleInputRef: React.MutableRefObject<GooglePlacesAutocompleteRef | null>
   setLocationFromMap: () => void
+  inputPlaceholder: string
 }
 
 export default function SearchFromToScreen({
@@ -44,29 +47,44 @@ export default function SearchFromToScreen({
   onGooglePlaceChosen,
   googleInputRef,
   setLocationFromMap,
+  inputPlaceholder,
 }: SearchFromToScreen) {
   const { height } = Dimensions.get('window')
 
+  const clearLocationTextInput = () => {
+    googleInputRef.current?.setAddressText('')
+    googleInputRef.current?.focus()
+  }
+
   const renderContent = () => (
-    <KeyboardAvoidingView style={[styles.content, { height: height }]}>
-      <View style={[s.horizontalMargin, styles.content, { height: height }]}>
+    <View style={styles.content}>
+      <View style={[s.horizontalMargin, styles.content]}>
         <View style={styles.googleFrom}>
-          <Ionicons
-            size={30}
-            style={{ marginBottom: -3, color: colors.lighterGray }}
-            name="close"
-          />
           <GooglePlacesAutocomplete
+            renderLeftButton={() => (
+              <Ionicons
+                onPress={clearLocationTextInput}
+                size={30}
+                style={{
+                  alignSelf: 'center',
+                  marginBottom: -3,
+                  color: colors.lighterGray,
+                }}
+                name="close"
+              />
+            )}
             ref={googleInputRef}
             styles={autoCompleteStyles}
             enablePoweredByContainer={false}
             fetchDetails
-            placeholder={i18n.t('from')}
+            placeholder={inputPlaceholder}
             onPress={onGooglePlaceChosen}
             query={{
               key: Constants.manifest?.extra?.googlePlacesApiKey,
               language: 'sk',
-              components: 'country:sk',
+              location: '48.1512015, 17.1110118',
+              radius: '22000', //22 km
+              strictbounds: true,
             }}
           />
         </View>
@@ -117,24 +135,46 @@ export default function SearchFromToScreen({
             <View style={styles.separator}></View>
           </View>
           <View style={styles.chooseFromMapRow}>
-            <TouchableOpacity onPress={setLocationFromMap}>
-              <View style={styles.chooseFromMap}>
-                <Ionicons
-                  size={30}
-                  style={{
-                    marginBottom: -3,
-                    color: colors.primary,
-                    width: 30,
-                  }}
-                  name="map-outline"
-                />
-                <View style={[styles.placeTexts, styles.chooseFromMapText]}>
-                  <Text style={styles.placeAddress}>
-                    {i18n.t('choosePlaceFromMap')}
-                  </Text>
+            {getMyLocation && (
+              <TouchableOpacity onPress={getMyLocation}>
+                <View style={styles.chooseFromMap}>
+                  <Ionicons
+                    size={30}
+                    style={{
+                      marginBottom: -3,
+                      color: colors.primary,
+                      width: 30,
+                    }}
+                    name="map-outline"
+                  />
+                  <View style={[styles.placeTexts, styles.chooseFromMapText]}>
+                    <Text style={styles.placeAddress}>
+                      {i18n.t('currentPosition')}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
+            )}
+            {setLocationFromMap && (
+              <TouchableOpacity onPress={setLocationFromMap}>
+                <View style={styles.chooseFromMap}>
+                  <Ionicons
+                    size={30}
+                    style={{
+                      marginBottom: -3,
+                      color: colors.primary,
+                      width: 30,
+                    }}
+                    name="map-outline"
+                  />
+                  <View style={[styles.placeTexts, styles.chooseFromMapText]}>
+                    <Text style={styles.placeAddress}>
+                      {i18n.t('choosePlaceFromMap')}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
         <View style={styles.categoryStops}>
@@ -142,7 +182,7 @@ export default function SearchFromToScreen({
             <View style={styles.separator}></View>
           </View>
           <Text style={styles.categoriesTitle}>{i18n.t('history')}</Text>
-          <ScrollView contentContainerStyle={styles.verticalScrollView}>
+          <View style={styles.verticalScrollView}>
             {dummyDataPlaceHistory.map((historyItem, index) => (
               <View key={index} style={styles.verticalScrollItem}>
                 <HistorySvg width={30} height={20} />
@@ -151,26 +191,25 @@ export default function SearchFromToScreen({
                 </View>
               </View>
             ))}
-          </ScrollView>
+          </View>
         </View>
-        <Button onPress={getMyLocation} title={i18n.t('myLocation')} />
-        <Button onPress={setLocationFromMap} title={i18n.t('locationChoose')} />
       </View>
-    </KeyboardAvoidingView>
+    </View>
   )
 
   const renderHeader = () => (
-    <View style={styles.header}>
+    <SafeAreaView style={styles.header}>
       <View style={styles.panelHeader}>
         <View style={styles.panelHandle} />
       </View>
-    </View>
+    </SafeAreaView>
   )
 
   return (
     <BottomSheet
       ref={sheetRef}
-      snapPoints={[height - (StatusBar.currentHeight || 0), 0]}
+      initialSnap={1}
+      snapPoints={[height, 0]}
       renderContent={renderContent}
       renderHeader={renderHeader}
       enabledContentTapInteraction={false} //https://github.com/osdnk/react-native-reanimated-bottom-sheet/issues/219#issuecomment-625894292
@@ -187,7 +226,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderWidth: 1,
   },
-  verticalScrollView: {},
+  verticalScrollView: {
+    paddingBottom: BOTTOM_TAB_NAVIGATOR_HEIGHT,
+  },
   horizontalScrollItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -204,6 +245,8 @@ const styles = StyleSheet.create({
     height: 56,
   },
   chooseFromMapRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     marginVertical: 15,
     alignItems: 'center',
   },
@@ -211,6 +254,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: colors.lightGray,
+    paddingHorizontal: 5,
   },
   chooseFromMapText: {
     width: 100,
@@ -244,12 +288,8 @@ const styles = StyleSheet.create({
   },
   googleFrom: {
     flexDirection: 'row',
-    alignItems: 'center',
     marginBottom: 7,
-    borderWidth: 1,
-    borderRadius: 7,
-    borderColor: colors.lightGray,
-    paddingHorizontal: 5,
+    zIndex: 1,
   },
   header: {
     backgroundColor: 'white',
@@ -259,7 +299,7 @@ const styles = StyleSheet.create({
   },
   panelHeader: {
     alignItems: 'center',
-    height: 40,
+    height: 20,
   },
   panelHandle: {
     width: 100,
@@ -272,18 +312,18 @@ const styles = StyleSheet.create({
 
 const autoCompleteStyles = {
   container: {
-    flex: 1,
+    zIndex: 1,
   },
   listView: {
-    position: 'absolute',
-    top: 50,
-    elevation: 5,
-    zIndex: 5,
-    borderWidth: 2,
+    height: '100%',
   },
-
   textInput: {
     marginBottom: 0,
     height: 50,
+  },
+  textInputContainer: {
+    borderWidth: 1,
+    borderRadius: 7,
+    borderColor: colors.lightGray,
   },
 }

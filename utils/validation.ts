@@ -95,6 +95,9 @@ const leg = yup.object().shape({
   route: yup.string(), //'',
   agencyTimeZoneOffset: yup.number(), //7200000,
   interlineWithPreviousLeg: yup.bool(), //false,
+  routeShortName: yup.string(), //'96'
+  routeColor: yup.string(), //'E5097F'
+  headsign: yup.string(), //Holíčska
   from: yup.object().shape({
     name: yup.string(), //'Origin',
     lon: yup.number(), //17.114381790161133,

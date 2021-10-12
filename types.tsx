@@ -7,6 +7,12 @@ import { LegProps } from './utils/validation'
 
 export type TicketName = 'ticket40min' | 'ticket70min' | 'ticket24hours'
 
+export enum Modes {
+  bus = 'BUS',
+  bicycle = 'BICYCLE',
+  walk = 'WALK',
+}
+
 export type RootStackParamList = {
   Root: undefined
   NotFound: undefined

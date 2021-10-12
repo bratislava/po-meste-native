@@ -53,4 +53,5 @@ export default {
   myStops: 'Moje zastávky',
   history: 'História',
   choosePlaceFromMap: 'Vybrať na mape',
+  currentPosition: 'Current position',
 }

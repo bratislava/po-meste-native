@@ -54,4 +54,5 @@ export default {
   myStops: 'My stops',
   history: 'History',
   choosePlaceFromMap: 'Choose from map',
+  currentPosition: 'Current position',
 }

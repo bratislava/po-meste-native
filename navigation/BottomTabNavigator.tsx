@@ -8,26 +8,26 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
 import i18n from 'i18n-js'
 
-import HomeSearchSvg from '../assets/images/home-search.svg'
-import TicketSvg from '../assets/images/ticket-alt.svg'
-import BurgerMenuSvg from '../assets/images/burger-menu.svg'
+import HomeSearchSvg from '@images/home-search.svg'
+import TicketSvg from '@images/ticket-alt.svg'
+import BurgerMenuSvg from '@images/burger-menu.svg'
 
-import TicketsScreen from '../screens/TicketsScreen'
-import MapScreen from '../screens/MapScreen'
-import TabTwoScreen from '../screens/TabTwoScreen'
+import TicketsScreen from '@screens/TicketsScreen'
+import MapScreen from '@screens/MapScreen'
+import TabTwoScreen from '@screens/TabTwoScreen'
 import {
   BottomTabParamList,
   TicketsParamList,
   MapParamList,
   TabTwoParamList,
 } from '../types'
-import SmsScreen from '../screens/SmsScreen'
-import FromToScreen from '../screens/FromToScreen'
-import PlannerScreen from '../screens/PlannerScreen'
-import LineTimeline from '../screens/LineTimeline'
-import { GlobalStateContext } from '../screens/ui/VehicleBar/GlobalStateProvider'
-import Timetable from '../screens/Timetable'
-import ChooseLocation from '../screens/ChooseLocation'
+import SmsScreen from '@screens/SmsScreen'
+import FromToScreen from '@screens/FromToScreen'
+import PlannerScreen from '@screens/PlannerScreen'
+import LineTimeline from '@screens/LineTimeline'
+import { GlobalStateContext } from '@screens/ui/VehicleBar/GlobalStateProvider'
+import Timetable from '@screens/Timetable'
+import ChooseLocation from '@screens/ChooseLocation'
 
 import TabBar from './TabBar'
 
@@ -44,7 +44,7 @@ export default function BottomTabNavigator() {
     >
       <BottomTab.Screen
         name="Tickets"
-        component={TicketsNavigator}
+        component={TabTwoNavigator}
         options={{
           title: i18n.t('tickets'),
           tabBarIcon: TicketSvg,
@@ -60,7 +60,7 @@ export default function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="TabTwo"
-        component={TabTwoNavigator}
+        component={TicketsNavigator}
         options={{
           title: i18n.t('settings'),
           tabBarIcon: BurgerMenuSvg,
@@ -100,7 +100,7 @@ function MapNavigator() {
       <MapStack.Screen
         name="FromToScreen"
         component={FromToScreen}
-        options={{ headerTitle: i18n.t('tabOneTitle') }}
+        options={{ headerTitle: i18n.t('tabOneTitle'), headerShown: false }}
       />
       <MapStack.Screen
         name="PlannerScreen"

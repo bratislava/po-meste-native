@@ -14,13 +14,14 @@ import {
 import Constants from 'expo-constants'
 import { StackScreenProps } from '@react-navigation/stack'
 import * as Location from 'expo-location'
+import { LocationGeocodedAddress } from 'expo-location'
 
 import { Button } from '../components'
 import { getTripPlanner } from '../utils/api'
 import { apiOtpPlanner } from '../utils/validation'
 import { MapParamList } from '../types'
-import { LocationGeocodedAddress } from 'expo-location'
 import TripMiniature from './ui/TripMiniature/TripMiniature'
+import FromToSelector from './ui/FromToSelector/FromToSelector'
 
 export default function FromToScreen({
   route,
@@ -197,6 +198,14 @@ export default function FromToScreen({
   return (
     <>
       <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <FromToSelector
+            fromPlaceText="from place set"
+            fromPlaceTextPlaceholder="Odkiaľ idete?"
+            toPlaceTextPlaceholder="Kamže, kam?"
+          />
+        </View>
+
         <View style={styles.googleFrom}>
           <GooglePlacesAutocomplete
             ref={fromRef}
@@ -302,6 +311,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'stretch',
     justifyContent: 'center',
+  },
+  header: {
+    backgroundColor: 'white',
+    padding: 20,
   },
   scrollView: {
     minWidth: '100%',

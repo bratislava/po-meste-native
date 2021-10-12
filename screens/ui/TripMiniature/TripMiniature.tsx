@@ -9,6 +9,25 @@ import { Modes } from '../../../types'
 
 import Leg from './Leg'
 
+import ArrowRightSvg from '@images/arrow-right.svg'
+
+type StepProps = { number: number; color: string; isLast?: boolean }
+
+const Step = ({ number, color, isLast = false }: StepProps) => {
+  return (
+    <View style={styles.step}>
+      <View style={[styles.stepBox, { backgroundColor: color }]}>
+        <Text style={styles.stepNumber}>{number}</Text>
+      </View>
+      {!isLast && (
+        <View style={styles.stepArrowContainer}>
+          <ArrowRightSvg fill={colors.gray} />
+        </View>
+      )}
+    </View>
+  )
+}
+
 type Props = {
   duration: number
   departureTime: number
@@ -150,6 +169,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexWrap: 'wrap',
     marginBottom: 10,
+  },
+  step: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  stepBox: {
+    width: 32,
+    height: 32,
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  stepArrowContainer: {
+    alignItems: 'center',
+    padding: 4,
+  },
+  stepNumber: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   durationContainer: {
     flexDirection: 'row',

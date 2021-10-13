@@ -6,15 +6,14 @@ import * as Localization from 'expo-localization'
 import i18n from 'i18n-js'
 import * as translations from './translations'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import * as Location from 'expo-location'
+import Constants from 'expo-constants'
 import * as Sentry from 'sentry-expo'
 
 import useCachedResources from '@hooks/useCachedResources'
 import useColorScheme from '@hooks/useColorScheme'
 import Navigation from '@navigation/index'
 import GlobalStateProvider from '@screens/ui/VehicleBar/GlobalStateProvider'
-import * as Location from 'expo-location'
-import Constants from 'expo-constants'
-import * as Sentry from 'sentry-expo'
 
 i18n.translations = translations
 

@@ -230,6 +230,7 @@ export default function FromToScreen({
                   }
                 >
                   <Text>{`trip ${index} duration: ${tripChoice.duration}`}</Text>
+                  {/* TODO use https://js-joda.github.io/js-joda/ for time manipulation */}
                   <Text>{new Date(tripChoice.startTime).toISOString()}</Text>
                   <Text>{new Date(tripChoice.endTime).toISOString()}</Text>
                 </TouchableOpacity>

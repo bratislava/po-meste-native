@@ -1,13 +1,13 @@
 import * as Sentry from '@sentry/react-native'
-import { colors } from '../../utils/theme'
+import { colors } from '../utils/theme'
 import React, { useEffect } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { Button } from '..'
+import { Button } from '.'
 import i18n from 'i18n-js'
 
 interface ErrorViewProps {
-  action?: (options?: any) => void | Promise<void | any>
-  reset?: () => void
+  action?: () => unknown
+  reset?: () => unknown
 }
 
 interface ErrorViewPropsError extends ErrorViewProps {

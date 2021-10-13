@@ -10,7 +10,7 @@ import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps'
 import { StyleSheet, View, ImageURISource } from 'react-native'
 import BottomSheet from 'reanimated-bottom-sheet'
 
-import ErrorView from '@components/ErrorView/ErrorView'
+import ErrorView from '@components/ErrorView'
 import { BikeProvider, VehicleType } from '../types'
 import SearchBar from './ui/SearchBar/SearchBar'
 import VehicleBar from './ui/VehicleBar/VehicleBar'

@@ -1,5 +1,6 @@
 import Constants from 'expo-constants'
 import qs from 'qs'
+import { Modes } from '../types'
 
 const host =
   Constants.manifest?.extra?.host || 'https://live.planner.bratislava.sk'
@@ -58,6 +59,7 @@ export const getChargersStops = () => fetchJsonFromApi('/zse')
 export const getTripPlanner = (
   from: string,
   to: string,
+  mode: Modes = Modes.bus,
   dateTime: Date = new Date()
 ) => {
   return fetchJsonFromOtpApi(
@@ -66,7 +68,7 @@ export const getTripPlanner = (
         fromPlace: from,
         toPlace: to,
         time: dateTime.toISOString(),
-        mode: 'BUS,WALK',
+        mode: mode,
         maxWalkDistance: '4828.032',
         arriveBy: 'false',
         wheelchair: 'false',

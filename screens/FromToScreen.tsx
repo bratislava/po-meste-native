@@ -17,11 +17,19 @@ import BottomSheet from 'reanimated-bottom-sheet'
 
 import { getTripPlanner } from '../utils/api'
 import { apiOtpPlanner } from '../utils/validation'
-import { MapParamList } from '../types'
-import FromToSelector from './ui/FromToSelector/FromToSelector'
 import SearchFromToScreen from './SearchFromToScreen'
 import { s } from '../utils/globalStyles'
+import { MapParamList, Modes } from '../types'
 import TripMiniature from './ui/TripMiniature/TripMiniature'
+import FromToSelector from './ui/FromToSelector/FromToSelector'
+import VehicleSelector, {
+  VehicleType,
+} from './ui/VehicleSelector/VehicleSelector'
+
+import BusSvg from '@images/bus.svg'
+import CyclingSvg from '@images/cycling.svg'
+import ScooterSvg from '@images/scooter.svg'
+import WalkingSvg from '@images/walking.svg'
 
 export default function FromToScreen({
   route,
@@ -59,6 +67,8 @@ export default function FromToScreen({
   const fromBottomSheetRef = useRef<BottomSheet>(null)
   const toBottomSheetRef = useRef<BottomSheet>(null)
 
+  const [selectedVehicle, setSelectedVehicle] = useState<Modes>(Modes.bus)
+
   const [locationPermisionError, setLocationPermisionError] =
     useState<string>('')
   const [fromGeocode, setFromGeocode] = useState<
@@ -69,13 +79,14 @@ export default function FromToScreen({
   >(null)
 
   const { data, isLoading, error } = useQuery(
-    ['getOtpData', fromCoordinates, toCoordinates],
+    ['getOtpData', fromCoordinates, toCoordinates, selectedVehicle],
     () =>
       fromCoordinates &&
       toCoordinates &&
       getTripPlanner(
         `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
-        `${toCoordinates.latitude},${toCoordinates.longitude}`
+        `${toCoordinates.latitude},${toCoordinates.longitude}`,
+        selectedVehicle
       )
   )
 
@@ -201,6 +212,37 @@ export default function FromToScreen({
     toBottomSheetRef?.current?.snapTo(1)
   }
 
+  const onVehicleChange = (mode: Modes) => {
+    setSelectedVehicle(mode)
+  }
+
+  const vehicles: VehicleType[] = [
+    {
+      mode: Modes.bus,
+      icon: BusSvg,
+      estimatedTime: '? - ? min',
+      price: '~?,??€',
+    },
+    {
+      mode: Modes.bicycle,
+      icon: CyclingSvg,
+      estimatedTime: '? min',
+      price: '~?,??€',
+    },
+    {
+      mode: Modes.bicycle,
+      icon: ScooterSvg,
+      estimatedTime: '? min',
+      price: '~?,??€',
+    },
+    {
+      mode: Modes.walk,
+      icon: WalkingSvg,
+      estimatedTime: '? min',
+      price: '--',
+    },
+  ]
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={[s.horizontalMargin, styles.content]}>
@@ -212,6 +254,14 @@ export default function FromToScreen({
           fromPlaceTextPlaceholder={i18n.t('fromPlaceholder')}
           toPlaceTextPlaceholder={i18n.t('toPlaceholder')}
         />
+
+        <View>
+          <VehicleSelector
+            vehicles={vehicles}
+            onVehicleChange={onVehicleChange}
+            selectedVehicle={selectedVehicle}
+          />
+        </View>
         <ScrollView contentContainerStyle={styles.scrollView}>
           {validatedOtpData?.plan?.itineraries?.map((tripChoice, index) => {
             return (

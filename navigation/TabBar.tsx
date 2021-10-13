@@ -7,6 +7,8 @@ import { StyleSheet, View, Text, TouchableWithoutFeedback } from 'react-native'
 
 import { s } from '../utils/globalStyles'
 
+export const BOTTOM_TAB_NAVIGATOR_HEIGHT = 55
+
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
   return (
     <View style={styles.tabBar}>
@@ -79,7 +81,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: '#fff',
-    height: 55,
+    height: BOTTOM_TAB_NAVIGATOR_HEIGHT,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     position: 'absolute',

@@ -399,3 +399,78 @@ export const dummyDataTimetable = {
     },
   ],
 }
+
+export const dummyDataPlaceHistory = [
+  {
+    text: 'Laurinská',
+    location: { lat: 48.143790966468266, lon: 17.110766155720967 },
+  },
+  {
+    text: 'Krížna',
+    location: { lat: 48.15525939712473, lon: 17.12428358270609 },
+  },
+  {
+    text: 'Laurinská',
+    location: { lat: 48.143790966468266, lon: 17.110766155720967 },
+  },
+  {
+    text: 'Krížna',
+    location: { lat: 48.15525939712473, lon: 17.12428358270609 },
+  },
+  {
+    text: 'Laurinská',
+    location: { lat: 48.143790966468266, lon: 17.110766155720967 },
+  },
+  {
+    text: 'Krížna',
+    location: { lat: 48.15525939712473, lon: 17.12428358270609 },
+  },
+  {
+    text: 'Laurinská',
+    location: { lat: 48.143790966468266, lon: 17.110766155720967 },
+  },
+  {
+    text: 'Krížna',
+    location: { lat: 48.15525939712473, lon: 17.12428358270609 },
+  },
+  {
+    text: 'Laurinská',
+    location: { lat: 48.143790966468266, lon: 17.110766155720967 },
+  },
+  {
+    text: 'Krížna',
+    location: { lat: 48.15525939712473, lon: 17.12428358270609 },
+  },
+  {
+    text: 'Laurinská',
+    location: { lat: 48.143790966468266, lon: 17.110766155720967 },
+  },
+  {
+    text: 'Krížna',
+    location: { lat: 48.15525939712473, lon: 17.12428358270609 },
+  },
+  {
+    text: 'Laurinská',
+    location: { lat: 48.143790966468266, lon: 17.110766155720967 },
+  },
+  {
+    text: 'Krížna',
+    location: { lat: 48.15525939712473, lon: 17.12428358270609 },
+  },
+  {
+    text: 'Laurinská',
+    location: { lat: 48.143790966468266, lon: 17.110766155720967 },
+  },
+  {
+    text: 'Krížna',
+    location: { lat: 48.15525939712473, lon: 17.12428358270609 },
+  },
+  {
+    text: 'Laurinská',
+    location: { lat: 48.143790966468266, lon: 17.110766155720967 },
+  },
+  {
+    text: 'Krížna final, Krížna final Krížna final Krížna final',
+    location: { lat: 48.15525939712473, lon: 17.12428358270609 },
+  },
+]

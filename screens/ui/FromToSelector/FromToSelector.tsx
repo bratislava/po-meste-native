@@ -26,21 +26,6 @@ const FromToSelector = ({
   onFromPlacePress,
   onToPlacePress,
 }: Props) => {
-  const [fromPlace, setFromPlace] = useState('')
-  const [isFromPlacePlaceholder, setFromPlacePlaceholder] = useState(false)
-  const [toPlace, setToPlace] = useState('')
-  const [isToPlacePlaceholder, setToPlacePlaceholder] = useState(false)
-
-  useEffect(() => {
-    setFromPlace(fromPlaceText ?? fromPlaceTextPlaceholder ?? '')
-    setFromPlacePlaceholder(!fromPlaceText?.length)
-  }, [fromPlaceText, fromPlaceTextPlaceholder])
-
-  useEffect(() => {
-    setToPlace(toPlaceText ?? toPlaceTextPlaceholder ?? '')
-    setToPlacePlaceholder(!toPlaceText?.length)
-  }, [toPlaceText, toPlaceTextPlaceholder])
-
   return (
     <View style={styles.container}>
       <View style={styles.arrowContainer}>
@@ -51,15 +36,19 @@ const FromToSelector = ({
       <View style={styles.inputsContainer}>
         <TouchableOpacity onPress={onFromPlacePress} style={styles.input}>
           <Text
-            style={isFromPlacePlaceholder ? styles.inputTextPlaceholder : {}}
+            style={
+              fromPlaceText ? styles.inputText : styles.inputTextPlaceholder
+            }
           >
-            {fromPlace}
+            {fromPlaceText || fromPlaceTextPlaceholder}
           </Text>
         </TouchableOpacity>
         <View style={styles.line}></View>
         <TouchableOpacity onPress={onToPlacePress} style={styles.input}>
-          <Text style={isToPlacePlaceholder ? styles.inputTextPlaceholder : {}}>
-            {toPlace}
+          <Text
+            style={toPlaceText ? styles.inputText : styles.inputTextPlaceholder}
+          >
+            {toPlaceText || toPlaceTextPlaceholder}
           </Text>
         </TouchableOpacity>
       </View>
@@ -122,6 +111,9 @@ const styles = StyleSheet.create({
   },
   inputTextPlaceholder: {
     color: colors.gray,
+  },
+  inputText: {
+    color: 'black',
   },
 })
 

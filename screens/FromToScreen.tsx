@@ -8,19 +8,19 @@ import { useNavigation } from '@react-navigation/native'
 import {
   GooglePlaceData,
   GooglePlaceDetail,
-  GooglePlacesAutocomplete,
   GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete'
-import Constants from 'expo-constants'
 import { StackScreenProps } from '@react-navigation/stack'
 import * as Location from 'expo-location'
 import { LocationGeocodedAddress } from 'expo-location'
+import BottomSheet from 'reanimated-bottom-sheet'
 
-import { Button } from '../components'
 import { getTripPlanner } from '../utils/api'
 import { apiOtpPlanner } from '../utils/validation'
 import { MapParamList } from '../types'
 import FromToSelector from './ui/FromToSelector/FromToSelector'
+import SearchFromToScreen from './SearchFromToScreen'
+import { s } from '../utils/globalStyles'
 
 export default function FromToScreen({
   route,
@@ -55,6 +55,8 @@ export default function FromToScreen({
 
   const fromRef = useRef<GooglePlacesAutocompleteRef | null>(null)
   const toRef = useRef<GooglePlacesAutocompleteRef | null>(null)
+  const fromBottomSheetRef = useRef<BottomSheet>(null)
+  const toBottomSheetRef = useRef<BottomSheet>(null)
 
   const [locationPermisionError, setLocationPermisionError] =
     useState<string>('')
@@ -79,7 +81,7 @@ export default function FromToScreen({
   useEffect(() => {
     setFromCoordinates(fromPropCoordinates)
     setFromName(fromPropName)
-  }, [fromPropName, fromPropCoordinates])
+  }, [fromPropName, fromPropCoordinates, setFromCoordinates, setFromName])
 
   const getGeocodeAsync = useCallback(
     async (
@@ -112,23 +114,23 @@ export default function FromToScreen({
   }, [])
 
   useEffect(() => {
-    setFromName(getNameFromGeocode(fromGeocode))
+    if (fromGeocode) {
+      setFromName(getNameFromGeocode(fromGeocode))
+    }
   }, [setFromName, fromGeocode, getNameFromGeocode])
 
   useEffect(() => {
-    setToName(getNameFromGeocode(toGeocode))
+    if (toGeocode) {
+      setToName(getNameFromGeocode(toGeocode))
+    }
   }, [setToName, toGeocode, getNameFromGeocode])
-
-  useEffect(() => {
-    fromRef.current?.setAddressText(fromName || '')
-  }, [fromRef, fromName])
 
   useEffect(() => {
     toRef.current?.setAddressText(toName || '')
   }, [toRef, toName])
 
   const getLocationAsync = async (
-    setLocation: (location: { latitude: number; longitude: number }) => void,
+    setCoordinates: (location: { latitude: number; longitude: number }) => void,
     setGeocode: (location: LocationGeocodedAddress[]) => void
   ) => {
     const { status } = await Location.requestForegroundPermissionsAsync()
@@ -141,7 +143,7 @@ export default function FromToScreen({
       accuracy: Location.Accuracy.Highest,
     })
     const { latitude, longitude } = location.coords
-    setLocation({
+    setCoordinates({
       latitude,
       longitude,
     })
@@ -162,7 +164,7 @@ export default function FromToScreen({
 
   const onGooglePlaceChosen = (
     details: GooglePlaceDetail | null = null,
-    set: React.Dispatch<
+    setCoordinates: React.Dispatch<
       React.SetStateAction<
         | {
             latitude: number
@@ -173,7 +175,7 @@ export default function FromToScreen({
     >
   ) => {
     if (details?.geometry.location.lat && details?.geometry.location.lng) {
-      set({
+      setCoordinates({
         latitude: details?.geometry.location.lat,
         longitude: details?.geometry.location.lng,
       })
@@ -181,98 +183,34 @@ export default function FromToScreen({
   }
 
   const onGooglePlaceFromChosen = (
-    _data: GooglePlaceData,
+    data: GooglePlaceData,
     details: GooglePlaceDetail | null = null
   ) => {
+    setFromName(data.description)
     onGooglePlaceChosen(details, setFromCoordinates)
+    fromBottomSheetRef?.current?.snapTo(1)
   }
 
   const onGooglePlaceToChosen = (
-    _data: GooglePlaceData,
+    data: GooglePlaceData,
     details: GooglePlaceDetail | null = null
   ) => {
+    setToName(data.description)
     onGooglePlaceChosen(details, setToCoordinates)
+    toBottomSheetRef?.current?.snapTo(1)
   }
 
   return (
-    <>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <FromToSelector
-            fromPlaceText="from place set"
-            fromPlaceTextPlaceholder="Odkiaľ idete?"
-            toPlaceTextPlaceholder="Kamže, kam?"
-          />
-        </View>
-
-        <View style={styles.googleFrom}>
-          <GooglePlacesAutocomplete
-            ref={fromRef}
-            styles={autoCompleteStyles}
-            enablePoweredByContainer={false}
-            fetchDetails
-            placeholder={i18n.t('from')}
-            onPress={onGooglePlaceFromChosen}
-            query={{
-              key: Constants.manifest?.extra?.googlePlacesApiKey,
-              language: 'sk',
-              location: '48.1512015, 17.1110118',
-              radius: '22000', //22 km
-              strictbounds: true,
-            }}
-          />
-          <Button
-            onPress={() => getLocationAsync(setFromCoordinates, setFromGeocode)}
-            title={i18n.t('myLocation')}
-          />
-          <Button
-            onPress={() =>
-              navigation.navigate('ChooseLocation', {
-                latitude: fromCoordinates?.latitude,
-                longitude: fromCoordinates?.longitude,
-                onConfirm: (latitude: number, longitude: number) => {
-                  setFromName(`${latitude}, ${longitude}`)
-                  setFromCoordinates({ latitude, longitude })
-                },
-              })
-            }
-            title={i18n.t('locationChoose')}
-          />
-        </View>
-        <View style={styles.googleFrom}>
-          <GooglePlacesAutocomplete
-            ref={toRef}
-            styles={autoCompleteStyles}
-            enablePoweredByContainer={false}
-            fetchDetails
-            placeholder={i18n.t('to')}
-            onPress={onGooglePlaceToChosen}
-            query={{
-              key: Constants.manifest?.extra?.googlePlacesApiKey,
-              language: 'sk',
-              location: '48.1512015, 17.1110118',
-              radius: '22000', //22 km
-              strictbounds: true,
-            }}
-          />
-          <Button
-            onPress={() => getLocationAsync(setToCoordinates, setToGeocode)}
-            title={i18n.t('myLocation')}
-          />
-          <Button
-            onPress={() =>
-              navigation.navigate('ChooseLocation', {
-                latitude: toCoordinates?.latitude,
-                longitude: toCoordinates?.longitude,
-                onConfirm: (latitude: number, longitude: number) => {
-                  setToName(`${latitude}, ${longitude}`)
-                  setToCoordinates({ latitude, longitude })
-                },
-              })
-            }
-            title={i18n.t('locationChoose')}
-          />
-        </View>
+    <SafeAreaView style={styles.container}>
+      <View style={[s.horizontalMargin, styles.content]}>
+        <FromToSelector
+          onFromPlacePress={() => fromBottomSheetRef?.current?.snapTo(0)}
+          onToPlacePress={() => toBottomSheetRef?.current?.snapTo(0)}
+          fromPlaceText={fromName}
+          toPlaceText={toName}
+          fromPlaceTextPlaceholder={i18n.t('fromPlaceholder')}
+          toPlaceTextPlaceholder={i18n.t('toPlaceholder')}
+        />
         <ScrollView contentContainerStyle={styles.scrollView}>
           {validatedOtpData?.plan?.itineraries?.map((tripChoice, index) => {
             return (
@@ -285,6 +223,7 @@ export default function FromToScreen({
                   }
                 >
                   <Text>{`trip ${index} duration: ${tripChoice.duration}`}</Text>
+                  {/* TODO use https://js-joda.github.io/js-joda/ for time manipulation */}
                   <Text>{new Date(tripChoice.startTime).toISOString()}</Text>
                   <Text>{new Date(tripChoice.endTime).toISOString()}</Text>
                 </TouchableOpacity>
@@ -292,8 +231,46 @@ export default function FromToScreen({
             )
           })}
         </ScrollView>
-      </SafeAreaView>
-    </>
+      </View>
+      <SearchFromToScreen
+        sheetRef={fromBottomSheetRef}
+        getMyLocation={() => {
+          fromBottomSheetRef?.current?.snapTo(1)
+          getLocationAsync(setFromCoordinates, setFromGeocode)
+        }}
+        onGooglePlaceChosen={onGooglePlaceFromChosen}
+        googleInputRef={fromRef}
+        setLocationFromMap={() =>
+          navigation.navigate('ChooseLocation', {
+            latitude: fromCoordinates?.latitude,
+            longitude: fromCoordinates?.longitude,
+            onConfirm: (latitude: number, longitude: number) => {
+              setFromName(`${latitude}, ${longitude}`)
+              setFromCoordinates({ latitude, longitude })
+              fromBottomSheetRef?.current?.snapTo(1)
+            },
+          })
+        }
+        inputPlaceholder={i18n.t('fromPlaceholder')}
+      />
+      <SearchFromToScreen
+        sheetRef={toBottomSheetRef}
+        onGooglePlaceChosen={onGooglePlaceToChosen}
+        googleInputRef={toRef}
+        setLocationFromMap={() =>
+          navigation.navigate('ChooseLocation', {
+            latitude: toCoordinates?.latitude,
+            longitude: toCoordinates?.longitude,
+            onConfirm: (latitude: number, longitude: number) => {
+              setToName(`${latitude}, ${longitude}`)
+              setToCoordinates({ latitude, longitude })
+              toBottomSheetRef?.current?.snapTo(1)
+            },
+          })
+        }
+        inputPlaceholder={i18n.t('toPlaceholder')}
+      />
+    </SafeAreaView>
   )
 }
 
@@ -302,35 +279,18 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'stretch',
     justifyContent: 'center',
-  },
-  header: {
     backgroundColor: 'white',
-    padding: 20,
+  },
+  content: {
+    backgroundColor: 'white',
+    flex: 1,
   },
   scrollView: {
     minWidth: '100%',
     borderWidth: 1,
   },
-  googleFrom: {
-    flexDirection: 'row',
-    marginHorizontal: 10,
-  },
   trip: {
     paddingHorizontal: 10,
     borderWidth: 1,
-  },
-})
-
-const autoCompleteStyles = StyleSheet.create({
-  // eslint-disable-next-line react-native/no-unused-styles
-  container: {
-    width: '100%',
-  },
-  // eslint-disable-next-line react-native/no-unused-styles
-  listView: {
-    position: 'absolute',
-    top: 50,
-    elevation: 5,
-    zIndex: 5,
   },
 })

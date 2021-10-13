@@ -8,8 +8,9 @@ import { LegProps } from './utils/validation'
 export type TicketName = 'ticket40min' | 'ticket70min' | 'ticket24hours'
 
 export enum Modes {
-  bus = 'BUS',
+  bus = 'BUS,WALK',
   bicycle = 'BICYCLE',
+  scooter = '',
   walk = 'WALK',
 }
 

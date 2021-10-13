@@ -208,79 +208,75 @@ export default function FromToScreen({
   }
 
   return (
-    <>
-      <SafeAreaView style={styles.container}>
-        <View style={s.horizontalMargin}>
-          <View style={styles.header}>
-            <FromToSelector
-              onFromPlacePress={() => fromBottomSheetRef?.current?.snapTo(0)}
-              onToPlacePress={() => toBottomSheetRef?.current?.snapTo(0)}
-              fromPlaceText={fromName}
-              toPlaceText={toName}
-              fromPlaceTextPlaceholder={i18n.t('fromPlaceholder')}
-              toPlaceTextPlaceholder={i18n.t('toPlaceholder')}
-            />
-          </View>
-          <ScrollView contentContainerStyle={styles.scrollView}>
-            {validatedOtpData?.plan?.itineraries?.map((tripChoice, index) => {
-              return (
-                <View style={styles.trip} key={index}>
-                  <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate('PlannerScreen', {
-                        legs: tripChoice?.legs,
-                      })
-                    }
-                  >
-                    <Text>{`trip ${index} duration: ${tripChoice.duration}`}</Text>
-                    <Text>{new Date(tripChoice.startTime).toISOString()}</Text>
-                    <Text>{new Date(tripChoice.endTime).toISOString()}</Text>
-                  </TouchableOpacity>
-                </View>
-              )
-            })}
-          </ScrollView>
-        </View>
-        <SearchFromToScreen
-          sheetRef={fromBottomSheetRef}
-          getMyLocation={() => {
-            fromBottomSheetRef?.current?.snapTo(1)
-            getLocationAsync(setFromCoordinates, setFromGeocode)
-          }}
-          onGooglePlaceChosen={onGooglePlaceFromChosen}
-          googleInputRef={fromRef}
-          setLocationFromMap={() =>
-            navigation.navigate('ChooseLocation', {
-              latitude: fromCoordinates?.latitude,
-              longitude: fromCoordinates?.longitude,
-              onConfirm: (latitude: number, longitude: number) => {
-                setFromName(`${latitude}, ${longitude}`)
-                setFromCoordinates({ latitude, longitude })
-                fromBottomSheetRef?.current?.snapTo(1)
-              },
-            })
-          }
-          inputPlaceholder={i18n.t('fromPlaceholder')}
+    <SafeAreaView style={styles.container}>
+      <View style={[s.horizontalMargin, styles.content]}>
+        <FromToSelector
+          onFromPlacePress={() => fromBottomSheetRef?.current?.snapTo(0)}
+          onToPlacePress={() => toBottomSheetRef?.current?.snapTo(0)}
+          fromPlaceText={fromName}
+          toPlaceText={toName}
+          fromPlaceTextPlaceholder={i18n.t('fromPlaceholder')}
+          toPlaceTextPlaceholder={i18n.t('toPlaceholder')}
         />
-        <SearchFromToScreen
-          sheetRef={toBottomSheetRef}
-          onGooglePlaceChosen={onGooglePlaceToChosen}
-          googleInputRef={toRef}
-          setLocationFromMap={() =>
-            navigation.navigate('ChooseLocation', {
-              latitude: toCoordinates?.latitude,
-              longitude: toCoordinates?.longitude,
-              onConfirm: (latitude: number, longitude: number) => {
-                setToName(`${latitude}, ${longitude}`)
-                setToCoordinates({ latitude, longitude })
-                toBottomSheetRef?.current?.snapTo(1)
-              },
-            })
-          }
-          inputPlaceholder={i18n.t('toPlaceholder')}
-        />
-      </SafeAreaView>
-    </>
+        <ScrollView contentContainerStyle={styles.scrollView}>
+          {validatedOtpData?.plan?.itineraries?.map((tripChoice, index) => {
+            return (
+              <View style={styles.trip} key={index}>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('PlannerScreen', {
+                      legs: tripChoice?.legs,
+                    })
+                  }
+                >
+                  <Text>{`trip ${index} duration: ${tripChoice.duration}`}</Text>
+                  <Text>{new Date(tripChoice.startTime).toISOString()}</Text>
+                  <Text>{new Date(tripChoice.endTime).toISOString()}</Text>
+                </TouchableOpacity>
+              </View>
+            )
+          })}
+        </ScrollView>
+      </View>
+      <SearchFromToScreen
+        sheetRef={fromBottomSheetRef}
+        getMyLocation={() => {
+          fromBottomSheetRef?.current?.snapTo(1)
+          getLocationAsync(setFromCoordinates, setFromGeocode)
+        }}
+        onGooglePlaceChosen={onGooglePlaceFromChosen}
+        googleInputRef={fromRef}
+        setLocationFromMap={() =>
+          navigation.navigate('ChooseLocation', {
+            latitude: fromCoordinates?.latitude,
+            longitude: fromCoordinates?.longitude,
+            onConfirm: (latitude: number, longitude: number) => {
+              setFromName(`${latitude}, ${longitude}`)
+              setFromCoordinates({ latitude, longitude })
+              fromBottomSheetRef?.current?.snapTo(1)
+            },
+          })
+        }
+        inputPlaceholder={i18n.t('fromPlaceholder')}
+      />
+      <SearchFromToScreen
+        sheetRef={toBottomSheetRef}
+        onGooglePlaceChosen={onGooglePlaceToChosen}
+        googleInputRef={toRef}
+        setLocationFromMap={() =>
+          navigation.navigate('ChooseLocation', {
+            latitude: toCoordinates?.latitude,
+            longitude: toCoordinates?.longitude,
+            onConfirm: (latitude: number, longitude: number) => {
+              setToName(`${latitude}, ${longitude}`)
+              setToCoordinates({ latitude, longitude })
+              toBottomSheetRef?.current?.snapTo(1)
+            },
+          })
+        }
+        inputPlaceholder={i18n.t('toPlaceholder')}
+      />
+    </SafeAreaView>
   )
 }
 
@@ -289,10 +285,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'stretch',
     justifyContent: 'center',
-  },
-  header: {
     backgroundColor: 'white',
-    padding: 20,
+  },
+  content: {
+    backgroundColor: 'white',
+    flex: 1,
   },
   scrollView: {
     minWidth: '100%',

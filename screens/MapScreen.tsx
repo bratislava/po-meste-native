@@ -9,7 +9,10 @@ import React, {
 import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps'
 import { StyleSheet, View, ImageURISource } from 'react-native'
 import BottomSheet from 'reanimated-bottom-sheet'
+import * as Location from 'expo-location'
+import { TouchableHighlight } from 'react-native-gesture-handler'
 
+import CurrentLocationSvg from '@images/current-location.svg'
 import ErrorView from '@components/ErrorView'
 import { BikeProvider, VehicleType } from '../types'
 import SearchBar from './ui/SearchBar/SearchBar'
@@ -90,6 +93,8 @@ export default function MapScreen() {
   const { data: dataMergedSlovnaftbajk, isLoading: isLoadingSlovnaftbajk } =
     useSlovnaftbajkData()
 
+  const mapRef = useRef<MapView>(null)
+
   const vehiclesContext = useContext(GlobalStateContext)
 
   const [selectedStation, setSelectedStation] = useState<
@@ -108,6 +113,35 @@ export default function MapScreen() {
   const bottomSheetRef = useRef<BottomSheet>(null)
 
   const bottomSheetSnapPoints = useMemo(() => ['100%', '60%', 0], [])
+
+  const fetchData = useCallback(async () => {
+    await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.Highest,
+    }).then((locationObject) => {
+      mapRef.current?.fitToCoordinates(
+        [
+          locationObject.coords,
+          {
+            latitude: locationObject.coords.latitude + 0.0025,
+            longitude: locationObject.coords.longitude + 0.002,
+          },
+          {
+            latitude: locationObject.coords.latitude - 0.0025,
+            longitude: locationObject.coords.longitude - 0.002,
+          },
+        ],
+        {
+          edgePadding: { bottom: 100, top: 100, left: 100, right: 100 },
+        }
+      )
+    })
+  }, [mapRef])
+
+  useEffect(() => {
+    setTimeout(() => {
+      fetchData()
+    }, 2000)
+  }, [fetchData])
 
   useEffect(() => {
     if (selectedMhdStation) {
@@ -258,6 +292,7 @@ export default function MapScreen() {
         <ErrorView error={errorsMhd} />
       ) : (
         <MapView
+          ref={mapRef}
           provider={PROVIDER_GOOGLE}
           style={styles.map}
           initialRegion={{
@@ -344,6 +379,11 @@ export default function MapScreen() {
       isLoadingZseChargers ? (
         <LoadingView />
       ) : null}
+      <View style={styles.currentLocation}>
+        <TouchableHighlight onPress={fetchData}>
+          <CurrentLocationSvg />
+        </TouchableHighlight>
+      </View>
       <SearchBar />
       <VehicleBar />
       <BottomSheet
@@ -394,6 +434,16 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+  },
+  currentLocation: {
+    position: 'absolute',
+    bottom: 150,
+    right: 30,
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 30,
+    ...s.shadow,
+    elevation: 7,
   },
   bottomSheetHandleStyle: {
     paddingVertical: 16,

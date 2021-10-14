@@ -340,8 +340,4 @@ const styles = StyleSheet.create({
     minWidth: '100%',
     padding: 20,
   },
-  trip: {
-    paddingHorizontal: 10,
-    borderWidth: 1,
-  },
 })

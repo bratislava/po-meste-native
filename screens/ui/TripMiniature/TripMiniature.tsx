@@ -74,6 +74,7 @@ const TripMiniature = ({
           )}
           {displayedStartStationName.length > 0 && (
             <View style={styles.atTimeContainer}>
+              {/* TODO use https://js-joda.github.io/js-joda/ for time manipulation */}
               <Moment
                 element={Text}
                 style={styles.atTime}

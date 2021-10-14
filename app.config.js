@@ -4,7 +4,7 @@ export default {
   name: 'hybaj',
   owner: 'bratislava',
   slug: 'hybaj',
-  version: '1.0.3',
+  version: '1.0.4',
   orientation: 'portrait',
   icon: './assets/images/icon.png',
   scheme: 'myapp',
@@ -24,7 +24,7 @@ export default {
   android: {
     softwareKeyboardLayoutMode: 'pan',
     package: 'com.bratislava.hybaj',
-    versionCode: 4,
+    versionCode: 5,
     adaptiveIcon: {
       foregroundImage: './assets/images/adaptive-icon.png',
       backgroundColor: '#ffffff',

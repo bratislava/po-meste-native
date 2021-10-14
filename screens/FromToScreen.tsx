@@ -224,7 +224,7 @@ export default function FromToScreen({
       price: '~?,??€',
     },
     {
-      mode: Modes.bicycle,
+      mode: Modes.scooter,
       icon: ScooterSvg,
       estimatedTime: '? min',
       price: '~?,??€',

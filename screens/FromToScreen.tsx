@@ -30,6 +30,7 @@ import BusSvg from '@images/bus.svg'
 import CyclingSvg from '@images/cycling.svg'
 import ScooterSvg from '@images/scooter.svg'
 import WalkingSvg from '@images/walking.svg'
+import { colors } from '@utils/theme'
 
 export default function FromToScreen({
   route,
@@ -245,7 +246,7 @@ export default function FromToScreen({
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={[s.horizontalMargin, styles.content]}>
+      <View style={styles.header}>
         <FromToSelector
           onFromPlacePress={() => fromBottomSheetRef?.current?.snapTo(0)}
           onToPlacePress={() => toBottomSheetRef?.current?.snapTo(0)}
@@ -254,35 +255,34 @@ export default function FromToScreen({
           fromPlaceTextPlaceholder={i18n.t('fromPlaceholder')}
           toPlaceTextPlaceholder={i18n.t('toPlaceholder')}
         />
-
-        <View>
-          <VehicleSelector
-            vehicles={vehicles}
-            onVehicleChange={onVehicleChange}
-            selectedVehicle={selectedVehicle}
-          />
-        </View>
-        <ScrollView contentContainerStyle={styles.scrollView}>
-          {validatedOtpData?.plan?.itineraries?.map((tripChoice, index) => {
-            return (
-              <>
-                <TripMiniature
-                  key={index}
-                  onPress={() =>
-                    navigation.navigate('PlannerScreen', {
-                      legs: tripChoice?.legs,
-                    })
-                  }
-                  duration={tripChoice.duration}
-                  departureTime={tripChoice.startTime}
-                  ariveTime={tripChoice.endTime}
-                  legs={tripChoice.legs}
-                />
-              </>
-            )
-          })}
-        </ScrollView>
       </View>
+      <View>
+        <VehicleSelector
+          vehicles={vehicles}
+          onVehicleChange={onVehicleChange}
+          selectedVehicle={selectedVehicle}
+        />
+      </View>
+      <ScrollView contentContainerStyle={styles.scrollView}>
+        {validatedOtpData?.plan?.itineraries?.map((tripChoice, index) => {
+          return (
+            <>
+              <TripMiniature
+                key={index}
+                onPress={() =>
+                  navigation.navigate('PlannerScreen', {
+                    legs: tripChoice?.legs,
+                  })
+                }
+                duration={tripChoice.duration}
+                departureTime={tripChoice.startTime}
+                ariveTime={tripChoice.endTime}
+                legs={tripChoice.legs}
+              />
+            </>
+          )
+        })}
+      </ScrollView>
       <SearchFromToScreen
         sheetRef={fromBottomSheetRef}
         getMyLocation={() => {
@@ -330,14 +330,17 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'stretch',
     justifyContent: 'center',
-    backgroundColor: 'white',
+    backgroundColor: colors.lightLightGray,
   },
-  content: {
+  header: {
     backgroundColor: 'white',
-    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
   scrollView: {
     minWidth: '100%',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 65,
   },
 })

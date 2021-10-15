@@ -82,7 +82,8 @@ const VehicleSelector = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    padding: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
   vehicleContainer: {
     borderWidth: 1,

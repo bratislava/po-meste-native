@@ -111,9 +111,9 @@ const TripMiniature = ({
 const styles = StyleSheet.create({
   container: {
     shadowColor: '#000',
-    shadowRadius: 16,
+    shadowRadius: 12,
     shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 8 },
     marginBottom: 10,
   },
   containerInner: {

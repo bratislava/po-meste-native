@@ -10,8 +10,8 @@ interface Props {
 interface ContextProps {
   vehicleTypes: VehicleProps[]
   setVehicleTypes: Dispatch<SetStateAction<VehicleProps[]>>
-  timeLineNumber?: number
-  setTimeLineNumber: React.Dispatch<React.SetStateAction<number | undefined>>
+  timeLineNumber?: string
+  setTimeLineNumber: React.Dispatch<React.SetStateAction<string | undefined>>
   isFeedbackSent: boolean
   setFeedbackSent: Dispatch<SetStateAction<boolean>>
 }
@@ -25,7 +25,7 @@ interface VehicleProps {
 export const GlobalStateContext = createContext({} as ContextProps)
 
 export default function GlobalStateProvider({ children }: Props) {
-  const [timeLineNumber, setTimeLineNumber] = useState<number>()
+  const [timeLineNumber, setTimeLineNumber] = useState<string>()
 
   const [vehicleTypes, setVehicleTypes] = useState<VehicleProps[]>([
     {

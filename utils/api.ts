@@ -3,8 +3,7 @@ import qs from 'qs'
 import { Modes } from '../types'
 
 const host =
-  Constants.manifest?.extra?.host || 'https://live.planner.bratislava.sk'
-// TODO change otpPlanner url from 'api.planner' to 'live.planner' when endpoint is available
+  Constants.manifest?.extra?.apiHost || 'https://live-dev.planner.bratislava.sk'
 const otpPlanner = 'https://api.planner.bratislava.sk/otp/routers/default/plan'
 
 // we should throw throwables only, so it's useful to extend Error class to contain useful info
@@ -39,8 +38,12 @@ const fetchJsonFromOtpApi = async (path: string) => {
 }
 
 export const getMhdStops = () => fetchJsonFromApi('/mhd/stops')
-export const getMhdStopStatusData = (id: number) =>
+export const getMhdStopStatusData = (id: string) =>
   fetchJsonFromApi(`/mhd/stop/${id}`)
+
+export const getMhdTrip = (id: string) => fetchJsonFromApi(`/mhd/trip/${id}`)
+export const getMhdGrafikon = (stopId: string, lineNumber: string) =>
+  fetchJsonFromApi(`/mhd/stop/${stopId}/grafikon/${lineNumber}`)
 
 export const getRekolaStationInformation = () =>
   fetchJsonFromApi('/rekola/station_information.json')

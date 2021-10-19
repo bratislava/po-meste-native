@@ -4,18 +4,18 @@ import { LegModes } from '../types'
 export const mhdStop = yup
   .object()
   .shape({
-    stationStopId: yup.number().required('error-malformed-stationStopId'),
-    stationId: yup.number().required('error-malformed-stationId'),
+    id: yup.string().required('error-malformed-stationStopId'),
     name: yup.string().required('error-malformed-name'),
-    address: yup.string().nullable(true), // if required it throws error, doesn't needed at time of implementation
     gpsLon: yup.string().required('error-malformed-gpsLon'),
     gpsLat: yup.string().required('error-malformed-gpsLat'),
-    tag: yup.string().required('error-malformed-tag'),
+    platform: yup.string().nullable(),
   })
   .noUnknown()
 
 export type MhdStopProps = yup.Asserts<typeof mhdStop>
-export const apiMhdStops = yup.array().ensure().of(mhdStop)
+export const apiMhdStops = yup
+  .object()
+  .shape({ stops: yup.array().ensure().of(mhdStop) })
 
 const stationInformationObject = {
   station_id: yup.string().required('error-malformed-station_id'),
@@ -246,38 +246,63 @@ export const apiZseChargers = yup.object().shape({
 })
 
 export const apiMhdStopStatus = yup.object().shape({
-  stationStop: yup.object().shape({
-    stationStopId: yup.number().required('error-malformed-stationStopId'), // 26089,
-    stationId: yup.number(), // 910,
-    name: yup.string(), // '1_2DPAE Krasňany',
-    address: yup.string().nullable(), // null,
-    gpsLon: yup.string(), // '17.13476563',
-    gpsLat: yup.string(), // '48.1885376',
-    tag: yup.string(), // '091002',
+  allLines: yup
+    .array()
+    .ensure()
+    .of(
+      yup.object().shape({
+        lineNumber: yup.string().required('error-lineNumber'),
+        lineColor: yup.string().required('error-lineColor'),
+      })
+    ),
+  currentStop: yup.object().shape({
+    stop_name: yup.string(),
   }),
   departures: yup
     .array()
     .ensure()
     .of(
       yup.object().shape({
-        time: yup.string().required('error-malformed-time'), //'2021-08-30T13:42:00',
-        timetableTime: yup.string().required('error-malformed-timetableTime'), //'2021-08-30T13:42:00',
-        hours: yup.number().required('error-malformed-hours'), //13,
-        minutes: yup.number().required('error-malformed-minutes'), //42,
-        timetableHours: yup.number().required('error-malformed-timetableHours'), //13,
-        timetableMinutes: yup
-          .number()
-          .required('error-malformed-timetableMinutes'), //42,
-        lineNumber: yup.number().required('error-malformed-lineNumber'), //7,
-        delay: yup.number().required('error-malformed-delay'), //0,
-        dynamicData: yup.number().required('error-malformed-dynamicData'), //1,
-        finalStationStopId: yup
-          .number()
-          .required('error-malformed-finalStationStopId'), //27784,
-        finalStationStopName: yup
-          .string()
-          .required('error-malformed-finalStationStopName'), //'Hlavná stanica',
-        wheelchairAccessible: yup.bool(), //false,
+        date: yup.string().required('error-departures-date'),
+        lineNumber: yup.string().required('error-departures-lineNumber'),
+        lineColor: yup.string().required('error-departures-lineColor'),
+        time: yup.string().required('error-departures-time'),
+        tripId: yup.string().required('error-departures-tripId'),
+        wheelchair: yup.bool().required('error-departures-wheelchair'),
       })
     ),
+})
+
+export const apiMhdTrip = yup.object().shape({
+  lineNumber: yup.string(),
+  // .required('error-malformed-apiMhdTrip-lineNumber'),
+  finalStopName: yup.string(),
+  // .required('error-malformed-apiMhdTrip-finalStopName'),
+  lineColor: yup.string(),
+  // .required('error-malformed-apiMhdTrip-lineColor'),
+  timeline: yup
+    .array()
+    .ensure()
+    .of(
+      yup.object().shape({
+        time: yup.string().required('error-malformed-apiMhdTrip-time'),
+        stopName: yup.string().required('error-malformed-apiMhdTrip-stopName'),
+        stopId: yup.string().required('error-malformed-apiMhdTrip-stopId'),
+      })
+    ),
+})
+
+export const apiMhdGrafikon = yup.object().shape({
+  lineNumber: yup.string(),
+  // .required('error-malformed-apiMhdGrafikon-lineNumber'),
+  currentStopName: yup.string(),
+  // .required('error-malformed-apiMhdGrafikon-currentStopName'),
+  finalStopName: yup.string(),
+  // .required('error-malformed-apiMhdGrafikon-finalStopName'),
+  lineColor: yup.string(),
+  // .required('error-malformed-apiMhdGrafikon-lineColor'),
+  timetable: yup
+    .array()
+    .ensure()
+    .of(yup.string().required('error-malformed-apiMhdGrafikon-time')),
 })

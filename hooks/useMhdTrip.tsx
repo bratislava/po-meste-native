@@ -1,24 +1,21 @@
 import { useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
-import { getMhdStopStatusData } from '../utils/api'
-import { apiMhdStopStatus } from '../utils/validation'
+import { getMhdTrip } from '../utils/api'
+import { apiMhdTrip } from '../utils/validation'
 
 interface StationStatusDataProps {
-  id?: string
+  id: string
 }
 
-export default function useMhdStopStatusData({ id }: StationStatusDataProps) {
+export default function useMhdTrip({ id }: StationStatusDataProps) {
   const [validationErrors, setValidationErrors] = useState()
-  const { data, isLoading, error } = useQuery(
-    ['getMhdStopStatusData', id],
-    () => id && getMhdStopStatusData(id),
-    //TODO erase enabled, don't let undefined as id somehow
-    { enabled: !!id }
+  const { data, isLoading, error } = useQuery(['getMhdTrip', id], () =>
+    getMhdTrip(id)
   )
 
   const validatedData = useMemo(() => {
     try {
-      const validatedStopStatusData = apiMhdStopStatus.validateSync(data)
+      const validatedStopStatusData = apiMhdTrip.validateSync(data)
       return validatedStopStatusData
     } catch (e) {
       setValidationErrors(e.errors)

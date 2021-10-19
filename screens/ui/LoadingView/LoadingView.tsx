@@ -4,6 +4,7 @@ import { StyleSheet, View, Text } from 'react-native'
 export default function LoadingView() {
   return (
     <View style={[styles.map, styles.overlayLoading]}>
+      {/* TODO add graphics, see comments https://inovaciebratislava.atlassian.net/browse/PLAN-233 */}
       <Text>LOADING...</Text>
     </View>
   )

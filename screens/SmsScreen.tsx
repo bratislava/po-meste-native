@@ -10,7 +10,7 @@ import {
 } from '../components'
 import { SmsTicketNumbers, SmsTicketPrices, TicketName } from '../types'
 import { ScrollView } from 'react-native-gesture-handler'
-import { presentPrice } from '../utils/presentPrice'
+import { presentPrice } from '../utils/utils'
 
 export default function SmsScreen() {
   async function handleSend(receiverNumber: string) {

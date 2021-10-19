@@ -2,27 +2,57 @@ import React, { useMemo, useState } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import i18n from 'i18n-js'
 
-import { TimetableType } from '../types'
+import { MapParamList, TimetableType } from '../types'
 import TicketSvg from '../assets/images/ticket.svg'
 import ArrowRight from '../assets/images/arrow-right.svg'
 import { s } from '../utils/globalStyles'
-import { dummyDataTimetable } from '../dummyData'
 import { Button } from '../components'
-import ButtonGroup from '../components/ButtonGroup'
+import ButtonGroup from '@components/ButtonGroup'
+import useMhdGrafikon from '@hooks/useMhdGrafikon'
+import { StackScreenProps } from '@react-navigation/stack'
+import { mhdDefaultColors } from '@utils/theme'
 
-export default function Timetable() {
+export default function Timetable({
+  route,
+}: StackScreenProps<MapParamList, 'Timetable'>) {
   const [activeTimetable, setActiveTimetable] = useState<TimetableType>(
     TimetableType.workDays
   )
+  const { stopId, lineNumber } = route.params
+  const { data, isLoading, errors } = useMhdGrafikon({
+    stopId,
+    lineNumber,
+  })
+
+  const formattedData = useMemo(() => {
+    const dataProcessed: {
+      hour: number
+      minutes: { minute: string; additionalInfo: string }[]
+    }[] = [
+      4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+    ].map((hour) => {
+      return { hour: hour, minutes: [] }
+    })
+    data?.timetable?.forEach((value) => {
+      const splitTime = value.split(':')
+      const hourObjectFiltered = dataProcessed.filter((hourObjectTmp) => {
+        return hourObjectTmp.hour === parseInt(splitTime[0])
+      })
+      const hourObjectMinutes = hourObjectFiltered[0].minutes
+      hourObjectMinutes.push({ minute: splitTime[1], additionalInfo: '' })
+    })
+    return dataProcessed
+  }, [data])
+
   const activeIndex = useMemo(() => {
     const now = new Date().getTime()
-    const times = dummyDataTimetable.timetable.reduce(
+    const times = formattedData.reduce(
       (accumulatorHours, hourObject, indexHours) => {
         const timesInHours = hourObject.minutes.reduce(
           (accumulatorMinutes, departureMinute, indexMinutes) => {
             const date = new Date()
             date.setHours(hourObject.hour)
-            date.setMinutes(departureMinute.minute)
+            date.setMinutes(parseInt(departureMinute.minute))
             if (
               accumulatorMinutes[0] > date.getTime() - now &&
               date.getTime() - now > 0
@@ -33,7 +63,6 @@ export default function Timetable() {
           },
           accumulatorHours
         )
-        // console.log(timesInHours)
         if (accumulatorHours[0] > timesInHours[0] && timesInHours[0] > 0) {
           return [timesInHours[0], timesInHours[1], timesInHours[2]]
         }
@@ -42,9 +71,7 @@ export default function Timetable() {
       [Infinity, Infinity, Infinity]
     )
     return times
-  }, [dummyDataTimetable])
-
-  // console.log(activeIndex)
+  }, [formattedData])
 
   return (
     <View style={s.container}>
@@ -53,20 +80,37 @@ export default function Timetable() {
           <View style={s.horizontalMargin}>
             <View style={styles.header}>
               <View style={s.icon}>
-                <TicketSvg width={30} height={40} fill="red" />
+                {/* TODO add right icon https://inovaciebratislava.atlassian.net/browse/PLAN-239 */}
+                <TicketSvg
+                  width={30}
+                  height={40}
+                  fill={
+                    data?.lineColor
+                      ? `#${data?.lineColor}`
+                      : mhdDefaultColors.grey
+                  }
+                />
               </View>
-              <Text style={[s.lineNumber, s.bgRed, s.whiteText]}>
-                {dummyDataTimetable.lineNumber}
+              <Text
+                style={[
+                  s.lineNumber,
+                  {
+                    backgroundColor: data?.lineColor
+                      ? `#${data?.lineColor}`
+                      : mhdDefaultColors.grey,
+                  },
+                  s.whiteText,
+                ]}
+              >
+                {data?.lineNumber}
               </Text>
               <Text style={[styles.startStation, styles.textBold, s.blackText]}>
-                {dummyDataTimetable.startStationStopName}
+                {data?.currentStopName}
               </Text>
               <View style={[s.icon, styles.marginHorizontal]}>
                 <ArrowRight width={10} fill="red" />
               </View>
-              <Text style={s.blackText}>
-                {dummyDataTimetable.finalStationStopName}
-              </Text>
+              <Text style={s.blackText}>{data?.finalStopName}</Text>
             </View>
           </View>
         </View>
@@ -107,7 +151,7 @@ export default function Timetable() {
                 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
                 21, 22, 23,
               ].map((hour, indexHours) => {
-                const dataToShow = dummyDataTimetable.timetable.find(
+                const dataToShow = formattedData.find(
                   (hourDataRow) => hourDataRow.hour === hour
                 )
                 return (
@@ -133,13 +177,10 @@ export default function Timetable() {
                               : null,
                           ]}
                         >
-                          {`${minuteData.minute < 10 ? 0 : ''}${
-                            minuteData.minute
-                          }${
-                            minuteData.additionalInfo
-                              ? minuteData.additionalInfo
-                              : ''
-                          }`}
+                          {minuteData.minute}
+                          {minuteData.additionalInfo
+                            ? minuteData.additionalInfo
+                            : ''}
                         </Text>
                       )
                     })}

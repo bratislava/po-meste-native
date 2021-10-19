@@ -39,7 +39,7 @@ export default {
     favicon: './assets/images/favicon.png',
   },
   extra: {
-    apiHost: 'https://live.planner.bratislava.sk',
+    apiHost: 'https://live-dev.planner.bratislava.sk',
     googlePlacesApiKey: process.env.GOOGLE_PLACES_API_KEY,
   },
   packagerOpts: {

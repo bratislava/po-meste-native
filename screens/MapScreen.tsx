@@ -314,10 +314,10 @@ export default function MapScreen() {
           {vehiclesContext.vehicleTypes?.find(
             (vehicleType) => vehicleType.id === VehicleType.mhd
           )?.show &&
-            dataMhd &&
-            filterMhdInView(dataMhd).map((stop) => (
+            dataMhd?.stops &&
+            filterMhdInView(dataMhd.stops).map((stop) => (
               <Marker
-                key={stop.stationStopId}
+                key={stop.id}
                 coordinate={{
                   latitude: parseFloat(stop.gpsLat),
                   longitude: parseFloat(stop.gpsLon),
@@ -402,6 +402,7 @@ export default function MapScreen() {
         ref={bottomSheetRef}
         onCloseEnd={handleSheetClose}
         snapPoints={bottomSheetSnapPoints}
+        enabledContentTapInteraction={false}
         renderContent={() => {
           return (
             <View style={styles.bottomSheet}>

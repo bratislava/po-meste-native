@@ -1,4 +1,5 @@
 import * as yup from 'yup'
+import { LegModes } from '../types'
 
 export const mhdStop = yup
   .object()
@@ -89,7 +90,10 @@ const leg = yup.object().shape({
   realTime: yup.bool(), //false,
   distance: yup.number(), //581.766,
   pathway: yup.bool(), //false,
-  mode: yup.string().required('error-malformed-mode'),
+  mode: yup
+    .mixed<LegModes>()
+    .oneOf(Object.values(LegModes))
+    .required('error-malformed-mode'),
   duration: yup.number().required('error-malformed-duration'),
   transitLeg: yup.bool(), //false,
   route: yup.string(), //'',

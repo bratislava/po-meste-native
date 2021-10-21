@@ -55,21 +55,16 @@ const TripMiniature = ({
         <View style={styles.leftContainer}>
           {legs && (
             <View style={styles.legsContainer}>
-              {legs.map((leg, index) => {
-                if (leg.mode == LegModes.bus) {
-                  console.log(leg)
-                }
-                return (
-                  <Leg
-                    key={index}
-                    isLast={index === legs.length - 1}
-                    mode={leg.mode}
-                    duration={leg.duration}
-                    color={leg.routeColor}
-                    shortName={leg.routeShortName}
-                  />
-                )
-              })}
+              {legs.map((leg, index) => (
+                <Leg
+                  key={index}
+                  isLast={index === legs.length - 1}
+                  mode={leg.mode}
+                  duration={leg.duration}
+                  color={leg.routeColor}
+                  shortName={leg.routeShortName}
+                />
+              ))}
             </View>
           )}
           {displayedStartStationName.length > 0 && (

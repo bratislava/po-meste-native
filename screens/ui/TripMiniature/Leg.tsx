@@ -3,37 +3,38 @@ import { View, Text, StyleSheet } from 'react-native'
 
 import { colors } from '@utils/theme'
 
-import { Modes } from '../../../types'
+import { LegModes } from '../../../types'
 
 import ChevronRightSvg from '@images/chevron-right-small.svg'
 import WalkingSvg from '@images/walking.svg'
 import CyclingSvg from '@images/cycling.svg'
 
 type LegProps = {
-  number?: number | string
+  shortName?: string
   color?: string
   isLast?: boolean
   duration?: number
-  mode?: Modes
+  mode?: LegModes
 }
 
 const Leg = ({
-  mode = Modes.bus,
-  number,
+  mode = LegModes.bus,
+  shortName,
   color,
   isLast = false,
   duration = 0,
 }: LegProps) => {
-  const isIndividualTransport = mode == Modes.walk || mode == Modes.bicycle
+  const isIndividualTransport =
+    mode == LegModes.walk || mode == LegModes.bicycle
 
   return (
     <View style={styles.leg}>
       {(isIndividualTransport && (
         <View style={styles.legWalkingContainer}>
-          {(mode == Modes.walk && (
+          {(mode === LegModes.walk && (
             <WalkingSvg width={20} height={20} fill="black" />
           )) ||
-            (mode == Modes.bicycle && (
+            (mode === LegModes.bicycle && (
               <CyclingSvg width={30} height={20} fill="black" />
             ))}
           <View style={styles.legDurationContainer}>
@@ -50,7 +51,7 @@ const Leg = ({
             { backgroundColor: color ? `#${color}` : 'black' },
           ]}
         >
-          <Text style={styles.legNumber}>{number ?? '?'}</Text>
+          <Text style={styles.legNumber}>{shortName ?? '?'}</Text>
         </View>
       )}
 

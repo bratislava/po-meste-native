@@ -4,14 +4,29 @@
  */
 
 import { LegProps } from './utils/validation'
+import { SvgProps } from 'react-native-svg'
 
 export type TicketName = 'ticket40min' | 'ticket70min' | 'ticket24hours'
 
-export enum Modes {
+export enum TravelModes {
   bus = 'BUS,WALK',
   bicycle = 'BICYCLE',
   scooter = '',
   walk = 'WALK',
+}
+
+export enum LegModes {
+  bus = 'BUS',
+  walk = 'WALK',
+  bicycle = 'BICYCLE',
+  scooter = '',
+}
+
+export type VehicleData = {
+  mode: TravelModes
+  icon: React.FC<SvgProps>
+  estimatedTime: string
+  price: string
 }
 
 export type RootStackParamList = {

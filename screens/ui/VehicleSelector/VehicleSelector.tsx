@@ -1,4 +1,4 @@
-import React, { ReactSVGElement } from 'react'
+import React from 'react'
 import {
   ScrollView,
   View,
@@ -6,22 +6,14 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native'
-import { SvgProps } from 'react-native-svg'
 
-import { Modes } from '../../../types'
+import { TravelModes, VehicleData } from '../../../types'
 import { colors } from '@utils/theme'
 
-export type VehicleType = {
-  mode: Modes
-  icon: React.FC<SvgProps>
-  estimatedTime: string
-  price: string
-}
-
 type Props = {
-  selectedVehicle: Modes
-  vehicles: VehicleType[]
-  onVehicleChange: (mode: Modes) => void
+  selectedVehicle: TravelModes
+  vehicles: VehicleData[]
+  onVehicleChange: (mode: TravelModes) => void
 }
 
 const VehicleSelector = ({
@@ -38,7 +30,7 @@ const VehicleSelector = ({
               key={index}
               style={[
                 styles.vehicleContainer,
-                selectedVehicle == vehicle.mode
+                selectedVehicle === vehicle.mode
                   ? styles.vehicleContainerSelected
                   : {},
                 index + 1 != vehicles.length ? styles.vehicleContainerLast : {},
@@ -46,7 +38,7 @@ const VehicleSelector = ({
               onPress={() => onVehicleChange(vehicle.mode)}
             >
               <vehicle.icon
-                fill={selectedVehicle == vehicle.mode ? 'white' : colors.gray}
+                fill={selectedVehicle === vehicle.mode ? 'white' : colors.gray}
                 width={24}
                 height={20}
                 style={styles.vehicleIcon}
@@ -54,7 +46,7 @@ const VehicleSelector = ({
               <Text
                 style={[
                   styles.vehicleEstimatedTime,
-                  selectedVehicle == vehicle.mode
+                  selectedVehicle === vehicle.mode
                     ? styles.vehicleEstimatedTimeSelected
                     : {},
                 ]}
@@ -64,7 +56,7 @@ const VehicleSelector = ({
               <Text
                 style={[
                   styles.vehiclePrice,
-                  selectedVehicle == vehicle.mode
+                  selectedVehicle === vehicle.mode
                     ? styles.vehiclePriceSelected
                     : {},
                 ]}

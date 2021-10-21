@@ -5,7 +5,7 @@ import Moment from 'react-moment'
 import { colors } from '@utils/theme'
 
 import { LegProps } from '@utils/validation'
-import { Modes } from '../../../types'
+import { LegModes } from '../../../types'
 
 import Leg from './Leg'
 
@@ -44,7 +44,7 @@ const TripMiniature = ({
   useEffect(() => {
     if (legs) {
       setStartStationName(
-        legs.find((leg) => leg.mode == Modes.bus)?.headsign || ''
+        legs.find((leg) => leg.mode == LegModes.bus)?.headsign || ''
       )
     }
   }, [legs])
@@ -56,17 +56,17 @@ const TripMiniature = ({
           {legs && (
             <View style={styles.legsContainer}>
               {legs.map((leg, index) => {
-                if (leg.mode == Modes.bus) {
+                if (leg.mode == LegModes.bus) {
                   console.log(leg)
                 }
                 return (
                   <Leg
                     key={index}
-                    isLast={++index == legs.length}
-                    mode={leg.mode as Modes}
+                    isLast={index === legs.length - 1}
+                    mode={leg.mode}
                     duration={leg.duration}
                     color={leg.routeColor}
-                    number={leg.routeShortName}
+                    shortName={leg.routeShortName}
                   />
                 )
               })}

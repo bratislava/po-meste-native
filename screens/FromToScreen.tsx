@@ -18,13 +18,10 @@ import BottomSheet from 'reanimated-bottom-sheet'
 import { getTripPlanner } from '../utils/api'
 import { apiOtpPlanner } from '../utils/validation'
 import SearchFromToScreen from './SearchFromToScreen'
-import { s } from '../utils/globalStyles'
-import { MapParamList, Modes } from '../types'
+import { MapParamList, TravelModes, VehicleData } from '../types'
 import TripMiniature from './ui/TripMiniature/TripMiniature'
 import FromToSelector from './ui/FromToSelector/FromToSelector'
-import VehicleSelector, {
-  VehicleType,
-} from './ui/VehicleSelector/VehicleSelector'
+import VehicleSelector from './ui/VehicleSelector/VehicleSelector'
 
 import BusSvg from '@images/bus.svg'
 import CyclingSvg from '@images/cycling.svg'
@@ -68,7 +65,9 @@ export default function FromToScreen({
   const fromBottomSheetRef = useRef<BottomSheet>(null)
   const toBottomSheetRef = useRef<BottomSheet>(null)
 
-  const [selectedVehicle, setSelectedVehicle] = useState<Modes>(Modes.bus)
+  const [selectedVehicle, setSelectedVehicle] = useState<TravelModes>(
+    TravelModes.bus
+  )
 
   const [locationPermisionError, setLocationPermisionError] =
     useState<string>('')
@@ -213,31 +212,31 @@ export default function FromToScreen({
     toBottomSheetRef?.current?.snapTo(1)
   }
 
-  const onVehicleChange = (mode: Modes) => {
+  const onVehicleChange = (mode: TravelModes) => {
     setSelectedVehicle(mode)
   }
 
-  const vehicles: VehicleType[] = [
+  const vehicles: VehicleData[] = [
     {
-      mode: Modes.bus,
+      mode: TravelModes.bus,
       icon: BusSvg,
       estimatedTime: '? - ? min',
       price: '~?,??€',
     },
     {
-      mode: Modes.bicycle,
+      mode: TravelModes.bicycle,
       icon: CyclingSvg,
       estimatedTime: '? min',
       price: '~?,??€',
     },
     {
-      mode: Modes.scooter,
+      mode: TravelModes.scooter,
       icon: ScooterSvg,
       estimatedTime: '? min',
       price: '~?,??€',
     },
     {
-      mode: Modes.walk,
+      mode: TravelModes.walk,
       icon: WalkingSvg,
       estimatedTime: '? min',
       price: '--',
@@ -266,20 +265,18 @@ export default function FromToScreen({
       <ScrollView contentContainerStyle={styles.scrollView}>
         {validatedOtpData?.plan?.itineraries?.map((tripChoice, index) => {
           return (
-            <>
-              <TripMiniature
-                key={index}
-                onPress={() =>
-                  navigation.navigate('PlannerScreen', {
-                    legs: tripChoice?.legs,
-                  })
-                }
-                duration={tripChoice.duration}
-                departureTime={tripChoice.startTime}
-                ariveTime={tripChoice.endTime}
-                legs={tripChoice.legs}
-              />
-            </>
+            <TripMiniature
+              key={index}
+              onPress={() =>
+                navigation.navigate('PlannerScreen', {
+                  legs: tripChoice?.legs,
+                })
+              }
+              duration={tripChoice.duration}
+              departureTime={tripChoice.startTime}
+              ariveTime={tripChoice.endTime}
+              legs={tripChoice.legs}
+            />
           )
         })}
       </ScrollView>

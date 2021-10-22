@@ -295,12 +295,15 @@ export default function FromToScreen({
             />
           )
         })}
-        <FeedbackAsker
-          onNegativeFeedbackPress={() => {
-            navigation.navigate('Feedback')
-          }}
-          onPositiveFeedbackPress={handlePositiveFeedback}
-        />
+        {validatedOtpData?.plan?.itineraries?.length != undefined &&
+          validatedOtpData.plan.itineraries.length > 0 && (
+            <FeedbackAsker
+              onNegativeFeedbackPress={() => {
+                navigation.navigate('Feedback')
+              }}
+              onPositiveFeedbackPress={handlePositiveFeedback}
+            />
+          )}
       </ScrollView>
       <SearchFromToScreen
         sheetRef={fromBottomSheetRef}

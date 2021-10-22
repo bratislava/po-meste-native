@@ -1,5 +1,12 @@
-import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import React, {
+  useMemo,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useContext,
+} from 'react'
+import { StyleSheet, View } from 'react-native'
 import i18n from 'i18n-js'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -15,10 +22,9 @@ import * as Location from 'expo-location'
 import { LocationGeocodedAddress } from 'expo-location'
 import BottomSheet from 'reanimated-bottom-sheet'
 
-import { getTripPlanner } from '../utils/api'
-import { apiOtpPlanner } from '../utils/validation'
+import { getTripPlanner } from '@utils/api'
+import { apiOtpPlanner } from '@utils/validation'
 import SearchFromToScreen from './SearchFromToScreen'
-import { MapParamList, TravelModes, VehicleData } from '../types'
 import TripMiniature from './ui/TripMiniature/TripMiniature'
 import FromToSelector from './ui/FromToSelector/FromToSelector'
 import VehicleSelector from './ui/VehicleSelector/VehicleSelector'
@@ -28,6 +34,10 @@ import CyclingSvg from '@images/cycling.svg'
 import ScooterSvg from '@images/scooter.svg'
 import WalkingSvg from '@images/walking.svg'
 import { colors } from '@utils/theme'
+import { MapParamList, TravelModes, VehicleData } from '../types'
+import FeedbackAsker from './ui/FeedbackAsker/FeedbackAsker'
+
+import { GlobalStateContext } from '@components/GlobalStateProvider'
 
 export default function FromToScreen({
   route,
@@ -98,7 +108,7 @@ export default function FromToScreen({
   const getGeocodeAsync = useCallback(
     async (
       location: { latitude: number; longitude: number },
-      setGeocode: (locatoion: LocationGeocodedAddress[]) => void
+      setGeocode: (locatoion: Location.LocationGeocodedAddress[]) => void
     ) => {
       const { status } = await Location.requestForegroundPermissionsAsync()
       if (status !== 'granted') {
@@ -212,6 +222,12 @@ export default function FromToScreen({
     toBottomSheetRef?.current?.snapTo(1)
   }
 
+  const { setFeedbackSent } = useContext(GlobalStateContext)
+
+  const handlePositiveFeedback = () => {
+    setFeedbackSent(true)
+  }
+
   const onVehicleChange = (mode: TravelModes) => {
     setSelectedVehicle(mode)
   }
@@ -279,6 +295,12 @@ export default function FromToScreen({
             />
           )
         })}
+        <FeedbackAsker
+          onNegativeFeedbackPress={() => {
+            navigation.navigate('Feedback')
+          }}
+          onPositiveFeedbackPress={handlePositiveFeedback}
+        />
       </ScrollView>
       <SearchFromToScreen
         sheetRef={fromBottomSheetRef}
@@ -328,6 +350,8 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     justifyContent: 'center',
     backgroundColor: colors.lightLightGray,
+    height: '100%',
+    paddingBottom: 55,
   },
   header: {
     backgroundColor: 'white',

@@ -28,6 +28,7 @@ import LineTimeline from '@screens/LineTimeline'
 import { GlobalStateContext } from '@screens/ui/VehicleBar/GlobalStateProvider'
 import Timetable from '@screens/Timetable'
 import ChooseLocation from '@screens/ChooseLocation'
+import Feedback from '@screens/FeedbackScreen'
 
 import TabBar from './TabBar'
 
@@ -126,6 +127,11 @@ function MapNavigator() {
         }}
       />
       <MapStack.Screen name="ChooseLocation" component={ChooseLocation} />
+      <MapStack.Screen
+        name="Feedback"
+        component={Feedback}
+        options={{ headerShown: false }}
+      />
     </MapStack.Navigator>
   )
 }

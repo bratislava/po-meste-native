@@ -17,14 +17,14 @@ import {
 } from 'react-native-google-places-autocomplete'
 import Constants from 'expo-constants'
 import { Ionicons } from '@expo/vector-icons'
+import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@navigation/TabBar'
 
 import { dummyDataPlaceHistory } from '../dummyData'
-import { s } from '../utils/globalStyles'
-import { colors } from '../utils/theme'
-import MhdSvg from '../assets/images/mhd.svg'
-import HistorySvg from '../assets/images/history-search.svg'
-import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@navigation/TabBar'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import MhdSvg from '@images/mhd.svg'
+import HistorySvg from '@images/history-search.svg'
+import { renderHeader } from '@components/BottomSheetHeader'
+import { colors } from '@utils/theme'
+import { s } from '@utils/globalStyles'
 
 interface SearchFromToScreen {
   sheetRef: MutableRefObject<BottomSheet | null>
@@ -194,14 +194,6 @@ export default function SearchFromToScreen({
     </View>
   )
 
-  const renderHeader = () => (
-    <SafeAreaView style={styles.header}>
-      <View style={styles.panelHeader}>
-        <View style={styles.panelHandle} />
-      </View>
-    </SafeAreaView>
-  )
-
   return (
     <BottomSheet
       ref={sheetRef}
@@ -287,23 +279,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 7,
     zIndex: 1,
-  },
-  header: {
-    backgroundColor: 'white',
-    paddingTop: 10,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-  panelHeader: {
-    alignItems: 'center',
-    height: 20,
-  },
-  panelHandle: {
-    width: 100,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: colors.lightGray,
-    marginBottom: 10,
   },
 })
 

@@ -38,6 +38,7 @@ import { MapParamList, TravelModes, VehicleData } from '../types'
 import FeedbackAsker from './ui/FeedbackAsker/FeedbackAsker'
 
 import { GlobalStateContext } from '@components/GlobalStateProvider'
+import { useLocationWithPermision } from '@hooks/miscHooks'
 
 export default function FromToScreen({
   route,
@@ -53,6 +54,7 @@ export default function FromToScreen({
       undefined,
     [fromProp]
   )
+  const { getLocationWithPermission } = useLocationWithPermision()
 
   const fromPropName = fromProp?.name
 
@@ -155,23 +157,17 @@ export default function FromToScreen({
     setCoordinates: (location: { latitude: number; longitude: number }) => void,
     setGeocode: (location: LocationGeocodedAddress[]) => void
   ) => {
-    const { status } = await Location.requestForegroundPermissionsAsync()
-
-    if (status !== 'granted') {
-      setLocationPermisionError('Permission to access location was denied')
+    const location = await getLocationWithPermission(true)
+    if (location) {
+      const { latitude, longitude } = location.coords
+      setCoordinates({
+        latitude,
+        longitude,
+      })
+      getGeocodeAsync({ latitude, longitude }, setGeocode).catch((err) => {
+        setLocationPermisionError(err)
+      })
     }
-
-    const location = await Location.getCurrentPositionAsync({
-      accuracy: Location.Accuracy.Highest,
-    })
-    const { latitude, longitude } = location.coords
-    setCoordinates({
-      latitude,
-      longitude,
-    })
-    getGeocodeAsync({ latitude, longitude }, setGeocode).catch((err) => {
-      setLocationPermisionError(err)
-    })
   }
 
   const validatedOtpData = useMemo(() => {

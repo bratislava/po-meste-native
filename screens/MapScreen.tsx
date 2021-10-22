@@ -34,6 +34,7 @@ import StationMhdInfo from './ui/StationMhdInfo/StationMhdInfo'
 
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
+import { useLocationWithPermision } from '@hooks/miscHooks'
 
 const MIN_DELTA_FOR_XS_MARKER = 0.05
 const MIN_DELTA_FOR_SM_MARKER = 0.03
@@ -109,39 +110,46 @@ export default function MapScreen() {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   })
+  const { getLocationWithPermission } = useLocationWithPermision()
 
   const bottomSheetRef = useRef<BottomSheet>(null)
 
   const bottomSheetSnapPoints = useMemo(() => ['100%', '60%', 0], [])
 
-  const fetchData = useCallback(async () => {
-    await Location.getCurrentPositionAsync({
-      accuracy: Location.Accuracy.Highest,
-    }).then((locationObject) => {
-      mapRef.current?.fitToCoordinates(
-        [
-          locationObject.coords,
+  const moveMapToCurrentLocation = useCallback(
+    async (
+      permisionDeniedCallback: () => Promise<
+        Location.LocationObject | undefined
+      >
+    ) => {
+      const currentLocation = await permisionDeniedCallback()
+      if (currentLocation) {
+        mapRef.current?.fitToCoordinates(
+          [
+            currentLocation.coords,
+            {
+              latitude: currentLocation.coords.latitude + 0.0025,
+              longitude: currentLocation.coords.longitude + 0.002,
+            },
+            {
+              latitude: currentLocation.coords.latitude - 0.0025,
+              longitude: currentLocation.coords.longitude - 0.002,
+            },
+          ],
           {
-            latitude: locationObject.coords.latitude + 0.0025,
-            longitude: locationObject.coords.longitude + 0.002,
-          },
-          {
-            latitude: locationObject.coords.latitude - 0.0025,
-            longitude: locationObject.coords.longitude - 0.002,
-          },
-        ],
-        {
-          edgePadding: { bottom: 100, top: 100, left: 100, right: 100 },
-        }
-      )
-    })
-  }, [mapRef])
+            edgePadding: { bottom: 100, top: 100, left: 100, right: 100 },
+          }
+        )
+      }
+    },
+    []
+  )
 
   useEffect(() => {
     setTimeout(() => {
-      fetchData()
+      moveMapToCurrentLocation(() => getLocationWithPermission(false))
     }, 2000)
-  }, [fetchData])
+  }, [getLocationWithPermission, moveMapToCurrentLocation])
 
   useEffect(() => {
     if (selectedMhdStation) {
@@ -380,7 +388,11 @@ export default function MapScreen() {
         <LoadingView />
       ) : null}
       <View style={styles.currentLocation}>
-        <TouchableHighlight onPress={fetchData}>
+        <TouchableHighlight
+          onPress={() =>
+            moveMapToCurrentLocation(() => getLocationWithPermission(true))
+          }
+        >
           <CurrentLocationSvg />
         </TouchableHighlight>
       </View>

@@ -80,8 +80,6 @@ const Feedback = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.lightLightGray,
-    paddingHorizontal: 20,
     paddingVertical: 16,
     display: 'flex',
     flexDirection: 'row',
@@ -101,6 +99,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    marginLeft: 10,
   },
   thumbUpButtonAfterFeedback: {
     marginVertical: 4,

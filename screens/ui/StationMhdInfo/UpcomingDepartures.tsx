@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 import { MhdStopProps } from '@utils/validation'
 import TicketSvg from '@images/ticket.svg'
 import useMhdStopStatusData from '@hooks/useMhdStopStatusData'
-import { GlobalStateContext } from '../VehicleBar/GlobalStateProvider'
+import { GlobalStateContext } from '@components/GlobalStateProvider'
 import { s } from '@utils/globalStyles'
 import { ScrollView } from 'react-native-gesture-handler'
 

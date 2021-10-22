@@ -15,22 +15,22 @@ import { BikeProvider, VehicleType } from '../types'
 import SearchBar from './ui/SearchBar/SearchBar'
 import VehicleBar from './ui/VehicleBar/VehicleBar'
 import LoadingView from './ui/LoadingView/LoadingView'
-import useRekolaData from '../hooks/useRekolaData'
-import useSlovnaftbajkData from '../hooks/useSlovnaftbajkData'
-import useTierData from '../hooks/useTierData'
-import useMhdData from '../hooks/useMhdStopsData'
-import useZseChargersData from '../hooks/useZseChargersData'
-import { GlobalStateContext } from './ui/VehicleBar/GlobalStateProvider'
+import useRekolaData from '@hooks/useRekolaData'
+import useSlovnaftbajkData from '@hooks/useSlovnaftbajkData'
+import useTierData from '@hooks/useTierData'
+import useMhdData from '@hooks/useMhdStopsData'
+import useZseChargersData from '@hooks/useZseChargersData'
+import { GlobalStateContext } from '@components/GlobalStateProvider'
 import {
   FreeBikeStatusProps,
   LocalitiesProps,
   MhdStopProps,
   StationProps,
-} from '../utils/validation'
+} from '@utils/validation'
 import StationMhdInfo from './ui/StationMhdInfo/StationMhdInfo'
 
-import { s } from '../utils/globalStyles'
-import { colors } from '../utils/theme'
+import { s } from '@utils/globalStyles'
+import { colors } from '@utils/theme'
 
 const MIN_DELTA_FOR_XS_MARKER = 0.05
 const MIN_DELTA_FOR_SM_MARKER = 0.03

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { GlobalStateContext } from './GlobalStateProvider'
+import { GlobalStateContext } from '@components/GlobalStateProvider'
 
 const VehicleBar = () => {
   const vehiclesContext = useContext(GlobalStateContext)

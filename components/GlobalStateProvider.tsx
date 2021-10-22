@@ -1,5 +1,5 @@
 import React, { useState, createContext, Dispatch, SetStateAction } from 'react'
-import { VehicleType } from 'types'
+import { VehicleType } from '../types'
 import MhdSvg from '@images/mhd.svg'
 import TicketSvg from '@images/ticket.svg'
 

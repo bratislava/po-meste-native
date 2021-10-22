@@ -33,7 +33,9 @@ const VehicleSelector = ({
                 selectedVehicle === vehicle.mode
                   ? styles.vehicleContainerSelected
                   : {},
-                index + 1 != vehicles.length ? styles.vehicleContainerLast : {},
+                index !== vehicles.length - 1
+                  ? styles.vehicleContainerLast
+                  : {},
               ]}
               onPress={() => onVehicleChange(vehicle.mode)}
             >

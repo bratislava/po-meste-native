@@ -1,10 +1,19 @@
 import React, { useState, createContext, Dispatch, SetStateAction } from 'react'
-import TicketSvg from '@images/ticket.svg'
+import { VehicleType } from 'types'
 import MhdSvg from '@images/mhd.svg'
-import { VehicleType } from '../../../types'
+import TicketSvg from '@images/ticket.svg'
 
-interface VehicleFilterProps {
+interface Props {
   children: React.ReactNode
+}
+
+interface ContextProps {
+  vehicleTypes: VehicleProps[]
+  setVehicleTypes: Dispatch<SetStateAction<VehicleProps[]>>
+  timeLineNumber?: number
+  setTimeLineNumber: React.Dispatch<React.SetStateAction<number | undefined>>
+  isFeedbackSent: boolean
+  setFeedbackSent: Dispatch<SetStateAction<boolean>>
 }
 
 interface VehicleProps {
@@ -13,17 +22,11 @@ interface VehicleProps {
   icon: (color: string) => React.ReactNode
 }
 
-interface VehicleFilterContextProps {
-  vehicleTypes: VehicleProps[]
-  setVehicleTypes: Dispatch<SetStateAction<VehicleProps[]>>
-  timeLineNumber?: number
-  setTimeLineNumber: React.Dispatch<React.SetStateAction<number | undefined>>
-}
+export const GlobalStateContext = createContext({} as ContextProps)
 
-export const GlobalStateContext = createContext({} as VehicleFilterContextProps)
-
-export default function GlobalStateProvider({ children }: VehicleFilterProps) {
+export default function GlobalStateProvider({ children }: Props) {
   const [timeLineNumber, setTimeLineNumber] = useState<number>()
+
   const [vehicleTypes, setVehicleTypes] = useState<VehicleProps[]>([
     {
       id: VehicleType.mhd,
@@ -47,6 +50,8 @@ export default function GlobalStateProvider({ children }: VehicleFilterProps) {
     },
   ])
 
+  const [isFeedbackSent, setFeedbackSent] = useState(false)
+
   return (
     <GlobalStateContext.Provider
       value={{
@@ -54,6 +59,8 @@ export default function GlobalStateProvider({ children }: VehicleFilterProps) {
         setVehicleTypes,
         timeLineNumber,
         setTimeLineNumber,
+        isFeedbackSent,
+        setFeedbackSent,
       }}
     >
       {children}

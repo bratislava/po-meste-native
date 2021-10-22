@@ -55,6 +55,7 @@ export type MapParamList = {
     longitude?: number
     onConfirm: (latitude?: number, longitude?: number) => void
   }
+  Feedback: undefined
 }
 
 export type TabTwoParamList = {

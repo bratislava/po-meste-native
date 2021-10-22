@@ -26,6 +26,8 @@ export default {
   doYouWantToContinue: 'Do you want to continue?',
   cancel: 'Cancel',
   continue: 'Continue',
+  send: 'Send',
+  thankYou: 'Thank you',
   presentPrice: '€{{price}}',
   screens: {
     ticketsScreen: {
@@ -46,6 +48,23 @@ export default {
           name: 'Ticket 24 hours',
         },
       },
+    },
+    feedbackScreen: {
+      title: "Oops. What didn't work?",
+      text: 'We are sorry that the suggested routes did not meet your expectations :(',
+      textAreaPlaceholder:
+        "Please describe what didn't work or give us suggestions for improvement...",
+      thankYouText:
+        'Thanks to your feedback, we are able to constantly improve the app and bring you more relevant routes.',
+      backToSearch: 'Back to search',
+    },
+  },
+  components: {
+    feedbackAsker: {
+      title: 'Your opinion is important to us!',
+      text: 'How do you rate the suggested routes?',
+      thankYouTitle: 'Thank you for rating!',
+      thankYouText: 'Your feedback helps us improve the app:)',
     },
   },
   searching: 'Searching',

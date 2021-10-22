@@ -272,9 +272,9 @@ export default function FromToScreen({
                   legs: tripChoice?.legs,
                 })
               }
-              duration={tripChoice.duration}
-              departureTime={tripChoice.startTime}
-              ariveTime={tripChoice.endTime}
+              duration={Math.round(tripChoice.duration / 60)}
+              departureDate={new Date(tripChoice.startTime)}
+              ariveDate={new Date(tripChoice.endTime)}
               legs={tripChoice.legs}
             />
           )

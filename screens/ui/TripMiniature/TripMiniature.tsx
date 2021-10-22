@@ -11,35 +11,20 @@ import Leg from './Leg'
 
 type Props = {
   duration: number
-  departureTime: number
-  ariveTime: number
+  departureDate: Date
+  ariveDate: Date
   legs?: LegProps[]
   onPress: () => void
 }
 
 const TripMiniature = ({
   duration,
-  departureTime,
-  ariveTime,
+  departureDate,
+  ariveDate,
   legs,
   onPress,
 }: Props) => {
-  const [displayedDuration, setDisplayedDuration] = useState(0)
-  const [displayedDeparture, setDisplayedDeparture] = useState<Date>(new Date())
-  const [displayedArive, setDisplayedArive] = useState<Date>(new Date())
   const [displayedStartStationName, setStartStationName] = useState('')
-
-  useEffect(() => {
-    setDisplayedDuration(Math.round(duration / 60))
-  }, [duration])
-
-  useEffect(() => {
-    setDisplayedDeparture(new Date(departureTime))
-  }, [departureTime])
-
-  useEffect(() => {
-    setDisplayedArive(new Date(ariveTime))
-  }, [ariveTime])
 
   useEffect(() => {
     if (legs) {
@@ -74,7 +59,7 @@ const TripMiniature = ({
                 element={Text}
                 style={styles.atTime}
                 interval={5000}
-                date={departureTime}
+                date={departureDate}
                 trim
                 fromNow
               />
@@ -84,16 +69,16 @@ const TripMiniature = ({
         </View>
         <View style={styles.rightContainer}>
           <View style={styles.durationContainer}>
-            <Text style={styles.durationNumber}>{displayedDuration}</Text>
+            <Text style={styles.durationNumber}>{duration}</Text>
             <Text style={styles.durationMin}>min</Text>
           </View>
           <View style={styles.fromToTime}>
             <Moment element={Text} format="HH:mm">
-              {displayedDeparture}
+              {departureDate}
             </Moment>
             <Text> - </Text>
             <Moment element={Text} format="HH:mm">
-              {displayedArive}
+              {ariveDate}
             </Moment>
           </View>
           <View style={styles.rightContainerBackground}></View>

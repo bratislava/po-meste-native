@@ -74,4 +74,7 @@ export default {
   history: 'History',
   choosePlaceFromMap: 'Choose from map',
   currentPosition: 'Current position',
+  permissionLocation: 'Permission to access location was denied',
+  openSettings: 'Open settings',
+  cancelLocationPermission: 'Cancel',
 }

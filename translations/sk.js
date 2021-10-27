@@ -73,4 +73,7 @@ export default {
   history: 'História',
   choosePlaceFromMap: 'Vybrať na mape',
   currentPosition: 'Current position',
+  permissionLocation: 'Povolenie sprístupniť polohu bolo zamietnuté',
+  openSettings: 'Otvoriť nastavenia',
+  cancelLocationPermission: 'Zrušiť',
 }

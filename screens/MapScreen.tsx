@@ -9,7 +9,10 @@ import React, {
 import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps'
 import { StyleSheet, View, ImageURISource } from 'react-native'
 import BottomSheet from 'reanimated-bottom-sheet'
+import * as Location from 'expo-location'
+import { TouchableHighlight } from 'react-native-gesture-handler'
 
+import CurrentLocationSvg from '@images/current-location.svg'
 import ErrorView from '@components/ErrorView'
 import { BikeProvider, VehicleType } from '../types'
 import SearchBar from './ui/SearchBar/SearchBar'
@@ -31,6 +34,7 @@ import StationMhdInfo from './ui/StationMhdInfo/StationMhdInfo'
 
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
+import { useLocationWithPermision } from '@hooks/miscHooks'
 
 const MIN_DELTA_FOR_XS_MARKER = 0.05
 const MIN_DELTA_FOR_SM_MARKER = 0.03
@@ -90,6 +94,8 @@ export default function MapScreen() {
   const { data: dataMergedSlovnaftbajk, isLoading: isLoadingSlovnaftbajk } =
     useSlovnaftbajkData()
 
+  const mapRef = useRef<MapView>(null)
+
   const vehiclesContext = useContext(GlobalStateContext)
 
   const [selectedStation, setSelectedStation] = useState<
@@ -104,10 +110,46 @@ export default function MapScreen() {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   })
+  const { getLocationWithPermission } = useLocationWithPermision()
 
   const bottomSheetRef = useRef<BottomSheet>(null)
 
   const bottomSheetSnapPoints = useMemo(() => ['100%', '60%', 0], [])
+
+  const moveMapToCurrentLocation = useCallback(
+    async (
+      permisionDeniedCallback: () => Promise<
+        Location.LocationObject | undefined
+      >
+    ) => {
+      const currentLocation = await permisionDeniedCallback()
+      if (currentLocation) {
+        mapRef.current?.fitToCoordinates(
+          [
+            currentLocation.coords,
+            {
+              latitude: currentLocation.coords.latitude + 0.0025,
+              longitude: currentLocation.coords.longitude + 0.002,
+            },
+            {
+              latitude: currentLocation.coords.latitude - 0.0025,
+              longitude: currentLocation.coords.longitude - 0.002,
+            },
+          ],
+          {
+            edgePadding: { bottom: 100, top: 100, left: 100, right: 100 },
+          }
+        )
+      }
+    },
+    []
+  )
+
+  useEffect(() => {
+    setTimeout(() => {
+      moveMapToCurrentLocation(() => getLocationWithPermission(false))
+    }, 2000)
+  }, [getLocationWithPermission, moveMapToCurrentLocation])
 
   useEffect(() => {
     if (selectedMhdStation) {
@@ -258,6 +300,7 @@ export default function MapScreen() {
         <ErrorView error={errorsMhd} />
       ) : (
         <MapView
+          ref={mapRef}
           provider={PROVIDER_GOOGLE}
           style={styles.map}
           initialRegion={{
@@ -344,6 +387,15 @@ export default function MapScreen() {
       isLoadingZseChargers ? (
         <LoadingView />
       ) : null}
+      <View style={styles.currentLocation}>
+        <TouchableHighlight
+          onPress={() =>
+            moveMapToCurrentLocation(() => getLocationWithPermission(true))
+          }
+        >
+          <CurrentLocationSvg />
+        </TouchableHighlight>
+      </View>
       <SearchBar />
       <VehicleBar />
       <BottomSheet
@@ -394,6 +446,16 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+  },
+  currentLocation: {
+    position: 'absolute',
+    bottom: 150,
+    right: 30,
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 30,
+    ...s.shadow,
+    elevation: 7,
   },
   bottomSheetHandleStyle: {
     paddingVertical: 16,

@@ -73,9 +73,21 @@ export default {
   myStops: 'My stops',
   history: 'History',
   choosePlaceFromMap: 'Choose from map',
-  currentPosition: 'Current position',
   permissionLocation: 'Permission to access location was denied',
   openSettings: 'Open settings',
   cancelLocationPermission: 'Cancel',
   validationError: 'Sorry man fault is on our side - validation',
+  currentPosition: 'Current position',
+  stops: {
+    zero: '{{count}} stops',
+    one: '{{count}} stop',
+    other: '{{count}} stops',
+  },
+  minutes: {
+    zero: '{{count}} minutes',
+    one: '{{count}} minute',
+    other: '{{count}} minutes',
+  },
+  minShort: 'Transit {{count}} min',
+  distanceShort: '{{count}}m',
 }

@@ -3,11 +3,10 @@ export const s = StyleSheet.create({
   icon: {
     marginRight: 10,
   },
-
   lineNumber: {
     borderRadius: 5,
-    paddingHorizontal: 20,
-    paddingVertical: 7,
+    paddingHorizontal: 15,
+    paddingVertical: 3,
   },
   bgRed: {
     backgroundColor: 'red',
@@ -30,11 +29,25 @@ export const s = StyleSheet.create({
   horizontalMargin: {
     marginHorizontal: 20,
   },
-
   shadow: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 5,
     shadowOpacity: 0.2,
+  },
+  borderBlack: {
+    borderWidth: 1,
+  },
+  borderBlue: {
+    borderWidth: 1,
+    color: 'blue',
+  },
+  borderRed: {
+    borderWidth: 1,
+    color: 'red',
+  },
+  borderGreen: {
+    borderWidth: 1,
+    color: 'green',
   },
 })

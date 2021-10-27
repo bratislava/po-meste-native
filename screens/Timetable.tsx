@@ -1,16 +1,18 @@
 import React, { useMemo, useState } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import i18n from 'i18n-js'
+import { StackScreenProps } from '@react-navigation/stack'
+import { useQuery } from 'react-query'
 
+import { mhdDefaultColors } from '@utils/theme'
+import { getMhdGrafikon } from '@utils/api'
 import { MapParamList, TimetableType } from '../types'
-import TicketSvg from '../assets/images/ticket.svg'
-import ArrowRight from '../assets/images/arrow-right.svg'
-import { s } from '../utils/globalStyles'
+import TicketSvg from '@images/ticket.svg'
+import ArrowRight from '@images/arrow-right.svg'
+import { s } from '@utils/globalStyles'
 import { Button } from '../components'
 import ButtonGroup from '@components/ButtonGroup'
-import useMhdGrafikon from '@hooks/useMhdGrafikon'
-import { StackScreenProps } from '@react-navigation/stack'
-import { mhdDefaultColors } from '@utils/theme'
+import ErrorView from '@components/ErrorView'
 
 export default function Timetable({
   route,
@@ -19,10 +21,10 @@ export default function Timetable({
     TimetableType.workDays
   )
   const { stopId, lineNumber } = route.params
-  const { data, isLoading, errors } = useMhdGrafikon({
-    stopId,
-    lineNumber,
-  })
+  const { data, isLoading, error, refetch } = useQuery(
+    ['getGrafikon', stopId, lineNumber],
+    () => getMhdGrafikon(stopId, lineNumber)
+  )
 
   const formattedData = useMemo(() => {
     const dataProcessed: {
@@ -72,6 +74,8 @@ export default function Timetable({
     )
     return times
   }, [formattedData])
+
+  if (error) return <ErrorView error={error} action={refetch} />
 
   return (
     <View style={s.container}>

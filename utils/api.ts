@@ -1,6 +1,7 @@
 import Constants from 'expo-constants'
 import qs from 'qs'
 import { Modes } from '../types'
+import { apiMhdGrafikon } from './validation'
 
 const host =
   Constants.manifest?.extra?.apiHost || 'https://live-dev.planner.bratislava.sk'
@@ -42,7 +43,14 @@ export const getMhdStopStatusData = (id: string) =>
   fetchJsonFromApi(`/mhd/stop/${id}`)
 
 export const getMhdTrip = (id: string) => fetchJsonFromApi(`/mhd/trip/${id}`)
-export const getMhdGrafikon = (stopId: string, lineNumber: string) =>
+
+// TODO do every query like they do it on Discovery channel, sorry, like this, validate immediately
+export const getMhdGrafikon = async (stopId: string, lineNumber: string) =>
+  apiMhdGrafikon.validateSync(
+    await fetchJsonFromApi(`/mhd/stop/${stopId}/grafikon/${lineNumber}`)
+  )
+
+export const getMhdGrafikonn = (stopId: string, lineNumber: string) =>
   fetchJsonFromApi(`/mhd/stop/${stopId}/grafikon/${lineNumber}`)
 
 export const getRekolaStationInformation = () =>

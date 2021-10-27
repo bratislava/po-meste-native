@@ -77,4 +77,5 @@ export default {
   permissionLocation: 'Permission to access location was denied',
   openSettings: 'Open settings',
   cancelLocationPermission: 'Cancel',
+  validationError: 'Sorry man fault is on our side - validation',
 }

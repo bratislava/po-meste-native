@@ -76,4 +76,5 @@ export default {
   permissionLocation: 'Povolenie sprístupniť polohu bolo zamietnuté',
   openSettings: 'Otvoriť nastavenia',
   cancelLocationPermission: 'Zrušiť',
+  validationError: 'Sorry kámo chyba je na našej strane - validacia',
 }

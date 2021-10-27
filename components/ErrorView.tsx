@@ -1,9 +1,11 @@
 import * as Sentry from '@sentry/react-native'
-import { colors } from '../utils/theme'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { Button } from '.'
 import i18n from 'i18n-js'
+import { ValidationError } from 'yup'
+
+import { colors } from '@utils/theme'
+import { Button } from '.'
 
 interface ErrorViewProps {
   action?: () => unknown
@@ -23,13 +25,36 @@ interface ErrorViewMerged
     ErrorViewPropsErrorMessage {}
 
 const ErrorView = ({ error, errorMessage, action, reset }: ErrorViewMerged) => {
+  const isValidationError = useCallback(
+    (error) => error instanceof ValidationError,
+    []
+  )
+
   useEffect(() => {
+    if (isValidationError(error)) {
+      Sentry.captureException(error, {
+        extra: {
+          exceptionType: 'validation error',
+          rawData: JSON.stringify(error),
+        },
+      })
+    }
     if (error) {
-      Sentry.captureException(error)
+      Sentry.captureException(error, {
+        extra: {
+          exceptionType: 'other error',
+          rawData: JSON.stringify(error),
+        },
+      })
     } else if (errorMessage) {
       Sentry.captureMessage(errorMessage, Sentry.Severity.Error)
     }
-  }, [error, errorMessage])
+  }, [isValidationError, error, errorMessage])
+
+  if (isValidationError(error)) {
+    // TODO add proper error message
+    return <Text>{i18n.t('validationError')}</Text>
+  }
 
   return (
     <View style={styles.wrapper}>

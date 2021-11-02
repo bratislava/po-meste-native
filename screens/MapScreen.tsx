@@ -14,16 +14,12 @@ import { TouchableHighlight } from 'react-native-gesture-handler'
 
 import CurrentLocationSvg from '@images/current-location.svg'
 import ErrorView from '@components/ErrorView'
-import { BikeProvider, VehicleType } from '../types'
-import SearchBar from './ui/SearchBar/SearchBar'
-import VehicleBar from './ui/VehicleBar/VehicleBar'
-import LoadingView from './ui/LoadingView/LoadingView'
 import useRekolaData from '@hooks/useRekolaData'
 import useSlovnaftbajkData from '@hooks/useSlovnaftbajkData'
 import useTierData from '@hooks/useTierData'
 import useMhdData from '@hooks/useMhdStopsData'
 import useZseChargersData from '@hooks/useZseChargersData'
-import { GlobalStateContext } from '@components/GlobalStateProvider'
+import { GlobalStateContext } from '@components/common/GlobalStateProvider'
 import {
   FreeBikeStatusProps,
   LocalitiesProps,
@@ -35,6 +31,10 @@ import StationMhdInfo from './ui/StationMhdInfo/StationMhdInfo'
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
 import { useLocationWithPermision } from '@hooks/miscHooks'
+import { BikeProvider, VehicleType } from '../types'
+import SearchBar from './ui/SearchBar/SearchBar'
+import VehicleBar from './ui/VehicleBar/VehicleBar'
+import LoadingView from './ui/LoadingView/LoadingView'
 
 const MIN_DELTA_FOR_XS_MARKER = 0.05
 const MIN_DELTA_FOR_SM_MARKER = 0.03
@@ -314,10 +314,10 @@ export default function MapScreen() {
           {vehiclesContext.vehicleTypes?.find(
             (vehicleType) => vehicleType.id === VehicleType.mhd
           )?.show &&
-            dataMhd &&
-            filterMhdInView(dataMhd).map((stop) => (
+            dataMhd?.stops &&
+            filterMhdInView(dataMhd.stops).map((stop) => (
               <Marker
-                key={stop.stationStopId}
+                key={stop.id}
                 coordinate={{
                   latitude: parseFloat(stop.gpsLat),
                   longitude: parseFloat(stop.gpsLon),
@@ -402,6 +402,7 @@ export default function MapScreen() {
         ref={bottomSheetRef}
         onCloseEnd={handleSheetClose}
         snapPoints={bottomSheetSnapPoints}
+        enabledContentTapInteraction={false}
         renderContent={() => {
           return (
             <View style={styles.bottomSheet}>

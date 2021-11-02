@@ -13,7 +13,7 @@ import * as Sentry from 'sentry-expo'
 import useCachedResources from '@hooks/useCachedResources'
 import useColorScheme from '@hooks/useColorScheme'
 import Navigation from '@navigation/index'
-import GlobalStateProvider from '@components/GlobalStateProvider'
+import GlobalStateProvider from '@components/common/GlobalStateProvider'
 
 i18n.translations = translations
 

@@ -17,3 +17,7 @@ export const colors = {
   blackLighter: '#444444',
   transparentBlack: 'rgba(0, 0, 0, 0.5)',
 }
+
+export const mhdDefaultColors = {
+  grey: '#9E9E9E',
+}

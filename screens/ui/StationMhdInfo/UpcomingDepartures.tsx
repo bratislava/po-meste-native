@@ -1,13 +1,19 @@
 import React, { useContext } from 'react'
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-
-import { MhdStopProps } from '@utils/validation'
-import TicketSvg from '@images/ticket.svg'
-import useMhdStopStatusData from '@hooks/useMhdStopStatusData'
-import { GlobalStateContext } from '@components/GlobalStateProvider'
-import { s } from '@utils/globalStyles'
 import { ScrollView } from 'react-native-gesture-handler'
+
+import TicketSvg from '@images/ticket.svg'
+import TramSvg from '@images/tram.svg'
+import TrolleybusSvg from '@images/trolleybus.svg'
+import BusSvg from '@images/bus.svg'
+import useMhdStopStatusData from '@hooks/useMhdStopStatusData'
+import { GlobalStateContext } from '@components/common/GlobalStateProvider'
+import { MhdStopProps } from '@utils/validation'
+import { s } from '@utils/globalStyles'
+import { mhdDefaultColors } from '@utils/theme'
+import { LocalDateTime, Duration } from '@js-joda/core'
+import { TransitVehicleType } from '../../../types'
 
 interface UpcomingDeparturesProps {
   station: MhdStopProps
@@ -17,8 +23,24 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
   const globalstateContext = useContext(GlobalStateContext)
 
   const { data, isLoading, errors } = useMhdStopStatusData({
-    id: station.stationStopId,
+    id: station.id,
   })
+
+  const getVehicle = (
+    vehicletype?: TransitVehicleType,
+    color: string = mhdDefaultColors.grey
+  ) => {
+    switch (vehicletype) {
+      case TransitVehicleType.trolleybus:
+        return <TrolleybusSvg width={30} height={40} fill={color} />
+      case TransitVehicleType.tram:
+        return <TramSvg width={30} height={40} fill={color} />
+      case TransitVehicleType.bus:
+        return <BusSvg width={30} height={40} fill={color} />
+      default:
+        return <BusSvg width={30} height={40} fill={color} />
+    }
+  }
 
   return (
     <View style={styles.column}>
@@ -28,7 +50,9 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
             <View style={s.icon}>
               <TicketSvg fill="red" />
             </View>
-            <Text>{station.name}</Text>
+            <Text>{`${station.name} ${
+              station.platform ? station.platform : ''
+            }`}</Text>
           </View>
           <TouchableOpacity
             style={styles.navigateToIcon}
@@ -46,56 +70,74 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
           </TouchableOpacity>
         </View>
         <View style={styles.secondRow}>
-          {[
-            // TODO change for real-lines
-            { value: 1, color: 'red' },
-            { value: 2, color: 'green' },
-            { value: 70, color: 'yellow' },
-          ]?.map((departure, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.linkFilter, { backgroundColor: departure.color }]}
-              onPress={() => console.log('TODO filter line')}
-            >
-              <View style={s.icon}>
-                <TicketSvg fill="white" />
-              </View>
-              <Text style={s.whiteText}>{departure.value}</Text>
-            </TouchableOpacity>
-          ))}
+          {/* TODO add loading, see comments https://inovaciebratislava.atlassian.net/browse/PLAN-233 */}
+          {data?.allLines?.map((departure, index) => {
+            return (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.linkFilter,
+                  { backgroundColor: `#${departure.lineColor}` },
+                ]} //TODO add colors https://inovaciebratislava.atlassian.net/browse/PLAN-238
+                onPress={() => console.log('TODO filter line')}
+              >
+                <View style={s.icon}>
+                  <TicketSvg fill="white" />
+                </View>
+                <Text style={s.whiteText}>{departure.lineNumber}</Text>
+              </TouchableOpacity>
+            )
+          })}
         </View>
       </View>
       <ScrollView contentContainerStyle={styles.scrollingVehiclesData}>
         {data?.departures?.map((departure, index) => {
-          const now = new Date()
-          const departureTime = new Date(departure.time)
-          departureTime.setHours(departureTime.getHours() - 2)
-
-          const diff = Math.abs(now.getTime() - departureTime.getTime())
-
-          const minutes = Math.floor(diff / 1000 / 60)
+          const diffMinutes = Duration.between(
+            LocalDateTime.now(),
+            LocalDateTime.parse(
+              `${departure.date}T${departure.time}`
+            ).plusHours(2)
+          ).toMinutes()
           return (
             <TouchableOpacity
               key={index}
               style={styles.lineDeparture}
               onPress={() => {
                 globalstateContext.setTimeLineNumber(departure.lineNumber)
-                navigation.navigate('LineTimeline')
+                navigation.navigate('LineTimeline', {
+                  tripId: departure.tripId,
+                  stopId: station.id,
+                })
               }}
             >
               <View style={styles.departureLeft}>
                 <View key={index} style={s.icon}>
-                  <TicketSvg width={30} height={40} fill="red" />
+                  {getVehicle(
+                    departure.vehicleType,
+                    departure?.lineColor
+                      ? `#${departure?.lineColor}`
+                      : undefined
+                  )}
                 </View>
-                <Text style={[s.lineNumber, s.bgRed, s.whiteText]}>
+                <Text
+                  style={[
+                    s.lineNumber,
+                    {
+                      backgroundColor: departure.lineColor
+                        ? `#${departure.lineColor}`
+                        : mhdDefaultColors.grey,
+                    },
+                    s.whiteText,
+                  ]}
+                >
                   {departure.lineNumber}
                 </Text>
                 <Text style={[s.blackText, styles.finalStation]}>
-                  {departure.finalStationStopName}
+                  {departure.finalStopName}
                 </Text>
               </View>
               <View style={styles.departureRight}>
-                <Text>{minutes > 1 ? `${minutes} min` : '<1 min'}</Text>
+                <Text>{diffMinutes > 1 ? `${diffMinutes} min` : '<1 min'}</Text>
               </View>
             </TouchableOpacity>
           )
@@ -136,11 +178,6 @@ const styles = StyleSheet.create({
   scrollingVehiclesData: {
     paddingHorizontal: 10,
     paddingVertical: 5,
-    // display: 'flex',
-    // flexDirection: 'column',
-    // alignItems: 'stretch',
-    // justifyContent: 'flex-start',
-    // flex: 1,
   },
   lineDeparture: {
     display: 'flex',

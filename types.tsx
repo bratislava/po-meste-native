@@ -48,8 +48,8 @@ export type MapParamList = {
   MapScreen: undefined
   FromToScreen: { from: { name: string; latitude: number; longitude: number } }
   PlannerScreen: { legs: LegProps[] }
-  LineTimeline: undefined
-  Timetable: undefined
+  LineTimeline: { tripId: string; stopId: string }
+  Timetable: { stopId: string; lineNumber: string }
   ChooseLocation: {
     latitude?: number
     longitude?: number
@@ -92,4 +92,10 @@ export enum TimetableType {
 export enum BikeProvider {
   rekola = 'rekola',
   slovnaftbajk = 'slovnaftbajk',
+}
+
+export enum TransitVehicleType {
+  tram = '0',
+  trolleybus = '800',
+  bus = '3',
 }

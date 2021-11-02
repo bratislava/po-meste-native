@@ -4,7 +4,7 @@ import { getMhdStopStatusData } from '../utils/api'
 import { apiMhdStopStatus } from '../utils/validation'
 
 interface StationStatusDataProps {
-  id?: number
+  id?: string
 }
 
 export default function useMhdStopStatusData({ id }: StationStatusDataProps) {
@@ -17,13 +17,11 @@ export default function useMhdStopStatusData({ id }: StationStatusDataProps) {
   )
 
   const validatedData = useMemo(() => {
-    // console.log(data)
     try {
       const validatedStopStatusData = apiMhdStopStatus.validateSync(data)
       return validatedStopStatusData
     } catch (e) {
       setValidationErrors(e.errors)
-      // console.log(e)
     }
   }, [data, setValidationErrors])
 

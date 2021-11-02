@@ -8,31 +8,34 @@ import {
 } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack'
 import { useNavigation } from '@react-navigation/native'
+import { LocalTime, DateTimeFormatter } from '@js-joda/core'
 
 import { MapParamList } from '../types'
-import TicketSvg from '../assets/images/ticket.svg'
-import { dummyDataLineTimeline } from '../dummyData'
-import { s } from '../utils/globalStyles'
-import { colors } from '../utils/theme'
+import TicketSvg from '@images/ticket.svg'
+import { s } from '@utils/globalStyles'
+import { colors, mhdDefaultColors } from '@utils/theme'
+import useMhdTrip from '@hooks/useMhdTrip'
 
 export default function LineTimeline({
   route,
 }: StackScreenProps<MapParamList, 'LineTimeline'>) {
+  const { tripId, stopId } = route?.params
+
   const navigation = useNavigation()
   const [elementPosition, setElementPosition] = useState<number>()
   const scrollViewRef = useRef<ScrollView | null>(null)
-
+  const { data, isLoading, errors } = useMhdTrip({
+    id: tripId,
+  })
   const activeIndex = useMemo(
-    () =>
-      dummyDataLineTimeline.timeline.findIndex((departure) => departure.active),
-    [dummyDataLineTimeline]
+    () => data?.timeline?.findIndex((stop) => stopId === stop.stopId),
+    [data, stopId]
   )
   useEffect(() => {
     scrollViewRef.current?.scrollTo({ y: elementPosition, animated: true })
   }, [elementPosition, scrollViewRef])
 
   const combineStyles = StyleSheet.flatten([styles.columns, s.horizontalMargin])
-
   return (
     <View style={s.container}>
       <View style={styles.column}>
@@ -40,13 +43,32 @@ export default function LineTimeline({
           <View style={s.horizontalMargin}>
             <View style={styles.header}>
               <View style={s.icon}>
-                <TicketSvg width={30} height={40} fill="red" />
+                {/* TODO add right icon https://inovaciebratislava.atlassian.net/browse/PLAN-239 */}
+                <TicketSvg
+                  width={30}
+                  height={40}
+                  fill={
+                    data?.lineColor
+                      ? `#${data?.lineColor}`
+                      : mhdDefaultColors.grey
+                  }
+                />
               </View>
-              <Text style={[s.lineNumber, s.bgRed, s.whiteText]}>
-                {dummyDataLineTimeline.lineNumber}
+              <Text
+                style={[
+                  s.lineNumber,
+                  {
+                    backgroundColor: data?.lineColor
+                      ? `#${data?.lineColor}`
+                      : mhdDefaultColors.grey,
+                  },
+                  s.whiteText,
+                ]}
+              >
+                {data?.lineNumber}
               </Text>
               <Text style={[styles.finalStation, s.blackText]}>
-                {dummyDataLineTimeline.finalStationStopName}
+                {data?.finalStopName}
               </Text>
             </View>
           </View>
@@ -54,12 +76,16 @@ export default function LineTimeline({
         <ScrollView ref={scrollViewRef} contentContainerStyle={combineStyles}>
           <View style={styles.line}></View>
           <View style={styles.departures}>
-            {dummyDataLineTimeline.timeline.map((spot, index) => (
+            {data?.timeline?.map((spot, index) => (
               <TouchableOpacity
                 key={index}
                 style={styles.departureLine}
                 onPress={() => {
-                  navigation.navigate('Timetable')
+                  data?.lineNumber &&
+                    navigation.navigate('Timetable', {
+                      stopId: spot.stopId,
+                      lineNumber: data.lineNumber,
+                    })
                 }}
                 onLayout={(event) =>
                   setElementPosition(event.nativeEvent.layout.y)
@@ -67,23 +93,23 @@ export default function LineTimeline({
               >
                 <Text
                   style={[
-                    activeIndex > index
+                    activeIndex && activeIndex > index
                       ? styles.greyText
-                      : spot.active
+                      : activeIndex === index
                       ? styles.redText
                       : s.blackText,
                     styles.time,
                   ]}
                 >
-                  {`${new Date(spot.dateTime).getHours()}:${new Date(
-                    spot.dateTime
-                  ).getMinutes()}`}
+                  {LocalTime.parse(spot.time).format(
+                    DateTimeFormatter.ofPattern('HH:mm')
+                  )}
                 </Text>
                 <Text
                   style={[
-                    activeIndex > index
+                    activeIndex && activeIndex > index
                       ? styles.greyText
-                      : spot.active
+                      : activeIndex === index
                       ? styles.redText
                       : s.blackText,
                     styles.underlineText,

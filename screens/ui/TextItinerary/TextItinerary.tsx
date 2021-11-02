@@ -162,11 +162,11 @@ export const TextItinerary = ({ legs }: TextItineraryProps) => {
                       <View>
                         <Text style={[styles.textBold, styles.textSizeBig]}>
                           {leg.from.name}
-                          {dataMhdStops?.map((mhdStop) => {
+                          {dataMhdStops?.stops?.map((mhdStop) => {
                             return leg.from.stopId?.includes(
-                              mhdStop.stationStopId.toString() // TODO change for mhdStop.id
+                              mhdStop.id.toString()
                             )
-                              ? mhdStop.tag // TODO change for mhdStop.platform
+                              ? mhdStop.platform
                               : ''
                           })}
                         </Text>

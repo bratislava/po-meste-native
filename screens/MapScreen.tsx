@@ -29,7 +29,6 @@ import {
 import StationMhdInfo from './ui/StationMhdInfo/StationMhdInfo'
 
 import { s } from '@utils/globalStyles'
-import { colors } from '@utils/theme'
 import { useLocationWithPermision } from '@hooks/miscHooks'
 import { BikeProvider, VehicleType } from '../types'
 import SearchBar from './ui/SearchBar/SearchBar'

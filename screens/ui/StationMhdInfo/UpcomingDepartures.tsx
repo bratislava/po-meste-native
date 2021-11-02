@@ -4,12 +4,16 @@ import { useNavigation } from '@react-navigation/native'
 import { ScrollView } from 'react-native-gesture-handler'
 
 import TicketSvg from '@images/ticket.svg'
+import TramSvg from '@images/tram.svg'
+import TrolleybusSvg from '@images/trolleybus.svg'
+import BusSvg from '@images/bus.svg'
 import useMhdStopStatusData from '@hooks/useMhdStopStatusData'
 import { GlobalStateContext } from '@components/common/GlobalStateProvider'
 import { MhdStopProps } from '@utils/validation'
 import { s } from '@utils/globalStyles'
-import { getDateTimeFromDateAndTime } from '@utils/utils'
 import { mhdDefaultColors } from '@utils/theme'
+import { LocalDateTime, Duration } from '@js-joda/core'
+import { TransitVehicleType } from '../../../types'
 
 interface UpcomingDeparturesProps {
   station: MhdStopProps
@@ -21,6 +25,22 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
   const { data, isLoading, errors } = useMhdStopStatusData({
     id: station.id,
   })
+
+  const getVehicle = (
+    vehicletype?: TransitVehicleType,
+    color: string = mhdDefaultColors.grey
+  ) => {
+    switch (vehicletype) {
+      case TransitVehicleType.trolleybus:
+        return <TrolleybusSvg width={30} height={40} fill={color} />
+      case TransitVehicleType.tram:
+        return <TramSvg width={30} height={40} fill={color} />
+      case TransitVehicleType.bus:
+        return <BusSvg width={30} height={40} fill={color} />
+      default:
+        return <BusSvg width={30} height={40} fill={color} />
+    }
+  }
 
   return (
     <View style={styles.column}>
@@ -72,14 +92,12 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
       </View>
       <ScrollView contentContainerStyle={styles.scrollingVehiclesData}>
         {data?.departures?.map((departure, index) => {
-          const now = new Date()
-          const arriveTime = getDateTimeFromDateAndTime(
-            departure.date,
-            departure.time
-          )
-          const diff =
-            arriveTime && Math.abs(now.getTime() - arriveTime.getTime())
-          const minutes = diff && Math.floor(diff / 1000 / 60)
+          const diffMinutes = Duration.between(
+            LocalDateTime.now(),
+            LocalDateTime.parse(
+              `${departure.date}T${departure.time}`
+            ).plusHours(2)
+          ).toMinutes()
           return (
             <TouchableOpacity
               key={index}
@@ -94,16 +112,12 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
             >
               <View style={styles.departureLeft}>
                 <View key={index} style={s.icon}>
-                  {/* TODO add right icon https://inovaciebratislava.atlassian.net/browse/PLAN-239 */}
-                  <TicketSvg
-                    width={30}
-                    height={40}
-                    fill={
-                      departure?.lineColor
-                        ? `#${departure?.lineColor}`
-                        : mhdDefaultColors.grey
-                    }
-                  />
+                  {getVehicle(
+                    departure.vehicleType,
+                    departure?.lineColor
+                      ? `#${departure?.lineColor}`
+                      : undefined
+                  )}
                 </View>
                 <Text
                   style={[
@@ -119,18 +133,11 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
                   {departure.lineNumber}
                 </Text>
                 <Text style={[s.blackText, styles.finalStation]}>
-                  {/* TODO add name https://inovaciebratislava.atlassian.net/browse/PLAN-244 */}
-                  {departure.finalStationStopName}
+                  {departure.finalStopName}
                 </Text>
               </View>
               <View style={styles.departureRight}>
-                <Text>
-                  {minutes !== false
-                    ? minutes > 1
-                      ? `${minutes} min`
-                      : '<1 min'
-                    : null}
-                </Text>
+                <Text>{diffMinutes > 1 ? `${diffMinutes} min` : '<1 min'}</Text>
               </View>
             </TouchableOpacity>
           )

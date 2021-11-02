@@ -93,3 +93,9 @@ export enum BikeProvider {
   rekola = 'rekola',
   slovnaftbajk = 'slovnaftbajk',
 }
+
+export enum TransitVehicleType {
+  tram = '0',
+  trolleybus = '800',
+  bus = '3',
+}

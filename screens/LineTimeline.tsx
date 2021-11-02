@@ -8,11 +8,12 @@ import {
 } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack'
 import { useNavigation } from '@react-navigation/native'
+import { LocalTime, DateTimeFormatter } from '@js-joda/core'
 
 import { MapParamList } from '../types'
-import TicketSvg from '../assets/images/ticket.svg'
-import { s } from '../utils/globalStyles'
-import { colors, mhdDefaultColors } from '../utils/theme'
+import TicketSvg from '@images/ticket.svg'
+import { s } from '@utils/globalStyles'
+import { colors, mhdDefaultColors } from '@utils/theme'
 import useMhdTrip from '@hooks/useMhdTrip'
 
 export default function LineTimeline({
@@ -100,8 +101,9 @@ export default function LineTimeline({
                     styles.time,
                   ]}
                 >
-                  {spot.time}
-                  {/* TODO use https://js-joda.github.io/js-joda/ for time manipulation */}
+                  {LocalTime.parse(spot.time).format(
+                    DateTimeFormatter.ofPattern('HH:mm')
+                  )}
                 </Text>
                 <Text
                   style={[

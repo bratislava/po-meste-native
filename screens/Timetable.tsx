@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react'
+import _ from 'lodash'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import i18n from 'i18n-js'
 import { StackScreenProps } from '@react-navigation/stack'
@@ -27,23 +28,20 @@ export default function Timetable({
   )
 
   const formattedData = useMemo(() => {
-    const dataProcessed: {
-      hour: number
-      minutes: { minute: string; additionalInfo: string }[]
-    }[] = [
-      4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-    ].map((hour) => {
-      return { hour: hour, minutes: [] }
+    const timetableByHours = _.groupBy(data?.timetable, (value) => {
+      return value.split(':')[0]
     })
-    data?.timetable?.forEach((value) => {
-      const splitTime = value.split(':')
-      const hourObjectFiltered = dataProcessed.filter((hourObjectTmp) => {
-        return hourObjectTmp.hour === parseInt(splitTime[0])
-      })
-      const hourObjectMinutes = hourObjectFiltered[0].minutes
-      hourObjectMinutes.push({ minute: splitTime[1], additionalInfo: '' })
+    return _.range(4, 23).map((hour) => {
+      return {
+        hour,
+        minutes: timetableByHours[hour]
+          ? timetableByHours[hour].map((value) => ({
+              minute: value.split(':')[1],
+              additionalInfo: '',
+            }))
+          : [],
+      }
     })
-    return dataProcessed
   }, [data])
 
   const activeIndex = useMemo(() => {

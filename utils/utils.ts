@@ -4,19 +4,12 @@ export const presentPrice = (price: number /* in cents */) => {
   return i18n.t('presentPrice', { price: (price / 100).toFixed(2) })
 }
 
-export const getDateTimeFromDateAndTime = (date: string, time: string) => {
-  const timeSplit = time.split(':')
-  const dateSplit = date.split('-')
-  const arriveTime =
-    dateSplit.length === 3 &&
-    timeSplit.length === 3 &&
-    new Date(
-      parseInt(dateSplit[0]),
-      parseInt(dateSplit[1]) - 1,
-      parseInt(dateSplit[2]),
-      parseInt(timeSplit[0]) + 2,
-      parseInt(timeSplit[1]),
-      parseInt(timeSplit[2])
-    )
-  return arriveTime
+export const dateStringRegex =
+  /^(?:[2]\d\d\d)-(?:[0]\d|1[012])-(?:0[1-9]|[12]\d|3[01])$/
+export const timeStringRegex =
+  /^(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)$/
+export const colorRegex = /^([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/
+export const validateTime = (time: string) => {
+  if (!time.match(timeStringRegex)) return 'errEmailNotValid'
+  return null
 }

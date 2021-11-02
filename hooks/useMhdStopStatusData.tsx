@@ -22,7 +22,6 @@ export default function useMhdStopStatusData({ id }: StationStatusDataProps) {
       return validatedStopStatusData
     } catch (e) {
       setValidationErrors(e.errors)
-      console.log(e)
     }
   }, [data, setValidationErrors])
 

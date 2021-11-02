@@ -1,5 +1,7 @@
 import * as yup from 'yup'
 import { LegModes } from '../types'
+import { TransitVehicleType } from '../types'
+import { colorRegex, dateStringRegex, timeStringRegex } from './utils'
 
 export const mhdStop = yup
   .object()
@@ -83,7 +85,7 @@ export const apiFreeBikeStatus = yup.object().shape({
 })
 
 const leg = yup.object().shape({
-  startTime: yup.string(), //1629715140000,
+  startTime: yup.string(), //'1629715140000',
   endTime: yup.number(), //1629715287000,
   departureDelay: yup.number(), //0,
   arrivalDelay: yup.number(), //0,
@@ -179,8 +181,8 @@ export const apiOtpPlanner = yup.object().shape({
       .ensure()
       .of(
         yup.object().shape({
-          duration: yup.number().required('error-malformed-duration'),
-          startTime: yup.number().required('error-malformed-startTime'),
+          duration: yup.number().required('error-malformed-duration'), // 3991
+          startTime: yup.number().required('error-malformed-startTime'), // 1635431403000
           endTime: yup.number().required('error-malformed-endTime'),
           walkTime: yup.number(), //1240,
           transitTime: yup.number(), //0,
@@ -252,7 +254,13 @@ export const apiMhdStopStatus = yup.object().shape({
     .of(
       yup.object().shape({
         lineNumber: yup.string().required('error-lineNumber'),
-        lineColor: yup.string().required('error-lineColor'),
+        lineColor: yup
+          .string()
+          .matches(colorRegex, {
+            message: 'error-allLines-lineColor-wrong-format',
+            excludeEmptyStrings: true,
+          })
+          .required('error-allLines-lineColor'),
       })
     ),
   currentStop: yup.object().shape({
@@ -263,12 +271,34 @@ export const apiMhdStopStatus = yup.object().shape({
     .ensure()
     .of(
       yup.object().shape({
-        date: yup.string().required('error-departures-date'),
+        date: yup
+          .string()
+          .matches(dateStringRegex, {
+            message: 'error-malformed-apiMhdGrafikon-date-wrong-format',
+            excludeEmptyStrings: true,
+          })
+          .required('error-departures-date'),
+        time: yup
+          .string()
+          .matches(timeStringRegex, {
+            message: 'error-malformed-apiMhdGrafikon-time-wrong-format',
+            excludeEmptyStrings: true,
+          })
+          .required('error-departures-time'),
         lineNumber: yup.string().required('error-departures-lineNumber'),
-        lineColor: yup.string().required('error-departures-lineColor'),
-        time: yup.string().required('error-departures-time'),
+        lineColor: yup
+          .string()
+          .matches(colorRegex, {
+            message: 'error-malformed-departures-lineColor-wrong-format',
+            excludeEmptyStrings: true,
+          })
+          .required('error-departures-lineColor'),
         tripId: yup.string().required('error-departures-tripId'),
+        finalStopName: yup.string().required('error-departures-finalStopName'),
         wheelchair: yup.bool().required('error-departures-wheelchair'),
+        vehicleType: yup
+          .mixed<TransitVehicleType>()
+          .oneOf(Object.values(TransitVehicleType)), // TODO this is dangerous because when something unexpected comes like number 20 all data is considered unvalidated
       })
     ),
 })
@@ -278,14 +308,23 @@ export const apiMhdTrip = yup.object().shape({
   // .required('error-malformed-apiMhdTrip-lineNumber'),
   finalStopName: yup.string(),
   // .required('error-malformed-apiMhdTrip-finalStopName'),
-  lineColor: yup.string(),
+  lineColor: yup.string().matches(colorRegex, {
+    message: 'error-malformed-apiMhdTrip-lineColor-wrong-format',
+    excludeEmptyStrings: true,
+  }),
   // .required('error-malformed-apiMhdTrip-lineColor'),
   timeline: yup
     .array()
     .ensure()
     .of(
       yup.object().shape({
-        time: yup.string().required('error-malformed-apiMhdTrip-time'),
+        time: yup
+          .string()
+          .matches(timeStringRegex, {
+            message: 'error-malformed-apiMhdTrip-timeline-time-wrong-format',
+            excludeEmptyStrings: true,
+          })
+          .required('error-malformed-apiMhdTrip-time'),
         stopName: yup.string().required('error-malformed-apiMhdTrip-stopName'),
         stopId: yup.string().required('error-malformed-apiMhdTrip-stopId'),
       })
@@ -299,10 +338,21 @@ export const apiMhdGrafikon = yup.object().shape({
   // .required('error-malformed-apiMhdGrafikon-currentStopName'),
   finalStopName: yup.string(),
   // .required('error-malformed-apiMhdGrafikon-finalStopName'),
-  lineColor: yup.string(),
+  lineColor: yup.string().matches(colorRegex, {
+    message: 'error-malformed-apiMhdGrafikon-lineColor-wrong-format',
+    excludeEmptyStrings: true,
+  }),
   // .required('error-malformed-apiMhdGrafikon-lineColor'),
   timetable: yup
     .array()
     .ensure()
-    .of(yup.string().required('error-malformed-apiMhdGrafikon-time')),
+    .of(
+      yup
+        .string()
+        .matches(timeStringRegex, {
+          message: 'error-malformed-apiMhdGrafikon-time-wrong-format',
+          excludeEmptyStrings: true,
+        })
+        .required('error-malformed-apiMhdGrafikon-time')
+    ),
 })

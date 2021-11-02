@@ -9,13 +9,14 @@ import { SvgProps } from 'react-native-svg'
 export type TicketName = 'ticket40min' | 'ticket70min' | 'ticket24hours'
 
 export enum TravelModes {
-  bus = 'BUS,WALK',
+  transit = 'TRANSIT,WALK',
   bicycle = 'BICYCLE',
   scooter = '',
   walk = 'WALK',
 }
 
 export enum LegModes {
+  tram = 'TRAM',
   bus = 'BUS',
   walk = 'WALK',
   bicycle = 'BICYCLE',

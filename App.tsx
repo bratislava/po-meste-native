@@ -20,6 +20,18 @@ i18n.translations = translations
 i18n.locale = Localization.locale
 i18n.fallbacks = true
 
+i18n.pluralization['sk'] = function (count) {
+  const key =
+    count === 0
+      ? 'zero'
+      : count === 1
+      ? 'one'
+      : [2, 3, 4].indexOf(count) >= 0
+      ? 'few'
+      : 'many'
+  return [key]
+}
+
 Sentry.init({
   dsn: 'https://939d2a9ea74b4121be8ba1e2e984a0b1@o701870.ingest.sentry.io/5993278', //found in Settings > Client Keys tab
   enableInExpoDevelopment: true,

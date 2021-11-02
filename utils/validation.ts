@@ -110,6 +110,12 @@ const leg = yup.object().shape({
     lat: yup.number(), //48.11598432875021,
     departure: yup.number(), //1629715140000,
     vertexType: yup.string(), //'NORMAL',
+    arrival: yup.number(), //1635150900000,
+    platformCode: yup.string(), //'87',
+    stopCode: yup.string(), //'87',
+    stopId: yup.string(), //'1:000000008700002',
+    stopIndex: yup.number(), //18,
+    zoneId: yup.string(), //'100',
   }),
   to: yup.object().shape({
     name: yup.string(), //"corner of sidewalk and service road",
@@ -118,6 +124,11 @@ const leg = yup.object().shape({
     arrival: yup.number(), //1629715287000,
     departure: yup.number(), //1629715287000,
     vertexType: yup.string(), //"NORMAL"
+    platformCode: yup.string(), //'87',
+    stopCode: yup.string(), //'87',
+    stopId: yup.string(), //'1:000000008700002',
+    stopIndex: yup.number(), //18,
+    zoneId: yup.string(), //'100',
   }),
   legGeometry: yup.object().shape({
     points: yup.string(), //"ystdH{smgBByA?I@q@IAG??Q?SAICGCCEAYAc@AUAMDUNGDEDQLiAv@qBvABP[AEBg@?KNEVCbCG~EOAs@?_@A?b@YA",
@@ -141,6 +152,7 @@ const leg = yup.object().shape({
       })
     ),
   rentedBike: yup.bool(), //false,
+  tripId: yup.string(), // "1:3008_02_585_1496",
 })
 
 export type LegProps = yup.TypeOf<typeof leg>

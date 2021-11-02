@@ -6,6 +6,7 @@ import MapView, { Polyline } from 'react-native-maps'
 import { MapParamList } from '../types'
 
 import googlePolyline from 'google-polyline'
+import { TextItinerary } from './ui/TextItinerary/TextItinerary'
 
 export default function PlannerScreen({
   route,
@@ -65,6 +66,7 @@ export default function PlannerScreen({
           return accumulator
         }, [])}
       </MapView>
+      <TextItinerary legs={legs} />
     </View>
   )
 }

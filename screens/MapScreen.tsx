@@ -35,6 +35,7 @@ import { BikeProvider, VehicleType } from '../types'
 import SearchBar from './ui/SearchBar/SearchBar'
 import VehicleBar from './ui/VehicleBar/VehicleBar'
 import LoadingView from './ui/LoadingView/LoadingView'
+import { renderHeader } from '@components/BottomSheetHeader'
 
 const MIN_DELTA_FOR_XS_MARKER = 0.05
 const MIN_DELTA_FOR_SM_MARKER = 0.03
@@ -403,17 +404,13 @@ export default function MapScreen() {
         onCloseEnd={handleSheetClose}
         snapPoints={bottomSheetSnapPoints}
         enabledContentTapInteraction={false}
+        renderHeader={renderHeader}
         renderContent={() => {
           return (
-            <View style={styles.bottomSheet}>
-              <View style={styles.bottomSheetHandleStyle}>
-                <View style={styles.bottomSheetHandleIndicatorStyle}></View>
-              </View>
-              <View style={styles.bottomSheetInnerStyle}>
-                {selectedMhdStation && (
-                  <StationMhdInfo station={selectedMhdStation} />
-                )}
-              </View>
+            <View style={styles.bottomSheetInnerStyle}>
+              {selectedMhdStation && (
+                <StationMhdInfo station={selectedMhdStation} />
+              )}
             </View>
           )
         }}
@@ -429,14 +426,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  bottomSheet: {
-    marginTop: 10,
-    ...s.shadow,
-    borderTopLeftRadius: 7,
-    borderTopRightRadius: 7,
-    backgroundColor: '#fff',
-  },
   bottomSheetInnerStyle: {
+    backgroundColor: 'white',
     height: '100%',
     display: 'flex',
     paddingBottom: 50,
@@ -457,17 +448,5 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     ...s.shadow,
     elevation: 7,
-  },
-  bottomSheetHandleStyle: {
-    paddingVertical: 16,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  bottomSheetHandleIndicatorStyle: {
-    width: 64,
-    height: 4,
-    backgroundColor: colors.lightGray,
-    borderRadius: 2,
   },
 })

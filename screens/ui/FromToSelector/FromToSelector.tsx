@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 
 import { colors } from '@utils/theme'
@@ -7,6 +7,7 @@ import { s } from '@utils/globalStyles'
 import SwitchSvg from '@images/switch.svg'
 import CircleSvg from '@images/circle.svg'
 import TriangleSvg from '@images/triangle.svg'
+import DashedLine from '../DashedLine/DashedLine'
 
 type Props = {
   fromPlaceText?: string
@@ -29,9 +30,9 @@ const FromToSelector = ({
   return (
     <View style={styles.container}>
       <View style={styles.arrowContainer}>
-        <CircleSvg fill={colors.primary} />
-        <View style={styles.dashedLine}></View>
-        <TriangleSvg fill={colors.primary} />
+        <CircleSvg width={20} height={20} fill={colors.primary} />
+        <DashedLine color={colors.gray} />
+        <TriangleSvg width={20} height={20} fill={colors.primary} />
       </View>
       <View style={styles.inputsContainer}>
         <TouchableOpacity onPress={onFromPlacePress} style={styles.input}>
@@ -72,17 +73,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   arrowContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
     paddingVertical: 16,
-  },
-  dashedLine: {
-    flex: 1,
-    borderColor: colors.gray,
-    borderWidth: 1,
-    width: 0,
-    borderRadius: 1,
-    borderStyle: 'dashed',
   },
   inputsContainer: {
     flex: 1,

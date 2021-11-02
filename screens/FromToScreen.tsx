@@ -78,7 +78,7 @@ export default function FromToScreen({
   const toBottomSheetRef = useRef<BottomSheet>(null)
 
   const [selectedVehicle, setSelectedVehicle] = useState<TravelModes>(
-    TravelModes.bus
+    TravelModes.transit
   )
 
   const [locationPermisionError, setLocationPermisionError] =
@@ -230,7 +230,7 @@ export default function FromToScreen({
 
   const vehicles: VehicleData[] = [
     {
-      mode: TravelModes.bus,
+      mode: TravelModes.transit,
       icon: BusSvg,
       estimatedTime: '? - ? min',
       price: '~?,??€',

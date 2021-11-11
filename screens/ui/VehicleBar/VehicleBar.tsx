@@ -2,6 +2,16 @@ import React, { useContext } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 
 import { GlobalStateContext } from '@components/common/GlobalStateProvider'
+import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@navigation/TabBar'
+
+const BOTTOM_VEHICLE_BAR_HEIGHT = 50
+const BOTTOM_VEHICLE_BAR_MARGIN_BOTTOM = 10
+const BOTTOM_TAB_NAVIGATOR_SPACING = 7.5
+
+export const BOTTOM_VEHICLE_BAR_HEIGHT_ALL =
+  BOTTOM_VEHICLE_BAR_HEIGHT +
+  BOTTOM_VEHICLE_BAR_MARGIN_BOTTOM +
+  BOTTOM_TAB_NAVIGATOR_SPACING
 
 const VehicleBar = () => {
   const vehiclesContext = useContext(GlobalStateContext)
@@ -45,14 +55,14 @@ const styles = StyleSheet.create({
   vehicleBar: {
     display: 'flex',
     flex: 1,
+    flexDirection: 'row',
     position: 'absolute',
-    bottom: 62.5,
-    marginBottom: 10,
+    bottom: BOTTOM_TAB_NAVIGATOR_HEIGHT + BOTTOM_TAB_NAVIGATOR_SPACING,
+    marginBottom: BOTTOM_VEHICLE_BAR_MARGIN_BOTTOM,
     padding: 10,
     width: '90%',
-    height: 50,
-    minHeight: 50,
-    flexDirection: 'row',
+    height: BOTTOM_VEHICLE_BAR_HEIGHT,
+    minHeight: BOTTOM_VEHICLE_BAR_HEIGHT,
     justifyContent: 'space-between',
     backgroundColor: 'white',
     alignItems: 'center',

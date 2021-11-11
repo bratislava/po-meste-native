@@ -11,6 +11,9 @@ export const s = StyleSheet.create({
   bgRed: {
     backgroundColor: 'red',
   },
+  boldText: {
+    fontWeight: 'bold',
+  },
   blackText: {
     color: 'black',
   },
@@ -40,14 +43,14 @@ export const s = StyleSheet.create({
   },
   borderBlue: {
     borderWidth: 1,
-    color: 'blue',
+    borderColor: 'blue',
   },
   borderRed: {
     borderWidth: 1,
-    color: 'red',
+    borderColor: 'red',
   },
   borderGreen: {
     borderWidth: 1,
-    color: 'green',
+    borderColor: 'green',
   },
 })

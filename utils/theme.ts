@@ -16,6 +16,11 @@ export const colors = {
   black: '#000000',
   blackLighter: '#444444',
   transparentBlack: 'rgba(0, 0, 0, 0.5)',
+  rekolaColor: '#ED3C8D',
+  slovnaftColor: '#FFF215',
+  tierColor: '#77E4D7',
+  zseColor: '#F21C0A',
+  available: '#5DB56E',
 }
 
 export const mhdDefaultColors = {

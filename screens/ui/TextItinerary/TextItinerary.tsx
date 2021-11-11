@@ -237,7 +237,7 @@ export const TextItinerary = ({ legs }: TextItineraryProps) => {
   )
 
   return (
-    <BottomSheet
+    <BottomSheet // TODO use import BottomSheet from '@gorhom/bottom-sheet' then erase 'reanimated-bottom-sheet' from app
       initialSnap={1}
       renderHeader={renderHeader}
       snapPoints={bottomSheetSnapPoints}

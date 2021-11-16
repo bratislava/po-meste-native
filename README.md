@@ -70,6 +70,11 @@ We use [yup](https://github.com/jquense/yup). Useful not only as a sanity check 
 
 ## Release
 
+To release application through `expo publish`:
+
+1. `app.config.js` property `version` MUST be moddified
+2. `expo publish --release-channel production`
+
 To release new `.apk` to Play Store:
 
 1. `yarn create-production-apk`
@@ -78,11 +83,6 @@ To release new `.apk` to Play Store:
 4. Create new release to desired release channels, e.g. Internal testing
    `https://play.google.com/console/u/1/developers/5957584533981072671/app/4975790424614272614/app-dashboard?timespan=thirtyDays`
 5. Upload new `.apk`
-
-To release application through `expo publish`:
-
-1. `app.config.js` property `version` MUST be moddified
-2. `expo publish --release-channel production`
 
 ## Additional info
 

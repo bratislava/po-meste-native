@@ -21,18 +21,19 @@ This will guide you how to open it locally on iOs simulator (if available) or An
 If you want to develop on your device, from [Expo Go](https://expo.io/client) application (downlaoaded from Play store). ping Martin Pinter to get it.
 
 To get Env keys:
-- GOOGLE_PLACES_API_KEY 
-    1. Log into google account "inovacie.bratislava@gmail.com"
-    2. Proceed to https://console.cloud.google.com/google/maps-apis/credentials?pli=1&project=dopravna-aplikacia&folder=&organizationId=
-    3. `development-key Google Places`
+
+- GOOGLE_PLACES_API_KEY
+  1. Log into google account "inovacie.bratislava@gmail.com"
+  2. Proceed to https://console.cloud.google.com/google/maps-apis/credentials?pli=1&project=dopravna-aplikacia&folder=&organizationId=
+  3. `development-key Google Places`
 - GOOGLE_MAPS_API_KEY
-    1. Log into google account "inovacie.bratislava@gmail.com"
-    2. Proceed to https://console.cloud.google.com/google/maps-apis/credentials?pli=1&project=dopravna-aplikacia&folder=&organizationId=
-    3. `tester release 1 Google Maps key`
+  1. Log into google account "inovacie.bratislava@gmail.com"
+  2. Proceed to https://console.cloud.google.com/google/maps-apis/credentials?pli=1&project=dopravna-aplikacia&folder=&organizationId=
+  3. `tester release 1 Google Maps key`
 - SENTRY_AUTH_TOKEN
-    1. Log in to https://sentry.io/settings/account/api/auth-tokens/ with inovacie.bratislava@gmail.com account
-    2. Proceed to Settings -> Account -> API -> Auth Tokens
-    3. Get Auth token with scope: org:read, project:releases, project:write
+  1. Log in to https://sentry.io/settings/account/api/auth-tokens/ with inovacie.bratislava@gmail.com account
+  2. Proceed to Settings -> Account -> API -> Auth Tokens
+  3. Get Auth token with scope: org:read, project:releases, project:write
 
 For help reach to @mpinter (Martin Pinter) or @Balros (Adam Grund)
 
@@ -70,16 +71,18 @@ We use [yup](https://github.com/jquense/yup). Useful not only as a sanity check 
 ## Release
 
 To release new `.apk` to Play Store:
-    1. `yarn create-production-apk`
-    2. wait for Expo to build new `.apk` `https://expo.dev/accounts/bratislava/projects/hybaj/builds`
-    3. Download produced `.apk`
-    3. Create new release to desired release channels, e.g. Internal testing 
-        `https://play.google.com/console/u/1/developers/5957584533981072671/app/4975790424614272614/app-dashboard?timespan=thirtyDays`
-    4. Upload new `.apk`
+
+1. `yarn create-production-apk`
+2. wait for Expo to build new `.apk` `https://expo.dev/accounts/bratislava/projects/hybaj/builds`
+3. Download produced `.apk`
+4. Create new release to desired release channels, e.g. Internal testing
+   `https://play.google.com/console/u/1/developers/5957584533981072671/app/4975790424614272614/app-dashboard?timespan=thirtyDays`
+5. Upload new `.apk`
 
 To release application through `expo publish`:
-    1. `app.config.js` property `version` MUST be moddified
-    2. `expo publish --release-channel production`
+
+1. `app.config.js` property `version` MUST be moddified
+2. `expo publish --release-channel production`
 
 ## Additional info
 

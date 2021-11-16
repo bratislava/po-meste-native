@@ -65,7 +65,7 @@ export default function FromToScreen({
 
   const navigation = useNavigation()
   const [fromCoordinates, setFromCoordinates] = useState(fromPropCoordinates)
-  const [fromName, setFromName] = useState(fromPropName)
+  const [fromName, setFromName] = useState<string | undefined>(fromPropName)
   const [toCoordinates, setToCoordinates] = useState<
     | {
         latitude: number
@@ -305,6 +305,24 @@ export default function FromToScreen({
     },
   ]
 
+  const onSwitchPlacesPress = useCallback(() => {
+    const fromNameAlt = `${fromName}`
+    const fromCoordinatesAlt = fromCoordinates
+      ? JSON.parse(JSON.stringify(fromCoordinates))
+      : undefined
+
+    const toNameAlt = `${toName}`
+    const toCoordinatesAlt = toCoordinates
+      ? JSON.parse(JSON.stringify(toCoordinates))
+      : undefined
+
+    setFromName(toNameAlt)
+    setFromCoordinates(toCoordinatesAlt)
+
+    setToName(fromNameAlt)
+    setToCoordinates(fromCoordinatesAlt)
+  }, [fromCoordinates, fromName, toCoordinates, toName])
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -315,6 +333,7 @@ export default function FromToScreen({
           toPlaceText={toName}
           fromPlaceTextPlaceholder={i18n.t('fromPlaceholder')}
           toPlaceTextPlaceholder={i18n.t('toPlaceholder')}
+          onSwitchPlacesPress={() => onSwitchPlacesPress()}
         />
       </View>
       <View>

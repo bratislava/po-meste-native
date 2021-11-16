@@ -9,9 +9,9 @@ import {
 import { colors } from '@utils/theme'
 import { s } from '@utils/globalStyles'
 import { rekolaPrice } from '@utils/constants'
-import RekoloSvg from '@images/rekolo.svg'
-import SlovnaftbajkSvg from '@images/slovnaftbajk.svg'
-import TierSvg from '@images/tier.svg'
+import RekoloVehicleIconSvg from '@images/rekolo-vehicle-icon.svg'
+import SlovnaftbajkVehicleIconSvg from '@images/slovnaftbajk-vehicle-icon.svg'
+import TierVehicleIconSvg from '@images/tier-vehicle-icon.svg'
 import Button from '@components/Button'
 import { MicromobilityProvider } from '../../../types'
 import AppLink from 'react-native-app-link'
@@ -29,13 +29,13 @@ const StationMicromobilityInfo = ({
     let icon = undefined
     switch (provider) {
       case MicromobilityProvider.rekola:
-        icon = <RekoloSvg height={150} />
+        icon = <RekoloVehicleIconSvg height={150} />
         break
       case MicromobilityProvider.slovnaftbajk:
-        icon = <SlovnaftbajkSvg height={150} />
+        icon = <SlovnaftbajkVehicleIconSvg height={150} />
         break
       case MicromobilityProvider.tier:
-        icon = <TierSvg height={150} />
+        icon = <TierVehicleIconSvg height={150} />
         break
     }
     return icon

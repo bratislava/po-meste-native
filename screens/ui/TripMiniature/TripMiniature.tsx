@@ -3,13 +3,15 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import Moment from 'react-moment'
 
 import { colors } from '@utils/theme'
-
 import { LegProps } from '@utils/validation'
-import { LegModes } from '../../../types'
 
+import { LegModes, MicromobilityProvider } from '../../../types'
 import Leg from './Leg'
+import { s } from '@utils/globalStyles'
+import { getColor, getIcon, getProviderName, getTextColor } from '@utils/utils'
 
 type Props = {
+  provider?: MicromobilityProvider
   duration: number
   departureDate: Date
   ariveDate: Date
@@ -18,6 +20,7 @@ type Props = {
 }
 
 const TripMiniature = ({
+  provider,
   duration,
   departureDate,
   ariveDate,
@@ -36,52 +39,71 @@ const TripMiniature = ({
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
-      <View style={styles.containerInner}>
-        <View style={styles.leftContainer}>
-          {legs && (
-            <View style={styles.legsContainer}>
-              {legs.map((leg, index) => (
-                <Leg
-                  key={index}
-                  isLast={index === legs.length - 1}
-                  mode={leg.mode}
-                  duration={leg.duration}
-                  color={leg.routeColor}
-                  shortName={leg.routeShortName}
-                />
-              ))}
-            </View>
-          )}
-          {displayedStartStationName.length > 0 && (
-            <View style={styles.atTimeContainer}>
-              {/* TODO use https://js-joda.github.io/js-joda/ for time manipulation */}
-              <Moment
-                element={Text}
-                style={styles.atTime}
-                interval={5000}
-                date={departureDate}
-                trim
-                fromNow
-              />
-              <Text numberOfLines={1}>z {displayedStartStationName}</Text>
-            </View>
+      <View style={styles.containerOuter}>
+        <View style={styles.row}>
+          {provider && (
+            <Text
+              style={[
+                s.boldText,
+                styles.providerText,
+                {
+                  backgroundColor: getColor(provider),
+                  color: getTextColor(provider),
+                },
+              ]}
+            >
+              {getProviderName(provider)}
+            </Text>
           )}
         </View>
-        <View style={styles.rightContainer}>
-          <View style={styles.durationContainer}>
-            <Text style={styles.durationNumber}>{duration}</Text>
-            <Text style={styles.durationMin}>min</Text>
+        <View style={styles.containerInner}>
+          <View style={styles.leftContainer}>
+            {legs && (
+              <View style={styles.legsContainer}>
+                {legs.map((leg, index) => (
+                  <Leg
+                    key={index}
+                    isLast={index === legs.length - 1}
+                    mode={leg.mode}
+                    duration={leg.duration}
+                    color={leg.routeColor}
+                    shortName={leg.routeShortName}
+                    TransportIcon={getIcon(provider)}
+                  />
+                ))}
+              </View>
+            )}
+            {displayedStartStationName.length > 0 && (
+              <View style={styles.atTimeContainer}>
+                {/* TODO use https://js-joda.github.io/js-joda/ for time manipulation */}
+                <Moment
+                  element={Text}
+                  style={styles.atTime}
+                  interval={5000}
+                  date={departureDate}
+                  trim
+                  fromNow
+                />
+                <Text numberOfLines={1}>z {displayedStartStationName}</Text>
+              </View>
+            )}
           </View>
-          <View style={styles.fromToTime}>
-            <Moment element={Text} format="HH:mm">
-              {departureDate}
-            </Moment>
-            <Text> - </Text>
-            <Moment element={Text} format="HH:mm">
-              {ariveDate}
-            </Moment>
+          <View style={styles.rightContainer}>
+            <View style={styles.durationContainer}>
+              <Text style={styles.durationNumber}>{duration}</Text>
+              <Text style={styles.durationMin}>min</Text>
+            </View>
+            <View style={styles.fromToTime}>
+              <Moment element={Text} format="HH:mm">
+                {departureDate}
+              </Moment>
+              <Text> - </Text>
+              <Moment element={Text} format="HH:mm">
+                {ariveDate}
+              </Moment>
+            </View>
+            <View style={styles.rightContainerBackground}></View>
           </View>
-          <View style={styles.rightContainerBackground}></View>
         </View>
       </View>
     </TouchableOpacity>
@@ -96,12 +118,22 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     marginBottom: 10,
   },
-  containerInner: {
-    flex: 1,
-    flexDirection: 'row',
+  containerOuter: {
     borderRadius: 8,
     overflow: 'hidden',
     backgroundColor: 'white',
+  },
+  row: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  containerInner: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  providerText: {
+    borderBottomRightRadius: 8,
+    paddingHorizontal: 10,
   },
   leftContainer: {
     flex: 1,

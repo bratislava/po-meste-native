@@ -1,11 +1,16 @@
 import Constants from 'expo-constants'
 import qs from 'qs'
-import { apiMhdGrafikon } from './validation'
-import { TravelModes } from '../types'
+import { apiMhdGrafikon, apiOtpPlanner } from './validation'
+import { MicromobilityProvider, TravelModesOtpApi } from '../types'
 
 const host =
   Constants.manifest?.extra?.apiHost || 'https://live-dev.planner.bratislava.sk'
-const otpPlanner = 'https://api.planner.bratislava.sk/otp/routers/default/plan'
+const otpPlanner = 'https://api.planner.bratislava.sk/otp/routers/default/plan' // TODO use otp.planner.bratislava.sk
+const otpRekolaPlanner =
+  'https://rekola.planner.bratislava.sk/routers/default/plan'
+const otpSlovnaftbajkPlanner =
+  'https://slovnaftbajk.planner.bratislava.sk/routers/default/plan'
+const otpTierPlanner = 'https://tier.planner.bratislava.sk/routers/default/plan'
 
 // we should throw throwables only, so it's useful to extend Error class to contain useful info
 export class ApiError extends Error {
@@ -29,8 +34,8 @@ const fetchJsonFromApi = async (path: string, options?: RequestInit) => {
   }
 }
 
-const fetchJsonFromOtpApi = async (path: string) => {
-  const response = await fetch(`${otpPlanner}${path}`)
+const fetchJsonFromOtpApi = async (plannerAddress: string, path: string) => {
+  const response = await fetch(`${plannerAddress}${path}`)
   if (response.ok) {
     return response.json()
   } else {
@@ -67,26 +72,52 @@ export const getTierFreeBikeStatus = () =>
   fetchJsonFromApi('/tier/free_bike_status.json')
 
 export const getChargersStops = () => fetchJsonFromApi('/zse')
-export const getTripPlanner = (
+
+export const getTripPlanner = async (
   from: string,
   to: string,
-  mode: TravelModes = TravelModes.transit,
-  dateTime: Date = new Date()
+  dateTime: Date,
+  mode: TravelModesOtpApi = TravelModesOtpApi.transit,
+  plannerApi?: MicromobilityProvider
 ) => {
-  return fetchJsonFromOtpApi(
-    qs.stringify(
-      {
-        fromPlace: from,
-        toPlace: to,
-        time: dateTime.toISOString(),
-        mode: mode,
-        maxWalkDistance: '4828.032',
-        arriveBy: 'false',
-        wheelchair: 'false',
-        debugItineraryFilter: 'false',
-        locale: 'en',
-      },
-      { addQueryPrefix: true }
-    )
+  const adjustedDate = new Date(dateTime.getTime())
+  if (
+    plannerApi === MicromobilityProvider.rekola ||
+    plannerApi == MicromobilityProvider.tier
+  ) {
+    adjustedDate.setHours(adjustedDate.getHours() + 20) // TODO erase when https://inovaciebratislava.atlassian.net/browse/PLAN-268 solved
+  }
+
+  const data = qs.stringify(
+    {
+      fromPlace: from,
+      toPlace: to,
+      time: adjustedDate.toISOString(),
+      mode: mode,
+      maxWalkDistance: '4828.032',
+      arriveBy: 'false',
+      wheelchair: 'false',
+      debugItineraryFilter: 'false',
+      locale: 'en',
+    },
+    { addQueryPrefix: true }
   )
+  switch (plannerApi) {
+    case MicromobilityProvider.rekola:
+      return apiOtpPlanner.validateSync(
+        await fetchJsonFromOtpApi(otpRekolaPlanner, data)
+      )
+    case MicromobilityProvider.slovnaftbajk:
+      return apiOtpPlanner.validateSync(
+        await fetchJsonFromOtpApi(otpSlovnaftbajkPlanner, data)
+      )
+    case MicromobilityProvider.tier:
+      return apiOtpPlanner.validateSync(
+        await fetchJsonFromOtpApi(otpTierPlanner, data)
+      )
+    default:
+      return apiOtpPlanner.validateSync(
+        await fetchJsonFromOtpApi(otpPlanner, data)
+      )
+  }
 }

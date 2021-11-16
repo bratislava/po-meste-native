@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useMemo } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack'
-
 import MapView, { Polyline } from 'react-native-maps'
-import { MapParamList } from '../types'
-
 import googlePolyline from 'google-polyline'
+
+import { MapParamList } from '../types'
 import { TextItinerary } from './ui/TextItinerary/TextItinerary'
 
 export default function PlannerScreen({
   route,
 }: StackScreenProps<MapParamList, 'PlannerScreen'>) {
   const mapRef = useRef<MapView | null>(null)
+  const provider = route?.params?.provider
   const legs = route?.params?.legs
 
   const allMarkers = useMemo(
@@ -66,7 +66,7 @@ export default function PlannerScreen({
           return accumulator
         }, [])}
       </MapView>
-      <TextItinerary legs={legs} />
+      <TextItinerary legs={legs} provider={provider} />
     </View>
   )
 }

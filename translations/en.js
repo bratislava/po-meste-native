@@ -107,4 +107,14 @@ export default {
   parkingPrice: 'parking price: ',
   freeParkingTime: 'free parking: ',
   parkingSpaces: '{{amount}} parking spaces',
+  providerNames: {
+    rekola: 'Rekola',
+    slovnaftbajk: 'Slovnaftbajk',
+    tier: 'TIER',
+  },
+  myBike: 'My bike',
+  rentedBike: 'Rented bicycles',
+  myScooter: 'My scooter',
+  rentedScooter: 'Rented scooter',
+  openApp: 'Open application {{provider}}',
 }

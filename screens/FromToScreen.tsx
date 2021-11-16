@@ -6,7 +6,7 @@ import React, {
   useCallback,
   useContext,
 } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import i18n from 'i18n-js'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -34,9 +34,15 @@ import CyclingSvg from '@images/cycling.svg'
 import ScooterSvg from '@images/scooter.svg'
 import WalkingSvg from '@images/walking.svg'
 import { colors } from '@utils/theme'
-import { MapParamList, TravelModes, VehicleData } from '../types'
+import { getOtpTravelMode } from '@utils/utils'
+import {
+  MapParamList,
+  MicromobilityProvider,
+  TravelModes,
+  TravelModesOtpApi,
+  VehicleData,
+} from '../types'
 import FeedbackAsker from './ui/FeedbackAsker/FeedbackAsker'
-
 import { GlobalStateContext } from '@components/GlobalStateProvider'
 import { useLocationWithPermision } from '@hooks/miscHooks'
 
@@ -78,7 +84,7 @@ export default function FromToScreen({
   const toBottomSheetRef = useRef<BottomSheet>(null)
 
   const [selectedVehicle, setSelectedVehicle] = useState<TravelModes>(
-    TravelModes.transit
+    TravelModes.mhd
   )
 
   const [locationPermisionError, setLocationPermisionError] =
@@ -98,7 +104,62 @@ export default function FromToScreen({
       getTripPlanner(
         `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
         `${toCoordinates.latitude},${toCoordinates.longitude}`,
-        selectedVehicle
+        new Date(),
+        getOtpTravelMode(selectedVehicle)
+      )
+  )
+
+  const {
+    data: dataRekola,
+    isLoading: isLoadingRekola,
+    error: errorRekola,
+  } = useQuery(
+    ['getOtpRekolaData', fromCoordinates, toCoordinates],
+    () =>
+      fromCoordinates &&
+      toCoordinates &&
+      getTripPlanner(
+        `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+        `${toCoordinates.latitude},${toCoordinates.longitude}`,
+        new Date(),
+        TravelModesOtpApi.rented,
+        MicromobilityProvider.rekola
+      )
+  )
+
+  const {
+    data: dataSlovnaftbajk,
+    isLoading: isLoadingSlovnaftbajk,
+    error: errorSlovnaftbajk,
+  } = useQuery(
+    ['getOtpSlovnaftbajkData', fromCoordinates, toCoordinates],
+    () =>
+      fromCoordinates &&
+      toCoordinates &&
+      getTripPlanner(
+        `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+        `${toCoordinates.latitude},${toCoordinates.longitude}`,
+        new Date(),
+        TravelModesOtpApi.rented,
+        MicromobilityProvider.slovnaftbajk
+      )
+  )
+
+  const {
+    data: dataTier,
+    isLoading: isLoadingTier,
+    error: errorTier,
+  } = useQuery(
+    ['getOtpTierData', fromCoordinates, toCoordinates],
+    () =>
+      fromCoordinates &&
+      toCoordinates &&
+      getTripPlanner(
+        `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+        `${toCoordinates.latitude},${toCoordinates.longitude}`,
+        new Date(),
+        TravelModesOtpApi.rented,
+        MicromobilityProvider.tier
       )
   )
 
@@ -170,16 +231,6 @@ export default function FromToScreen({
     }
   }
 
-  const validatedOtpData = useMemo(() => {
-    try {
-      const validatedData = apiOtpPlanner.validateSync(data)
-      return validatedData
-    } catch (e) {
-      setValidationErrors(e.errors)
-      console.log(e)
-    }
-  }, [data])
-
   const onGooglePlaceChosen = (
     details: GooglePlaceDetail | null = null,
     setCoordinates: React.Dispatch<
@@ -230,7 +281,7 @@ export default function FromToScreen({
 
   const vehicles: VehicleData[] = [
     {
-      mode: TravelModes.transit,
+      mode: TravelModes.mhd,
       icon: BusSvg,
       estimatedTime: '? - ? min',
       price: '~?,??€',
@@ -275,24 +326,90 @@ export default function FromToScreen({
         />
       </View>
       <ScrollView contentContainerStyle={styles.scrollView}>
-        {validatedOtpData?.plan?.itineraries?.map((tripChoice, index) => {
-          return (
-            <TripMiniature
-              key={index}
-              onPress={() =>
-                navigation.navigate('PlannerScreen', {
-                  legs: tripChoice?.legs,
-                })
-              }
-              duration={Math.round(tripChoice.duration / 60)}
-              departureDate={new Date(tripChoice.startTime)}
-              ariveDate={new Date(tripChoice.endTime)}
-              legs={tripChoice.legs}
-            />
-          )
-        })}
-        {validatedOtpData?.plan?.itineraries?.length != undefined &&
-          validatedOtpData.plan.itineraries.length > 0 && (
+        {data?.plan?.itineraries && (
+          <>
+            {selectedVehicle === TravelModes.bicycle && (
+              <Text style={styles.textSizeBig}>{i18n.t('myBike')}</Text>
+            )}
+            {selectedVehicle === TravelModes.scooter && (
+              <Text style={styles.textSizeBig}>{i18n.t('myScooter')}</Text>
+            )}
+            {data.plan.itineraries.map((tripChoice, index) => (
+              <TripMiniature
+                key={index}
+                onPress={() =>
+                  navigation.navigate('PlannerScreen', {
+                    legs: tripChoice?.legs,
+                  })
+                }
+                duration={Math.round(tripChoice.duration / 60)}
+                departureDate={new Date(tripChoice.startTime)}
+                ariveDate={new Date(tripChoice.endTime)}
+                legs={tripChoice.legs}
+              />
+            ))}
+          </>
+        )}
+        {selectedVehicle === TravelModes.bicycle && (
+          <>
+            <Text style={styles.textSizeBig}>{i18n.t('rentedBike')}</Text>
+            {dataSlovnaftbajk?.plan?.itineraries?.map((tripChoice, index) => (
+              <TripMiniature
+                key={index}
+                onPress={() =>
+                  navigation.navigate('PlannerScreen', {
+                    legs: tripChoice?.legs,
+                    provider: MicromobilityProvider.slovnaftbajk,
+                  })
+                }
+                provider={MicromobilityProvider.slovnaftbajk}
+                duration={Math.round(tripChoice.duration / 60)}
+                departureDate={new Date(tripChoice.startTime)}
+                ariveDate={new Date(tripChoice.endTime)}
+                legs={tripChoice.legs}
+              />
+            ))}
+            {dataRekola?.plan?.itineraries?.map((tripChoice, index) => (
+              <TripMiniature
+                key={index}
+                onPress={() =>
+                  navigation.navigate('PlannerScreen', {
+                    legs: tripChoice?.legs,
+                    provider: MicromobilityProvider.rekola,
+                  })
+                }
+                provider={MicromobilityProvider.rekola}
+                duration={Math.round(tripChoice.duration / 60)}
+                departureDate={new Date(tripChoice.startTime)}
+                ariveDate={new Date(tripChoice.endTime)}
+                legs={tripChoice.legs}
+              />
+            ))}
+          </>
+        )}
+        {selectedVehicle === TravelModes.scooter && (
+          <>
+            <Text style={styles.textSizeBig}>{i18n.t('rentedScooter')}</Text>
+            {dataTier?.plan?.itineraries?.map((tripChoice, index) => (
+              <TripMiniature
+                key={index}
+                onPress={() =>
+                  navigation.navigate('PlannerScreen', {
+                    legs: tripChoice?.legs,
+                    provider: MicromobilityProvider.tier,
+                  })
+                }
+                provider={MicromobilityProvider.tier}
+                duration={Math.round(tripChoice.duration / 60)}
+                departureDate={new Date(tripChoice.startTime)}
+                ariveDate={new Date(tripChoice.endTime)}
+                legs={tripChoice.legs}
+              />
+            ))}
+          </>
+        )}
+        {data?.plan?.itineraries?.length != undefined &&
+          data.plan.itineraries.length > 0 && (
             <FeedbackAsker
               onNegativeFeedbackPress={() => {
                 navigation.navigate('Feedback')
@@ -351,6 +468,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightLightGray,
     height: '100%',
     paddingBottom: 55,
+  },
+  textSizeBig: {
+    color: colors.darkText,
+    fontSize: 16,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    marginVertical: 12,
   },
   header: {
     backgroundColor: 'white',

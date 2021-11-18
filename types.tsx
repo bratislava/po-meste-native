@@ -137,9 +137,3 @@ export enum IconType {
   rekola = 'rekola',
   zse = 'zse',
 }
-
-// export type IconType = 'mhd' | 'tier' | 'slovnaftbajk' | 'rekola' | 'zse'
-
-export interface bam extends ChargerStationProps {
-  kind: 'ChargerStationProps'
-}

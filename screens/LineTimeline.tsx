@@ -9,13 +9,14 @@ import {
 import { StackScreenProps } from '@react-navigation/stack'
 import { useNavigation } from '@react-navigation/native'
 import { LocalTime, DateTimeFormatter } from '@js-joda/core'
+import { useQuery } from 'react-query'
 
 import { MapParamList } from '../types'
 import TicketSvg from '@images/ticket.svg'
 import { s } from '@utils/globalStyles'
 import { colors, mhdDefaultColors } from '@utils/theme'
-import useMhdTrip from '@hooks/useMhdTrip'
 import DashedLine from './ui/DashedLine/DashedLine'
+import { getMhdTrip } from '@utils/api'
 
 export default function LineTimeline({
   route,
@@ -25,9 +26,10 @@ export default function LineTimeline({
   const navigation = useNavigation()
   const [elementPosition, setElementPosition] = useState<number>()
   const scrollViewRef = useRef<ScrollView | null>(null)
-  const { data, isLoading, errors } = useMhdTrip({
-    id: tripId,
-  })
+  const { data, isLoading, error } = useQuery(['getMhdTrip', tripId], () =>
+    getMhdTrip(tripId)
+  )
+
   const activeIndex = useMemo(
     () => data?.timeline?.findIndex((stop) => stopId === stop.stopId),
     [data, stopId]

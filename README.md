@@ -23,11 +23,11 @@ If you want to develop on your device, from [Expo Go](https://expo.io/client) ap
 To get Env keys:
 
 - GOOGLE_PLACES_API_KEY
-  1. Log into google account "inovacie.bratislava@gmail.com"
+  1. Log into google account inovacie.bratislava@gmail.com
   2. Proceed to console.cloud [dopravna aplikacia](https://console.cloud.google.com/google/maps-apis/credentials?pli=1&project=dopravna-aplikacia&folder=&organizationId=)
   3. `development-key Google Places`
 - GOOGLE_MAPS_API_KEY
-  1. Log into google account "inovacie.bratislava@gmail.com"
+  1. Log into google account inovacie.bratislava@gmail.com
   2. Proceed to console.cloud [dopravna aplikacia](https://console.cloud.google.com/google/maps-apis/credentials?pli=1&project=dopravna-aplikacia&folder=&organizationId=)
   3. `tester release 1 Google Maps key`
 - SENTRY_AUTH_TOKEN

@@ -3,14 +3,13 @@ import qs from 'qs'
 import { apiMhdGrafikon, apiOtpPlanner } from './validation'
 import { MicromobilityProvider, TravelModesOtpApi } from '../types'
 
-const host =
-  Constants.manifest?.extra?.apiHost || 'https://live-dev.planner.bratislava.sk'
-const otpPlanner = 'https://api.planner.bratislava.sk/otp/routers/default/plan' // TODO use otp.planner.bratislava.sk
-const otpRekolaPlanner =
-  'https://rekola.planner.bratislava.sk/routers/default/plan'
-const otpSlovnaftbajkPlanner =
-  'https://slovnaftbajk.planner.bratislava.sk/routers/default/plan'
-const otpTierPlanner = 'https://tier.planner.bratislava.sk/routers/default/plan'
+const host = 'planner.bratislava.sk'
+const dataHostUrl =
+  Constants.manifest?.extra?.apiHost || `https://live-dev.${host}`
+const otpPlannerUrl = `https://api.${host}/otp/routers/default/plan` // TODO use otp.planner.bratislava.sk
+const otpRekolaPlannerUrl = `https://rekola.${host}/routers/default/plan`
+const otpSlovnaftbajkPlannerUrl = `https://slovnaftbajk.${host}/routers/default/plan`
+const otpTierPlannerUrl = `https://tier.${host}/routers/default/plan`
 
 // we should throw throwables only, so it's useful to extend Error class to contain useful info
 export class ApiError extends Error {
@@ -26,7 +25,7 @@ export class ApiError extends Error {
 
 // helper with a common fetch pattern for json endpoints & baked in host
 const fetchJsonFromApi = async (path: string, options?: RequestInit) => {
-  const response = await fetch(`${host}${path}`, options)
+  const response = await fetch(`${dataHostUrl}${path}`, options)
   if (response.ok) {
     return response.json()
   } else {
@@ -105,19 +104,19 @@ export const getTripPlanner = async (
   switch (plannerApi) {
     case MicromobilityProvider.rekola:
       return apiOtpPlanner.validateSync(
-        await fetchJsonFromOtpApi(otpRekolaPlanner, data)
+        await fetchJsonFromOtpApi(otpRekolaPlannerUrl, data)
       )
     case MicromobilityProvider.slovnaftbajk:
       return apiOtpPlanner.validateSync(
-        await fetchJsonFromOtpApi(otpSlovnaftbajkPlanner, data)
+        await fetchJsonFromOtpApi(otpSlovnaftbajkPlannerUrl, data)
       )
     case MicromobilityProvider.tier:
       return apiOtpPlanner.validateSync(
-        await fetchJsonFromOtpApi(otpTierPlanner, data)
+        await fetchJsonFromOtpApi(otpTierPlannerUrl, data)
       )
     default:
       return apiOtpPlanner.validateSync(
-        await fetchJsonFromOtpApi(otpPlanner, data)
+        await fetchJsonFromOtpApi(otpPlannerUrl, data)
       )
   }
 }

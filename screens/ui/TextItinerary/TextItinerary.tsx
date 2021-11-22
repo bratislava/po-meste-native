@@ -1,9 +1,10 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
 import BottomSheet from 'reanimated-bottom-sheet'
 import { Instant, LocalTime } from '@js-joda/core'
 import { Ionicons } from '@expo/vector-icons'
 import i18n from 'i18n-js'
+import _ from 'lodash'
 
 import WheelchairSvg from '@images/wheelchair.svg'
 import WalkingSvg from '@images/walking.svg'
@@ -37,6 +38,8 @@ const ICON_WIDTH = 20
 const DASHED_HEIGHT = 20
 const PADDING_HORIZONTAL = 10
 
+const BIKESHARE_PROPERTY = 'BIKESHARE'
+
 export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
   const bottomSheetSnapPoints = useMemo(() => ['100%', '60%', 0], [])
   // getData from /mhd/trip/{legs.tripId.substring(2)}
@@ -46,44 +49,42 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
     errors: errorsMhd,
   } = useMhdData()
 
-  const Icon = useMemo(() => getIcon(provider), [provider])
-  const title = useMemo(() => getProviderName(provider), [provider])
-  const openAppLink = useCallback(() => openProviderApp(provider), [provider])
+  const Icon = getIcon(provider)
+  const title = getProviderName(provider)
+  const openAppLink = openProviderApp(provider)
 
   const getFirstRentedInstanceIndex = legs.findIndex(
-    (leg) => leg.from.vertexType === 'BIKESHARE'
+    (leg) => leg.from.vertexType === BIKESHARE_PROPERTY
   )
 
-  const getLastRentedInstanceIndex =
-    legs.length -
-    1 -
-    legs
-      .slice()
-      .reverse()
-      .findIndex((leg) => leg.to.vertexType === 'BIKESHARE')
+  const getLastRentedInstanceIndex = _.findLastIndex(
+    legs,
+    (leg) => leg.from.vertexType === BIKESHARE_PROPERTY
+  )
 
-  const renderProviderIconWithText = useCallback(
-    (dashedBefore: boolean, dashedAfter: boolean, text?: string) => (
-      <View style={[styles.card, s.horizontalMargin]}>
-        <View style={styles.left}>
-          {dashedBefore && (
-            <View style={styles.dashedLine}>
-              <DashedLine color={colors.darkText} />
-            </View>
-          )}
-          <View style={styles.inline}>
-            <Icon width={ICON_WIDTH} height={20} />
-            <Text style={[styles.textBold, styles.textMargin]}>{text}</Text>
+  const renderProviderIconWithText = (
+    dashedBefore: boolean,
+    dashedAfter: boolean,
+    text?: string
+  ) => (
+    <View style={[styles.card, s.horizontalMargin]}>
+      <View style={styles.left}>
+        {dashedBefore && (
+          <View style={styles.dashedLine}>
+            <DashedLine color={colors.darkText} />
           </View>
-          {dashedAfter && (
-            <View style={styles.dashedLine}>
-              <DashedLine color={colors.darkText} />
-            </View>
-          )}
+        )}
+        <View style={styles.inline}>
+          <Icon width={ICON_WIDTH} height={20} />
+          <Text style={[styles.textBold, styles.textMargin]}>{text}</Text>
         </View>
+        {dashedAfter && (
+          <View style={styles.dashedLine}>
+            <DashedLine color={colors.darkText} />
+          </View>
+        )}
       </View>
-    ),
-    [Icon]
+    </View>
   )
 
   const renderContent = () => (
@@ -309,7 +310,7 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
             backgroundColor: getColor(provider),
           }}
           titleStyle={{ color: getTextColor(provider) }}
-          onPress={openAppLink}
+          onPress={() => openAppLink}
           title={i18n.t('openApp', {
             provider: title,
           })}

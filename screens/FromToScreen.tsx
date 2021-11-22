@@ -23,7 +23,6 @@ import { LocationGeocodedAddress } from 'expo-location'
 import BottomSheet from 'reanimated-bottom-sheet'
 
 import { getTripPlanner } from '@utils/api'
-import { apiOtpPlanner } from '@utils/validation'
 import SearchFromToScreen from './SearchFromToScreen'
 import TripMiniature from './ui/TripMiniature/TripMiniature'
 import FromToSelector from './ui/FromToSelector/FromToSelector'
@@ -65,7 +64,6 @@ export default function FromToScreen({
   const fromPropName = fromProp?.name
 
   const navigation = useNavigation()
-  const [validationErrors, setValidationErrors] = useState()
   const [fromCoordinates, setFromCoordinates] = useState(fromPropCoordinates)
   const [fromName, setFromName] = useState(fromPropName)
   const [toCoordinates, setToCoordinates] = useState<
@@ -124,7 +122,8 @@ export default function FromToScreen({
         new Date(),
         TravelModesOtpApi.rented,
         MicromobilityProvider.rekola
-      )
+      ),
+    { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
   const {

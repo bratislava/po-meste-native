@@ -51,7 +51,6 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
 
   const Icon = getIcon(provider)
   const title = getProviderName(provider)
-  const openAppLink = openProviderApp(provider)
 
   const getFirstRentedInstanceIndex = legs.findIndex(
     (leg) => leg.from.vertexType === BIKESHARE_PROPERTY
@@ -62,27 +61,16 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
     (leg) => leg.from.vertexType === BIKESHARE_PROPERTY
   )
 
-  const renderProviderIconWithText = (
-    dashedBefore: boolean,
-    dashedAfter: boolean,
-    text?: string
-  ) => (
+  const renderProviderIconWithText = (text?: string) => (
     <View style={[styles.card, s.horizontalMargin]}>
       <View style={styles.left}>
-        {dashedBefore && (
-          <View style={styles.dashedLine}>
-            <DashedLine color={colors.darkText} />
-          </View>
-        )}
         <View style={styles.inline}>
           <Icon width={ICON_WIDTH} height={20} />
           <Text style={[styles.textBold, styles.textMargin]}>{text}</Text>
         </View>
-        {dashedAfter && (
-          <View style={styles.dashedLine}>
-            <DashedLine color={colors.darkText} />
-          </View>
-        )}
+        <View style={styles.dashedLine}>
+          <DashedLine color={colors.darkText} />
+        </View>
       </View>
     </View>
   )
@@ -121,17 +109,17 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
                         Start
                       </Text>
                     </View>
+                    <View style={styles.dashedLine}>
+                      <DashedLine color={colors.darkText} />
+                    </View>
                   </View>
                 </View>
               )}
               {getFirstRentedInstanceIndex === index &&
-                renderProviderIconWithText(false, true, leg.from.name)}
+                renderProviderIconWithText(leg.from.name)}
               {(leg.mode === LegModes.walk && (
                 <View style={[styles.card, s.horizontalMargin]}>
                   <View style={styles.left}>
-                    <View style={styles.dashedLine}>
-                      <DashedLine color={colors.darkText} />
-                    </View>
                     <View style={styles.inline}>
                       <WalkingSvg
                         width={ICON_WIDTH}
@@ -177,6 +165,9 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
                               })}
                           </Text>
                         </View>
+                      </View>
+                      <View style={styles.dashedLine}>
+                        <DashedLine color={colors.darkText} />
                       </View>
                     </View>
                   </View>
@@ -278,7 +269,7 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
                 ))}
 
               {getLastRentedInstanceIndex === index &&
-                renderProviderIconWithText(true, false, leg.to.name)}
+                renderProviderIconWithText(leg.to.name)}
               {index === legs.length - 1 && (
                 <View style={[styles.card, s.horizontalMargin]}>
                   <View style={styles.left}>
@@ -305,16 +296,18 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
           )
         })}
         {/* TODO do it like in https://github.com/bratislava/hybaj-native/pull/49 StationMicromobilityInfo.tsx */}
-        <Button
-          style={{
-            backgroundColor: getColor(provider),
-          }}
-          titleStyle={{ color: getTextColor(provider) }}
-          onPress={() => openAppLink}
-          title={i18n.t('openApp', {
-            provider: title,
-          })}
-        />
+        {provider && (
+          <Button
+            style={{
+              backgroundColor: getColor(provider),
+            }}
+            titleStyle={{ color: getTextColor(provider) }}
+            onPress={() => openProviderApp(provider)}
+            title={i18n.t('openApp', {
+              provider: title,
+            })}
+          />
+        )}
       </View>
     </View>
   )

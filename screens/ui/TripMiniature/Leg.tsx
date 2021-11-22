@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
+import { SvgProps } from 'react-native-svg'
 
 import { colors } from '@utils/theme'
 
@@ -7,7 +8,6 @@ import { LegModes } from '../../../types'
 
 import ChevronRightSvg from '@images/chevron-right-small.svg'
 import WalkingSvg from '@images/walking.svg'
-import CyclingSvg from '@images/cycling.svg'
 
 type LegProps = {
   shortName?: string
@@ -15,6 +15,7 @@ type LegProps = {
   isLast?: boolean
   duration?: number
   mode?: LegModes
+  TransportIcon: React.FC<SvgProps>
 }
 
 const Leg = ({
@@ -23,6 +24,7 @@ const Leg = ({
   color,
   isLast = false,
   duration = 0,
+  TransportIcon,
 }: LegProps) => {
   const isIndividualTransport =
     mode == LegModes.walk || mode == LegModes.bicycle
@@ -35,7 +37,7 @@ const Leg = ({
             <WalkingSvg width={20} height={20} fill="black" />
           )) ||
             (mode === LegModes.bicycle && (
-              <CyclingSvg width={30} height={20} fill="black" />
+              <TransportIcon width={30} height={20} fill="black" />
             ))}
           <View style={styles.legDurationContainer}>
             <Text style={styles.legDurationNumber}>

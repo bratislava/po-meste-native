@@ -108,4 +108,14 @@ export default {
   parkingPrice: 'cena parkovania: ',
   freeParking: 'voľné parkovanie: ',
   parkingSpaces: '{{amount}} miesta',
+  providerNames: {
+    rekola: 'Rekola',
+    slovnaftbajk: 'Slovnaftbajk',
+    tier: 'TIER',
+  },
+  myBike: 'Vlastný bicykel',
+  rentedBike: 'Bicykel na prenájom',
+  myScooter: 'Vlastná kolobežka',
+  rentedScooter: 'Kolobežka na prenájom',
+  openApp: 'Otvor aplikáciu {{provider}}',
 }

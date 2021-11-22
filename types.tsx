@@ -9,9 +9,17 @@ import { SvgProps } from 'react-native-svg'
 export type TicketName = 'ticket40min' | 'ticket70min' | 'ticket24hours'
 
 export enum TravelModes {
+  mhd = 'MHD',
+  bicycle = 'BICYCLE',
+  scooter = 'SCOOTER',
+  walk = 'WALK',
+}
+
+export enum TravelModesOtpApi {
   transit = 'TRANSIT,WALK',
   bicycle = 'BICYCLE',
-  scooter = '',
+  rented = 'WALK,BICYCLE_RENT',
+  scooter = 'BICYCLE',
   walk = 'WALK',
 }
 
@@ -60,7 +68,10 @@ export type TicketsParamList = {
 export type MapParamList = {
   MapScreen: undefined
   FromToScreen: { from: { name: string; latitude: number; longitude: number } }
-  PlannerScreen: { legs: LegProps[] }
+  PlannerScreen: {
+    legs: LegProps[]
+    provider: MicromobilityProvider
+  }
   LineTimeline: { tripId: string; stopId: string }
   Timetable: { stopId: string; lineNumber: string }
   ChooseLocation: {

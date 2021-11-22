@@ -2,15 +2,15 @@ import React, { useState } from 'react'
 import { StyleSheet, Text, View, Alert } from 'react-native'
 import * as SMS from 'expo-sms'
 import i18n from 'i18n-js'
+import { ScrollView } from 'react-native-gesture-handler'
 
 import {
   Button,
   ConfirmationModal,
   ConfirmationModalProps,
-} from '../components'
+} from '@components/index'
 import { SmsTicketNumbers, SmsTicketPrices, TicketName } from '../types'
-import { ScrollView } from 'react-native-gesture-handler'
-import { presentPrice } from '../utils/utils'
+import { presentPrice } from '@utils/utils'
 
 export default function SmsScreen() {
   async function handleSend(receiverNumber: string) {

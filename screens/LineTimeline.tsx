@@ -15,6 +15,7 @@ import TicketSvg from '@images/ticket.svg'
 import { s } from '@utils/globalStyles'
 import { colors, mhdDefaultColors } from '@utils/theme'
 import useMhdTrip from '@hooks/useMhdTrip'
+import DashedLine from './ui/DashedLine/DashedLine'
 
 export default function LineTimeline({
   route,
@@ -74,7 +75,8 @@ export default function LineTimeline({
           </View>
         </View>
         <ScrollView ref={scrollViewRef} contentContainerStyle={combineStyles}>
-          <View style={styles.line}></View>
+          {/* TODO style dashed line */}
+          <DashedLine color={colors.darkText} />
           <View style={styles.departures}>
             {data?.timeline?.map((spot, index) => (
               <TouchableOpacity

@@ -14,9 +14,9 @@ type Props = {
   toPlaceText?: string
   fromPlaceTextPlaceholder?: string
   toPlaceTextPlaceholder?: string
-  onFromPlacePress?: () => void
-  onToPlacePress?: () => void
-  onSwitchPlacesPress?: () => void
+  onFromPlacePress: () => void
+  onToPlacePress: () => void
+  onSwitchPlacesPress: () => void
 }
 
 const FromToSelector = ({
@@ -26,6 +26,7 @@ const FromToSelector = ({
   toPlaceTextPlaceholder,
   onFromPlacePress,
   onToPlacePress,
+  onSwitchPlacesPress,
 }: Props) => {
   return (
     <View style={styles.container}>
@@ -54,7 +55,10 @@ const FromToSelector = ({
         </TouchableOpacity>
       </View>
       <View style={styles.switchPlacesContainer}>
-        <TouchableOpacity style={styles.switchPlaces}>
+        <TouchableOpacity
+          style={styles.switchPlaces}
+          onPress={onSwitchPlacesPress}
+        >
           <SwitchSvg fill={colors.primary} />
         </TouchableOpacity>
       </View>

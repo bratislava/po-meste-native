@@ -4,7 +4,6 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { colors } from '@utils/theme'
 import { s } from '@utils/globalStyles'
-import { STYLES } from '@utils/constants'
 
 // TODO solve top empty space
 export const renderHeader = () => (
@@ -19,9 +18,10 @@ const styles = StyleSheet.create({
   header: {
     ...s.shadow,
     backgroundColor: 'white',
+    marginBottom: -1,
     paddingTop: 10,
-    borderTopLeftRadius: STYLES.borderRadius,
-    borderTopRightRadius: STYLES.borderRadius,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
   },
   panelHeader: {
     alignItems: 'center',

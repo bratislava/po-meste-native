@@ -3,7 +3,7 @@
  * https://reactnavigation.org/docs/typescript/
  */
 
-import { LegProps } from './utils/validation'
+import { ChargerStationProps, LegProps } from './utils/validation'
 import { SvgProps } from 'react-native-svg'
 
 export type TicketName = 'ticket40min' | 'ticket70min' | 'ticket24hours'
@@ -21,6 +21,18 @@ export enum LegModes {
   walk = 'WALK',
   bicycle = 'BICYCLE',
   scooter = '',
+}
+
+export enum ChargerStatus {
+  busy = 'BUSY',
+  available = 'AVAILABLE',
+  disconnected = 'DISCONNECTED',
+}
+
+export enum ChargerTypes {
+  chademo = 'CHAdeMO',
+  mennekes = 'Mennekes Type 2',
+  ccs = 'CCS',
 }
 
 export type VehicleData = {
@@ -95,8 +107,28 @@ export enum BikeProvider {
   slovnaftbajk = 'slovnaftbajk',
 }
 
+export enum MicromobilityProvider {
+  rekola = 'Rekola',
+  slovnaftbajk = 'Slovnaftbajk',
+  tier = 'TIER',
+}
+
 export enum TransitVehicleType {
   tram = '0',
   trolleybus = '800',
   bus = '3',
+}
+
+export enum IconType {
+  mhd = 'mhd',
+  tier = 'tier',
+  slovnaftbajk = 'slovnaftbajk',
+  rekola = 'rekola',
+  zse = 'zse',
+}
+
+// export type IconType = 'mhd' | 'tier' | 'slovnaftbajk' | 'rekola' | 'zse'
+
+export interface bam extends ChargerStationProps {
+  kind: 'ChargerStationProps'
 }

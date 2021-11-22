@@ -1,5 +1,5 @@
 import * as yup from 'yup'
-import { LegModes } from '../types'
+import { ChargerStatus, ChargerTypes, LegModes } from '../types'
 import { TransitVehicleType } from '../types'
 import { colorRegex, dateStringRegex, timeStringRegex } from './utils'
 
@@ -43,6 +43,7 @@ const stationStatusObject = {
   num_bikes_available: yup
     .number()
     .required('error-malformed-num_bikes_available'),
+  num_docks_available: yup.number(),
   is_installed: yup.number().required('error-malformed-is_installed'),
   is_renting: yup.number().required('error-malformed-is_renting'),
   is_returning: yup.number().required('error-malformed-is_returning'),
@@ -59,7 +60,7 @@ export const StationSchema = yup
   .shape({ ...stationStatusObject, ...stationInformationObject })
   .noUnknown()
 
-export type StationProps = yup.Asserts<typeof StationSchema>
+export type StationMicromobilityProps = yup.Asserts<typeof StationSchema>
 
 export const apiRekolaStationStatus = yup.object().shape({
   data: yup.object().shape({
@@ -76,6 +77,50 @@ export const freeBikeStatusSchema = yup.object().shape({
   is_reserved: yup.boolean().required('error-malformed-is_reserved'),
   is_disabled: yup.boolean().required('error-malformed-is_disabled'),
   last_reported: yup.string().required('error-malformed-last_reported'),
+  // TODO erase when not needed
+  original: yup.object().shape({
+    attributes: yup.object().shape({
+      batteryLevel: yup
+        .number()
+        .required('error-malformed-freeBikeStatusSchema-batteryLevel'), // 65,
+      code: yup.number().required('error-malformed-freeBikeStatusSchema-code'), // 238289,
+      hasHelmet: yup
+        .boolean()
+        .required('error-malformed-freeBikeStatusSchema-hasHelmet'), // false,
+      hasHelmetBox: yup
+        .boolean()
+        .required('error-malformed-freeBikeStatusSchema-hasHelmetBox'), // false,
+      iotVendor: yup
+        .string()
+        .required('error-malformed-freeBikeStatusSchema-iotVendor'), // 'okai',
+      isRentable: yup
+        .boolean()
+        .required('error-malformed-freeBikeStatusSchema-isRentable'), // true,
+      lastLocationUpdate: yup
+        .string()
+        .required('error-malformed-freeBikeStatusSchema-lastLocationUpdate'), // '2021-11-08T14:58:42Z', verificate if needed
+      lastStateChange: yup
+        .string()
+        .required('error-malformed-freeBikeStatusSchema-lastStateChange'), //'2021-11-02T00:38:40Z', verificate if needed
+      lat: yup.number().required('error-malformed-freeBikeStatusSchema-lat'), //48.157839,
+      licencePlate: yup
+        .string()
+        .required('error-malformed-freeBikeStatusSchema-licencePlate'), //'181WSF',
+      lng: yup.number().required('error-malformed-freeBikeStatusSchema-lng'), //17.130128,
+      maxSpeed: yup
+        .number()
+        .required('error-malformed-freeBikeStatusSchema-maxSpeed'), //25,
+      state: yup
+        .string()
+        .required('error-malformed-freeBikeStatusSchema-state'), //'ACTIVE',
+      vehicleType: yup
+        .string()
+        .required('error-malformed-freeBikeStatusSchema-vehicleType'), //'escooter',
+      zoneId: yup
+        .string()
+        .required('error-malformed-freeBikeStatusSchema-zoneId'), //'BRATISLAVA',
+    }),
+  }),
 })
 
 export const apiFreeBikeStatus = yup.object().shape({
@@ -214,50 +259,47 @@ export const apiOtpPlanner = yup.object().shape({
   }),
 })
 
-export type LocalitiesProps = yup.Asserts<typeof localities>
+export type ConnectorProps = yup.Asserts<typeof connectors>
+const connectors = yup.object().shape({
+  id: yup.number(), // 147118,
+  pricing: yup.object().shape({
+    charging_price: yup.string().nullable(), // '0.29 €/kWh',
+    free_parking_time: yup.string().nullable(), // '720 min',
+    parking_price: yup.string(), // '3 €/h',
+  }),
+  status: yup.mixed<ChargerStatus>().oneOf(Object.values(ChargerStatus)), //'AVAILABLE', 'BUSY', 'DISCONNECTED'
+  type: yup.mixed<ChargerTypes>().oneOf(Object.values(ChargerTypes)), //'Mennekes Type 2',
+})
 
-const localities = yup
-  .array()
-  .ensure()
-  .of(
-    yup.object().shape({
-      // additional_info: yup.string().nullable(), //'6x AC socket (DLM)',
-      // address: yup.string(), //'Dúbravka, Bagarova',
-      // city: yup.string().nullable(), //'Bratislava',
-      connectors: yup
-        .array()
-        .ensure()
-        .of(
-          yup.object().shape({
-            // id: yup.number(), // 147118,
-            pricing: yup.object().shape({
-              // charging_price: yup.string().nullable(), // '0.29 €/kWh',
-              // free_parking_time: yup.string().nullable(), // '720 min',
-              // parking_price: yup.string(), // '3 €/h',
-            }),
-            // status: yup.string(), //'AVAILABLE',
-            // type: yup.string(), //'Mennekes Type 2',
-          })
-        ),
-      coordinates: yup.object().shape({
-        latitude: yup.number().nullable(), // 48.181295,
-        longitude: yup.number().nullable(), // 17.043218,
-      }),
-      // country_code: yup.string(), //'SK',
-      // created: yup.string(), // '2021-02-15T10:30:01.210Z',
-      // groups_max_power: yup.number(), // 76/NaN
-      id: yup.number(), // 25,
-      name: yup.string(), // 'ZSE BA Rezident Bagarova',
-      // number_of_parking_spaces: yup.number(), // 3/NaN
-      // number_parallel_charging_vehicles: yup.number(), //6,
-      opening_times: yup.string().nullable(), //'24/7',
-      reserved_capacity: yup.string().nullable(), //null,
-    })
-  )
+export const chargerStation = yup.object().shape({
+  // additional_info: yup.string().nullable(), //'6x AC socket (DLM)',
+  // address: yup.string(), //'Dúbravka, Bagarova',
+  // city: yup.string().nullable(), //'Bratislava',
+  connectors: yup.array().ensure().of(connectors),
+  coordinates: yup.object().shape({
+    latitude: yup.number().nullable(), // 48.181295,
+    longitude: yup.number().nullable(), // 17.043218,
+  }),
+  // country_code: yup.string(), //'SK',
+  // created: yup.string(), // '2021-02-15T10:30:01.210Z',
+  // groups_max_power: yup.number(), // 76/NaN
+  id: yup.number(), // 25,
+  name: yup.string(), // 'ZSE BA Rezident Bagarova',
+  number_of_parking_spaces: yup.number().nullable(), // 3
+  // number_parallel_charging_vehicles: yup.number(), //6,
+  opening_times: yup.string().nullable(), //'24/7',
+  reserved_capacity: yup.string().nullable(), //null,
+})
+
+export type ChargerStationProps = yup.Asserts<typeof chargerStation>
+
+const localities = yup.array().ensure().of(chargerStation)
 
 export const apiZseChargers = yup.object().shape({
   localities: localities,
 })
+
+export type LocalitiesProps = yup.Asserts<typeof localities>
 
 export const apiMhdStopStatus = yup.object().shape({
   allLines: yup

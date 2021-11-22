@@ -14,6 +14,8 @@ import { s } from '@utils/globalStyles'
 import { mhdDefaultColors } from '@utils/theme'
 import { LocalDateTime, Duration } from '@js-joda/core'
 import { TransitVehicleType } from '../../../types'
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
+import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '../VehicleBar/VehicleBar'
 
 interface UpcomingDeparturesProps {
   station: MhdStopProps
@@ -90,7 +92,12 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
           })}
         </View>
       </View>
-      <ScrollView contentContainerStyle={styles.scrollingVehiclesData}>
+      <BottomSheetScrollView
+        contentContainerStyle={[
+          styles.scrollingVehiclesData,
+          styles.contentWrapper,
+        ]}
+      >
         {data?.departures?.map((departure, index) => {
           const diffMinutes = Duration.between(
             LocalDateTime.now(),
@@ -142,7 +149,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
             </TouchableOpacity>
           )
         })}
-      </ScrollView>
+      </BottomSheetScrollView>
     </View>
   )
 }
@@ -169,6 +176,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 10,
+  },
+  contentWrapper: {
+    paddingBottom: BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
   },
   linkFilter: {
     flexDirection: 'row',

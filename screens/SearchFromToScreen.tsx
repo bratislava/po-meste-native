@@ -195,7 +195,7 @@ export default function SearchFromToScreen({
   )
 
   return (
-    <BottomSheet
+    <BottomSheet // TODO use import BottomSheet from '@gorhom/bottom-sheet' then erase 'reanimated-bottom-sheet' from app
       ref={sheetRef}
       initialSnap={1}
       snapPoints={[height, 0]}

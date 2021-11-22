@@ -9,6 +9,8 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import * as Location from 'expo-location'
 import Constants from 'expo-constants'
 import * as Sentry from 'sentry-expo'
+import { AppState, AppStateStatus } from 'react-native'
+import { focusManager } from 'react-query'
 
 import useCachedResources from '@hooks/useCachedResources'
 import useColorScheme from '@hooks/useColorScheme'
@@ -41,6 +43,21 @@ Sentry.init({
 const queryClient = new QueryClient()
 
 Location.setGoogleApiKey(Constants.manifest?.extra?.googlePlacesApiKey)
+
+focusManager.setEventListener((handleFocus) => {
+  const focusOnActiveStatus = (state: AppStateStatus) => {
+    if (state === 'active') {
+      return handleFocus(true)
+    } else {
+      return handleFocus(false)
+    }
+  }
+  AppState.addEventListener('change', focusOnActiveStatus)
+
+  return () => {
+    AppState.removeEventListener('change', focusOnActiveStatus)
+  }
+})
 
 export default function App() {
   const isLoadingComplete = useCachedResources()

@@ -5,7 +5,7 @@ import { apiFreeBikeStatus } from '../utils/validation'
 
 export default function useTierData() {
   const [validationErrors, setValidationErrors] = useState()
-  const { data, isLoading, error } = useQuery(
+  const { data, isLoading, error, refetch } = useQuery(
     'getTierFreeBikeStatus',
     getTierFreeBikeStatus
   )
@@ -25,5 +25,6 @@ export default function useTierData() {
     data: validatedTier,
     isLoading: isLoading,
     errors: error || validationErrors,
+    refetch,
   }
 }

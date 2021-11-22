@@ -306,15 +306,11 @@ export default function FromToScreen({
   ]
 
   const onSwitchPlacesPress = useCallback(() => {
-    const fromNameAlt = `${fromName}`
+    const fromNameAlt = fromName
     const fromCoordinatesAlt = fromCoordinates
-      ? JSON.parse(JSON.stringify(fromCoordinates))
-      : undefined
 
-    const toNameAlt = `${toName}`
+    const toNameAlt = toName
     const toCoordinatesAlt = toCoordinates
-      ? JSON.parse(JSON.stringify(toCoordinates))
-      : undefined
 
     setFromName(toNameAlt)
     setFromCoordinates(toCoordinatesAlt)
@@ -333,7 +329,7 @@ export default function FromToScreen({
           toPlaceText={toName}
           fromPlaceTextPlaceholder={i18n.t('fromPlaceholder')}
           toPlaceTextPlaceholder={i18n.t('toPlaceholder')}
-          onSwitchPlacesPress={() => onSwitchPlacesPress()}
+          onSwitchPlacesPress={onSwitchPlacesPress}
         />
       </View>
       <View>

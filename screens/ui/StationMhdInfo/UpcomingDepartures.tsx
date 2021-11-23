@@ -22,6 +22,7 @@ import { LocalDateTime, Duration } from '@js-joda/core'
 import { TransitVehicleType } from '../../../types'
 import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '../VehicleBar/VehicleBar'
 import { getMhdStopStatusData } from '@utils/api'
+import LoadingView from '../LoadingView/LoadingView'
 
 interface UpcomingDeparturesProps {
   station: MhdStopProps
@@ -54,53 +55,33 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
   }
 
   useEffect(() => {
-    setFiltersLineNumber([])
-  }, [station.id])
-
-  const getActive = useCallback(
-    (lineNumber: string) =>
-      filtersLineNumber.length === 0 || filtersLineNumber.includes(lineNumber),
-    [filtersLineNumber]
-  )
-  const isAllActive = useCallback(
-    (filtersLineNumberNew: string[]) => {
-      return data?.allLines?.every((singleLine) =>
-        filtersLineNumberNew.includes(singleLine.lineNumber)
+    if (data?.allLines) {
+      setFiltersLineNumber(
+        data?.allLines?.map((singleLine) => singleLine.lineNumber)
       )
-    },
-    [data?.allLines]
-  )
+    }
+  }, [data])
 
   const applyFilter = useCallback(
     (lineNumber: string) => {
       const index = filtersLineNumber.indexOf(lineNumber)
       if (index > -1) {
-        setFiltersLineNumber((oldFilters) =>
-          oldFilters.filter((value) => value !== lineNumber)
-        )
+        if (
+          data?.allLines &&
+          filtersLineNumber.length === data.allLines.length
+        ) {
+          setFiltersLineNumber([lineNumber])
+        } else {
+          setFiltersLineNumber((oldFilters) =>
+            oldFilters.filter((value) => value !== lineNumber)
+          )
+        }
       } else {
-        setFiltersLineNumber((oldFilters) => {
-          const newFiltersLineNumber = oldFilters.concat(lineNumber)
-          if (isAllActive(newFiltersLineNumber)) {
-            return []
-          } else {
-            return oldFilters.concat(lineNumber)
-          }
-        })
+        setFiltersLineNumber((oldFilters) => oldFilters.concat(lineNumber))
       }
     },
-    [filtersLineNumber, isAllActive]
+    [data?.allLines, filtersLineNumber]
   )
-
-  const filteredData = useMemo(() => {
-    if (filtersLineNumber && filtersLineNumber.length === 0) {
-      return data?.departures
-    } else {
-      return data?.departures?.filter((departure) =>
-        filtersLineNumber.includes(departure.lineNumber)
-      )
-    }
-  }, [data, filtersLineNumber])
 
   return (
     <View style={styles.column}>
@@ -132,7 +113,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
         <View style={styles.secondRow}>
           {/* TODO add loading, see comments https://inovaciebratislava.atlassian.net/browse/PLAN-233 */}
           {data?.allLines?.map((departure, index) => {
-            const isActive = getActive(departure.lineNumber)
+            const isActive = filtersLineNumber.includes(departure.lineNumber)
 
             return (
               <TouchableOpacity
@@ -169,57 +150,64 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
           styles.contentWrapper,
         ]}
       >
-        {filteredData?.map((departure, index) => {
-          const diffMinutes = Duration.between(
-            LocalDateTime.now(),
-            LocalDateTime.parse(
-              `${departure.date}T${departure.time}`
-            ).plusHours(2)
-          ).toMinutes()
-          return (
-            <TouchableOpacity
-              key={index}
-              style={styles.lineDeparture}
-              onPress={() => {
-                globalstateContext.setTimeLineNumber(departure.lineNumber)
-                navigation.navigate('LineTimeline', {
-                  tripId: departure.tripId,
-                  stopId: station.id,
-                })
-              }}
-            >
-              <View style={styles.departureLeft}>
-                <View key={index} style={s.icon}>
-                  {getVehicle(
-                    departure.vehicleType,
-                    departure?.lineColor
-                      ? `#${departure?.lineColor}`
-                      : undefined
-                  )}
-                </View>
-                <Text
-                  style={[
-                    s.lineNumber,
-                    {
-                      backgroundColor: departure.lineColor
-                        ? `#${departure.lineColor}`
-                        : mhdDefaultColors.grey,
-                    },
-                    s.whiteText,
-                  ]}
-                >
-                  {departure.lineNumber}
-                </Text>
-                <Text style={[s.blackText, styles.finalStation]}>
-                  {departure.finalStopName}
-                </Text>
-              </View>
-              <View style={styles.departureRight}>
-                <Text>{diffMinutes > 1 ? `${diffMinutes} min` : '<1 min'}</Text>
-              </View>
-            </TouchableOpacity>
+        {isLoading ? <LoadingView /> : null}
+        {data?.departures
+          ?.filter((departure) =>
+            filtersLineNumber.includes(departure.lineNumber)
           )
-        })}
+          ?.map((departure, index) => {
+            const diffMinutes = Duration.between(
+              LocalDateTime.now(),
+              LocalDateTime.parse(
+                `${departure.date}T${departure.time}`
+              ).plusHours(2)
+            ).toMinutes()
+            return (
+              <TouchableOpacity
+                key={index}
+                style={styles.lineDeparture}
+                onPress={() => {
+                  globalstateContext.setTimeLineNumber(departure.lineNumber)
+                  navigation.navigate('LineTimeline', {
+                    tripId: departure.tripId,
+                    stopId: station.id,
+                  })
+                }}
+              >
+                <View style={styles.departureLeft}>
+                  <View key={index} style={s.icon}>
+                    {getVehicle(
+                      departure.vehicleType,
+                      departure?.lineColor
+                        ? `#${departure?.lineColor}`
+                        : undefined
+                    )}
+                  </View>
+                  <Text
+                    style={[
+                      s.lineNumber,
+                      {
+                        backgroundColor: departure.lineColor
+                          ? `#${departure.lineColor}`
+                          : mhdDefaultColors.grey,
+                      },
+                      s.whiteText,
+                    ]}
+                  >
+                    {departure.lineNumber}
+                  </Text>
+                  <Text style={[s.blackText, styles.finalStation]}>
+                    {departure.finalStopName}
+                  </Text>
+                </View>
+                <View style={styles.departureRight}>
+                  <Text>
+                    {diffMinutes > 1 ? `${diffMinutes} min` : '<1 min'}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )
+          })}
       </BottomSheetScrollView>
     </View>
   )

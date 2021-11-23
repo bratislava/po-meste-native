@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import i18n from 'i18n-js'
 import { ScrollView } from 'react-native-gesture-handler'
-import BottomSheet from 'reanimated-bottom-sheet'
+import BottomSheet from 'reanimated-bottom-sheet' // TODO use import BottomSheet from '@gorhom/bottom-sheet' then erase 'reanimated-bottom-sheet' from app
 import {
   GooglePlaceData,
   GooglePlaceDetail,

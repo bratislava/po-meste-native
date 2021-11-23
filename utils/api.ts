@@ -1,6 +1,11 @@
 import Constants from 'expo-constants'
 import qs from 'qs'
-import { apiMhdGrafikon, apiOtpPlanner } from './validation'
+import {
+  apiMhdGrafikon,
+  apiOtpPlanner,
+  apiMhdStopStatus,
+  apiMhdTrip,
+} from './validation'
 import { MicromobilityProvider, TravelModesOtpApi } from '../types'
 
 const host = 'planner.bratislava.sk'
@@ -43,10 +48,11 @@ const fetchJsonFromOtpApi = async (plannerAddress: string, path: string) => {
 }
 
 export const getMhdStops = () => fetchJsonFromApi('/mhd/stops')
-export const getMhdStopStatusData = (id: string) =>
-  fetchJsonFromApi(`/mhd/stop/${id}`)
+export const getMhdStopStatusData = async (id: string) =>
+  apiMhdStopStatus.validateSync(await fetchJsonFromApi(`/mhd/stop/${id}`))
 
-export const getMhdTrip = (id: string) => fetchJsonFromApi(`/mhd/trip/${id}`)
+export const getMhdTrip = async (id: string) =>
+  apiMhdTrip.validateSync(await fetchJsonFromApi(`/mhd/trip/${id}`))
 
 // TODO do every query like they do it on Discovery channel, sorry, like this, validate immediately
 export const getMhdGrafikon = async (stopId: string, lineNumber: string) =>

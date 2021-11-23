@@ -6,7 +6,7 @@ export const s = StyleSheet.create({
   lineNumber: {
     borderRadius: 5,
     paddingHorizontal: 15,
-    paddingVertical: 3,
+    paddingVertical: 5,
   },
   bgRed: {
     backgroundColor: 'red',

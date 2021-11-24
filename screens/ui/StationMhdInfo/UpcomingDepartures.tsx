@@ -1,19 +1,10 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useQuery } from 'react-query'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 
 import TicketSvg from '@images/ticket.svg'
-import TramSvg from '@images/tram.svg'
-import TrolleybusSvg from '@images/trolleybus.svg'
-import BusSvg from '@images/bus.svg'
 import { GlobalStateContext } from '@components/common/GlobalStateProvider'
 import { MhdStopProps } from '@utils/validation'
 import { s } from '@utils/globalStyles'
@@ -23,6 +14,7 @@ import { TransitVehicleType } from '../../../types'
 import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '../VehicleBar/VehicleBar'
 import { getMhdStopStatusData } from '@utils/api'
 import LoadingView from '../LoadingView/LoadingView'
+import { getVehicle } from '@utils/utils'
 
 interface UpcomingDeparturesProps {
   station: MhdStopProps
@@ -38,20 +30,12 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
 
   const [filtersLineNumber, setFiltersLineNumber] = useState<string[]>([])
 
-  const getVehicle = (
-    vehicletype?: TransitVehicleType,
+  const getVehicleIconStyled = (
+    vehicleType?: TransitVehicleType,
     color: string = mhdDefaultColors.grey
   ) => {
-    switch (vehicletype) {
-      case TransitVehicleType.trolleybus:
-        return <TrolleybusSvg width={30} height={30} fill={color} />
-      case TransitVehicleType.tram:
-        return <TramSvg width={30} height={30} fill={color} />
-      case TransitVehicleType.bus:
-        return <BusSvg width={30} height={30} fill={color} />
-      default:
-        return <BusSvg width={30} height={30} fill={color} />
-    }
+    const Icon = getVehicle(vehicleType)
+    return <Icon width={30} height={30} fill={color} />
   }
 
   useEffect(() => {
@@ -176,7 +160,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
               >
                 <View style={styles.departureLeft}>
                   <View key={index} style={s.icon}>
-                    {getVehicle(
+                    {getVehicleIconStyled(
                       departure.vehicleType,
                       departure?.lineColor
                         ? `#${departure?.lineColor}`
@@ -267,7 +251,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-
   finalStation: {
     marginLeft: 10,
   },

@@ -1,14 +1,8 @@
 import React, { MutableRefObject } from 'react'
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import i18n from 'i18n-js'
 import { ScrollView } from 'react-native-gesture-handler'
-import BottomSheet from 'reanimated-bottom-sheet' // TODO use import BottomSheet from '@gorhom/bottom-sheet' then erase 'reanimated-bottom-sheet' from app
+import BottomSheet from '@gorhom/bottom-sheet'
 import {
   GooglePlaceData,
   GooglePlaceDetail,
@@ -46,163 +40,158 @@ export default function SearchFromToScreen({
   setLocationFromMap,
   inputPlaceholder,
 }: SearchFromToScreen) {
-  const { height } = Dimensions.get('window')
-
   const clearLocationTextInput = () => {
     googleInputRef.current?.setAddressText('')
     googleInputRef.current?.focus()
   }
 
-  const renderContent = () => (
-    <View style={styles.content}>
-      <View style={[s.horizontalMargin, styles.content]}>
-        <View style={styles.googleFrom}>
-          <GooglePlacesAutocomplete
-            renderLeftButton={() => (
-              <Ionicons
-                onPress={clearLocationTextInput}
-                size={30}
-                style={{
-                  alignSelf: 'center',
-                  marginBottom: -3,
-                  color: colors.lighterGray,
-                }}
-                name="close"
-              />
-            )}
-            ref={googleInputRef}
-            styles={autoCompleteStyles}
-            enablePoweredByContainer={false}
-            fetchDetails
-            placeholder={inputPlaceholder}
-            onPress={onGooglePlaceChosen}
-            query={{
-              key: Constants.manifest?.extra?.googlePlacesApiKey,
-              language: 'sk',
-              location: '48.1512015, 17.1110118',
-              radius: '22000', //22 km
-              strictbounds: true,
-            }}
-          />
-        </View>
-        <View>
-          <Text style={styles.categoriesTitle}>{i18n.t('myAddresses')}</Text>
-          <ScrollView
-            contentContainerStyle={styles.horizontalScrollView}
-            horizontal
-          >
-            {dummyDataPlaceHistory.map((historyItem, index) => (
-              <View key={index} style={styles.horizontalScrollItem}>
+  return (
+    <BottomSheet
+      ref={sheetRef}
+      index={-1}
+      snapPoints={['99%']}
+      handleComponent={renderHeader}
+      enablePanDownToClose
+    >
+      <View style={styles.content}>
+        <View style={[s.horizontalMargin, styles.content]}>
+          <View style={styles.googleFrom}>
+            <GooglePlacesAutocomplete
+              renderLeftButton={() => (
                 <Ionicons
+                  onPress={clearLocationTextInput}
                   size={30}
-                  style={{ marginBottom: -3, color: colors.primary }}
-                  name="heart-outline"
+                  style={{
+                    alignSelf: 'center',
+                    marginBottom: -3,
+                    color: colors.lighterGray,
+                  }}
+                  name="close"
                 />
-                <View style={styles.placeTexts}>
-                  <Text style={styles.placeName}>{historyItem.text}</Text>
-                  <Text style={styles.placeAddressMinor}>
-                    {historyItem.text}
-                  </Text>
-                </View>
-              </View>
-            ))}
-          </ScrollView>
-        </View>
-        <View style={styles.categoryStops}>
-          <View style={styles.separatorParent}>
-            <View style={styles.separator}></View>
+              )}
+              ref={googleInputRef}
+              styles={autoCompleteStyles}
+              enablePoweredByContainer={false}
+              fetchDetails
+              placeholder={inputPlaceholder}
+              onPress={onGooglePlaceChosen}
+              query={{
+                key: Constants.manifest?.extra?.googlePlacesApiKey,
+                language: 'sk',
+                location: '48.1512015, 17.1110118',
+                radius: '22000', //22 km
+                strictbounds: true,
+              }}
+            />
           </View>
-          <Text style={styles.categoriesTitle}>{i18n.t('myStops')}</Text>
-          <ScrollView
-            contentContainerStyle={styles.horizontalScrollView}
-            horizontal
-          >
-            {dummyDataPlaceHistory.map((historyItem, index) => (
-              <View key={index} style={styles.horizontalScrollItem}>
-                <MhdSvg width={30} height={20} />
-                <View style={styles.placeTexts}>
-                  <Text style={styles.placeAddress}>{historyItem.text}</Text>
-                </View>
-              </View>
-            ))}
-          </ScrollView>
-        </View>
-        <View style={styles.categoryStops}>
-          <View style={styles.separatorParent}>
-            <View style={styles.separator}></View>
-          </View>
-          <View style={styles.chooseFromMapRow}>
-            {getMyLocation && (
-              <TouchableOpacity onPress={getMyLocation}>
-                <View style={styles.chooseFromMap}>
+          <View>
+            <Text style={styles.categoriesTitle}>{i18n.t('myAddresses')}</Text>
+            <ScrollView
+              contentContainerStyle={styles.horizontalScrollView}
+              horizontal
+            >
+              {dummyDataPlaceHistory.map((historyItem, index) => (
+                <View key={index} style={styles.horizontalScrollItem}>
                   <Ionicons
                     size={30}
-                    style={{
-                      marginBottom: -3,
-                      color: colors.primary,
-                      width: 30,
-                    }}
-                    name="map-outline"
+                    style={{ marginBottom: -3, color: colors.primary }}
+                    name="heart-outline"
                   />
-                  <View style={[styles.placeTexts, styles.chooseFromMapText]}>
-                    <Text style={styles.placeAddress}>
-                      {i18n.t('currentPosition')}
+                  <View style={styles.placeTexts}>
+                    <Text style={styles.placeName}>{historyItem.text}</Text>
+                    <Text style={styles.placeAddressMinor}>
+                      {historyItem.text}
                     </Text>
                   </View>
                 </View>
-              </TouchableOpacity>
-            )}
-            {setLocationFromMap && (
-              <TouchableOpacity onPress={setLocationFromMap}>
-                <View style={styles.chooseFromMap}>
-                  <Ionicons
-                    size={30}
-                    style={{
-                      marginBottom: -3,
-                      color: colors.primary,
-                      width: 30,
-                    }}
-                    name="map-outline"
-                  />
-                  <View style={[styles.placeTexts, styles.chooseFromMapText]}>
-                    <Text style={styles.placeAddress}>
-                      {i18n.t('choosePlaceFromMap')}
-                    </Text>
+              ))}
+            </ScrollView>
+          </View>
+          <View style={styles.categoryStops}>
+            <View style={styles.separatorParent}>
+              <View style={styles.separator}></View>
+            </View>
+            <Text style={styles.categoriesTitle}>{i18n.t('myStops')}</Text>
+            <ScrollView
+              contentContainerStyle={styles.horizontalScrollView}
+              horizontal
+            >
+              {dummyDataPlaceHistory.map((historyItem, index) => (
+                <View key={index} style={styles.horizontalScrollItem}>
+                  <MhdSvg width={30} height={20} />
+                  <View style={styles.placeTexts}>
+                    <Text style={styles.placeAddress}>{historyItem.text}</Text>
                   </View>
                 </View>
-              </TouchableOpacity>
-            )}
+              ))}
+            </ScrollView>
           </View>
-        </View>
-        <View style={styles.categoryStops}>
-          <View style={styles.separatorParent}>
-            <View style={styles.separator}></View>
+          <View style={styles.categoryStops}>
+            <View style={styles.separatorParent}>
+              <View style={styles.separator}></View>
+            </View>
+            <View style={styles.chooseFromMapRow}>
+              {getMyLocation && (
+                <TouchableOpacity onPress={getMyLocation}>
+                  <View style={styles.chooseFromMap}>
+                    <Ionicons
+                      size={30}
+                      style={{
+                        marginBottom: -3,
+                        color: colors.primary,
+                        width: 30,
+                      }}
+                      name="map-outline"
+                    />
+                    <View style={[styles.placeTexts, styles.chooseFromMapText]}>
+                      <Text style={styles.placeAddress}>
+                        {i18n.t('currentPosition')}
+                      </Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              )}
+              {setLocationFromMap && (
+                <TouchableOpacity onPress={setLocationFromMap}>
+                  <View style={styles.chooseFromMap}>
+                    <Ionicons
+                      size={30}
+                      style={{
+                        marginBottom: -3,
+                        color: colors.primary,
+                        width: 30,
+                      }}
+                      name="map-outline"
+                    />
+                    <View style={[styles.placeTexts, styles.chooseFromMapText]}>
+                      <Text style={styles.placeAddress}>
+                        {i18n.t('choosePlaceFromMap')}
+                      </Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
-          <Text style={styles.categoriesTitle}>{i18n.t('history')}</Text>
-          <View style={styles.verticalScrollView}>
-            {dummyDataPlaceHistory.map((historyItem, index) => (
-              <View key={index} style={styles.verticalScrollItem}>
-                <HistorySvg width={30} height={20} />
-                <View style={styles.placeTexts}>
-                  <Text style={styles.placeAddress}>{historyItem.text}</Text>
+          <View style={styles.categoryStops}>
+            <View style={styles.separatorParent}>
+              <View style={styles.separator}></View>
+            </View>
+            <Text style={styles.categoriesTitle}>{i18n.t('history')}</Text>
+            <View style={styles.verticalScrollView}>
+              {dummyDataPlaceHistory.map((historyItem, index) => (
+                <View key={index} style={styles.verticalScrollItem}>
+                  <HistorySvg width={30} height={20} />
+                  <View style={styles.placeTexts}>
+                    <Text style={styles.placeAddress}>{historyItem.text}</Text>
+                  </View>
                 </View>
-              </View>
-            ))}
+              ))}
+            </View>
           </View>
         </View>
       </View>
-    </View>
-  )
-
-  return (
-    <BottomSheet // TODO use import BottomSheet from '@gorhom/bottom-sheet' then erase 'reanimated-bottom-sheet' from app
-      ref={sheetRef}
-      initialSnap={1}
-      snapPoints={[height, 0]}
-      renderContent={renderContent}
-      renderHeader={renderHeader}
-      enabledContentTapInteraction={false} //https://github.com/osdnk/react-native-reanimated-bottom-sheet/issues/219#issuecomment-625894292
-    />
+    </BottomSheet>
   )
 }
 

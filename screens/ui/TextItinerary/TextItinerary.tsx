@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { View, StyleSheet, Text } from 'react-native'
-import BottomSheet from 'reanimated-bottom-sheet'
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { Instant, LocalTime } from '@js-joda/core'
 import { Ionicons } from '@expo/vector-icons'
 import i18n from 'i18n-js'
@@ -13,7 +13,6 @@ import CyclingSvg from '@images/cycling.svg'
 import TramSvg from '@images/tram.svg'
 import BusSvg from '@images/bus.svg'
 import { LegProps } from '@utils/validation'
-import { renderHeader } from '@components/BottomSheetHeader'
 import { LegModes, MicromobilityProvider } from '../../../types'
 import { s } from '@utils/globalStyles'
 import useMhdData from '@hooks/useMhdStopsData'
@@ -28,6 +27,7 @@ import {
   openProviderApp,
 } from '@utils/utils'
 import Button from '@components/Button'
+import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '@screens/ui/VehicleBar/VehicleBar'
 
 interface TextItineraryProps {
   legs: LegProps[]
@@ -41,7 +41,6 @@ const PADDING_HORIZONTAL = 10
 const BIKESHARE_PROPERTY = 'BIKESHARE'
 
 export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
-  const bottomSheetSnapPoints = useMemo(() => ['100%', '60%', 0], [])
   // getData from /mhd/trip/{legs.tripId.substring(2)}
   const {
     data: dataMhdStops,
@@ -49,7 +48,7 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
     errors: errorsMhd,
   } = useMhdData()
 
-  const Icon = getIcon(provider)
+  const Icon = provider && getIcon(provider)
   const title = getProviderName(provider)
 
   const getFirstRentedInstanceIndex = legs.findIndex(
@@ -75,14 +74,16 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
     </View>
   )
 
-  const renderContent = () => (
-    <View style={styles.container}>
-      <View style={[styles.card, s.horizontalMargin]}>
-        <Icon width={30} height={30} />
-        {title && (
-          <Text style={[styles.textMargin, styles.textBold]}>{title}</Text>
-        )}
-      </View>
+  return (
+    <BottomSheetScrollView style={styles.container}>
+      {(title || Icon) && (
+        <View style={[styles.card, s.horizontalMargin]}>
+          <Icon width={30} height={30} />
+          {title && (
+            <Text style={[styles.textMargin, styles.textBold]}>{title}</Text>
+          )}
+        </View>
+      )}
       <View style={[styles.containerContent, styles.paddingVertical]}>
         {legs.map((leg, index) => {
           const startTime =
@@ -309,30 +310,20 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
           />
         )}
       </View>
-    </View>
-  )
-
-  return (
-    <BottomSheet // TODO use import BottomSheet from '@gorhom/bottom-sheet' then erase 'reanimated-bottom-sheet' from app
-      initialSnap={1}
-      renderHeader={renderHeader}
-      snapPoints={bottomSheetSnapPoints}
-      renderContent={renderContent}
-      enabledContentTapInteraction={false}
-    />
+    </BottomSheetScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.white,
+    marginBottom: BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
   },
   paddingVertical: {
     paddingVertical: 20,
   },
   containerContent: {
     backgroundColor: colors.lightLightGray,
-    height: '100%',
     borderTopWidth: 2,
     borderTopColor: colors.primary,
   },

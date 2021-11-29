@@ -84,6 +84,7 @@ const TripMiniature = ({
                   trim
                   fromNow
                 />
+                {/* TODO localize this using i18n */}
                 <Text numberOfLines={1}>z {displayedStartStationName}</Text>
               </View>
             )}

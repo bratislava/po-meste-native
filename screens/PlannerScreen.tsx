@@ -57,6 +57,9 @@ export default function PlannerScreen({
         {legs?.reduce<JSX.Element[]>((accumulator, leg, index) => {
           if (leg.legGeometry.points) {
             const latlngs = googlePolyline.decode(leg.legGeometry.points)
+            var color;
+            if (leg.route != ""){color = `#${leg.routeColor}`}
+            else {color = getModeColor(leg.mode)}
             const marker = (
               <Polyline
                 key={index}
@@ -65,7 +68,7 @@ export default function PlannerScreen({
                   longitude: point[1],
                 }))}
                 lineDashPattern={[1]}
-                strokeColor="#000"
+                strokeColor={color}
                 strokeWidth={6}
               />
             )
@@ -100,3 +103,12 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
 })
+
+function getModeColor(mode: import("../types").LegModes | undefined) {
+  if(mode === "WALK") return '#444';
+  if(mode === "BICYCLE") return '#0073e5';
+  if(mode === "BUS") return '#080';
+  if(mode === "TRAM") return '#800';
+  return '#aaa';
+}
+

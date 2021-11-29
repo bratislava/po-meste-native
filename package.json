@@ -19,6 +19,7 @@
     "@expo/vector-icons": "^12.0.0",
     "@gorhom/bottom-sheet": "4",
     "@js-joda/core": "^4.3.1",
+    "@js-joda/timezone": "^2.10.0",
     "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/bottom-tabs": "5.11.2",
     "@react-navigation/native": "~5.8.10",

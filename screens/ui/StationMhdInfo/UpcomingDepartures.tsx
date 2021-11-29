@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useQuery } from 'react-query'
@@ -18,7 +12,8 @@ import { GlobalStateContext } from '@components/common/GlobalStateProvider'
 import { MhdStopProps } from '@utils/validation'
 import { s } from '@utils/globalStyles'
 import { colors, mhdDefaultColors } from '@utils/theme'
-import { LocalDateTime, Duration } from '@js-joda/core'
+import { LocalDateTime, Duration, ZonedDateTime, ZoneId } from '@js-joda/core'
+import '@js-joda/timezone'
 import { TransitVehicleType } from '../../../types'
 import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '../VehicleBar/VehicleBar'
 import { getMhdStopStatusData } from '@utils/api'
@@ -156,12 +151,15 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
             filtersLineNumber.includes(departure.lineNumber)
           )
           ?.map((departure, index) => {
-            const diffMinutes = Duration.between(
+            const dateTimeArrival = ZonedDateTime.of(
+              LocalDateTime.parse(`${departure.date}T${departure.time}`),
+              ZoneId.of('Europe/Bratislava')
+            )
+            const zonedDiffMinutes = Duration.between(
               LocalDateTime.now(),
-              LocalDateTime.parse(
-                `${departure.date}T${departure.time}`
-              ).plusHours(2)
+              dateTimeArrival
             ).toMinutes()
+
             return (
               <TouchableOpacity
                 key={index}
@@ -202,7 +200,9 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
                 </View>
                 <View style={styles.departureRight}>
                   <Text>
-                    {diffMinutes > 1 ? `${diffMinutes} min` : '<1 min'}
+                    {zonedDiffMinutes > 1
+                      ? `${zonedDiffMinutes} min`
+                      : '<1 min'}
                   </Text>
                 </View>
               </TouchableOpacity>

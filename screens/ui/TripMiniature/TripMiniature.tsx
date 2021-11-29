@@ -32,7 +32,7 @@ const TripMiniature = ({
   useEffect(() => {
     if (legs) {
       setStartStationName(
-        legs.find((leg) => leg.mode == LegModes.bus)?.headsign || ''
+        legs.find((leg) => (leg.mode == LegModes.bus || leg.mode == LegModes.tram))?.from.name || ''
       )
     }
   }, [legs])

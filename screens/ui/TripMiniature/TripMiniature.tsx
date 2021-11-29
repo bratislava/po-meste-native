@@ -29,6 +29,7 @@ const TripMiniature = ({
 }: Props) => {
   const [displayedStartStationName, setStartStationName] = useState('')
 
+  // TODO is this necessary?
   useEffect(() => {
     if (legs) {
       setStartStationName(

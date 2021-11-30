@@ -9,6 +9,8 @@ import { MapParamList } from '../types'
 import { TextItinerary } from './ui/TextItinerary/TextItinerary'
 import { HANDLE_HEIGHT, renderHeader } from '@components/BottomSheetHeader'
 import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from './ui/VehicleBar/VehicleBar'
+import { modeColors } from '@utils/constants'
+import { hexToRgba } from '@utils/utils'
 
 export default function PlannerScreen({
   route,
@@ -57,9 +59,12 @@ export default function PlannerScreen({
         {legs?.reduce<JSX.Element[]>((accumulator, leg, index) => {
           if (leg.legGeometry.points) {
             const latlngs = googlePolyline.decode(leg.legGeometry.points)
-            var color;
-            if (leg.route != ""){color = `#${leg.routeColor}`}
-            else {color = getModeColor(leg.mode)}
+            const color = hexToRgba(
+              leg.routeColor
+                ? `#${leg.routeColor}`
+                : modeColors[leg.mode || 'DEFAULT'],
+              0.5
+            )
             const marker = (
               <Polyline
                 key={index}
@@ -103,12 +108,3 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
 })
-
-function getModeColor(mode: import("../types").LegModes | undefined) {
-  if(mode === "WALK") return '#444';
-  if(mode === "BICYCLE") return '#0073e5';
-  if(mode === "BUS") return '#080';
-  if(mode === "TRAM") return '#800';
-  return '#aaa';
-}
-

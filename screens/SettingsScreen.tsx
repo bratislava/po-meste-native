@@ -1,10 +1,10 @@
 import React from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 
-export default function TicketsScreen() {
+export default function SettingsScreen() {
   return (
     <View style={styles.container}>
-      <Text>Tickets</Text>
+      <Text>Settings</Text>
     </View>
   )
 }

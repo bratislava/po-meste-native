@@ -12,14 +12,13 @@ import HomeSearchSvg from '@images/home-search.svg'
 import TicketSvg from '@images/ticket-alt.svg'
 import BurgerMenuSvg from '@images/burger-menu.svg'
 
-import TicketsScreen from '@screens/TicketsScreen'
+import SettingsScreen from '@screens/SettingsScreen'
 import MapScreen from '@screens/MapScreen'
-import TabTwoScreen from '@screens/TabTwoScreen'
 import {
   BottomTabParamList,
   TicketsParamList,
   MapParamList,
-  TabTwoParamList,
+  SettingsParamList,
 } from '../types'
 import SmsScreen from '@screens/SmsScreen'
 import FromToScreen from '@screens/FromToScreen'
@@ -45,7 +44,7 @@ export default function BottomTabNavigator() {
     >
       <BottomTab.Screen
         name="Tickets"
-        component={TabTwoNavigator}
+        component={TicketsNavigator}
         options={{
           title: i18n.t('tickets'),
           tabBarIcon: TicketSvg,
@@ -60,8 +59,8 @@ export default function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name="TabTwo"
-        component={TicketsNavigator}
+        name="Settings"
+        component={SettingsNavigator}
         options={{
           title: i18n.t('settings'),
           tabBarIcon: BurgerMenuSvg,
@@ -78,11 +77,7 @@ const TicketsStack = createStackNavigator<TicketsParamList>()
 function TicketsNavigator() {
   return (
     <TicketsStack.Navigator screenOptions={{}}>
-      <TicketsStack.Screen
-        name="TicketsScreen"
-        component={TicketsScreen}
-        options={{ headerTitle: i18n.t('tabOneTitle'), headerShown: false }}
-      />
+      <TicketsStack.Screen name="SmsScreen" component={SmsScreen} />
     </TicketsStack.Navigator>
   )
 }
@@ -96,23 +91,25 @@ function MapNavigator() {
       <MapStack.Screen
         name="MapScreen"
         component={MapScreen}
-        options={{ headerTitle: i18n.t('tabOneTitle'), headerShown: false }}
+        options={{ headerShown: false }}
       />
       <MapStack.Screen
         name="FromToScreen"
         component={FromToScreen}
-        options={{ headerTitle: i18n.t('tabOneTitle'), headerShown: false }}
+        options={{
+          headerTitle: i18n.t('fromToScreenTitle'),
+        }}
       />
       <MapStack.Screen
         name="PlannerScreen"
         component={PlannerScreen}
-        options={{ headerTitle: i18n.t('tabOneTitle') }}
+        options={{ headerTitle: i18n.t('plannerTitle') }}
       />
       <MapStack.Screen
         name="LineTimeline"
         component={LineTimeline}
         options={{
-          headerTitle: i18n.t('lineTimeline', {
+          headerTitle: i18n.t('lineTimelineTitle', {
             lineNumber: globalstateContext.timeLineNumber,
           }),
         }}
@@ -121,27 +118,31 @@ function MapNavigator() {
         name="Timetable"
         component={Timetable}
         options={{
-          headerTitle: i18n.t('timetable', {
+          headerTitle: i18n.t('timetableTitle', {
             lineNumber: globalstateContext.timeLineNumber,
           }),
         }}
       />
-      <MapStack.Screen name="ChooseLocation" component={ChooseLocation} />
+      <MapStack.Screen
+        name="ChooseLocation"
+        component={ChooseLocation}
+        options={{ headerTitle: i18n.t('chooseLocationTitle') }}
+      />
       <MapStack.Screen
         name="Feedback"
         component={Feedback}
-        options={{ headerShown: false }}
+        options={{ headerTitle: i18n.t('feedbackTitle') }}
       />
     </MapStack.Navigator>
   )
 }
 
-const TabTwoStack = createStackNavigator<TabTwoParamList>()
+const TabTwoStack = createStackNavigator<SettingsParamList>()
 
-function TabTwoNavigator() {
+function SettingsNavigator() {
   return (
     <TabTwoStack.Navigator screenOptions={{ headerShown: false }}>
-      <TabTwoStack.Screen name="SmsScreen" component={SmsScreen} />
+      <TabTwoStack.Screen name="SettingsScreen" component={SettingsScreen} />
     </TabTwoStack.Navigator>
   )
 }

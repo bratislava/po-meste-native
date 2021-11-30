@@ -3,6 +3,7 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native'
 
 import { GlobalStateContext } from '@components/common/GlobalStateProvider'
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@navigation/TabBar'
+import { SvgProps } from 'react-native-svg'
 
 const BOTTOM_VEHICLE_BAR_HEIGHT = 50
 const BOTTOM_VEHICLE_BAR_MARGIN_BOTTOM = 10
@@ -28,6 +29,11 @@ const VehicleBar = () => {
     })
   }
 
+  const getVehicleIconStyled = (icon: () => React.FC<SvgProps>) => {
+    const Icon = icon()
+    return <Icon width={30} height={30} />
+  }
+
   return (
     <View style={styles.vehicleBar}>
       {vehiclesContext.vehicleTypes?.map((vehicleType, index) => {
@@ -43,7 +49,7 @@ const VehicleBar = () => {
             ]}
             onPress={() => onVehicleClick(id)}
           >
-            {icon(show ? 'red' : 'grey')}
+            {getVehicleIconStyled(() => icon(show))}
           </TouchableOpacity>
         )
       })}

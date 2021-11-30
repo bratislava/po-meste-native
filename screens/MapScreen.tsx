@@ -11,6 +11,7 @@ import { StyleSheet, View, ImageURISource } from 'react-native'
 import BottomSheet from '@gorhom/bottom-sheet'
 import * as Location from 'expo-location'
 import { TouchableHighlight } from 'react-native-gesture-handler'
+import { useIsFocused } from '@react-navigation/core'
 
 import CurrentLocationSvg from '@images/current-location.svg'
 import ErrorView from '@components/ErrorView'
@@ -99,7 +100,11 @@ export default function MapScreen() {
     isLoading: isLoadingMhd,
     errors: errorsMhd,
   } = useMhdData()
-  const { data: dataTier, isLoading: isLoadingTier } = useTierData()
+  const {
+    data: dataTier,
+    isLoading: isLoadingTier,
+    refetch: refetchTier,
+  } = useTierData()
   const { data: dataZseChargers, isLoading: isLoadingZseChargers } =
     useZseChargersData()
   const { data: dataMergedRekola, isLoading: isLoadingRekola } = useRekolaData()
@@ -138,6 +143,19 @@ export default function MapScreen() {
       return ['50%', '100%']
     }
   }, [selectedMicromobilityStation])
+
+  const isFocused = useIsFocused()
+
+  const refetch = useCallback(() => {
+    refetchTier()
+    // TODO add SlovnaftbajkData rekola, zseChargers
+  }, [refetchTier])
+
+  useEffect(() => {
+    if (isFocused) {
+      refetch()
+    }
+  }, [isFocused, refetch])
 
   const moveMapToCurrentLocation = useCallback(
     async (

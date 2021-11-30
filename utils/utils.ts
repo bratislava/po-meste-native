@@ -1,12 +1,20 @@
 import i18n from 'i18n-js'
 import AppLink from 'react-native-app-link'
 
-import { MicromobilityProvider, TravelModes, TravelModesOtpApi } from '../types'
+import {
+  MicromobilityProvider,
+  TransitVehicleType,
+  TravelModes,
+  TravelModesOtpApi,
+} from '../types'
+import { colors } from './theme'
 import CyclingSvg from '@images/cycling.svg'
 import SlovnaftbajkSvg from '@images/slovnaftbajk.svg'
 import TierSvg from '@images/tier.svg'
 import RekoloSvg from '@images/rekolo.svg'
-import { colors } from './theme'
+import TramSvg from '@images/tram.svg'
+import TrolleybusSvg from '@images/trolleybus.svg'
+import BusSvg from '@images/bus.svg'
 
 export const presentPrice = (price: number /* in cents */) => {
   return i18n.t('presentPrice', { price: (price / 100).toFixed(2) })
@@ -111,5 +119,18 @@ export const getTextColor = (provider: MicromobilityProvider) => {
       return colors.white
     default:
       return colors.darkText
+  }
+}
+
+export const getVehicle = (vehicletype?: TransitVehicleType) => {
+  switch (vehicletype) {
+    case TransitVehicleType.trolleybus:
+      return TrolleybusSvg
+    case TransitVehicleType.tram:
+      return TramSvg
+    case TransitVehicleType.bus:
+      return BusSvg
+    default:
+      return BusSvg
   }
 }

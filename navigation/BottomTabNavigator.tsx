@@ -141,7 +141,6 @@ const TabTwoStack = createStackNavigator<TabTwoParamList>()
 function TabTwoNavigator() {
   return (
     <TabTwoStack.Navigator screenOptions={{ headerShown: false }}>
-      <TabTwoStack.Screen name="TabTwoScreen" component={TabTwoScreen} />
       <TabTwoStack.Screen name="SmsScreen" component={SmsScreen} />
     </TabTwoStack.Navigator>
   )

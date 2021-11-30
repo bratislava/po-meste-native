@@ -83,7 +83,6 @@ export type MapParamList = {
 }
 
 export type TabTwoParamList = {
-  TabTwoScreen: undefined
   SmsScreen: undefined
 }
 

@@ -20,7 +20,7 @@ import {
 import { StackScreenProps } from '@react-navigation/stack'
 import * as Location from 'expo-location'
 import { LocationGeocodedAddress } from 'expo-location'
-import BottomSheet from 'reanimated-bottom-sheet'
+import BottomSheet from '@gorhom/bottom-sheet'
 
 import { getTripPlanner } from '@utils/api'
 import SearchFromToScreen from './SearchFromToScreen'
@@ -256,7 +256,7 @@ export default function FromToScreen({
   ) => {
     setFromName(data.description)
     onGooglePlaceChosen(details, setFromCoordinates)
-    fromBottomSheetRef?.current?.snapTo(1)
+    fromBottomSheetRef?.current?.close()
   }
 
   const onGooglePlaceToChosen = (
@@ -265,7 +265,7 @@ export default function FromToScreen({
   ) => {
     setToName(data.description)
     onGooglePlaceChosen(details, setToCoordinates)
-    toBottomSheetRef?.current?.snapTo(1)
+    toBottomSheetRef?.current?.close()
   }
 
   const { setFeedbackSent } = useContext(GlobalStateContext)
@@ -323,8 +323,8 @@ export default function FromToScreen({
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <FromToSelector
-          onFromPlacePress={() => fromBottomSheetRef?.current?.snapTo(0)}
-          onToPlacePress={() => toBottomSheetRef?.current?.snapTo(0)}
+          onFromPlacePress={() => fromBottomSheetRef?.current?.snapToIndex(0)}
+          onToPlacePress={() => toBottomSheetRef?.current?.snapToIndex(0)}
           fromPlaceText={fromName}
           toPlaceText={toName}
           fromPlaceTextPlaceholder={i18n.t('fromPlaceholder')}
@@ -435,7 +435,7 @@ export default function FromToScreen({
       <SearchFromToScreen
         sheetRef={fromBottomSheetRef}
         getMyLocation={() => {
-          fromBottomSheetRef?.current?.snapTo(1)
+          fromBottomSheetRef?.current?.close()
           getLocationAsync(setFromCoordinates, setFromGeocode)
         }}
         onGooglePlaceChosen={onGooglePlaceFromChosen}
@@ -447,7 +447,7 @@ export default function FromToScreen({
             onConfirm: (latitude: number, longitude: number) => {
               setFromName(`${latitude}, ${longitude}`)
               setFromCoordinates({ latitude, longitude })
-              fromBottomSheetRef?.current?.snapTo(1)
+              fromBottomSheetRef?.current?.close()
             },
           })
         }
@@ -464,7 +464,7 @@ export default function FromToScreen({
             onConfirm: (latitude: number, longitude: number) => {
               setToName(`${latitude}, ${longitude}`)
               setToCoordinates({ latitude, longitude })
-              toBottomSheetRef?.current?.snapTo(1)
+              toBottomSheetRef?.current?.close()
             },
           })
         }

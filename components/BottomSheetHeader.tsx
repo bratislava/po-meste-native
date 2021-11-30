@@ -5,6 +5,11 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { colors } from '@utils/theme'
 import { s } from '@utils/globalStyles'
 
+const HEIGHT = 8
+const PADDING_TOP = 10
+const MARGIN_BOTTOM = 10
+
+export const HANDLE_HEIGHT = PADDING_TOP + PADDING_TOP + MARGIN_BOTTOM
 // TODO solve top empty space
 export const renderHeader = () => (
   <SafeAreaView style={styles.header}>
@@ -18,8 +23,7 @@ const styles = StyleSheet.create({
   header: {
     ...s.shadow,
     backgroundColor: 'white',
-    marginBottom: -1,
-    paddingTop: 10,
+    paddingTop: PADDING_TOP,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
   },
@@ -28,9 +32,9 @@ const styles = StyleSheet.create({
   },
   panelHandle: {
     width: 100,
-    height: 8,
+    height: HEIGHT,
     borderRadius: 4,
     backgroundColor: colors.lightGray,
-    marginBottom: 10,
+    marginBottom: MARGIN_BOTTOM,
   },
 })

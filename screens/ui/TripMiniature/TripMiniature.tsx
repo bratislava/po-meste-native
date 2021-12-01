@@ -29,6 +29,7 @@ const TripMiniature = ({
 }: Props) => {
   const [displayedStartStationName, setStartStationName] = useState('')
 
+  // TODO is this necessary?
   useEffect(() => {
     if (legs) {
       setStartStationName(
@@ -84,6 +85,7 @@ const TripMiniature = ({
                   trim
                   fromNow
                 />
+                {/* TODO localize this using i18n */}
                 <Text numberOfLines={1}>z {displayedStartStationName}</Text>
               </View>
             )}

@@ -142,9 +142,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
           ?.map((departure, index) => {
             const diffMinutes = Duration.between(
               LocalDateTime.now(),
-              LocalDateTime.parse(
-                `${departure.date}T${departure.time}`
-              ).plusHours(2)
+              LocalDateTime.parse(`${departure.date}T${departure.time}`)
             ).toMinutes()
             return (
               <TouchableOpacity

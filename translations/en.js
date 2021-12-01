@@ -117,4 +117,7 @@ export default {
   myScooter: 'My scooter',
   rentedScooter: 'Rented scooter',
   openApp: 'Open application {{provider}}',
+  from: 'from {{place}}',
+  startingIn: 'in {{time}} min',
+  beforeIn: 'before {{time}} min',
 }

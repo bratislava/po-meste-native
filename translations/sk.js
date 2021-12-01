@@ -118,4 +118,7 @@ export default {
   myScooter: 'Vlastná kolobežka',
   rentedScooter: 'Kolobežka na prenájom',
   openApp: 'Otvor aplikáciu {{provider}}',
+  from: 'z {{place}}',
+  startingIn: 'za {{time}} min',
+  beforeIn: 'pred {{time}} min',
 }

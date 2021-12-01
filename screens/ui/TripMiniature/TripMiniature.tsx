@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import Moment from 'react-moment'
+import i18n from 'i18n-js'
+import { DateTimeFormatter, Duration, LocalDateTime } from '@js-joda/core'
 
 import { colors } from '@utils/theme'
 import { LegProps } from '@utils/validation'
@@ -13,8 +14,8 @@ import { getColor, getIcon, getProviderName, getTextColor } from '@utils/utils'
 type Props = {
   provider?: MicromobilityProvider
   duration: number
-  departureDate: Date
-  ariveDate: Date
+  departureDate: LocalDateTime
+  arriveDate: LocalDateTime
   legs?: LegProps[]
   onPress: () => void
 }
@@ -23,20 +24,36 @@ const TripMiniature = ({
   provider,
   duration,
   departureDate,
-  ariveDate,
+  arriveDate,
   legs,
   onPress,
 }: Props) => {
-  const [displayedStartStationName, setStartStationName] = useState('')
+  const [startStationName, setStartStationName] = useState('')
+  const [diffMinutes, setDiffMinutes] = useState(
+    Duration.between(LocalDateTime.now(), departureDate).toMinutes()
+  )
 
   // TODO is this necessary?
   useEffect(() => {
     if (legs) {
       setStartStationName(
-        legs.find((leg) => (leg.mode === LegModes.bus || leg.mode === LegModes.tram))?.from.name || ''
+        legs.find(
+          (leg) => leg.mode === LegModes.bus || leg.mode === LegModes.tram
+        )?.from.name || ''
       )
     }
   }, [legs])
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setDiffMinutes(
+        Duration.between(LocalDateTime.now(), departureDate).toMinutes()
+      )
+    }, 10000)
+    return () => {
+      clearInterval(timer)
+    }
+  }, [departureDate])
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
@@ -74,19 +91,18 @@ const TripMiniature = ({
                 ))}
               </View>
             )}
-            {displayedStartStationName.length > 0 && (
+            {startStationName.length > 0 && (
               <View style={styles.atTimeContainer}>
-                {/* TODO use https://js-joda.github.io/js-joda/ for time manipulation */}
-                <Moment
-                  element={Text}
-                  style={styles.atTime}
-                  interval={5000}
-                  date={departureDate}
-                  trim
-                  fromNow
-                />
-                {/* TODO localize this using i18n */}
-                <Text numberOfLines={1}>z {displayedStartStationName}</Text>
+                <Text style={styles.atTime}>
+                  {diffMinutes < 0
+                    ? i18n.t('beforeIn', { time: Math.abs(diffMinutes) })
+                    : i18n.t('startingIn', { time: diffMinutes })}
+                </Text>
+                <Text numberOfLines={1}>
+                  {i18n.t('from', {
+                    place: startStationName,
+                  })}
+                </Text>
               </View>
             )}
           </View>
@@ -96,13 +112,10 @@ const TripMiniature = ({
               <Text style={styles.durationMin}>min</Text>
             </View>
             <View style={styles.fromToTime}>
-              <Moment element={Text} format="HH:mm">
-                {departureDate}
-              </Moment>
-              <Text> - </Text>
-              <Moment element={Text} format="HH:mm">
-                {ariveDate}
-              </Moment>
+              <Text>
+                {departureDate.format(DateTimeFormatter.ofPattern('HH:mm'))} -
+                {arriveDate.format(DateTimeFormatter.ofPattern('HH:mm'))}
+              </Text>
             </View>
             <View style={styles.rightContainerBackground}></View>
           </View>

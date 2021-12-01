@@ -121,4 +121,6 @@ export default {
   from: 'z {{place}}',
   startingIn: 'za {{time}} min',
   beforeIn: 'pred {{time}} min',
+  upcomingDepartures: 'Prichádzajúce spoje',
+  timetables: 'Grafikony',
 }

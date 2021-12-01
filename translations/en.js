@@ -120,4 +120,6 @@ export default {
   from: 'from {{place}}',
   startingIn: 'in {{time}} min',
   beforeIn: 'before {{time}} min',
+  upcomingDepartures: 'Upcoming Departures',
+  timetables: 'Timetables',
 }

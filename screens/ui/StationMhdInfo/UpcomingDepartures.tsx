@@ -12,8 +12,7 @@ import { GlobalStateContext } from '@components/common/GlobalStateProvider'
 import { MhdStopProps } from '@utils/validation'
 import { s } from '@utils/globalStyles'
 import { colors, mhdDefaultColors } from '@utils/theme'
-import { LocalDateTime, Duration, ZonedDateTime, ZoneId } from '@js-joda/core'
-import '@js-joda/timezone'
+import { LocalDateTime, Duration } from '@js-joda/core'
 import { TransitVehicleType } from '../../../types'
 import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '../VehicleBar/VehicleBar'
 import { getMhdStopStatusData } from '@utils/api'
@@ -151,15 +150,10 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
             filtersLineNumber.includes(departure.lineNumber)
           )
           ?.map((departure, index) => {
-            const dateTimeArrival = ZonedDateTime.of(
-              LocalDateTime.parse(`${departure.date}T${departure.time}`),
-              ZoneId.of('Europe/Bratislava')
-            )
-            const zonedDiffMinutes = Duration.between(
+            const diffMinutes = Duration.between(
               LocalDateTime.now(),
-              dateTimeArrival
+              LocalDateTime.parse(`${departure.date}T${departure.time}`)
             ).toMinutes()
-
             return (
               <TouchableOpacity
                 key={index}
@@ -200,9 +194,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
                 </View>
                 <View style={styles.departureRight}>
                   <Text>
-                    {zonedDiffMinutes > 1
-                      ? `${zonedDiffMinutes} min`
-                      : '<1 min'}
+                    {diffMinutes > 1 ? `${diffMinutes} min` : '<1 min'}
                   </Text>
                 </View>
               </TouchableOpacity>

@@ -19,8 +19,8 @@ import {
 } from 'react-native-google-places-autocomplete'
 import { StackScreenProps } from '@react-navigation/stack'
 import * as Location from 'expo-location'
-import { LocationGeocodedAddress } from 'expo-location'
 import BottomSheet from '@gorhom/bottom-sheet'
+import { Instant, LocalDateTime } from '@js-joda/core'
 
 import { getTripPlanner } from '@utils/api'
 import SearchFromToScreen from './SearchFromToScreen'
@@ -44,7 +44,7 @@ import {
 import FeedbackAsker from './ui/FeedbackAsker/FeedbackAsker'
 import { GlobalStateContext } from '@components/GlobalStateProvider'
 import { useLocationWithPermision } from '@hooks/miscHooks'
-import { Instant, LocalDateTime } from '@js-joda/core'
+import LoadingView from './ui/LoadingView/LoadingView'
 
 export default function FromToScreen({
   route,
@@ -214,22 +214,25 @@ export default function FromToScreen({
     toRef.current?.setAddressText(toName || '')
   }, [toRef, toName])
 
-  const getLocationAsync = async (
-    setCoordinates: (location: { latitude: number; longitude: number }) => void,
-    setGeocode: (location: LocationGeocodedAddress[]) => void
-  ) => {
-    const location = await getLocationWithPermission(true)
-    if (location) {
-      const { latitude, longitude } = location.coords
-      setCoordinates({
-        latitude,
-        longitude,
-      })
-      getGeocodeAsync({ latitude, longitude }, setGeocode).catch((err) => {
-        setLocationPermisionError(err)
-      })
-    }
-  }
+  const getLocationAsync = useCallback(
+    async (
+      setCoordinates: (location: {
+        latitude: number
+        longitude: number
+      }) => void
+    ) => {
+      const location = await getLocationWithPermission(true)
+      if (location) {
+        const { latitude, longitude } = location.coords
+        setCoordinates({
+          latitude,
+          longitude,
+        })
+        setFromName(i18n.t('currentPosition'))
+      }
+    },
+    [getLocationWithPermission]
+  )
 
   const onGooglePlaceChosen = (
     details: GooglePlaceDetail | null = null,
@@ -251,23 +254,23 @@ export default function FromToScreen({
     }
   }
 
-  const onGooglePlaceFromChosen = (
-    data: GooglePlaceData,
-    details: GooglePlaceDetail | null = null
-  ) => {
-    setFromName(data.description)
-    onGooglePlaceChosen(details, setFromCoordinates)
-    fromBottomSheetRef?.current?.close()
-  }
+  const onGooglePlaceFromChosen = useCallback(
+    (data: GooglePlaceData, details: GooglePlaceDetail | null = null) => {
+      setFromName(data.description)
+      onGooglePlaceChosen(details, setFromCoordinates)
+      fromBottomSheetRef?.current?.close()
+    },
+    []
+  )
 
-  const onGooglePlaceToChosen = (
-    data: GooglePlaceData,
-    details: GooglePlaceDetail | null = null
-  ) => {
-    setToName(data.description)
-    onGooglePlaceChosen(details, setToCoordinates)
-    toBottomSheetRef?.current?.close()
-  }
+  const onGooglePlaceToChosen = useCallback(
+    (data: GooglePlaceData, details: GooglePlaceDetail | null = null) => {
+      setToName(data.description)
+      onGooglePlaceChosen(details, setToCoordinates)
+      toBottomSheetRef?.current?.close()
+    },
+    []
+  )
 
   const { setFeedbackSent } = useContext(GlobalStateContext)
 
@@ -320,6 +323,39 @@ export default function FromToScreen({
     setToCoordinates(fromCoordinatesAlt)
   }, [fromCoordinates, fromName, toCoordinates, toName])
 
+  const getMyLocation = useCallback(() => {
+    fromBottomSheetRef?.current?.close()
+    getLocationAsync(setFromCoordinates)
+  }, [getLocationAsync])
+
+  const setLocationFromMapFrom = useCallback(
+    () =>
+      navigation.navigate('ChooseLocation', {
+        latitude: fromCoordinates?.latitude,
+        longitude: fromCoordinates?.longitude,
+        onConfirm: (latitude: number, longitude: number) => {
+          setFromName(`${latitude}, ${longitude}`)
+          setFromCoordinates({ latitude, longitude })
+          fromBottomSheetRef?.current?.close()
+        },
+      }),
+    [fromCoordinates?.latitude, fromCoordinates?.longitude, navigation]
+  )
+
+  const setLocationFromMapTo = useCallback(
+    () =>
+      navigation.navigate('ChooseLocation', {
+        latitude: toCoordinates?.latitude,
+        longitude: toCoordinates?.longitude,
+        onConfirm: (latitude: number, longitude: number) => {
+          setToName(`${latitude}, ${longitude}`)
+          setToCoordinates({ latitude, longitude })
+          toBottomSheetRef?.current?.close()
+        },
+      }),
+    [navigation, toCoordinates?.latitude, toCoordinates?.longitude]
+  )
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -341,102 +377,119 @@ export default function FromToScreen({
         />
       </View>
       <ScrollView contentContainerStyle={styles.scrollView}>
-        {data?.plan?.itineraries && (
-          <>
-            {selectedVehicle === TravelModes.bicycle && (
-              <Text style={styles.textSizeBig}>{i18n.t('myBike')}</Text>
-            )}
-            {selectedVehicle === TravelModes.scooter && (
-              <Text style={styles.textSizeBig}>{i18n.t('myScooter')}</Text>
-            )}
-            {data.plan.itineraries.map((tripChoice, index) => (
-              <TripMiniature
-                key={index}
-                onPress={() =>
-                  navigation.navigate('PlannerScreen', {
-                    legs: tripChoice?.legs,
-                  })
-                }
-                duration={Math.round(tripChoice.duration / 60)}
-                departureDate={LocalDateTime.ofInstant(
-                  Instant.ofEpochMilli(tripChoice.startTime)
-                )}
-                arriveDate={LocalDateTime.ofInstant(
-                  Instant.ofEpochMilli(tripChoice.endTime)
-                )}
-                legs={tripChoice.legs}
-              />
-            ))}
-          </>
+        {isLoading ? (
+          <LoadingView />
+        ) : (
+          data?.plan?.itineraries && (
+            <>
+              {selectedVehicle === TravelModes.bicycle && (
+                <Text style={styles.textSizeBig}>{i18n.t('myBike')}</Text>
+              )}
+              {selectedVehicle === TravelModes.scooter && (
+                <Text style={styles.textSizeBig}>{i18n.t('myScooter')}</Text>
+              )}
+              {data.plan.itineraries.map((tripChoice, index) => (
+                <TripMiniature
+                  key={index}
+                  onPress={() =>
+                    navigation.navigate('PlannerScreen', {
+                      legs: tripChoice?.legs,
+                    })
+                  }
+                  duration={Math.round(tripChoice.duration / 60)}
+                  departureDate={LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(tripChoice.startTime)
+                  )}
+                  arriveDate={LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(tripChoice.endTime)
+                  )}
+                  legs={tripChoice.legs}
+                />
+              ))}
+            </>
+          )
         )}
         {selectedVehicle === TravelModes.bicycle && (
           <>
             <Text style={styles.textSizeBig}>{i18n.t('rentedBike')}</Text>
-            {dataSlovnaftbajk?.plan?.itineraries?.map((tripChoice, index) => (
-              <TripMiniature
-                key={index}
-                onPress={() =>
-                  navigation.navigate('PlannerScreen', {
-                    legs: tripChoice?.legs,
-                    provider: MicromobilityProvider.slovnaftbajk,
-                  })
-                }
-                provider={MicromobilityProvider.slovnaftbajk}
-                duration={Math.round(tripChoice.duration / 60)}
-                departureDate={LocalDateTime.ofInstant(
-                  Instant.ofEpochMilli(tripChoice.startTime)
-                )}
-                arriveDate={LocalDateTime.ofInstant(
-                  Instant.ofEpochMilli(tripChoice.endTime)
-                )}
-                legs={tripChoice.legs}
-              />
-            ))}
-            {dataRekola?.plan?.itineraries?.map((tripChoice, index) => (
-              <TripMiniature
-                key={index}
-                onPress={() =>
-                  navigation.navigate('PlannerScreen', {
-                    legs: tripChoice?.legs,
-                    provider: MicromobilityProvider.rekola,
-                  })
-                }
-                provider={MicromobilityProvider.rekola}
-                duration={Math.round(tripChoice.duration / 60)}
-                departureDate={LocalDateTime.ofInstant(
-                  Instant.ofEpochMilli(tripChoice.startTime)
-                )}
-                arriveDate={LocalDateTime.ofInstant(
-                  Instant.ofEpochMilli(tripChoice.endTime)
-                )}
-                legs={tripChoice.legs}
-              />
-            ))}
+
+            {isLoadingSlovnaftbajk ? (
+              <LoadingView />
+            ) : (
+              dataSlovnaftbajk?.plan?.itineraries?.map((tripChoice, index) => (
+                <TripMiniature
+                  key={index}
+                  onPress={() =>
+                    navigation.navigate('PlannerScreen', {
+                      legs: tripChoice?.legs,
+                      provider: MicromobilityProvider.slovnaftbajk,
+                    })
+                  }
+                  provider={MicromobilityProvider.slovnaftbajk}
+                  duration={Math.round(tripChoice.duration / 60)}
+                  departureDate={LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(tripChoice.startTime)
+                  )}
+                  arriveDate={LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(tripChoice.endTime)
+                  )}
+                  legs={tripChoice.legs}
+                />
+              ))
+            )}
+            {isLoadingRekola ? (
+              <LoadingView />
+            ) : (
+              dataRekola?.plan?.itineraries?.map((tripChoice, index) => (
+                <TripMiniature
+                  key={index}
+                  onPress={() =>
+                    navigation.navigate('PlannerScreen', {
+                      legs: tripChoice?.legs,
+                      provider: MicromobilityProvider.rekola,
+                    })
+                  }
+                  provider={MicromobilityProvider.rekola}
+                  duration={Math.round(tripChoice.duration / 60)}
+                  departureDate={LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(tripChoice.startTime)
+                  )}
+                  arriveDate={LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(tripChoice.endTime)
+                  )}
+                  legs={tripChoice.legs}
+                />
+              ))
+            )}
           </>
         )}
         {selectedVehicle === TravelModes.scooter && (
           <>
             <Text style={styles.textSizeBig}>{i18n.t('rentedScooter')}</Text>
-            {dataTier?.plan?.itineraries?.map((tripChoice, index) => (
-              <TripMiniature
-                key={index}
-                onPress={() =>
-                  navigation.navigate('PlannerScreen', {
-                    legs: tripChoice?.legs,
-                    provider: MicromobilityProvider.tier,
-                  })
-                }
-                provider={MicromobilityProvider.tier}
-                duration={Math.round(tripChoice.duration / 60)}
-                departureDate={LocalDateTime.ofInstant(
-                  Instant.ofEpochMilli(tripChoice.startTime)
-                )}
-                arriveDate={LocalDateTime.ofInstant(
-                  Instant.ofEpochMilli(tripChoice.endTime)
-                )}
-                legs={tripChoice.legs}
-              />
-            ))}
+            {isLoadingTier ? (
+              <LoadingView />
+            ) : (
+              dataTier?.plan?.itineraries?.map((tripChoice, index) => (
+                <TripMiniature
+                  key={index}
+                  onPress={() =>
+                    navigation.navigate('PlannerScreen', {
+                      legs: tripChoice?.legs,
+                      provider: MicromobilityProvider.tier,
+                    })
+                  }
+                  provider={MicromobilityProvider.tier}
+                  duration={Math.round(tripChoice.duration / 60)}
+                  departureDate={LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(tripChoice.startTime)
+                  )}
+                  arriveDate={LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(tripChoice.endTime)
+                  )}
+                  legs={tripChoice.legs}
+                />
+              ))
+            )}
           </>
         )}
         {data?.plan?.itineraries?.length != undefined &&
@@ -451,41 +504,20 @@ export default function FromToScreen({
       </ScrollView>
       <SearchFromToScreen
         sheetRef={fromBottomSheetRef}
-        getMyLocation={() => {
-          fromBottomSheetRef?.current?.close()
-          getLocationAsync(setFromCoordinates, setFromGeocode)
-        }}
+        getMyLocation={getMyLocation}
         onGooglePlaceChosen={onGooglePlaceFromChosen}
         googleInputRef={fromRef}
-        setLocationFromMap={() =>
-          navigation.navigate('ChooseLocation', {
-            latitude: fromCoordinates?.latitude,
-            longitude: fromCoordinates?.longitude,
-            onConfirm: (latitude: number, longitude: number) => {
-              setFromName(`${latitude}, ${longitude}`)
-              setFromCoordinates({ latitude, longitude })
-              fromBottomSheetRef?.current?.close()
-            },
-          })
-        }
+        setLocationFromMap={setLocationFromMapFrom}
         inputPlaceholder={i18n.t('fromPlaceholder')}
+        initialSnapIndex={-1}
       />
       <SearchFromToScreen
         sheetRef={toBottomSheetRef}
         onGooglePlaceChosen={onGooglePlaceToChosen}
         googleInputRef={toRef}
-        setLocationFromMap={() =>
-          navigation.navigate('ChooseLocation', {
-            latitude: toCoordinates?.latitude,
-            longitude: toCoordinates?.longitude,
-            onConfirm: (latitude: number, longitude: number) => {
-              setToName(`${latitude}, ${longitude}`)
-              setToCoordinates({ latitude, longitude })
-              toBottomSheetRef?.current?.close()
-            },
-          })
-        }
+        setLocationFromMap={setLocationFromMapTo}
         inputPlaceholder={i18n.t('toPlaceholder')}
+        initialSnapIndex={0}
       />
     </SafeAreaView>
   )

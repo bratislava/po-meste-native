@@ -388,24 +388,31 @@ export default function FromToScreen({
               {selectedVehicle === TravelModes.scooter && (
                 <Text style={styles.textSizeBig}>{i18n.t('myScooter')}</Text>
               )}
-              {data.plan.itineraries.map((tripChoice, index) => (
-                <TripMiniature
-                  key={index}
-                  onPress={() =>
-                    navigation.navigate('PlannerScreen', {
-                      legs: tripChoice?.legs,
-                    })
-                  }
-                  duration={Math.round(tripChoice.duration / 60)}
-                  departureDate={LocalDateTime.ofInstant(
-                    Instant.ofEpochMilli(tripChoice.startTime)
-                  )}
-                  arriveDate={LocalDateTime.ofInstant(
-                    Instant.ofEpochMilli(tripChoice.endTime)
-                  )}
-                  legs={tripChoice.legs}
-                />
-              ))}
+              {data.plan.itineraries.map((tripChoice, index) => {
+                // first result for TRANSIT trip is always walking whole trip
+                // alternative is to reduce walking distance in request 'maxWalkDistance' http://dev.opentripplanner.org/apidoc/1.4.0/resource_PlannerResource.html
+                if (selectedVehicle === TravelModes.mhd && index === 0) {
+                  return undefined
+                } else
+                  return (
+                    <TripMiniature
+                      key={index}
+                      onPress={() =>
+                        navigation.navigate('PlannerScreen', {
+                          legs: tripChoice?.legs,
+                        })
+                      }
+                      duration={Math.round(tripChoice.duration / 60)}
+                      departureDate={LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(tripChoice.startTime)
+                      )}
+                      arriveDate={LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(tripChoice.endTime)
+                      )}
+                      legs={tripChoice.legs}
+                    />
+                  )
+              })}
             </>
           )
         )}

@@ -92,6 +92,7 @@ export default function LineTimeline({
                     })
                 }}
                 onLayout={(event) =>
+                  activeIndex == index &&
                   setElementPosition(event.nativeEvent.layout.y)
                 }
               >

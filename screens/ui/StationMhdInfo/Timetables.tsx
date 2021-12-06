@@ -1,17 +1,17 @@
 import React, { useContext } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { useQuery } from 'react-query'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 import { MhdStopProps } from '@utils/validation'
 import { getMhdStopStatusData } from '@utils/api'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { GlobalStateContext } from '@components/common/GlobalStateProvider'
 import { useNavigation } from '@react-navigation/core'
 import { s } from '@utils/globalStyles'
 import { getVehicle } from '@utils/utils'
 import { TransitVehicleType } from '../../../types'
 import { colors, mhdDefaultColors } from '@utils/theme'
-import TicketSvg from '@images/ticket.svg'
+import MhdStopSignSvg from '@images/stop-sign.svg'
 
 interface TimetablesProps {
   station: MhdStopProps
@@ -37,7 +37,7 @@ const Timetables = ({ station }: TimetablesProps) => {
     <>
       <View style={styles.firstRow}>
         <View style={s.icon}>
-          <TicketSvg fill="red" />
+          <MhdStopSignSvg fill={colors.primary} />
         </View>
         <Text>{`${station.name} ${
           station.platform ? station.platform : ''
@@ -75,13 +75,13 @@ const Timetables = ({ station }: TimetablesProps) => {
                         : mhdDefaultColors.grey,
                     },
                     s.whiteText,
+                    s.boldText,
                   ]}
                 >
                   {departure.lineNumber}
                 </Text>
                 <Text style={[s.blackText, styles.finalStation]}>
-                  {/* // TODO waits for https://inovaciebratislava.atlassian.net/browse/PLAN-274 */}
-                  {departure.finalStopName}
+                  {departure.usualFinalStop}
                 </Text>
               </View>
             </TouchableOpacity>

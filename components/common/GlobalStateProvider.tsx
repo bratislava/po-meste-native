@@ -1,8 +1,15 @@
 import React, { useState, createContext, Dispatch, SetStateAction } from 'react'
 
-import MhdSvg from '@images/mhd.svg'
-import TicketSvg from '@images/ticket.svg'
+import MhdChosenSvg from '@images/mhd-filter-chosen.svg'
+import MhdUnchosenSvg from '@images/mhd-filter-unchosen.svg' // TODO add proper icon
+import BicyclesChosen from '@images/bicycles-filter-chosen.svg'
+import BicyclesUnchosen from '@images/bicycles-filter-unchosen.svg'
+import ScooterChosen from '@images/scooters-filter-chosen.svg'
+import ScooterUnchosen from '@images/scooters-filter-unchosen.svg'
+import ChargersChosen from '@images/chargers-filter-chosen.svg'
+import ChargersUnchosen from '@images/chargers-filter-unchosen.svg'
 import { VehicleType } from '../../types'
+import { SvgProps } from 'react-native-svg'
 
 interface Props {
   children: React.ReactNode
@@ -20,7 +27,7 @@ interface ContextProps {
 interface VehicleProps {
   id: string
   show: boolean
-  icon: (color: string) => React.ReactNode
+  icon: (show: boolean) => React.FC<SvgProps>
 }
 
 export const GlobalStateContext = createContext({} as ContextProps)
@@ -32,22 +39,22 @@ export default function GlobalStateProvider({ children }: Props) {
     {
       id: VehicleType.mhd,
       show: true,
-      icon: (color: string) => <MhdSvg fill={color} />, //TODO change for vehicle icon
+      icon: (show) => (show ? MhdChosenSvg : MhdUnchosenSvg),
     },
     {
       id: VehicleType.bicycle,
       show: true,
-      icon: (color: string) => <TicketSvg fill={color} />, //TODO change for vehicle icon
+      icon: (show) => (show ? BicyclesChosen : BicyclesUnchosen),
     },
     {
       id: VehicleType.scooter,
       show: true,
-      icon: (color: string) => <TicketSvg fill={color} />, //TODO change for vehicle icon
+      icon: (show) => (show ? ScooterChosen : ScooterUnchosen),
     },
     {
       id: VehicleType.chargers,
       show: true,
-      icon: (color: string) => <TicketSvg fill={color} />, //TODO change for vehicle icon
+      icon: (show) => (show ? ChargersChosen : ChargersUnchosen),
     },
   ])
 

@@ -307,6 +307,9 @@ export const apiMhdStopStatus = yup.object().shape({
     .ensure()
     .of(
       yup.object().shape({
+        vehicleType: yup
+          .mixed<TransitVehicleType>()
+          .oneOf(Object.values(TransitVehicleType)),
         lineNumber: yup.string().required('error-lineNumber'),
         lineColor: yup
           .string()
@@ -315,6 +318,7 @@ export const apiMhdStopStatus = yup.object().shape({
             excludeEmptyStrings: true,
           })
           .required('error-allLines-lineColor'),
+        usualFinalStop: yup.string(),
       })
     ),
   currentStop: yup.object().shape({

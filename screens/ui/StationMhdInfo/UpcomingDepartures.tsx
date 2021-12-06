@@ -4,7 +4,8 @@ import { useNavigation } from '@react-navigation/native'
 import { useQuery } from 'react-query'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 
-import TicketSvg from '@images/ticket.svg'
+import MhdStopSignSvg from '@images/stop-sign.svg'
+import ForwardMhdStopSvg from '@images/forward-mhd-stop.svg'
 import { GlobalStateContext } from '@components/common/GlobalStateProvider'
 import { MhdStopProps } from '@utils/validation'
 import { s } from '@utils/globalStyles'
@@ -35,7 +36,15 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
     color: string = mhdDefaultColors.grey
   ) => {
     const Icon = getVehicle(vehicleType)
-    return <Icon width={30} height={30} fill={color} />
+    return <Icon width={23} height={23} fill={color} />
+  }
+
+  const getVehicleIconStyledFilter = (
+    vehicleType?: TransitVehicleType,
+    color: string = mhdDefaultColors.grey
+  ) => {
+    const Icon = getVehicle(vehicleType)
+    return <Icon width={17} height={17} fill={color} />
   }
 
   useEffect(() => {
@@ -73,26 +82,28 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
         <View style={styles.firstRow}>
           <View style={styles.start}>
             <View style={s.icon}>
-              <TicketSvg fill="red" />
+              <MhdStopSignSvg fill={colors.primary} />
             </View>
             <Text>{`${station.name} ${
               station.platform ? station.platform : ''
             }`}</Text>
           </View>
-          <TouchableOpacity
-            style={styles.navigateToIcon}
-            onPress={() =>
-              navigation.navigate('FromToScreen', {
-                from: {
-                  name: station.name,
-                  latitude: parseFloat(station.gpsLat),
-                  longitude: parseFloat(station.gpsLon),
-                },
-              })
-            }
-          >
-            <TicketSvg fill="blue" />
-          </TouchableOpacity>
+          <View style={styles.forward}>
+            <TouchableOpacity
+              style={styles.navigateToIcon}
+              onPress={() =>
+                navigation.navigate('FromToScreen', {
+                  from: {
+                    name: station.name,
+                    latitude: parseFloat(station.gpsLat),
+                    longitude: parseFloat(station.gpsLon),
+                  },
+                })
+              }
+            >
+              <ForwardMhdStopSvg fill={colors.primary} height={20} width={20} />
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.secondRow}>
           {/* TODO add loading, see comments https://inovaciebratislava.atlassian.net/browse/PLAN-233 */}
@@ -118,9 +129,17 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
                 onPress={() => applyFilter(departure.lineNumber)}
               >
                 <View style={s.icon}>
-                  <TicketSvg fill={isActive ? 'white' : colors.gray} />
+                  {getVehicleIconStyledFilter(
+                    departure.vehicleType,
+                    isActive ? 'white' : colors.gray
+                  )}
                 </View>
-                <Text style={{ color: isActive ? 'white' : colors.gray }}>
+                <Text
+                  style={[
+                    { color: isActive ? 'white' : colors.gray },
+                    s.boldText,
+                  ]}
+                >
                   {departure.lineNumber}
                 </Text>
               </TouchableOpacity>
@@ -174,6 +193,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
                           : mhdDefaultColors.grey,
                       },
                       s.whiteText,
+                      s.boldText,
                     ]}
                   >
                     {departure.lineNumber}
@@ -224,9 +244,11 @@ const styles = StyleSheet.create({
   linkFilter: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingRight: 10,
+    paddingVertical: 7,
+    paddingHorizontal: 12,
     marginHorizontal: 5,
-    borderWidth: 1,
+    borderWidth: 2,
+    borderRadius: 10,
   },
   scrollingVehiclesData: {
     paddingHorizontal: 10,
@@ -261,6 +283,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: 20,
+  },
+  forward: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 40,
+    height: 40,
+    backgroundColor: 'white',
+    borderRadius: 25,
+    elevation: 5,
   },
 })
 

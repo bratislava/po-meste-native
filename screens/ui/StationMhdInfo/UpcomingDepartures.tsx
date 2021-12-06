@@ -24,12 +24,19 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
   const navigation = useNavigation()
   const globalstateContext = useContext(GlobalStateContext)
 
-  const { data, isLoading, error } = useQuery(
+  const { data, isLoading, error, refetch } = useQuery(
     ['getMhdStopStatusData', station.id],
     () => getMhdStopStatusData(station.id)
   )
 
   const [filtersLineNumber, setFiltersLineNumber] = useState<string[]>([])
+
+  useEffect(() => {
+    const interval = setInterval(() => refetch(), 30000)
+    return () => {
+      clearInterval(interval)
+    }
+  }, [refetch])
 
   const getVehicleIconStyled = (
     vehicleType?: TransitVehicleType,

@@ -1,4 +1,4 @@
-import React, { MutableRefObject } from 'react'
+import React, { MutableRefObject, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import i18n from 'i18n-js'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -30,6 +30,7 @@ interface SearchFromToScreen {
   googleInputRef: React.MutableRefObject<GooglePlacesAutocompleteRef | null>
   setLocationFromMap: () => void
   inputPlaceholder: string
+  initialSnapIndex: number
 }
 
 export default function SearchFromToScreen({
@@ -39,16 +40,27 @@ export default function SearchFromToScreen({
   googleInputRef,
   setLocationFromMap,
   inputPlaceholder,
+  initialSnapIndex,
 }: SearchFromToScreen) {
   const clearLocationTextInput = () => {
     googleInputRef.current?.setAddressText('')
     googleInputRef.current?.focus()
   }
 
+  useEffect(() => {
+    if (getMyLocation) {
+      getMyLocation()
+    }
+  }, [getMyLocation])
+
+  useEffect(() => {
+    googleInputRef.current?.focus()
+  }, [googleInputRef])
+
   return (
     <BottomSheet
       ref={sheetRef}
-      index={-1}
+      index={initialSnapIndex}
       snapPoints={['99%']}
       handleComponent={renderHeader}
       enablePanDownToClose

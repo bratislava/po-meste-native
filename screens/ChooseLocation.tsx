@@ -14,6 +14,11 @@ import { s } from '../utils/globalStyles'
 export default function ChooseLocation({
   route,
 }: StackScreenProps<MapParamList, 'ChooseLocation'>) {
+  const fromNavigation = route?.params?.fromNavigation
+  const toNavigation = route?.params?.toNavigation
+  const fromCoords = route?.params?.fromCoords
+  const toCoords = route?.params?.toCoords
+
   const navigation = useNavigation()
 
   const ref = useRef<MapView>(null)
@@ -60,8 +65,14 @@ export default function ChooseLocation({
           style={styles.confirm}
           title={i18n.t('confirmLocation')}
           onPress={() => {
-            route?.params?.onConfirm(region?.latitude, region?.longitude)
-            navigation.goBack()
+            const naviagtionInstructions = {
+              latitude: region?.latitude,
+              longitude: region?.longitude,
+            }
+            navigation.navigate('FromToScreen', {
+              from: fromNavigation ? naviagtionInstructions : fromCoords,
+              to: toNavigation ? naviagtionInstructions : toCoords,
+            })
           }}
         ></Button>
       </View>

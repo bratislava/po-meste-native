@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useEffect } from 'react'
+import React, { MutableRefObject, useState, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import i18n from 'i18n-js'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -56,6 +56,8 @@ export default function SearchFromToScreen({
   useEffect(() => {
     googleInputRef.current?.focus()
   }, [googleInputRef])
+  const [googleAutocompleteSelection, setGoogleAutocompleteSelection] =
+    useState<{ start: number } | undefined>(undefined)
 
   return (
     <BottomSheet
@@ -93,6 +95,16 @@ export default function SearchFromToScreen({
                 location: '48.1512015, 17.1110118',
                 radius: '22000', //22 km
                 strictbounds: true,
+              }}
+              textInputProps={{
+                selectTextOnFocus: true,
+                onBlur: () => {
+                  setGoogleAutocompleteSelection({ start: 0 })
+                  setTimeout(() => {
+                    setGoogleAutocompleteSelection(undefined)
+                  }, 10)
+                },
+                selection: googleAutocompleteSelection,
               }}
             />
           </View>

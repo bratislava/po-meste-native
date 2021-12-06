@@ -58,11 +58,11 @@ export type RootStackParamList = {
 export type BottomTabParamList = {
   Tickets: undefined
   Map: undefined
-  TabTwo: undefined
+  Settings: undefined
 }
 
 export type TicketsParamList = {
-  TicketsScreen: undefined
+  SmsScreen: undefined
 }
 
 export type MapParamList = {
@@ -82,9 +82,8 @@ export type MapParamList = {
   Feedback: undefined
 }
 
-export type TabTwoParamList = {
-  TabTwoScreen: undefined
-  SmsScreen: undefined
+export type SettingsParamList = {
+  SettingsScreen: undefined
 }
 
 export enum SmsTicketNumbers {

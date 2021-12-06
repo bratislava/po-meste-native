@@ -4,7 +4,7 @@ export default {
   name: 'hybaj',
   owner: 'bratislava',
   slug: 'hybaj',
-  version: '1.0.8',
+  version: '1.0.9',
   orientation: 'portrait',
   icon: './assets/images/icon.png',
   scheme: 'myapp',

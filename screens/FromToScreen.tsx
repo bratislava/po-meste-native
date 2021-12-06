@@ -44,6 +44,7 @@ import {
 import FeedbackAsker from './ui/FeedbackAsker/FeedbackAsker'
 import { GlobalStateContext } from '@components/GlobalStateProvider'
 import { useLocationWithPermision } from '@hooks/miscHooks'
+import { Instant, LocalDateTime } from '@js-joda/core'
 
 export default function FromToScreen({
   route,
@@ -357,8 +358,12 @@ export default function FromToScreen({
                   })
                 }
                 duration={Math.round(tripChoice.duration / 60)}
-                departureDate={new Date(tripChoice.startTime)}
-                ariveDate={new Date(tripChoice.endTime)}
+                departureDate={LocalDateTime.ofInstant(
+                  Instant.ofEpochMilli(tripChoice.startTime)
+                )}
+                arriveDate={LocalDateTime.ofInstant(
+                  Instant.ofEpochMilli(tripChoice.endTime)
+                )}
                 legs={tripChoice.legs}
               />
             ))}
@@ -378,8 +383,12 @@ export default function FromToScreen({
                 }
                 provider={MicromobilityProvider.slovnaftbajk}
                 duration={Math.round(tripChoice.duration / 60)}
-                departureDate={new Date(tripChoice.startTime)}
-                ariveDate={new Date(tripChoice.endTime)}
+                departureDate={LocalDateTime.ofInstant(
+                  Instant.ofEpochMilli(tripChoice.startTime)
+                )}
+                arriveDate={LocalDateTime.ofInstant(
+                  Instant.ofEpochMilli(tripChoice.endTime)
+                )}
                 legs={tripChoice.legs}
               />
             ))}
@@ -394,8 +403,12 @@ export default function FromToScreen({
                 }
                 provider={MicromobilityProvider.rekola}
                 duration={Math.round(tripChoice.duration / 60)}
-                departureDate={new Date(tripChoice.startTime)}
-                ariveDate={new Date(tripChoice.endTime)}
+                departureDate={LocalDateTime.ofInstant(
+                  Instant.ofEpochMilli(tripChoice.startTime)
+                )}
+                arriveDate={LocalDateTime.ofInstant(
+                  Instant.ofEpochMilli(tripChoice.endTime)
+                )}
                 legs={tripChoice.legs}
               />
             ))}
@@ -415,8 +428,12 @@ export default function FromToScreen({
                 }
                 provider={MicromobilityProvider.tier}
                 duration={Math.round(tripChoice.duration / 60)}
-                departureDate={new Date(tripChoice.startTime)}
-                ariveDate={new Date(tripChoice.endTime)}
+                departureDate={LocalDateTime.ofInstant(
+                  Instant.ofEpochMilli(tripChoice.startTime)
+                )}
+                arriveDate={LocalDateTime.ofInstant(
+                  Instant.ofEpochMilli(tripChoice.endTime)
+                )}
                 legs={tripChoice.legs}
               />
             ))}

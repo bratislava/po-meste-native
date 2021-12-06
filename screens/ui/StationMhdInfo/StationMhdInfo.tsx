@@ -7,6 +7,7 @@ import {
   NavigationState,
   Route,
 } from 'react-native-tab-view'
+import i18n from 'i18n-js'
 
 import { MhdStopProps } from '@utils/validation'
 import { colors } from '@utils/theme'
@@ -55,8 +56,8 @@ const StationMhdInfo = ({ station }: StationMhdInfoProps) => {
   const layout = useWindowDimensions()
   const [index, setIndex] = React.useState(0)
   const routes = [
-    { key: Routes.upcomingDepartures, title: 'Upcoming Departures' },
-    { key: Routes.timetables, title: 'Timetables' },
+    { key: Routes.upcomingDepartures, title: i18n.t('upcomingDepartures') },
+    { key: Routes.timetables, title: i18n.t('timetables') },
   ]
 
   const renderScene = ({

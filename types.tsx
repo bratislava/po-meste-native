@@ -90,6 +90,8 @@ export type MapParamList = {
 
 export type SettingsParamList = {
   SettingsScreen: undefined
+  AboutScreen: undefined
+  FAQScreen: undefined
 }
 
 export enum SmsTicketNumbers {

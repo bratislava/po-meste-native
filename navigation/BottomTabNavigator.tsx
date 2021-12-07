@@ -60,7 +60,7 @@ export default function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Settings"
-        component={SettingsNavigator}
+        component={SettingsScreen}
         options={{
           title: i18n.t('settings'),
           tabBarIcon: BurgerMenuSvg,
@@ -134,15 +134,5 @@ function MapNavigator() {
         options={{ headerTitle: i18n.t('feedbackTitle') }}
       />
     </MapStack.Navigator>
-  )
-}
-
-const TabTwoStack = createStackNavigator<SettingsParamList>()
-
-function SettingsNavigator() {
-  return (
-    <TabTwoStack.Navigator screenOptions={{ headerShown: false }}>
-      <TabTwoStack.Screen name="SettingsScreen" component={SettingsScreen} />
-    </TabTwoStack.Navigator>
   )
 }

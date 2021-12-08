@@ -1,9 +1,10 @@
 import React from 'react'
 import { View, StyleSheet, Text, ScrollView } from 'react-native'
+import Constants from 'expo-constants'
+import { openURL } from 'expo-linking'
 
 import Header from '@components/Header'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useNavigation } from '@react-navigation/core'
 import AppLogo from '@images/app-logo.svg'
 import Footer from '@components/Footer'
 import Link from '@components/Link'
@@ -13,9 +14,9 @@ import InovationBratislavaLogo from '@images/inovation-bratislava-logo.svg'
 import EuropeanUnionLogo from '@images/european-union-logo.svg'
 
 export const AboutScreen = () => {
-  //props: StackScreenProps<MapParamList, 'Timetable'>
-
-  const navigation = useNavigation()
+  const contactEmailAddress = Constants.manifest?.extra?.contactEmailAddress
+  const generalTermsAndConditionsLink =
+    Constants.manifest?.extra?.generalTermsAndConditionsLink
 
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1, paddingBottom: 55 }}>
@@ -26,8 +27,12 @@ export const AboutScreen = () => {
           <View style={styles.logoContainer}>
             <AppLogo width={96} height={96} />
           </View>
-          <Text style={styles.versionText}>Verzia 1.12</Text>
-          <Text style={styles.appName}>Po meste</Text>
+          <Text style={styles.versionText}>
+            Verzia {Constants.manifest?.version || '1.0.0'}
+          </Text>
+          <Text style={styles.appName}>
+            {Constants.manifest?.name || 'Po meste'}
+          </Text>
           <Text style={styles.description}>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat,
             rerum voluptate a vitae eligendi inventore officiis delectus, earum
@@ -40,12 +45,14 @@ export const AboutScreen = () => {
             <Text style={styles.footerLabel}>Kontakt</Text>
             <Link
               style={styles.footerLink}
-              onPress={() => {}}
-              title="pomeste@bratislava.sk"
+              onPress={() => {
+                openURL(`mailto:${contactEmailAddress}`)
+              }}
+              title={contactEmailAddress}
             />
             <Link
               style={styles.footerLink}
-              onPress={() => {}}
+              onPress={() => openURL(generalTermsAndConditionsLink)}
               title="Všeobecné obchodné podmienky"
             />
             <Text style={styles.footerLabel}>Powered by</Text>

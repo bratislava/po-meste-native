@@ -2,6 +2,7 @@ import React from 'react'
 import { View, StyleSheet, Text, ScrollView } from 'react-native'
 import Constants from 'expo-constants'
 import { openURL } from 'expo-linking'
+import { t } from 'i18n-js'
 
 import Header from '@components/Header'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -20,29 +21,28 @@ export const AboutScreen = () => {
 
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1, paddingBottom: 55 }}>
-      <Header text="O aplikácii" />
-      {/* <View style={{ backgroundColor: 'lightblue', flex: 1 }}></View> */}
+      <Header text={t('screens.aboutScreen.screenTitle')} />
       <ScrollView>
         <View style={styles.bodyContainer}>
           <View style={styles.logoContainer}>
             <AppLogo width={96} height={96} />
           </View>
           <Text style={styles.versionText}>
-            Verzia {Constants.manifest?.version || '1.0.0'}
+            {t('screens.aboutScreen.version')}{' '}
+            {Constants.manifest?.version || t('screens.aboutScreen.unknown')}
           </Text>
           <Text style={styles.appName}>
             {Constants.manifest?.name || 'Po meste'}
           </Text>
           <Text style={styles.description}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat,
-            rerum voluptate a vitae eligendi inventore officiis delectus, earum
-            repudiandae asperiores ea, reprehenderit exercitationem corporis
-            accusamus voluptatum ut quia explicabo itaque!
+            {t('screens.aboutScreen.description')}
           </Text>
         </View>
         <Footer>
           <View style={styles.footerContainer}>
-            <Text style={styles.footerLabel}>Kontakt</Text>
+            <Text style={styles.footerLabel}>
+              {t('screens.aboutScreen.contact')}
+            </Text>
             <Link
               style={styles.footerLink}
               onPress={() => {
@@ -53,20 +53,22 @@ export const AboutScreen = () => {
             <Link
               style={styles.footerLink}
               onPress={() => openURL(generalTermsAndConditionsLink)}
-              title="Všeobecné obchodné podmienky"
+              title={t('screens.aboutScreen.generalTermsAndConditions')}
             />
-            <Text style={styles.footerLabel}>Powered by</Text>
-            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-              <View style={{ maxWidth: 120, alignItems: 'center', margin: 10 }}>
+            <Text style={styles.footerLabel}>
+              {t('screens.aboutScreen.poweredBy')}
+            </Text>
+            <View style={styles.poweredByContainer}>
+              <View style={styles.poweredByItem}>
                 <InovationBratislavaLogo width={48} height={48} />
-                <Text style={{ textAlign: 'center', marginTop: 5 }}>
-                  Inovácie mesta Bratislava
+                <Text style={styles.poweredByItemText}>
+                  {t('screens.aboutScreen.inovationsBratislava')}
                 </Text>
               </View>
-              <View style={{ maxWidth: 120, alignItems: 'center', margin: 10 }}>
+              <View style={styles.poweredByItem}>
                 <EuropeanUnionLogo width={64} height={48} />
-                <Text style={{ textAlign: 'center', marginTop: 5 }}>
-                  Co-funded by the European Union
+                <Text style={styles.poweredByItemText}>
+                  {t('screens.aboutScreen.coFundedByTheEuropeanUnion')}
                 </Text>
               </View>
             </View>
@@ -118,6 +120,19 @@ const styles = StyleSheet.create({
   footerLink: {
     color: colors.primary,
     marginBottom: 20,
+  },
+  poweredByContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  poweredByItem: {
+    maxWidth: 120,
+    alignItems: 'center',
+    margin: 10,
+  },
+  poweredByItemText: {
+    textAlign: 'center',
+    marginTop: 5,
   },
 })
 

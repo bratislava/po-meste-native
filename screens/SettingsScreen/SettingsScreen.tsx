@@ -1,38 +1,36 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
-// import { StackScreenProps } from '@react-navigation/stack'
-// import { MapParamList } from '../../types'
+import { useNavigation } from '@react-navigation/core'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { t } from 'i18n-js'
+
+import ItemListButton from '@screens/ui/ItemListButton/ItemListButton'
+import Header from '@components/Header'
+
 import LanguageIcon from '@images/language.svg'
 import AboutIcon from '@images/information.svg'
 import FAQIcon from '@images/question.svg'
 
-import ItemListButton from '@screens/ui/ItemListButton/ItemListButton'
-import Header from '@components/Header'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { useNavigation } from '@react-navigation/core'
-
 export const SettingsScreen = () => {
-  //props: StackScreenProps<MapParamList, 'Timetable'>
-
   const navigation = useNavigation()
 
   return (
     <SafeAreaView edges={['top']} style={{ backgroundColor: 'white' }}>
-      <Header text="Nastavenia" />
+      <Header text={t('screens.settingsScreen.screenTitle')} />
       <View style={styles.container}>
         <ItemListButton
           icon={LanguageIcon}
-          text="Zmena jazyka"
+          text={t('screens.settingsScreen.changeLanguage')}
           onPress={() => {}}
         />
         <ItemListButton
           icon={AboutIcon}
-          text="O aplikácii"
+          text={t('screens.settingsScreen.aboutApplication')}
           onPress={() => navigation.navigate('AboutScreen')}
         />
         <ItemListButton
           icon={FAQIcon}
-          text="Často kladené otázky"
+          text={t('screens.settingsScreen.frequentlyAskedQuestions')}
           onPress={() => {}}
         />
       </View>

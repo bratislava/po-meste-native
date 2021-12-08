@@ -62,6 +62,28 @@ export default {
         'Thanks to your feedback, we are able to constantly improve the app and bring you more relevant routes.',
       backToSearch: 'Back to search',
     },
+    settingsScreen: {
+      screenTitle: 'Settings',
+      changeLanguage: 'Change language',
+      aboutApplication: 'About application',
+      frequentlyAskedQuestions: 'Frequently asked questions',
+      langugageModal: {
+        chooseLanguage: 'Choose language',
+        confirm: 'Confirm',
+      },
+    },
+    aboutScreen: {
+      screenTitle: 'About application',
+      version: 'Version',
+      unknown: 'unknown',
+      description:
+        'En Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat, rerum voluptate a vitae eligendi inventore officiis delectus, earum repudiandae asperiores ea, reprehenderit exercitationem corporis accusamus voluptatum ut quia explicabo itaque!',
+      contact: 'Contact',
+      poweredBy: 'Powered by',
+      generalTermsAndConditions: 'General terms and conditions',
+      inovationsBratislava: 'Inovations Bratislava',
+      coFundedByTheEuropeanUnion: 'Co-funded by the European Union',
+    },
   },
   components: {
     feedbackAsker: {

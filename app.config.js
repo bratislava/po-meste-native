@@ -56,6 +56,9 @@ export default {
     googleIOsApiKey: process.env.GOOGLE_IOS_API_KEY,
     googleAndroidApiKey: process.env.GOOGLE_ANDROID_API_KEY,
     googlePlacesApiKey: process.env.GOOGLE_PLACES_API_KEY,
+    contactEmailAddress: process.env.CONTACT_EMAIL_ADDRESS,
+    generalTermsAndConditionsLink:
+      process.env.GENERAL_TERMS_AND_CONDITIONS_LINK,
   },
   packagerOpts: {
     config: 'metro.config.js',

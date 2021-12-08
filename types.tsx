@@ -136,3 +136,8 @@ export enum IconType {
   rekola = 'rekola',
   zse = 'zse',
 }
+
+export enum ScheduleType {
+  departure = 'departure',
+  arrival = 'arrival',
+}

@@ -126,4 +126,8 @@ export default {
   beforeIn: 'before {{time}} min',
   upcomingDepartures: 'Upcoming Departures',
   timetables: 'Timetables',
+  departure: 'Departure: {{time}}',
+  arrival: 'Arrival: {{time}}',
+  departureText: 'Departure',
+  arrivalText: 'Arrival',
 }

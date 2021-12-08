@@ -7,6 +7,7 @@ import {
   apiMhdTrip,
 } from './validation'
 import { MicromobilityProvider, TravelModesOtpApi } from '../types'
+import { DateTimeFormatter, LocalDateTime } from '@js-joda/core'
 
 const host = 'planner.bratislava.sk'
 const dataHostUrl =
@@ -81,23 +82,23 @@ export const getChargersStops = () => fetchJsonFromApi('/zse')
 export const getTripPlanner = async (
   from: string,
   to: string,
-  dateTime: Date,
+  dateTime: LocalDateTime,
   mode: TravelModesOtpApi = TravelModesOtpApi.transit,
   plannerApi?: MicromobilityProvider
 ) => {
-  const adjustedDate = new Date(dateTime.getTime())
+  const adjustedDate = dateTime
   if (
     plannerApi === MicromobilityProvider.rekola ||
     plannerApi == MicromobilityProvider.tier
   ) {
-    adjustedDate.setHours(adjustedDate.getHours() + 20) // TODO erase when https://inovaciebratislava.atlassian.net/browse/PLAN-268 solved
+    adjustedDate.plusHours(20) // TODO erase when https://inovaciebratislava.atlassian.net/browse/PLAN-268 solved
   }
 
   const data = qs.stringify(
     {
       fromPlace: from,
       toPlace: to,
-      time: adjustedDate.toISOString(),
+      time: `${adjustedDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}Z`,
       mode: mode,
       maxWalkDistance: '4828.032',
       arriveBy: 'false',

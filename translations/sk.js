@@ -61,6 +61,28 @@ export default {
         'Vďaka vašej odozve sme schopní appku stále vylepšovať a prinášať vám relevantnejšie trasy.',
       backToSearch: 'Späť na vyhľadávanie',
     },
+    settingsScreen: {
+      screenTitle: 'Nastavenia',
+      changeLanguage: 'Zmena jazyka',
+      aboutApplication: 'O aplikácii',
+      frequentlyAskedQuestions: 'Často kladené otázky',
+      langugageModal: {
+        chooseLanguage: 'Zvoľte jazyk',
+        confirm: 'Potvrdiť',
+      },
+    },
+    aboutScreen: {
+      screenTitle: 'O aplikácii',
+      version: 'Verzia',
+      unknown: 'neznáma',
+      description:
+        'Sk Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat, rerum voluptate a vitae eligendi inventore officiis delectus, earum repudiandae asperiores ea, reprehenderit exercitationem corporis accusamus voluptatum ut quia explicabo itaque!',
+      contact: 'Kontakt',
+      poweredBy: 'Powered by',
+      generalTermsAndConditions: 'Všeobecné obchodné podmienky',
+      inovationsBratislava: 'Inovácie mesta Bratislava',
+      coFundedByTheEuropeanUnion: 'Spolufinancované Európskou úniou',
+    },
   },
   components: {
     feedbackAsker: {

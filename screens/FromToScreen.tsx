@@ -122,7 +122,14 @@ export default function FromToScreen({
     isLoading: isLoadingStandard,
     error: errorStandard,
   } = useQuery(
-    ['getOtpData', fromCoordinates, toCoordinates, selectedVehicle, dateTime],
+    [
+      'getOtpData',
+      fromCoordinates,
+      toCoordinates,
+      selectedVehicle,
+      dateTime,
+      scheduledTime,
+    ],
     () =>
       fromCoordinates &&
       toCoordinates &&
@@ -130,6 +137,7 @@ export default function FromToScreen({
         `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
         `${toCoordinates.latitude},${toCoordinates.longitude}`,
         dateTime,
+        scheduledTime === ScheduleType.arrival,
         getOtpTravelMode(selectedVehicle)
       ),
     { enabled: fromCoordinates && toCoordinates ? true : false }
@@ -140,7 +148,13 @@ export default function FromToScreen({
     isLoading: isLoadingRekola,
     error: errorRekola,
   } = useQuery(
-    ['getOtpRekolaData', fromCoordinates, toCoordinates, dateTime],
+    [
+      'getOtpRekolaData',
+      fromCoordinates,
+      toCoordinates,
+      dateTime,
+      scheduledTime,
+    ],
     () =>
       fromCoordinates &&
       toCoordinates &&
@@ -148,6 +162,7 @@ export default function FromToScreen({
         `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
         `${toCoordinates.latitude},${toCoordinates.longitude}`,
         dateTime,
+        scheduledTime === ScheduleType.arrival,
         TravelModesOtpApi.rented,
         MicromobilityProvider.rekola
       ),
@@ -159,7 +174,13 @@ export default function FromToScreen({
     isLoading: isLoadingSlovnaftbajk,
     error: errorSlovnaftbajk,
   } = useQuery(
-    ['getOtpSlovnaftbajkData', fromCoordinates, toCoordinates, dateTime],
+    [
+      'getOtpSlovnaftbajkData',
+      fromCoordinates,
+      toCoordinates,
+      dateTime,
+      scheduledTime,
+    ],
     () =>
       fromCoordinates &&
       toCoordinates &&
@@ -167,6 +188,7 @@ export default function FromToScreen({
         `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
         `${toCoordinates.latitude},${toCoordinates.longitude}`,
         dateTime,
+        scheduledTime === ScheduleType.arrival,
         TravelModesOtpApi.rented,
         MicromobilityProvider.slovnaftbajk
       ),
@@ -178,7 +200,7 @@ export default function FromToScreen({
     isLoading: isLoadingTier,
     error: errorTier,
   } = useQuery(
-    ['getOtpTierData', fromCoordinates, toCoordinates, dateTime],
+    ['getOtpTierData', fromCoordinates, toCoordinates, dateTime, scheduledTime],
     () =>
       fromCoordinates &&
       toCoordinates &&
@@ -186,6 +208,7 @@ export default function FromToScreen({
         `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
         `${toCoordinates.latitude},${toCoordinates.longitude}`,
         dateTime,
+        scheduledTime === ScheduleType.arrival,
         TravelModesOtpApi.rented,
         MicromobilityProvider.tier
       ),
@@ -442,8 +465,9 @@ export default function FromToScreen({
 
   const handleConfirm = (date: Date) => {
     const utcTimestamp = Instant.parse(date.toISOString()) //'1989-08-16T00:00:00.000Z'
-    const datem = LocalDateTime.ofInstant(utcTimestamp)
-    setDateTime(datem)
+    const localDateTime = LocalDateTime.ofInstant(utcTimestamp)
+
+    setDateTime(localDateTime)
     hideDatePicker()
   }
 

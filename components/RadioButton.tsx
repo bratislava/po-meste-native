@@ -53,8 +53,6 @@ const RadioButton = ({
   containerStyle,
   labelStyle,
 }: RadioButtonProps) => {
-  console.log(options)
-
   return (
     <View>
       {options.map((item, index) => (

@@ -7,7 +7,13 @@ import {
   apiMhdTrip,
 } from './validation'
 import { MicromobilityProvider, TravelModesOtpApi } from '../types'
-import { DateTimeFormatter, LocalDateTime } from '@js-joda/core'
+import {
+  DateTimeFormatter,
+  LocalDateTime,
+  ZonedDateTime,
+  ZoneId,
+} from '@js-joda/core'
+import '@js-joda/timezone'
 
 const host = 'planner.bratislava.sk'
 const dataHostUrl =
@@ -83,6 +89,7 @@ export const getTripPlanner = async (
   from: string,
   to: string,
   dateTime: LocalDateTime,
+  arriveBy: boolean,
   mode: TravelModesOtpApi = TravelModesOtpApi.transit,
   plannerApi?: MicromobilityProvider
 ) => {
@@ -93,15 +100,17 @@ export const getTripPlanner = async (
   ) {
     adjustedDate.plusHours(20) // TODO erase when https://inovaciebratislava.atlassian.net/browse/PLAN-268 solved
   }
+  const zonedTime = ZonedDateTime.of(dateTime, ZoneId.of('Europe/Bratislava'))
+  zonedTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
 
   const data = qs.stringify(
     {
       fromPlace: from,
       toPlace: to,
-      time: `${adjustedDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}Z`,
+      time: zonedTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
       mode: mode,
       maxWalkDistance: '4828.032',
-      arriveBy: 'false',
+      arriveBy: arriveBy,
       wheelchair: 'false',
       debugItineraryFilter: 'false',
       locale: 'en',

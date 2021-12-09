@@ -67,7 +67,10 @@ export type TicketsParamList = {
 
 export type MapParamList = {
   MapScreen: undefined
-  FromToScreen: { from: { name: string; latitude: number; longitude: number } }
+  FromToScreen: {
+    from: { name: string; latitude: number; longitude: number }
+    to: { name: string; latitude: number; longitude: number }
+  }
   PlannerScreen: {
     legs: LegProps[]
     provider: MicromobilityProvider
@@ -77,7 +80,10 @@ export type MapParamList = {
   ChooseLocation: {
     latitude?: number
     longitude?: number
-    onConfirm: (latitude?: number, longitude?: number) => void
+    fromNavigation: boolean
+    toNavigation: boolean
+    fromCoords: { latitude: number; longitude: number }
+    toCoords: { latitude: number; longitude: number }
   }
   Feedback: undefined
 }

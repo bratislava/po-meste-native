@@ -49,7 +49,8 @@ import LoadingView from './ui/LoadingView/LoadingView'
 export default function FromToScreen({
   route,
 }: StackScreenProps<MapParamList, 'FromToScreen'>) {
-  const fromProp = route?.params?.from
+  const { from: fromProp, to: toProp } = route.params || {}
+
   const fromPropCoordinates = useMemo(
     () =>
       (fromProp?.latitude !== undefined &&
@@ -60,22 +61,28 @@ export default function FromToScreen({
       undefined,
     [fromProp]
   )
+
+  const toPropCoordinates = useMemo(
+    () =>
+      (toProp?.latitude !== undefined &&
+        toProp?.longitude !== undefined && {
+          latitude: toProp?.latitude,
+          longitude: toProp?.longitude,
+        }) ||
+      undefined,
+    [toProp]
+  )
   const { getLocationWithPermission } = useLocationWithPermision()
 
   const fromPropName = fromProp?.name
+  const toPropName = toProp?.name
 
   const navigation = useNavigation()
   const [fromCoordinates, setFromCoordinates] = useState(fromPropCoordinates)
   const [fromName, setFromName] = useState<string | undefined>(fromPropName)
-  const [toCoordinates, setToCoordinates] = useState<
-    | {
-        latitude: number
-        longitude: number
-      }
-    | undefined
-  >(undefined)
+  const [toCoordinates, setToCoordinates] = useState(toPropCoordinates)
 
-  const [toName, setToName] = useState<string | undefined>(undefined)
+  const [toName, setToName] = useState<string | undefined>(toPropName)
 
   const fromRef = useRef<GooglePlacesAutocompleteRef | null>(null)
   const toRef = useRef<GooglePlacesAutocompleteRef | null>(null)
@@ -167,6 +174,11 @@ export default function FromToScreen({
     setFromCoordinates(fromPropCoordinates)
     setFromName(fromPropName)
   }, [fromPropName, fromPropCoordinates, setFromCoordinates, setFromName])
+
+  useEffect(() => {
+    setToCoordinates(toPropCoordinates)
+    setToName(toPropName)
+  }, [toPropName, toPropCoordinates, setToCoordinates, setToName])
 
   const getGeocodeAsync = useCallback(
     async (
@@ -328,33 +340,27 @@ export default function FromToScreen({
     getLocationAsync(setFromCoordinates)
   }, [getLocationAsync])
 
-  const setLocationFromMapFrom = useCallback(
-    () =>
-      navigation.navigate('ChooseLocation', {
-        latitude: fromCoordinates?.latitude,
-        longitude: fromCoordinates?.longitude,
-        onConfirm: (latitude: number, longitude: number) => {
-          setFromName(`${latitude}, ${longitude}`)
-          setFromCoordinates({ latitude, longitude })
-          fromBottomSheetRef?.current?.close()
-        },
-      }),
-    [fromCoordinates?.latitude, fromCoordinates?.longitude, navigation]
-  )
+  const setLocationFromMapFrom = useCallback(() => {
+    navigation.navigate('ChooseLocation', {
+      latitude: fromCoordinates?.latitude,
+      longitude: fromCoordinates?.longitude,
+      fromNavigation: true,
+      fromCoords: fromCoordinates,
+      toCoords: toCoordinates,
+    })
+    fromBottomSheetRef?.current?.close()
+  }, [fromCoordinates, navigation, toCoordinates])
 
-  const setLocationFromMapTo = useCallback(
-    () =>
-      navigation.navigate('ChooseLocation', {
-        latitude: toCoordinates?.latitude,
-        longitude: toCoordinates?.longitude,
-        onConfirm: (latitude: number, longitude: number) => {
-          setToName(`${latitude}, ${longitude}`)
-          setToCoordinates({ latitude, longitude })
-          toBottomSheetRef?.current?.close()
-        },
-      }),
-    [navigation, toCoordinates?.latitude, toCoordinates?.longitude]
-  )
+  const setLocationFromMapTo = useCallback(() => {
+    navigation.navigate('ChooseLocation', {
+      latitude: toCoordinates?.latitude,
+      longitude: toCoordinates?.longitude,
+      toNavigation: true,
+      fromCoords: fromCoordinates,
+      toCoords: toCoordinates,
+    })
+    toBottomSheetRef?.current?.close()
+  }, [fromCoordinates, navigation, toCoordinates])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -362,8 +368,19 @@ export default function FromToScreen({
         <FromToSelector
           onFromPlacePress={() => fromBottomSheetRef?.current?.snapToIndex(0)}
           onToPlacePress={() => toBottomSheetRef?.current?.snapToIndex(0)}
-          fromPlaceText={fromName}
-          toPlaceText={toName}
+          fromPlaceText={
+            fromName ||
+            (fromProp?.latitude !== undefined &&
+            fromProp?.longitude !== undefined
+              ? `${fromProp.latitude}, ${fromProp.longitude}`
+              : undefined)
+          }
+          toPlaceText={
+            toName ||
+            (toProp?.latitude !== undefined && toProp?.longitude !== undefined
+              ? `${toProp.latitude}, ${toProp.longitude}`
+              : undefined)
+          }
           fromPlaceTextPlaceholder={i18n.t('fromPlaceholder')}
           toPlaceTextPlaceholder={i18n.t('toPlaceholder')}
           onSwitchPlacesPress={onSwitchPlacesPress}

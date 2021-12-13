@@ -44,7 +44,7 @@ import {
 import FeedbackAsker from './ui/FeedbackAsker/FeedbackAsker'
 import { GlobalStateContext } from '@components/GlobalStateProvider'
 import { useLocationWithPermision } from '@hooks/miscHooks'
-import LoadingView from './ui/LoadingView/LoadingView'
+import { OtpPlannerProps } from '@utils/validation'
 
 export default function FromToScreen({
   route,
@@ -102,7 +102,11 @@ export default function FromToScreen({
     Location.LocationGeocodedAddress[] | null
   >(null)
 
-  const { data, isLoading, error } = useQuery(
+  const {
+    data: dataStandard,
+    isLoading: isLoadingStandard,
+    error: errorStandard,
+  } = useQuery(
     ['getOtpData', fromCoordinates, toCoordinates, selectedVehicle],
     () =>
       fromCoordinates &&
@@ -112,7 +116,8 @@ export default function FromToScreen({
         `${toCoordinates.latitude},${toCoordinates.longitude}`,
         new Date(),
         getOtpTravelMode(selectedVehicle)
-      )
+      ),
+    { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
   const {
@@ -149,7 +154,8 @@ export default function FromToScreen({
         new Date(),
         TravelModesOtpApi.rented,
         MicromobilityProvider.slovnaftbajk
-      )
+      ),
+    { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
   const {
@@ -167,7 +173,8 @@ export default function FromToScreen({
         new Date(),
         TravelModesOtpApi.rented,
         MicromobilityProvider.tier
-      )
+      ),
+    { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
   useEffect(() => {
@@ -362,6 +369,52 @@ export default function FromToScreen({
     toBottomSheetRef?.current?.close()
   }, [fromCoordinates, navigation, toCoordinates])
 
+  const getElements = (
+    ommitFirst: boolean,
+    isLoading: boolean,
+    data?: OtpPlannerProps,
+    provider?: MicromobilityProvider
+  ) => {
+    return (
+      <>
+        {isLoading && (
+          <TripMiniature provider={provider} isLoading={isLoading} />
+        )}
+        {data?.plan?.itineraries?.map((tripChoice, index) => {
+          // first result for TRANSIT trip is always walking whole trip
+          // alternative is to reduce walking distance in request 'maxWalkDistance' http://dev.opentripplanner.org/apidoc/1.4.0/resource_PlannerResource.html
+          if (
+            selectedVehicle === TravelModes.mhd &&
+            index === 0 &&
+            ommitFirst
+          ) {
+            return undefined
+          } else
+            return (
+              <TripMiniature
+                key={index}
+                onPress={() =>
+                  navigation.navigate('PlannerScreen', {
+                    legs: tripChoice?.legs,
+                    provider: provider,
+                  })
+                }
+                provider={provider}
+                duration={Math.round(tripChoice.duration / 60)}
+                departureDate={LocalDateTime.ofInstant(
+                  Instant.ofEpochMilli(tripChoice.startTime)
+                )}
+                arriveDate={LocalDateTime.ofInstant(
+                  Instant.ofEpochMilli(tripChoice.endTime)
+                )}
+                legs={tripChoice.legs}
+              />
+            )
+        })}
+      </>
+    )
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -394,10 +447,8 @@ export default function FromToScreen({
         />
       </View>
       <ScrollView contentContainerStyle={styles.scrollView}>
-        {isLoading ? (
-          <LoadingView />
-        ) : (
-          data?.plan?.itineraries && (
+        <View>
+          {(isLoadingStandard || dataStandard) && (
             <>
               {selectedVehicle === TravelModes.bicycle && (
                 <Text style={styles.textSizeBig}>{i18n.t('myBike')}</Text>
@@ -405,119 +456,53 @@ export default function FromToScreen({
               {selectedVehicle === TravelModes.scooter && (
                 <Text style={styles.textSizeBig}>{i18n.t('myScooter')}</Text>
               )}
-              {data.plan.itineraries.map((tripChoice, index) => {
-                // first result for TRANSIT trip is always walking whole trip
-                // alternative is to reduce walking distance in request 'maxWalkDistance' http://dev.opentripplanner.org/apidoc/1.4.0/resource_PlannerResource.html
-                if (selectedVehicle === TravelModes.mhd && index === 0) {
-                  return undefined
-                } else
-                  return (
-                    <TripMiniature
-                      key={index}
-                      onPress={() =>
-                        navigation.navigate('PlannerScreen', {
-                          legs: tripChoice?.legs,
-                        })
-                      }
-                      duration={Math.round(tripChoice.duration / 60)}
-                      departureDate={LocalDateTime.ofInstant(
-                        Instant.ofEpochMilli(tripChoice.startTime)
-                      )}
-                      arriveDate={LocalDateTime.ofInstant(
-                        Instant.ofEpochMilli(tripChoice.endTime)
-                      )}
-                      legs={tripChoice.legs}
-                    />
-                  )
-              })}
             </>
-          )
-        )}
+          )}
+          {getElements(true, isLoadingStandard, dataStandard)}
+        </View>
         {selectedVehicle === TravelModes.bicycle && (
           <>
-            <Text style={styles.textSizeBig}>{i18n.t('rentedBike')}</Text>
-
-            {isLoadingSlovnaftbajk ? (
-              <LoadingView />
-            ) : (
-              dataSlovnaftbajk?.plan?.itineraries?.map((tripChoice, index) => (
-                <TripMiniature
-                  key={index}
-                  onPress={() =>
-                    navigation.navigate('PlannerScreen', {
-                      legs: tripChoice?.legs,
-                      provider: MicromobilityProvider.slovnaftbajk,
-                    })
-                  }
-                  provider={MicromobilityProvider.slovnaftbajk}
-                  duration={Math.round(tripChoice.duration / 60)}
-                  departureDate={LocalDateTime.ofInstant(
-                    Instant.ofEpochMilli(tripChoice.startTime)
-                  )}
-                  arriveDate={LocalDateTime.ofInstant(
-                    Instant.ofEpochMilli(tripChoice.endTime)
-                  )}
-                  legs={tripChoice.legs}
-                />
-              ))
+            {(isLoadingSlovnaftbajk ||
+              isLoadingRekola ||
+              dataSlovnaftbajk ||
+              dataRekola) && (
+              <Text style={styles.textSizeBig}>{i18n.t('rentedBike')}</Text>
             )}
-            {isLoadingRekola ? (
-              <LoadingView />
-            ) : (
-              dataRekola?.plan?.itineraries?.map((tripChoice, index) => (
-                <TripMiniature
-                  key={index}
-                  onPress={() =>
-                    navigation.navigate('PlannerScreen', {
-                      legs: tripChoice?.legs,
-                      provider: MicromobilityProvider.rekola,
-                    })
-                  }
-                  provider={MicromobilityProvider.rekola}
-                  duration={Math.round(tripChoice.duration / 60)}
-                  departureDate={LocalDateTime.ofInstant(
-                    Instant.ofEpochMilli(tripChoice.startTime)
-                  )}
-                  arriveDate={LocalDateTime.ofInstant(
-                    Instant.ofEpochMilli(tripChoice.endTime)
-                  )}
-                  legs={tripChoice.legs}
-                />
-              ))
-            )}
+            <View style={styles.providerContainer}>
+              {getElements(
+                false,
+                isLoadingSlovnaftbajk,
+                dataSlovnaftbajk,
+                MicromobilityProvider.slovnaftbajk
+              )}
+            </View>
+            <View style={styles.providerContainer}>
+              {getElements(
+                false,
+                isLoadingRekola,
+                dataRekola,
+                MicromobilityProvider.rekola
+              )}
+            </View>
           </>
         )}
         {selectedVehicle === TravelModes.scooter && (
           <>
-            <Text style={styles.textSizeBig}>{i18n.t('rentedScooter')}</Text>
-            {isLoadingTier ? (
-              <LoadingView />
-            ) : (
-              dataTier?.plan?.itineraries?.map((tripChoice, index) => (
-                <TripMiniature
-                  key={index}
-                  onPress={() =>
-                    navigation.navigate('PlannerScreen', {
-                      legs: tripChoice?.legs,
-                      provider: MicromobilityProvider.tier,
-                    })
-                  }
-                  provider={MicromobilityProvider.tier}
-                  duration={Math.round(tripChoice.duration / 60)}
-                  departureDate={LocalDateTime.ofInstant(
-                    Instant.ofEpochMilli(tripChoice.startTime)
-                  )}
-                  arriveDate={LocalDateTime.ofInstant(
-                    Instant.ofEpochMilli(tripChoice.endTime)
-                  )}
-                  legs={tripChoice.legs}
-                />
-              ))
+            {(isLoadingTier || dataTier) && (
+              <Text style={styles.textSizeBig}>{i18n.t('rentedScooter')}</Text>
             )}
+            <View style={styles.providerContainer}>
+              {getElements(
+                false,
+                isLoadingTier,
+                dataTier,
+                MicromobilityProvider.tier
+              )}
+            </View>
           </>
         )}
-        {data?.plan?.itineraries?.length != undefined &&
-          data.plan.itineraries.length > 0 && (
+        {dataStandard?.plan?.itineraries?.length != undefined &&
+          dataStandard.plan.itineraries.length > 0 && (
             <FeedbackAsker
               onNegativeFeedbackPress={() => {
                 navigation.navigate('Feedback')
@@ -573,5 +558,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 65,
+  },
+  providerContainer: {
+    marginBottom: 10,
   },
 })

@@ -17,6 +17,7 @@ import { s } from '@utils/globalStyles'
 import { colors, mhdDefaultColors } from '@utils/theme'
 import DashedLine from './ui/DashedLine/DashedLine'
 import { getMhdTrip } from '@utils/api'
+import LoadingView from './ui/LoadingView/LoadingView'
 
 export default function LineTimeline({
   route,
@@ -42,6 +43,14 @@ export default function LineTimeline({
   return (
     <View style={s.container}>
       <View style={styles.column}>
+        {isLoading && (
+          <LoadingView
+            fullscreen
+            stylesOuter={styles.elevation}
+            iconWidth={80}
+            iconHeight={80}
+          />
+        )}
         <View style={styles.headerGrey}>
           <View style={s.horizontalMargin}>
             <View style={styles.header}>
@@ -135,6 +144,9 @@ const styles = StyleSheet.create({
   column: {
     flex: 1,
   },
+  elevation: {
+    elevation: 1,
+  },
   headerGrey: {
     backgroundColor: 'lightgrey',
   },
@@ -164,14 +176,6 @@ const styles = StyleSheet.create({
   },
   time: {
     marginRight: 10,
-  },
-  line: {
-    borderWidth: 5,
-    borderColor: 'black',
-    marginHorizontal: 10,
-    borderStyle: 'dotted',
-    borderRadius: 1,
-    // https://stackoverflow.com/questions/48258084/borderstyle-not-working-in-android-react-native#comment111720287_48258424
   },
   columns: {
     flexDirection: 'row',

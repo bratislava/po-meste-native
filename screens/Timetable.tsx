@@ -1,18 +1,24 @@
 import React, { useMemo, useState } from 'react'
 import _ from 'lodash'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
-import i18n from 'i18n-js'
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+} from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack'
 import { useQuery } from 'react-query'
+import DateTimePickerModal from 'react-native-modal-datetime-picker'
+import { DateTimeFormatter, Instant, LocalDate } from '@js-joda/core'
+import { Ionicons } from '@expo/vector-icons'
 
-import { mhdDefaultColors } from '@utils/theme'
+import { colors, mhdDefaultColors } from '@utils/theme'
 import { getMhdGrafikon } from '@utils/api'
 import { MapParamList, TimetableType } from '../types'
 import TicketSvg from '@images/ticket.svg'
 import ArrowRight from '@images/arrow-right.svg'
 import { s } from '@utils/globalStyles'
-import { Button } from '../components'
-import ButtonGroup from '@components/ButtonGroup'
 import ErrorView from '@components/ErrorView'
 
 export default function Timetable({
@@ -21,16 +27,20 @@ export default function Timetable({
   const [activeTimetable, setActiveTimetable] = useState<TimetableType>(
     TimetableType.workDays
   )
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false)
+  const [date, setDate] = useState(LocalDate.now())
+
   const { stopId, lineNumber } = route.params
   const { data, isLoading, error, refetch } = useQuery(
-    ['getGrafikon', stopId, lineNumber],
-    () => getMhdGrafikon(stopId, lineNumber)
+    ['getGrafikon', stopId, lineNumber, date],
+    () => getMhdGrafikon(stopId, lineNumber, date)
   )
 
   const formattedData = useMemo(() => {
     const timetableByHours = _.groupBy(data?.timetable, (value) => {
       return value.split(':')[0]
     })
+
     return _.range(4, 23).map((hour) => {
       return {
         hour,
@@ -72,6 +82,22 @@ export default function Timetable({
     )
     return times
   }, [formattedData])
+
+  const handleConfirm = (date: Date) => {
+    const utcTimestamp = Instant.parse(date.toISOString()) //'1989-08-16T00:00:00.000Z'
+    const localDateTime = LocalDate.ofInstant(utcTimestamp)
+
+    setDate(localDateTime)
+    hideDatePicker()
+  }
+
+  const showSchedulePicker = () => {
+    setDatePickerVisibility(true)
+  }
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false)
+  }
 
   if (error) return <ErrorView error={error} action={refetch} />
 
@@ -117,7 +143,20 @@ export default function Timetable({
           </View>
         </View>
         <View style={[s.horizontalMargin, styles.timetableDayType]}>
-          <ButtonGroup style={styles.row}>
+          <TouchableHighlight onPress={showSchedulePicker}>
+            <Text style={styles.schedulingText}>
+              {date.format(DateTimeFormatter.ofPattern('dd.MM.'))}
+              <Ionicons
+                size={15}
+                style={{
+                  alignSelf: 'center',
+                  color: colors.primary,
+                }}
+                name="chevron-down"
+              />
+            </Text>
+          </TouchableHighlight>
+          {/* <ButtonGroup style={styles.row}>
             {Object.keys(TimetableType).map((key) => {
               return (
                 <Button
@@ -141,7 +180,7 @@ export default function Timetable({
                 />
               )
             })}
-          </ButtonGroup>
+          </ButtonGroup> */}
         </View>
         <ScrollView
           // ref={scrollViewRef}
@@ -193,6 +232,13 @@ export default function Timetable({
           </View>
         </ScrollView>
       </View>
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode="date"
+        display="spinner"
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
+      />
     </View>
   )
 }
@@ -224,8 +270,8 @@ const styles = StyleSheet.create({
   textBold: {
     fontWeight: 'bold',
   },
-  textAlign: {
-    textAlign: 'center',
+  schedulingText: {
+    color: colors.primary,
   },
   row: {
     flexDirection: 'row',
@@ -236,6 +282,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
+    marginBottom: 100,
   },
   timetableRow: {
     width: '100%',

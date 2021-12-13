@@ -31,7 +31,7 @@ export const SettingsScreen = () => {
         <ItemListButton
           icon={FAQIcon}
           text={t('screens.settingsScreen.frequentlyAskedQuestions')}
-          onPress={() => {}}
+          onPress={() => navigation.navigate('FAQScreen')}
         />
       </View>
     </SafeAreaView>

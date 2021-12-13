@@ -221,7 +221,7 @@ export default function Timetable({
                             styles.minuteText,
                             activeIndex[1] === indexHours &&
                             activeIndex[2] === indexMinutes
-                              ? s.bgRed
+                              ? s.bgRed // TODO change this color
                               : null,
                           ]}
                         >

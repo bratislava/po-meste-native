@@ -9,6 +9,7 @@ import {
 import { MicromobilityProvider, TravelModesOtpApi } from '../types'
 import {
   DateTimeFormatter,
+  LocalDate,
   LocalDateTime,
   ZonedDateTime,
   ZoneId,
@@ -62,10 +63,24 @@ export const getMhdTrip = async (id: string) =>
   apiMhdTrip.validateSync(await fetchJsonFromApi(`/mhd/trip/${id}`))
 
 // TODO do every query like they do it on Discovery channel, sorry, like this, validate immediately
-export const getMhdGrafikon = async (stopId: string, lineNumber: string) =>
-  apiMhdGrafikon.validateSync(
-    await fetchJsonFromApi(`/mhd/stop/${stopId}/grafikon/${lineNumber}`)
+export const getMhdGrafikon = async (
+  stopId: string,
+  lineNumber: string,
+  date?: LocalDate
+) => {
+  let data = ''
+  if (date) {
+    data = qs.stringify(
+      {
+        date: date.format(DateTimeFormatter.ISO_LOCAL_DATE),
+      },
+      { addQueryPrefix: true }
+    )
+  }
+  return apiMhdGrafikon.validateSync(
+    await fetchJsonFromApi(`/mhd/stop/${stopId}/grafikon/${lineNumber}${data}`)
   )
+}
 
 export const getMhdGrafikonn = (stopId: string, lineNumber: string) =>
   fetchJsonFromApi(`/mhd/stop/${stopId}/grafikon/${lineNumber}`)

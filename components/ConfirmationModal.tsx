@@ -57,11 +57,6 @@ export default function ConfirmationModal({
         onPress={onConfirm}
         title={confirmText ?? i18n.t('continue')}
       />
-      <Link
-        style={styles.modalDismiss}
-        onPress={onClose}
-        title={dismissText ?? i18n.t('cancel')}
-      />
     </Modal>
   )
 }

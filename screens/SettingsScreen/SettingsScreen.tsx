@@ -2,8 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
 import { useNavigation } from '@react-navigation/core'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { t, locale } from 'i18n-js'
-import * as Localization from 'expo-localization'
+import { t } from 'i18n-js'
 
 import { GlobalStateContext } from '@components/GlobalStateProvider'
 import ItemListButton from '@screens/ui/ItemListButton/ItemListButton'
@@ -14,7 +13,6 @@ import FAQIcon from '@images/question.svg'
 import Modal from '@components/Modal'
 import { colors } from '@utils/theme'
 import Button from '@components/Button'
-import Link from '@components/Link'
 import CheckBox from 'react-native-check-box'
 import { PrefferedLanguage } from '../../types'
 
@@ -96,12 +94,7 @@ export const SettingsScreen = () => {
         <Button
           style={styles.modalButton}
           onPress={onLanguageModalConfirm}
-          title={t('continue')}
-        />
-        <Link
-          style={styles.modalDismiss}
-          onPress={onLanguageModalCancel}
-          title={t('cancel')}
+          title={t('screens.settingsScreen.langugageModal.confirm')}
         />
       </Modal>
     </SafeAreaView>
@@ -127,13 +120,7 @@ const styles = StyleSheet.create({
   modalCheckboxText: {
     color: colors.darkText,
   },
-  modalButton: {
-    marginBottom: 20,
-  },
-  modalDismiss: {
-    textAlign: 'center',
-    width: '100%',
-  },
+  modalButton: {},
 })
 
 export default SettingsScreen

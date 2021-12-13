@@ -5,6 +5,8 @@ import {
   TouchableWithoutFeedback,
   Modal as NativeModal,
 } from 'react-native'
+import Link from '@components/Link'
+import { t } from 'i18n-js'
 
 export type ModalProps = {
   visible?: boolean
@@ -29,6 +31,11 @@ export default function Modal({
           <View style={styles.modalBackground}></View>
         </TouchableWithoutFeedback>
         <View style={styles.modalCard}>{children}</View>
+        <Link
+          style={styles.modalDismiss}
+          onPress={onClose}
+          title={t('cancel')}
+        />
       </View>
     </NativeModal>
   )
@@ -56,5 +63,11 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     padding: 20,
     maxWidth: '80%',
+    marginBottom: 20,
+  },
+  modalDismiss: {
+    textAlign: 'center',
+    width: '100%',
+    color: 'white',
   },
 })

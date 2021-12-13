@@ -20,7 +20,7 @@ export const AboutScreen = () => {
     Constants.manifest?.extra?.generalTermsAndConditionsLink
 
   return (
-    <SafeAreaView edges={['top']} style={{ flex: 1, paddingBottom: 55 }}>
+    <SafeAreaView edges={['top']} style={{ flex: 1, paddingBottom: 50 }}>
       <Header text={t('screens.aboutScreen.screenTitle')} />
       <ScrollView>
         <View style={styles.bodyContainer}>

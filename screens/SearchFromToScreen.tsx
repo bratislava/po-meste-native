@@ -16,7 +16,6 @@ import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@navigation/TabBar'
 import { dummyDataPlaceHistory } from '../dummyData'
 import MhdSvg from '@images/mhd.svg'
 import HistorySvg from '@images/history-search.svg'
-import { renderHeader } from '@components/BottomSheetHeader'
 import { colors } from '@utils/theme'
 import { s } from '@utils/globalStyles'
 
@@ -64,7 +63,6 @@ export default function SearchFromToScreen({
       ref={sheetRef}
       index={initialSnapIndex}
       snapPoints={['99%']}
-      handleComponent={renderHeader}
       enablePanDownToClose
     >
       <View style={styles.content}>

@@ -6,7 +6,6 @@ import googlePolyline from 'google-polyline'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { MapParamList } from '../types'
 import { TextItinerary } from './ui/TextItinerary/TextItinerary'
-import { HANDLE_HEIGHT, renderHeader } from '@components/BottomSheetHeader'
 import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from './ui/VehicleBar/VehicleBar'
 import { modeColors } from '@utils/constants'
 import { getColor, hexToRgba } from '@utils/utils'
@@ -18,9 +17,9 @@ export default function PlannerScreen({
   const provider = route?.params?.provider
   const legs = route?.params?.legs
   const bottomSheetSnapPoints = [
-    HANDLE_HEIGHT + BOTTOM_VEHICLE_BAR_HEIGHT_ALL + 30,
+    BOTTOM_VEHICLE_BAR_HEIGHT_ALL + 30,
     '60%',
-    '100%',
+    '95%',
   ]
 
   const allMarkers = useMemo(
@@ -84,11 +83,7 @@ export default function PlannerScreen({
           return accumulator
         }, [])}
       </MapView>
-      <BottomSheet
-        index={1}
-        handleComponent={renderHeader}
-        snapPoints={bottomSheetSnapPoints}
-      >
+      <BottomSheet index={1} snapPoints={bottomSheetSnapPoints}>
         <TextItinerary legs={legs} provider={provider} />
       </BottomSheet>
     </View>

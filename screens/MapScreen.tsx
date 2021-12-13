@@ -44,7 +44,6 @@ import VehicleBar, {
   BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
 } from '@screens/ui/VehicleBar/VehicleBar'
 import LoadingView from '@screens/ui/LoadingView/LoadingView'
-import { renderHeader } from '@components/BottomSheetHeader'
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@navigation/TabBar'
 
 const MIN_DELTA_FOR_XS_MARKER = 0.05
@@ -140,7 +139,7 @@ export default function MapScreen() {
     if (selectedMicromobilityStation) {
       return ['50%']
     } else {
-      return ['50%', '100%']
+      return ['50%', '95%']
     }
   }, [selectedMicromobilityStation])
 
@@ -488,7 +487,6 @@ export default function MapScreen() {
       <BottomSheet
         ref={bottomSheetRef}
         index={-1}
-        handleComponent={renderHeader}
         snapPoints={bottomSheetSnapPoints}
         onClose={handleSheetClose}
         enablePanDownToClose

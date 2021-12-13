@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useMemo } from 'react'
-import { StyleSheet, View } from 'react-native'
+import React, { useEffect, useRef, useMemo, useState } from 'react'
+import { Dimensions, StyleSheet, useWindowDimensions, View } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack'
 import MapView, { Polyline, PROVIDER_GOOGLE } from 'react-native-maps'
 import googlePolyline from 'google-polyline'
@@ -9,17 +9,27 @@ import { TextItinerary } from './ui/TextItinerary/TextItinerary'
 import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from './ui/VehicleBar/VehicleBar'
 import { modeColors } from '@utils/constants'
 import { getColor, hexToRgba } from '@utils/utils'
+import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@navigation/TabBar'
 
 export default function PlannerScreen({
   route,
 }: StackScreenProps<MapParamList, 'PlannerScreen'>) {
   const mapRef = useRef<MapView | null>(null)
+  const [sheetIndex, setSheetIndex] = useState(1)
   const provider = route?.params?.provider
   const legs = route?.params?.legs
   const bottomSheetSnapPoints = [
     BOTTOM_VEHICLE_BAR_HEIGHT_ALL + 30,
     '60%',
     '95%',
+  ]
+  const { height } = useWindowDimensions()
+  // keep this in sync with the middle bottomSheetSnapPoint percentage
+  const middleSnapPointMapPadding = 0.5 * (height - BOTTOM_TAB_NAVIGATOR_HEIGHT) // TODO add top bar to the equation instead of rounding down to 0.5
+  const bottomMapPaddingForSheeptSnapPoints = [
+    BOTTOM_VEHICLE_BAR_HEIGHT_ALL + 30,
+    middleSnapPointMapPadding,
+    middleSnapPointMapPadding,
   ]
 
   const allMarkers = useMemo(
@@ -34,7 +44,7 @@ export default function PlannerScreen({
         }
         return []
       }),
-    []
+    [legs]
   )
   useEffect(() => {
     setTimeout(() => {
@@ -53,6 +63,14 @@ export default function PlannerScreen({
           longitude: 17.1110118,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
+        }}
+        mapPadding={{
+          // this tells it not to render anything interesting under the bottom sheet
+          // needs finetuning but as a quick hack does the job
+          bottom: bottomMapPaddingForSheeptSnapPoints[sheetIndex],
+          top: 0,
+          right: 0,
+          left: 0,
         }}
       >
         {legs?.reduce<JSX.Element[]>((accumulator, leg, index) => {
@@ -83,7 +101,11 @@ export default function PlannerScreen({
           return accumulator
         }, [])}
       </MapView>
-      <BottomSheet index={1} snapPoints={bottomSheetSnapPoints}>
+      <BottomSheet
+        index={1}
+        snapPoints={bottomSheetSnapPoints}
+        onChange={setSheetIndex}
+      >
         <TextItinerary legs={legs} provider={provider} />
       </BottomSheet>
     </View>

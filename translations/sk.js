@@ -83,6 +83,26 @@ export default {
       inovationsBratislava: 'Inovácie mesta Bratislava',
       coFundedByTheEuropeanUnion: 'Spolufinancované Európskou úniou',
     },
+    faqScreen: {
+      screenTitle: 'Často kladené otázky',
+      questions: {
+        question1: {
+          question: 'Čo je aplikácia po meste?',
+          answer:
+            'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+        },
+        question2: {
+          question: 'Čo znamená beta verzia?',
+          answer:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        },
+        question3: {
+          question: 'Prečo su na výber len sms lístky?',
+          answer:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+        },
+      },
+    },
   },
   components: {
     feedbackAsker: {

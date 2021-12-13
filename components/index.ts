@@ -5,3 +5,6 @@ export {
   default as ConfirmationModal,
   ConfirmationModalProps,
 } from './ConfirmationModal'
+
+export { default as Accordion } from './Accordion'
+export { default as AccordionItem } from './AccordionItem'

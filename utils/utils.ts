@@ -138,9 +138,9 @@ export const getVehicle = (vehicletype?: TransitVehicleType) => {
 export const hexToRgba = (color: string, alpha: number) => {
   if (!color.match(/^#[a-fA-F0-9]{3}$|^#[a-fA-F0-9]{6}$/)) return undefined
 
-  const r = color.length === 4 ? color[1].repeat(2) : color.substr(1, 2)
-  const g = color.length === 4 ? color[2].repeat(2) : color.substr(3, 2)
-  const b = color.length === 4 ? color[3].repeat(2) : color.substr(5, 2)
+  const r = color.length == 4 ? color[1].repeat(2) : color.substr(1, 2)
+  const g = color.length == 4 ? color[2].repeat(2) : color.substr(3, 2)
+  const b = color.length == 4 ? color[3].repeat(2) : color.substr(5, 2)
   const result = `rgba(${parseInt(r, 16)}, ${parseInt(g, 16)}, ${parseInt(
     b,
     16

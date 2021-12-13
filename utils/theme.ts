@@ -1,8 +1,9 @@
 export const colors = {
   primary: '#FF5D52',
-  secondary: '#444444',
+  secondary: '#F8D7D4',
+  tertiary: '#923438',
+
   green: 'green',
-  tertiary: '#FFE600',
   alert: '#FD4344',
   error: '#d32223',
   gray: '#C3C3C3',

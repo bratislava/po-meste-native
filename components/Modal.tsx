@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
   },
   modalCard: {
     backgroundColor: '#fff',
+    width: '100%',
     borderRadius: 3,
     padding: 20,
     maxWidth: '80%',

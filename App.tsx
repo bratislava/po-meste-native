@@ -15,11 +15,11 @@ import { focusManager } from 'react-query'
 import useCachedResources from '@hooks/useCachedResources'
 import useColorScheme from '@hooks/useColorScheme'
 import Navigation from '@navigation/index'
-import GlobalStateProvider from '@components/common/GlobalStateProvider'
+import GlobalStateProvider from '@components/GlobalStateProvider'
 
 i18n.translations = translations
 
-i18n.locale = Localization.locale
+i18n.locale = Localization.locale?.split('-')[0]
 i18n.fallbacks = true
 
 i18n.pluralization['sk'] = function (count) {

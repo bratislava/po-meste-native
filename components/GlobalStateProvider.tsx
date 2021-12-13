@@ -1,13 +1,27 @@
-import React, { useState, createContext, Dispatch, SetStateAction } from 'react'
-import { VehicleType } from '../types'
+import React, {
+  useState,
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+} from 'react'
+import { PrefferedLanguage, VehicleType } from '../types'
 import MhdSvg from '@images/mhd.svg'
 import TicketSvg from '@images/ticket.svg'
+import i18n from 'i18n-js'
+import {
+  loadPrefferedLanguageFromAsyncStorage,
+  savePrefferedLanguageToAsyncStorage,
+} from '@utils/localization'
+import * as ExpoLocalization from 'expo-localization'
 
 interface Props {
   children: React.ReactNode
 }
 
 interface ContextProps {
+  preferredLanguage: PrefferedLanguage
+  changePrefferedLangugage: (lang: PrefferedLanguage) => void
   vehicleTypes: VehicleProps[]
   setVehicleTypes: Dispatch<SetStateAction<VehicleProps[]>>
   timeLineNumber?: string
@@ -25,6 +39,25 @@ interface VehicleProps {
 export const GlobalStateContext = createContext({} as ContextProps)
 
 export default function GlobalStateProvider({ children }: Props) {
+  const [preferredLanguage, setPrefferedLangugage] =
+    useState<PrefferedLanguage>(PrefferedLanguage.auto)
+
+  loadPrefferedLanguageFromAsyncStorage().then((langugage) => {
+    changePrefferedLangugage(langugage)
+  })
+
+  const changePrefferedLangugage = useCallback(
+    (language: PrefferedLanguage) => {
+      savePrefferedLanguageToAsyncStorage(language)
+      setPrefferedLangugage(language)
+      i18n.locale =
+        language == PrefferedLanguage.auto
+          ? ExpoLocalization.locale?.split('-')[0]
+          : language
+    },
+    [setPrefferedLangugage]
+  )
+
   const [timeLineNumber, setTimeLineNumber] = useState<string>()
 
   const [vehicleTypes, setVehicleTypes] = useState<VehicleProps[]>([
@@ -55,6 +88,8 @@ export default function GlobalStateProvider({ children }: Props) {
   return (
     <GlobalStateContext.Provider
       value={{
+        preferredLanguage,
+        changePrefferedLangugage,
         vehicleTypes,
         setVehicleTypes,
         timeLineNumber,

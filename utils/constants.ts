@@ -9,5 +9,5 @@ export const modeColors = {
   BICYCLE: '#0073e5',
   BUS: '#080',
   TRAM: '#800',
-  DEFAULT: '#aaa'
+  DEFAULT: '#aaa',
 }

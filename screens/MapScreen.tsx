@@ -370,6 +370,12 @@ export default function MapScreen() {
           }}
           onRegionChangeComplete={(region) => setRegion(region)}
           showsUserLocation
+          mapPadding={{
+            bottom: BOTTOM_VEHICLE_BAR_HEIGHT_ALL + 5,
+            top: 0,
+            right: 0,
+            left: 0,
+          }}
         >
           {vehiclesContext.vehicleTypes?.find(
             (vehicleType) => vehicleType.id === VehicleType.mhd
@@ -455,15 +461,6 @@ export default function MapScreen() {
               },
               []
             )}
-          <View style={styles.currentLocation}>
-            <TouchableHighlight
-              onPress={() =>
-                moveMapToCurrentLocation(() => getLocationWithPermission(true))
-              }
-            >
-              <CurrentLocationSvg />
-            </TouchableHighlight>
-          </View>
         </MapView>
       )}
       {(isLoadingMhd ||

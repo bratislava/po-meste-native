@@ -16,6 +16,7 @@ import EuropeanUnionLogo from '@images/european-union-logo.svg'
 
 export const AboutScreen = () => {
   const contactEmailAddress = Constants.manifest?.extra?.contactEmailAddress
+  const privacyPolicyLink = Constants.manifest?.extra?.privacyPolicyLink
   const generalTermsAndConditionsLink =
     Constants.manifest?.extra?.generalTermsAndConditionsLink
 
@@ -54,6 +55,11 @@ export const AboutScreen = () => {
               style={styles.footerLink}
               onPress={() => openURL(generalTermsAndConditionsLink)}
               title={t('screens.aboutScreen.generalTermsAndConditions')}
+            />
+            <Link
+              style={styles.footerLink}
+              onPress={() => openURL(privacyPolicyLink)}
+              title={t('privacyPolicy')}
             />
             <Text style={styles.footerLabel}>
               {t('screens.aboutScreen.poweredBy')}

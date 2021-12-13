@@ -44,8 +44,8 @@ const queryClient = new QueryClient()
 
 Location.setGoogleApiKey(
   Platform.select({
-    ios: Constants.manifest?.extra?.googleIOsPlacesApiKey,
-    android: Constants.manifest?.extra?.googleAndroidPlacesApiKey,
+    ios: Constants.manifest?.extra?.googleIOsApiKey,
+    android: Constants.manifest?.extra?.googleAndroidApiKey,
   })
 )
 

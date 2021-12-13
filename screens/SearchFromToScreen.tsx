@@ -96,10 +96,7 @@ export default function SearchFromToScreen({
               placeholder={inputPlaceholder}
               onPress={onGooglePlaceChosen}
               query={{
-                key: Platform.select({
-                  ios: Constants.manifest?.extra?.googleIOsPlacesApiKey,
-                  android: Constants.manifest?.extra?.googleAndroidPlacesApiKey,
-                }),
+                key: Constants.manifest?.extra?.googlePlacesApiKey,
                 language: 'sk',
                 location: '48.1512015, 17.1110118',
                 radius: '22000', //22 km

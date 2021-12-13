@@ -53,8 +53,9 @@ export default {
   },
   extra: {
     apiHost: 'https://live-dev.planner.bratislava.sk',
-    googleIOsPlacesApiKey: process.env.GOOGLE_IOS_API_KEY,
-    googleAndroidPlacesApiKey: process.env.GOOGLE_ANDROID_API_KEY,
+    googleIOsApiKey: process.env.GOOGLE_IOS_API_KEY,
+    googleAndroidApiKey: process.env.GOOGLE_ANDROID_API_KEY,
+    googlePlacesApiKey: process.env.GOOGLE_PLACES_API_KEY,
   },
   packagerOpts: {
     config: 'metro.config.js',

@@ -30,12 +30,20 @@ To get Env keys:
   1. Log into google account inovacie.bratislava@gmail.com
   2. Proceed to console.cloud [dopravna aplikacia](https://console.cloud.google.com/google/maps-apis/credentials?pli=1&project=dopravna-aplikacia&folder=&organizationId=)
   3. `GOOGLE_ANDROID_API_KEY`
+- GOOGLE_PLACES_API_KEY
+  1. Log into google account inovacie.bratislava@gmail.com
+  2. Proceed to console.cloud [dopravna aplikacia](https://console.cloud.google.com/google/maps-apis/credentials?pli=1&project=dopravna-aplikacia&folder=&organizationId=)
+  3. `GOOGLE_PLACES_API_KEY`
 - SENTRY_AUTH_TOKEN
   1. Log in to [Sentry](https://sentry.io/settings/account/api/auth-tokens/) with inovacie.bratislava@gmail.com account
   2. Proceed to Settings -> Account -> API -> Auth Tokens
   3. Get Auth token with scope: org:read, project:releases, project:write
 
 For help reach to @mpinter (Martin Pinter) or @Balros (Adam Grund)
+
+### Note about GOOGLE_PLACES_API_KEY
+
+Since we are using [this library](https://www.npmjs.com/package/react-native-google-places-autocomplete) for Places Autocomplete, we can't restrict the API key to just our bundle - this is not ideal and we may want to change it in the future. It's also the reason why all other google APIs are accessed by the iOs/Android keys, but the Places API is a separate one.
 
 ### Running on device
 

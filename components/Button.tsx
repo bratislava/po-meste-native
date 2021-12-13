@@ -14,7 +14,7 @@ import { colors } from '../utils/theme'
 
 const styles = StyleSheet.create({
   touchable: {
-    borderRadius: 3,
+    borderRadius: 1000,
     borderWidth: 1,
   },
   touchableFullWidth: {

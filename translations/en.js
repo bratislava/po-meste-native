@@ -33,6 +33,7 @@ export default {
   send: 'Send',
   thankYou: 'Thank you',
   presentPrice: '€{{price}}',
+  privacyPolicy: 'Privacy policy',
   screens: {
     ticketsScreen: {
       smsModal: {
@@ -103,6 +104,7 @@ export default {
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
         },
       },
+      footerText: "Didn't find the answer to your question? Write to us at ",
     },
   },
   components: {

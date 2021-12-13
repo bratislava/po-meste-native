@@ -84,13 +84,33 @@ export default {
       inovationsBratislava: 'Inovations Bratislava',
       coFundedByTheEuropeanUnion: 'Co-funded by the European Union',
     },
+    faqScreen: {
+      screenTitle: 'Frequently asked questions',
+      questions: {
+        question1: {
+          question: 'What is app po meste?',
+          answer:
+            'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+        },
+        question2: {
+          question: 'What does beta version mean?',
+          answer:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        },
+        question3: {
+          question: 'Why are there only sms tickets?',
+          answer:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+        },
+      },
+    },
   },
   components: {
     feedbackAsker: {
       title: 'Your opinion is important to us!',
       text: 'How do you rate the suggested routes?',
       thankYouTitle: 'Thank you for rating!',
-      thankYouText: 'Your feedback helps us improve the app:)',
+      thankYouText: 'Your feedback helps us improve the app :)',
     },
   },
   searching: 'Searching',

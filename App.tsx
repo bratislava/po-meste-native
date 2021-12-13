@@ -9,7 +9,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import * as Location from 'expo-location'
 import Constants from 'expo-constants'
 import * as Sentry from 'sentry-expo'
-import { AppState, AppStateStatus } from 'react-native'
+import { AppState, AppStateStatus, Platform } from 'react-native'
 import { focusManager } from 'react-query'
 
 import useCachedResources from '@hooks/useCachedResources'
@@ -42,7 +42,12 @@ Sentry.init({
 
 const queryClient = new QueryClient()
 
-Location.setGoogleApiKey(Constants.manifest?.extra?.googlePlacesApiKey)
+Location.setGoogleApiKey(
+  Platform.select({
+    ios: Constants.manifest?.extra?.googleIOsPlacesApiKey,
+    android: Constants.manifest?.extra?.googleAndroidPlacesApiKey,
+  })
+)
 
 focusManager.setEventListener((handleFocus) => {
   const focusOnActiveStatus = (state: AppStateStatus) => {

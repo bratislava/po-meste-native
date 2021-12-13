@@ -22,14 +22,14 @@ If you want to develop on your device, from [Expo Go](https://expo.io/client) ap
 
 To get Env keys:
 
-- GOOGLE_PLACES_API_KEY
+- GOOGLE_IOS_API_KEY
   1. Log into google account inovacie.bratislava@gmail.com
   2. Proceed to console.cloud [dopravna aplikacia](https://console.cloud.google.com/google/maps-apis/credentials?pli=1&project=dopravna-aplikacia&folder=&organizationId=)
-  3. `development-key Google Places`
-- GOOGLE_MAPS_API_KEY
+  3. `GOOGLE_IOS_API_KEY`
+- GOOGLE_ANDROID_API_KEY
   1. Log into google account inovacie.bratislava@gmail.com
   2. Proceed to console.cloud [dopravna aplikacia](https://console.cloud.google.com/google/maps-apis/credentials?pli=1&project=dopravna-aplikacia&folder=&organizationId=)
-  3. `tester release 1 Google Maps key`
+  3. `GOOGLE_ANDROID_API_KEY`
 - SENTRY_AUTH_TOKEN
   1. Log in to [Sentry](https://sentry.io/settings/account/api/auth-tokens/) with inovacie.bratislava@gmail.com account
   2. Proceed to Settings -> Account -> API -> Auth Tokens
@@ -39,11 +39,7 @@ For help reach to @mpinter (Martin Pinter) or @Balros (Adam Grund)
 
 ### Running on device
 
-You need the [Expo Go](https://expo.io/client) application installed on your device. With Android you only need to scan the QR shown to you after `yarn start`. On iOs you may need access to the bratislava expo organisation - ping Martin Pinter to get it.
-
-## Deployment
-
-TODO
+You need the [Expo Go](https://expo.io/client) application installed on your device. With Android you only need to scan the QR shown to you after `yarn start`. On iOs you may need access to the bratislava expo organization - ping Martin Pinter to get it.
 
 ## Fetching data
 
@@ -70,19 +66,57 @@ We use [yup](https://github.com/jquense/yup). Useful not only as a sanity check 
 
 ## Release
 
-To release application through `expo publish`:
+TODO separate release channels for versions
+
+**When to bump version and when to bump just the buildNumber and versionCode ?** BuildNumber and versionCode *must* change with every build (try to keep them in sync). We up the version every time we want to distribute something new to the end user through App/Play store.
+
+### Give new versions to testers over Expo Go
+
+Testers can access the app here https://expo.dev/@bratislava/hybaj?release-channel=staging
+
+On android you can just scan the QR code or follow the link, on iOs you need to be registered on Expo and added to the Bratislava organisation (Marin Pinter or Adam Grund can do that).
+
+To publish a new version of app for testers:
+
+```
+yarn publish-staging
+```
+
+### Update apps in production without submitting to App/Play store
+
+**Be sure you know what you are doing, running this updates the version for all live production users out in the wild**
+
+```
+yarn publish-production
+```
 
 1. `app.config.js` property `version` MUST be moddified
-2. `expo publish --release-channel production`
+2. `yarn publish-production`
+
+### Release new (Internal) Android version
 
 To release new `.apk` to Play Store:
 
-1. `yarn create-production-apk`
-2. wait for [Expo](https://expo.dev/accounts/bratislava/projects/hybaj/builds) to build new `.apk`
-3. Download produced `.apk`
-4. Create new release to desired release channels, e.g. [Internal testing](https://play.google.com/console/u/1/developers/5957584533981072671/app/4975790424614272614/app-dashboard?timespan=thirtyDays)
-5. Upload new `.apk`
+1. Bump `buildNumber` and `versionCode` in `app.config.js` - try keeping ios buildNumber and android versionCode in sync even if releasing to just one of the systems
+2. `yarn create-production-apk` - **WARNING: THIS ALSO CAUSES ALL THE CURRENT DEPLOYMENTS TO UPDATE OVER-THE-AIR INSTANTLY BEFORE THE NATIVE BUILD, EVEN BEFORE YOU SUBMIT THE APP FOR REVIEW** - modify the command with `--no-publish` flag if you don't wish to do this
+3. wait for [Expo](https://expo.dev/accounts/bratislava/projects/hybaj/builds) to build new `.apk`
+4. Download produced `.apk`
+5. Create new release to desired release channels, e.g. [Internal testing](https://play.google.com/console/u/1/developers/5957584533981072671/app/4975790424614272614/app-dashboard?timespan=thirtyDays)
+6. Upload new `.apk`
+
+**Note about updating the testing version on Android - Google Play store often can't see the updated version if you already downloaded an older one - what always works is to 1. uninstall the app 2. from the settings, force quit Play store 3. from the same place, clear cache and delete all app data 4. download the app again.**
+
+### Release (TestFlight) iOs version
+
+You need a Mac with installed XCode or [Transporter app](https://apps.apple.com/us/app/transporter/id1450874784?mt=12)
+
+1. Bump `buildNumber` and `versionCode` in `app.config.js` - try keeping ios buildNumber and android versionCode in sync even if releasing to just one of the systems
+2. `yarn create-production-ipa` - **WARNING: THIS ALSO CAUSES ALL THE CURRENT DEPLOYMENTS TO UPDATE OVER-THE-AIR INSTANTLY BEFORE THE NATIVE BUILD, EVEN BEFORE YOU SUBMIT THE APP FOR REVIEW** - modify the command with `--no-publish` flag if you don't wish to do this
+3. You will be asked to log in to your apple account and select organisation and provider - you need to have access to Bratislava apple organisation
+4. wait for [Expo](https://expo.dev/accounts/bratislava/projects/hybaj/builds) to build new `.ipa`
+5. Download produced `.ipa` & upload it to App Store connect using the Transporter app or XCode
+6. Go to [app Testflight section](https://appstoreconnect.apple.com/apps/1599324226/testflight) and make the version available if needed - the processing usually takes up to an hour, but can get stuck for longer
 
 ## Additional info
 
-When aplication is installed from play store, version installed is always from last `.apk` file uploaded to store, then OTA updates is applied.
+When application is installed from play store, version installed is always from last `.apk` file uploaded to store, then OTA updates is applied.

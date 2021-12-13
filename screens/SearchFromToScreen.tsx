@@ -1,5 +1,11 @@
 import React, { MutableRefObject, useState, useEffect } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Platform,
+} from 'react-native'
 import i18n from 'i18n-js'
 import { ScrollView } from 'react-native-gesture-handler'
 import BottomSheet from '@gorhom/bottom-sheet'
@@ -90,7 +96,10 @@ export default function SearchFromToScreen({
               placeholder={inputPlaceholder}
               onPress={onGooglePlaceChosen}
               query={{
-                key: Constants.manifest?.extra?.googlePlacesApiKey,
+                key: Platform.select({
+                  ios: Constants.manifest?.extra?.googleIOsPlacesApiKey,
+                  android: Constants.manifest?.extra?.googleAndroidPlacesApiKey,
+                }),
                 language: 'sk',
                 location: '48.1512015, 17.1110118',
                 radius: '22000', //22 km

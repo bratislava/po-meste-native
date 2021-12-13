@@ -131,4 +131,6 @@ export default {
   arrival: 'Príchod: {{time}}',
   departureText: 'Odchod',
   arrivalText: 'Príchod',
+  today: ' (Dnes)',
+  tomorrow: ' (Zajtra)',
 }

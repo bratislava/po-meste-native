@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
 import { useNavigation } from '@react-navigation/core'
+import Constants from 'expo-constants'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { t } from 'i18n-js'
+import { openURL } from 'expo-linking'
 
 import { GlobalStateContext } from '@components/GlobalStateProvider'
 import ItemListButton from '@screens/ui/ItemListButton/ItemListButton'
@@ -17,6 +19,8 @@ import CheckBox from 'react-native-check-box'
 import { PrefferedLanguage } from '../../types'
 
 export const SettingsScreen = () => {
+  const privacyPolicyLink = Constants.manifest?.extra?.privacyPolicyLink
+
   const [isLanguageModalVisible, setLanguageModalVisible] = useState(false)
   const navigation = useNavigation()
 
@@ -58,6 +62,11 @@ export const SettingsScreen = () => {
           icon={FAQIcon}
           text={t('screens.settingsScreen.frequentlyAskedQuestions')}
           onPress={() => navigation.navigate('FAQScreen')}
+        />
+        <ItemListButton
+          icon={FAQIcon}
+          text={t('privacyPolicy')}
+          onPress={() => openURL(privacyPolicyLink)}
         />
       </View>
       <Modal visible={isLanguageModalVisible} onClose={onLanguageModalCancel}>

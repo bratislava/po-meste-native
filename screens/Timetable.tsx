@@ -39,20 +39,21 @@ export default function Timetable({
 
   const formattedData = useMemo(() => {
     const timetableByHours = _.groupBy(data?.timetable, (value) => {
-      return value.split(':')[0]
+      return parseInt(value.split(':')[0])
     })
-
-    return _.range(4, 23).map((hour) => {
-      return {
-        hour,
-        minutes: timetableByHours[hour]
-          ? timetableByHours[hour].map((value) => ({
-              minute: value.split(':')[1],
-              additionalInfo: '',
-            }))
-          : [],
-      }
-    })
+    return _.range(4, 24)
+      .concat(0) // after midnight links is marked '00:24:00'
+      .map((hour) => {
+        return {
+          hour,
+          minutes: timetableByHours[hour]
+            ? timetableByHours[hour].map((value) => ({
+                minute: value.split(':')[1],
+                additionalInfo: '',
+              }))
+            : [],
+        }
+      })
   }, [data])
 
   const activeIndex = useMemo(() => {
@@ -195,11 +196,12 @@ export default function Timetable({
             <View style={styles.flexColumn}>
               {[
                 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-                21, 22, 23,
+                21, 22, 23, 0,
               ].map((hour, indexHours) => {
                 const dataToShow = formattedData.find(
                   (hourDataRow) => hourDataRow.hour === hour
                 )
+
                 return (
                   <View
                     key={hour}

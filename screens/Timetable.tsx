@@ -7,6 +7,7 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native'
+import i18n from 'i18n-js'
 import { StackScreenProps } from '@react-navigation/stack'
 import { useQuery } from 'react-query'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
@@ -155,6 +156,10 @@ export default function Timetable({
           <TouchableHighlight onPress={showSchedulePicker}>
             <Text style={styles.schedulingText}>
               {date.format(DateTimeFormatter.ofPattern('dd.MM.'))}
+              {LocalDate.now().toString() === date.toString() &&
+                i18n.t('today')}
+              {LocalDate.now().toString() === date.minusDays(1).toString() &&
+                i18n.t('tomorrow')}
               <Ionicons
                 size={15}
                 style={{
@@ -165,7 +170,7 @@ export default function Timetable({
               />
             </Text>
           </TouchableHighlight>
-          {/* <ButtonGroup style={styles.row}>
+          {/* <ButtonGroup style={styles.row}> //TODO left for https://inovaciebratislava.atlassian.net/browse/PLAN-293
             {Object.keys(TimetableType).map((key) => {
               return (
                 <Button
@@ -244,7 +249,7 @@ export default function Timetable({
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode="date"
-        display="spinner"
+        display="default"
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
       />

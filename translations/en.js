@@ -130,4 +130,6 @@ export default {
   arrival: 'Arrival: {{time}}',
   departureText: 'Departure',
   arrivalText: 'Arrival',
+  today: ' (Today)',
+  tomorrow: ' (Tomorrow)',
 }

@@ -5,13 +5,13 @@ import React, {
   SetStateAction,
   useCallback,
 } from 'react'
-import { PrefferedLanguage, VehicleType } from '../types'
+import { PreferredLanguage, VehicleType } from '../types'
 import MhdSvg from '@images/mhd.svg'
 import TicketSvg from '@images/ticket.svg'
 import i18n from 'i18n-js'
 import {
-  loadPrefferedLanguageFromAsyncStorage,
-  savePrefferedLanguageToAsyncStorage,
+  loadPreferredLanguageFromAsyncStorage,
+  savePreferredLanguageToAsyncStorage,
 } from '@utils/localization'
 import * as ExpoLocalization from 'expo-localization'
 
@@ -20,8 +20,8 @@ interface Props {
 }
 
 interface ContextProps {
-  preferredLanguage: PrefferedLanguage
-  changePrefferedLangugage: (lang: PrefferedLanguage) => void
+  preferredLanguage: PreferredLanguage
+  changePreferredLanguage: (lang: PreferredLanguage) => void
   vehicleTypes: VehicleProps[]
   setVehicleTypes: Dispatch<SetStateAction<VehicleProps[]>>
   timeLineNumber?: string
@@ -39,23 +39,24 @@ interface VehicleProps {
 export const GlobalStateContext = createContext({} as ContextProps)
 
 export default function GlobalStateProvider({ children }: Props) {
-  const [preferredLanguage, setPrefferedLangugage] =
-    useState<PrefferedLanguage>(PrefferedLanguage.auto)
+  const [preferredLanguage, setPreferredLanguage] = useState<PreferredLanguage>(
+    PreferredLanguage.auto
+  )
 
-  loadPrefferedLanguageFromAsyncStorage().then((langugage) => {
-    changePrefferedLangugage(langugage)
+  loadPreferredLanguageFromAsyncStorage().then((langugage) => {
+    changePreferredLanguage(langugage)
   })
 
-  const changePrefferedLangugage = useCallback(
-    (language: PrefferedLanguage) => {
-      savePrefferedLanguageToAsyncStorage(language)
-      setPrefferedLangugage(language)
+  const changePreferredLanguage = useCallback(
+    (language: PreferredLanguage) => {
+      savePreferredLanguageToAsyncStorage(language)
+      setPreferredLanguage(language)
       i18n.locale =
-        language == PrefferedLanguage.auto
+        language == PreferredLanguage.auto
           ? ExpoLocalization.locale?.split('-')[0]
           : language
     },
-    [setPrefferedLangugage]
+    [setPreferredLanguage]
   )
 
   const [timeLineNumber, setTimeLineNumber] = useState<string>()
@@ -89,7 +90,7 @@ export default function GlobalStateProvider({ children }: Props) {
     <GlobalStateContext.Provider
       value={{
         preferredLanguage,
-        changePrefferedLangugage,
+        changePreferredLanguage,
         vehicleTypes,
         setVehicleTypes,
         timeLineNumber,

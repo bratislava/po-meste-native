@@ -1,31 +1,31 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { PrefferedLanguage } from '../types'
+import { PreferredLanguage } from '../types'
 
-export const loadPrefferedLanguageFromAsyncStorage =
-  async (): Promise<PrefferedLanguage> => {
+export const loadPreferredLanguageFromAsyncStorage =
+  async (): Promise<PreferredLanguage> => {
     try {
-      const value = await AsyncStorage.getItem('preffered-language')
+      const value = await AsyncStorage.getItem('preferred-language')
       if (
         value !== null &&
-        (value == PrefferedLanguage.auto ||
-          value == PrefferedLanguage.en ||
-          value == PrefferedLanguage.sk)
+        (value == PreferredLanguage.auto ||
+          value == PreferredLanguage.en ||
+          value == PreferredLanguage.sk)
       ) {
         return value
       }
     } catch (e) {
-      console.error('ERROR: Load preffered language')
-      return PrefferedLanguage.auto
+      console.error('ERROR: Load preferred language')
+      return PreferredLanguage.auto
     }
-    return PrefferedLanguage.auto
+    return PreferredLanguage.auto
   }
 
-export const savePrefferedLanguageToAsyncStorage = async (
-  language: PrefferedLanguage
+export const savePreferredLanguageToAsyncStorage = async (
+  language: PreferredLanguage
 ) => {
   try {
-    await AsyncStorage.setItem('preffered-language', language)
+    await AsyncStorage.setItem('preferred-language', language)
   } catch (e) {
-    console.error('ERROR: Save preffered language')
+    console.error('ERROR: Save preferred language')
   }
 }

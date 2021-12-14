@@ -6,9 +6,9 @@ import React, {
   useCallback,
   useContext,
 } from 'react'
-import { StyleSheet, Text, TouchableHighlight, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import i18n from 'i18n-js'
-import { ScrollView } from 'react-native-gesture-handler'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { useQuery } from 'react-query'
 import { useNavigation } from '@react-navigation/native'
 import {
@@ -508,7 +508,7 @@ export default function FromToScreen({
           toPlaceTextPlaceholder={i18n.t('toPlaceholder')}
           onSwitchPlacesPress={onSwitchPlacesPress}
         />
-        <TouchableHighlight
+        <TouchableOpacity
           style={styles.schedulingContainer}
           onPress={showSchedulePicker}
         >
@@ -519,7 +519,7 @@ export default function FromToScreen({
               style={{
                 alignSelf: 'center',
                 color: colors.primary,
-                marginRight: 10,
+                marginRight: 4,
               }}
             />
             <Text style={styles.schedulingText}>
@@ -536,16 +536,9 @@ export default function FromToScreen({
                   ),
                 })}
             </Text>
-            <Ionicons
-              size={15}
-              style={{
-                alignSelf: 'center',
-                color: colors.primary,
-              }}
-              name="chevron-down"
-            />
+            <Ionicons size={15} style={styles.ionicon} name="chevron-down" />
           </View>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
       <View>
         <VehicleSelector
@@ -683,6 +676,11 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textTransform: 'uppercase',
     marginVertical: 12,
+  },
+  ionicon: {
+    alignSelf: 'center',
+    color: colors.primary,
+    marginLeft: 9,
   },
   row: {
     display: 'flex',

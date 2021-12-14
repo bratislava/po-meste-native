@@ -7,7 +7,7 @@ import React, {
   useRef,
 } from 'react'
 import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps'
-import { StyleSheet, View, ImageURISource } from 'react-native'
+import { StyleSheet, View, ImageURISource, Platform } from 'react-native'
 import BottomSheet from '@gorhom/bottom-sheet'
 import * as Location from 'expo-location'
 import { TouchableHighlight } from 'react-native-gesture-handler'
@@ -132,6 +132,9 @@ export default function MapScreen() {
     longitudeDelta: 0.0421,
   })
   const { getLocationWithPermission } = useLocationWithPermision()
+  // useful on Android, where the elevation shadow causes incorrect ordering of elements
+  const [showCurrentLocationButton, setShowCurrentLocationButton] =
+    useState(true)
 
   const bottomSheetRef = useRef<BottomSheet>(null)
 
@@ -470,15 +473,17 @@ export default function MapScreen() {
         isLoadingZseChargers) && (
         <LoadingView fullscreen iconWidth={80} iconHeight={80} />
       )}
-      <View style={styles.currentLocation}>
-        <TouchableHighlight
-          onPress={() =>
-            moveMapToCurrentLocation(() => getLocationWithPermission(true))
-          }
-        >
-          <CurrentLocationSvg />
-        </TouchableHighlight>
-      </View>
+      {Platform.select({ ios: true, android: showCurrentLocationButton }) && (
+        <View style={styles.currentLocation}>
+          <TouchableHighlight
+            onPress={() =>
+              moveMapToCurrentLocation(() => getLocationWithPermission(true))
+            }
+          >
+            <CurrentLocationSvg />
+          </TouchableHighlight>
+        </View>
+      )}
       <SearchBar />
       <VehicleBar />
       <BottomSheet
@@ -487,6 +492,14 @@ export default function MapScreen() {
         snapPoints={bottomSheetSnapPoints}
         onClose={handleSheetClose}
         enablePanDownToClose
+        onAnimate={(fromIndex, toIndex) => {
+          console.log(fromIndex, toIndex)
+          if (fromIndex === -1) {
+            setShowCurrentLocationButton(false)
+          } else if (toIndex === -1) {
+            setShowCurrentLocationButton(true)
+          }
+        }}
       >
         {selectedChargerStation ? (
           <StationChargerInfo

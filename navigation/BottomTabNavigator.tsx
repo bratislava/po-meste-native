@@ -18,11 +18,11 @@ import { BottomTabParamList, MapParamList } from '../types'
 import TicketsScreen from '@screens/TicketsScreen'
 import FromToScreen from '@screens/FromToScreen'
 import PlannerScreen from '@screens/PlannerScreen'
-import LineTimeline from '@screens/LineTimeline'
+import LineTimelineScreen from '@screens/LineTimelineScreen'
+import LineTimetableScreen from '@screens/LineTimetableScreen'
+import ChooseLocationScreen from '@screens/ChooseLocation'
+import FeedbackScreen from '@screens/FeedbackScreen'
 import { GlobalStateContext } from '@components/common/GlobalStateProvider'
-import Timetable from '@screens/Timetable'
-import ChooseLocation from '@screens/ChooseLocation'
-import Feedback from '@screens/FeedbackScreen'
 
 import TabBar from './TabBar'
 import { Header } from '@components/layout/Header'
@@ -82,46 +82,31 @@ function MapNavigator() {
         component={MapScreen}
         options={{ headerShown: false }}
       />
+      <MapStack.Screen name="FromToScreen" component={FromToScreen} />
+      <MapStack.Screen name="PlannerScreen" component={PlannerScreen} />
       <MapStack.Screen
-        name="FromToScreen"
-        component={FromToScreen}
+        name="LineTimelineScreen"
+        component={LineTimelineScreen}
         options={{
-          headerTitle: i18n.t('fromToScreenTitle'),
-        }}
-      />
-      <MapStack.Screen
-        name="PlannerScreen"
-        component={PlannerScreen}
-        options={{ headerTitle: i18n.t('plannerTitle') }}
-      />
-      <MapStack.Screen
-        name="LineTimeline"
-        component={LineTimeline}
-        options={{
-          headerTitle: i18n.t('lineTimelineTitle', {
+          title: i18n.t('screens.LineTimelineScreen.screenTitle', {
             lineNumber: globalstateContext.timeLineNumber,
           }),
         }}
       />
       <MapStack.Screen
-        name="Timetable"
-        component={Timetable}
+        name="LineTimetableScreen"
+        component={LineTimetableScreen}
         options={{
-          headerTitle: i18n.t('timetableTitle', {
+          title: i18n.t('screens.LineTimetableScreen.screenTitle', {
             lineNumber: globalstateContext.timeLineNumber,
           }),
         }}
       />
       <MapStack.Screen
-        name="ChooseLocation"
-        component={ChooseLocation}
-        options={{ headerTitle: i18n.t('chooseLocationTitle') }}
+        name="ChooseLocationScreen"
+        component={ChooseLocationScreen}
       />
-      <MapStack.Screen
-        name="Feedback"
-        component={Feedback}
-        options={{ headerTitle: i18n.t('feedbackTitle') }}
-      />
+      <MapStack.Screen name="FeedbackScreen" component={FeedbackScreen} />
     </MapStack.Navigator>
   )
 }

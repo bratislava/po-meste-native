@@ -19,9 +19,9 @@ import DashedLine from './ui/DashedLine/DashedLine'
 import { getMhdTrip } from '@utils/api'
 import LoadingView from './ui/LoadingView/LoadingView'
 
-export default function LineTimeline({
+export default function LineTimelineScreen({
   route,
-}: StackScreenProps<MapParamList, 'LineTimeline'>) {
+}: StackScreenProps<MapParamList, 'LineTimelineScreen'>) {
   const { tripId, stopId } = route?.params
 
   const navigation = useNavigation()
@@ -95,7 +95,7 @@ export default function LineTimeline({
                 style={styles.departureLine}
                 onPress={() => {
                   data?.lineNumber &&
-                    navigation.navigate('Timetable', {
+                    navigation.navigate('LineTimetableScreen', {
                       stopId: spot.stopId,
                       lineNumber: data.lineNumber,
                     })

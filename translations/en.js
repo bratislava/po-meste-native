@@ -13,11 +13,6 @@ export default {
   fromPlaceholder: 'From...',
   toPlaceholder: 'To...',
   findRoute: 'Find route',
-  plannerTitle: 'Planner',
-  feedbackTitle: 'Feedback',
-  chooseLocationTitle: 'Choose location',
-  lineTimelineTitle: 'Timeline line %{lineNumber}',
-  timetableTitle: 'Timetable line %{lineNumber}',
   workDays: 'Working weeks',
   weekend: 'Weekend',
   holidays: 'Holidays',
@@ -34,6 +29,18 @@ export default {
   presentPrice: '€{{price}}',
   privacyPolicy: 'Privacy policy',
   screens: {
+    PlannerScreen: {
+      screenTitle: 'Planner',
+    },
+    ChooseLocationScreen: {
+      screenTitle: 'Choose location',
+    },
+    LineTimetableScreen: {
+      screenTitle: 'Timetable line %{lineNumber}',
+    },
+    LineTimelineScreen: {
+      screenTitle: 'Timeline line %{lineNumber}',
+    },
     FromToScreen: {
       screenTitle: 'Where to?',
     },

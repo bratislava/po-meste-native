@@ -14,13 +14,8 @@ import BurgerMenuSvg from '@images/burger-menu.svg'
 
 import SettingsScreen from '@screens/SettingsScreen'
 import MapScreen from '@screens/MapScreen'
-import {
-  BottomTabParamList,
-  TicketsParamList,
-  MapParamList,
-  SettingsParamList,
-} from '../types'
-import SmsScreen from '@screens/SmsScreen'
+import { BottomTabParamList, MapParamList } from '../types'
+import TicketsScreen from '@screens/TicketsScreen'
 import FromToScreen from '@screens/FromToScreen'
 import PlannerScreen from '@screens/PlannerScreen'
 import LineTimeline from '@screens/LineTimeline'
@@ -30,6 +25,7 @@ import ChooseLocation from '@screens/ChooseLocation'
 import Feedback from '@screens/FeedbackScreen'
 
 import TabBar from './TabBar'
+import { Header } from '@components/layout/Header'
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>()
 
@@ -44,7 +40,7 @@ export default function BottomTabNavigator() {
     >
       <BottomTab.Screen
         name="Tickets"
-        component={TicketsNavigator}
+        component={TicketsScreen}
         options={{
           title: i18n.t('tickets'),
           tabBarIcon: TicketSvg,
@@ -70,24 +66,17 @@ export default function BottomTabNavigator() {
   )
 }
 
-// Each tab has its own navigation stack, you can read more about this pattern here:
-// https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
-const TicketsStack = createStackNavigator<TicketsParamList>()
-
-function TicketsNavigator() {
-  return (
-    <TicketsStack.Navigator screenOptions={{}}>
-      <TicketsStack.Screen name="SmsScreen" component={SmsScreen} />
-    </TicketsStack.Navigator>
-  )
-}
-
 const MapStack = createStackNavigator<MapParamList>()
 
 function MapNavigator() {
   const globalstateContext = useContext(GlobalStateContext)
   return (
-    <MapStack.Navigator screenOptions={{}}>
+    <MapStack.Navigator
+      headerMode="screen"
+      screenOptions={{
+        header: (props) => <Header {...props} />,
+      }}
+    >
       <MapStack.Screen
         name="MapScreen"
         component={MapScreen}

@@ -13,7 +13,6 @@ export default {
   fromPlaceholder: 'Odkiaľ idete?',
   toPlaceholder: 'Kamže, kam?',
   findRoute: 'Nájdi trasu',
-  fromToScreenTitle: 'Kamže, kam?',
   plannerTitle: 'Plánovač',
   feedbackTitle: 'Spätná väzba',
   chooseLocationTitle: 'Výber miesta',
@@ -34,7 +33,11 @@ export default {
   presentPrice: '{{price}}€',
   privacyPolicy: 'Ochrana osobných údajov',
   screens: {
-    ticketsScreen: {
+    FromToScreen: {
+      screenTitle: 'Kamže, kam?',
+    },
+    SMSScreen: {
+      screenTitle: 'SMS lístky',
       smsModal: {
         title: 'Spoplatnená služba',
         bodyText:
@@ -53,7 +56,7 @@ export default {
         },
       },
     },
-    feedbackScreen: {
+    FeedbackScreen: {
       title: 'Ajaj. Čo nefungovalo?',
       text: 'Mrzí nás, že navrhované trasy nesplnili vaše očakávania :(',
       textAreaPlaceholder:
@@ -62,7 +65,7 @@ export default {
         'Vďaka vašej odozve sme schopní appku stále vylepšovať a prinášať vám relevantnejšie trasy.',
       backToSearch: 'Späť na vyhľadávanie',
     },
-    settingsScreen: {
+    SettingsScreen: {
       screenTitle: 'Nastavenia',
       changeLanguage: 'Zmena jazyka',
       aboutApplication: 'O aplikácii',
@@ -72,7 +75,7 @@ export default {
         confirm: 'Potvrdiť',
       },
     },
-    aboutScreen: {
+    AboutScreen: {
       screenTitle: 'O aplikácii',
       version: 'Verzia',
       unknown: 'neznáma',
@@ -84,7 +87,7 @@ export default {
       inovationsBratislava: 'Inovácie mesta Bratislava',
       coFundedByTheEuropeanUnion: 'Spolufinancované Európskou úniou',
     },
-    faqScreen: {
+    FAQScreen: {
       screenTitle: 'Často kladené otázky',
       questions: {
         question1: {

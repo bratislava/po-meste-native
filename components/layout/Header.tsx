@@ -4,9 +4,10 @@ import ChevronLeftSmall from '@images/chevron-left-small.svg'
 import { colors } from '@utils/theme'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/core'
+import { StackHeaderProps } from '@react-navigation/stack'
+import { t } from 'i18n-js'
 
-export interface HeaderProps {
-  text?: string
+export interface HeaderProps extends StackHeaderProps {
   useBack?: boolean
   onBack?: () => void
   leftSlot?: ReactNode
@@ -14,8 +15,9 @@ export interface HeaderProps {
 }
 
 export const Header = ({
+  insets,
   useBack = true,
-  text,
+  scene,
   onBack,
   leftSlot,
   rightSlot,
@@ -23,7 +25,12 @@ export const Header = ({
   const navigation = useNavigation()
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { paddingTop: insets.top, height: insets.top + 64 },
+      ]}
+    >
       <View style={styles.leftContainer}>
         {useBack && (
           <TouchableOpacity
@@ -38,7 +45,9 @@ export const Header = ({
         {leftSlot}
       </View>
       <View style={styles.centerContainer}>
-        <Text style={styles.centerText}>{text}</Text>
+        <Text style={styles.centerText}>
+          {t(`screens.${scene.route.name}.screenTitle`)}
+        </Text>
       </View>
       <View style={styles.rightContainer}>{rightSlot}</View>
     </View>
@@ -48,7 +57,6 @@ export const Header = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: 64,
     paddingHorizontal: 5,
     borderBottomColor: colors.primary,
     borderBottomWidth: 5,

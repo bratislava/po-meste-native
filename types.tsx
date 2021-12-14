@@ -62,7 +62,7 @@ export type BottomTabParamList = {
 }
 
 export type TicketsParamList = {
-  SmsScreen: undefined
+  SMSScreen: undefined
 }
 
 export type MapParamList = {

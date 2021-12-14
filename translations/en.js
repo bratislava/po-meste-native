@@ -13,7 +13,6 @@ export default {
   fromPlaceholder: 'From...',
   toPlaceholder: 'To...',
   findRoute: 'Find route',
-  fromToScreenTitle: 'Where to?',
   plannerTitle: 'Planner',
   feedbackTitle: 'Feedback',
   chooseLocationTitle: 'Choose location',
@@ -35,7 +34,11 @@ export default {
   presentPrice: '€{{price}}',
   privacyPolicy: 'Privacy policy',
   screens: {
-    ticketsScreen: {
+    FromToScreen: {
+      screenTitle: 'Where to?',
+    },
+    SMSScreen: {
+      screenTitle: 'SMS tickets',
       smsModal: {
         title: 'Paid service',
         bodyText:
@@ -54,7 +57,7 @@ export default {
         },
       },
     },
-    feedbackScreen: {
+    FeedbackScreen: {
       title: "Oops. What didn't work?",
       text: 'We are sorry that the suggested routes did not meet your expectations :(',
       textAreaPlaceholder:
@@ -63,7 +66,7 @@ export default {
         'Thanks to your feedback, we are able to constantly improve the app and bring you more relevant routes.',
       backToSearch: 'Back to search',
     },
-    settingsScreen: {
+    SettingsScreen: {
       screenTitle: 'Settings',
       changeLanguage: 'Change language',
       aboutApplication: 'About application',
@@ -73,7 +76,7 @@ export default {
         confirm: 'Confirm',
       },
     },
-    aboutScreen: {
+    AboutScreen: {
       screenTitle: 'About application',
       version: 'Version',
       unknown: 'unknown',
@@ -85,7 +88,7 @@ export default {
       inovationsBratislava: 'Inovations Bratislava',
       coFundedByTheEuropeanUnion: 'Co-funded by the European Union',
     },
-    faqScreen: {
+    FAQScreen: {
       screenTitle: 'Frequently asked questions',
       questions: {
         question1: {

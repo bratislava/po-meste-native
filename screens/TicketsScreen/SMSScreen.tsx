@@ -9,10 +9,11 @@ import {
   ConfirmationModal,
   ConfirmationModalProps,
 } from '@components/index'
-import { SmsTicketNumbers, SmsTicketPrices, TicketName } from '../types'
+import { SmsTicketNumbers, SmsTicketPrices, TicketName } from '../../types'
 import { presentPrice } from '@utils/utils'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 
-export default function SmsScreen() {
+export default function SMSScreen() {
   async function handleSend(receiverNumber: string) {
     const isAvailable = await SMS.isAvailableAsync()
     if (isAvailable) {
@@ -43,7 +44,7 @@ export default function SmsScreen() {
 
   const getTicketButtonTitle = (ticketName: TicketName) => {
     return `${i18n.t(
-      `screens.ticketsScreen.tickets.${ticketName}.name`
+      `screens.SMSScreen.tickets.${ticketName}.name`
     )} / ${presentPrice(SmsTicketPrices[ticketName])}`
   }
 
@@ -51,24 +52,24 @@ export default function SmsScreen() {
     ticket40min: {
       onClose: onModalClose,
       onConfirm: () => onModalConfirm(SmsTicketNumbers.ticket40min),
-      bodyText: i18n.t('screens.ticketsScreen.smsModal.bodyText', {
-        ticketName: i18n.t('screens.ticketsScreen.tickets.ticket40min.name'),
+      bodyText: i18n.t('screens.SMSScreen.smsModal.bodyText', {
+        ticketName: i18n.t('screens.SMSScreen.tickets.ticket40min.name'),
         price: presentPrice(SmsTicketPrices.ticket40min),
       }),
     },
     ticket70min: {
       onClose: onModalClose,
       onConfirm: () => onModalConfirm(SmsTicketNumbers.ticket70min),
-      bodyText: i18n.t('screens.ticketsScreen.smsModal.bodyText', {
-        ticketName: i18n.t('screens.ticketsScreen.tickets.ticket70min.name'),
+      bodyText: i18n.t('screens.SMSScreen.smsModal.bodyText', {
+        ticketName: i18n.t('screens.SMSScreen.tickets.ticket70min.name'),
         price: presentPrice(SmsTicketPrices.ticket70min),
       }),
     },
     ticket24hours: {
       onClose: onModalClose,
       onConfirm: () => onModalConfirm(SmsTicketNumbers.ticket24hours),
-      bodyText: i18n.t('screens.ticketsScreen.smsModal.bodyText', {
-        ticketName: i18n.t('screens.ticketsScreen.tickets.ticket24hours.name'),
+      bodyText: i18n.t('screens.SMSScreen.smsModal.bodyText', {
+        ticketName: i18n.t('screens.SMSScreen.tickets.ticket24hours.name'),
         price: presentPrice(SmsTicketPrices.ticket24hours),
       }),
     },
@@ -87,46 +88,48 @@ export default function SmsScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollView}>
-        <Text style={styles.title}>{i18n.t('smsTicketTitle')}</Text>
-        <Text style={styles.smsInfo}>{i18n.t('smsInfo')}</Text>
-        {ticketNames.map((ticketName, i) => {
-          return (
-            <View key={i} style={styles.buttonFullWidth}>
-              <Button
-                title={getTicketButtonTitle(ticketName)}
-                onPress={() => ticketButtonClickHandler(ticketName)}
-                isFullWidth
-                size="large"
-              />
-            </View>
-          )
-        })}
-        <View style={styles.separator}></View>
-        <Text style={styles.smsInfo}>
-          {i18n.t('ticketDuplicateDescription')}
-        </Text>
-        <View style={[styles.buttonFullWidth, { marginHorizontal: 71 }]}>
-          <Button
-            title={i18n.t('ticketDuplicate')}
-            onPress={() => handleSend(SmsTicketNumbers.ticketDuplicate)}
-            isFullWidth
-            size="small"
-            variant="secondary"
-          />
-        </View>
-      </ScrollView>
-      <ConfirmationModal
-        visible={confirmationModalVisible}
-        onClose={confirmationModalProps.onClose}
-        onConfirm={confirmationModalProps.onConfirm}
-        title={i18n.t('screens.ticketsScreen.smsModal.title')}
-        bodyText={confirmationModalProps.bodyText}
-        requiredCheckboxText={i18n.t(
-          'screens.ticketsScreen.smsModal.checkboxText'
-        )}
-      />
+    <View style={{ flex: 1, paddingBottom: useBottomTabBarHeight() }}>
+      <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollView}>
+          <Text style={styles.title}>{i18n.t('smsTicketTitle')}</Text>
+          <Text style={styles.smsInfo}>{i18n.t('smsInfo')}</Text>
+          {ticketNames.map((ticketName, i) => {
+            return (
+              <View key={i} style={styles.buttonFullWidth}>
+                <Button
+                  title={getTicketButtonTitle(ticketName)}
+                  onPress={() => ticketButtonClickHandler(ticketName)}
+                  isFullWidth
+                  size="large"
+                />
+              </View>
+            )
+          })}
+          <View style={styles.separator}></View>
+          <Text style={styles.smsInfo}>
+            {i18n.t('ticketDuplicateDescription')}
+          </Text>
+          <View style={[styles.buttonFullWidth, { marginHorizontal: 71 }]}>
+            <Button
+              title={i18n.t('ticketDuplicate')}
+              onPress={() => handleSend(SmsTicketNumbers.ticketDuplicate)}
+              isFullWidth
+              size="small"
+              variant="secondary"
+            />
+          </View>
+        </ScrollView>
+        <ConfirmationModal
+          visible={confirmationModalVisible}
+          onClose={confirmationModalProps.onClose}
+          onConfirm={confirmationModalProps.onConfirm}
+          title={i18n.t('screens.SMSScreen.smsModal.title')}
+          bodyText={confirmationModalProps.bodyText}
+          requiredCheckboxText={i18n.t(
+            'screens.SMSScreen.smsModal.checkboxText'
+          )}
+        />
+      </View>
     </View>
   )
 }

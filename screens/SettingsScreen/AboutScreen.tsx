@@ -4,8 +4,6 @@ import Constants from 'expo-constants'
 import { openURL } from 'expo-linking'
 import { t } from 'i18n-js'
 
-import Header from '@components/Header'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import AppLogo from '@images/app-logo.svg'
 import Footer from '@components/Footer'
 import Link from '@components/Link'
@@ -13,6 +11,7 @@ import { colors } from '@utils/theme'
 
 import InovationBratislavaLogo from '@images/inovation-bratislava-logo.svg'
 import EuropeanUnionLogo from '@images/european-union-logo.svg'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 
 export const AboutScreen = () => {
   const contactEmailAddress = Constants.manifest?.extra?.contactEmailAddress
@@ -21,28 +20,27 @@ export const AboutScreen = () => {
     Constants.manifest?.extra?.generalTermsAndConditionsLink
 
   return (
-    <SafeAreaView edges={['top']} style={{ flex: 1, paddingBottom: 50 }}>
-      <Header text={t('screens.aboutScreen.screenTitle')} />
+    <View style={{ flex: 1, paddingBottom: useBottomTabBarHeight() }}>
       <ScrollView>
         <View style={styles.bodyContainer}>
           <View style={styles.logoContainer}>
             <AppLogo width={96} height={96} />
           </View>
           <Text style={styles.versionText}>
-            {t('screens.aboutScreen.version')}{' '}
-            {Constants.manifest?.version || t('screens.aboutScreen.unknown')}
+            {t('screens.AboutScreen.version')}{' '}
+            {Constants.manifest?.version || t('screens.AboutScreen.unknown')}
           </Text>
           <Text style={styles.appName}>
             {Constants.manifest?.name || 'Po meste'}
           </Text>
           <Text style={styles.description}>
-            {t('screens.aboutScreen.description')}
+            {t('screens.AboutScreen.description')}
           </Text>
         </View>
         <Footer>
           <View style={styles.footerContainer}>
             <Text style={styles.footerLabel}>
-              {t('screens.aboutScreen.contact')}
+              {t('screens.AboutScreen.contact')}
             </Text>
             <Link
               style={styles.footerLink}
@@ -54,7 +52,7 @@ export const AboutScreen = () => {
             <Link
               style={styles.footerLink}
               onPress={() => openURL(generalTermsAndConditionsLink)}
-              title={t('screens.aboutScreen.generalTermsAndConditions')}
+              title={t('screens.AboutScreen.generalTermsAndConditions')}
             />
             <Link
               style={styles.footerLink}
@@ -62,26 +60,26 @@ export const AboutScreen = () => {
               title={t('privacyPolicy')}
             />
             <Text style={styles.footerLabel}>
-              {t('screens.aboutScreen.poweredBy')}
+              {t('screens.AboutScreen.poweredBy')}
             </Text>
             <View style={styles.poweredByContainer}>
               <View style={styles.poweredByItem}>
                 <InovationBratislavaLogo width={48} height={48} />
                 <Text style={styles.poweredByItemText}>
-                  {t('screens.aboutScreen.inovationsBratislava')}
+                  {t('screens.AboutScreen.inovationsBratislava')}
                 </Text>
               </View>
               <View style={styles.poweredByItem}>
                 <EuropeanUnionLogo width={64} height={48} />
                 <Text style={styles.poweredByItemText}>
-                  {t('screens.aboutScreen.coFundedByTheEuropeanUnion')}
+                  {t('screens.AboutScreen.coFundedByTheEuropeanUnion')}
                 </Text>
               </View>
             </View>
           </View>
         </Footer>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   )
 }
 

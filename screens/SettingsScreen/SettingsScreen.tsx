@@ -8,7 +8,6 @@ import { openURL } from 'expo-linking'
 
 import { GlobalStateContext } from '@components/GlobalStateProvider'
 import ItemListButton from '@screens/ui/ItemListButton/ItemListButton'
-import Header from '@components/Header'
 import LanguageIcon from '@images/language.svg'
 import AboutIcon from '@images/information.svg'
 import FAQIcon from '@images/question.svg'
@@ -17,6 +16,8 @@ import { colors } from '@utils/theme'
 import Button from '@components/Button'
 import CheckBox from 'react-native-check-box'
 import { PreferredLanguage } from '../../types'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
+import { ScrollView } from 'react-native-gesture-handler'
 
 export const SettingsScreen = () => {
   const privacyPolicyLink = Constants.manifest?.extra?.privacyPolicyLink
@@ -45,33 +46,34 @@ export const SettingsScreen = () => {
   }
 
   return (
-    <SafeAreaView edges={['top']} style={{ backgroundColor: 'white' }}>
-      <Header text={t('screens.settingsScreen.screenTitle')} />
-      <View style={styles.container}>
-        <ItemListButton
-          icon={LanguageIcon}
-          text={t('screens.settingsScreen.changeLanguage')}
-          onPress={() => setLanguageModalVisible(true)}
-        />
-        <ItemListButton
-          icon={AboutIcon}
-          text={t('screens.settingsScreen.aboutApplication')}
-          onPress={() => navigation.navigate('AboutScreen')}
-        />
-        <ItemListButton
-          icon={FAQIcon}
-          text={t('screens.settingsScreen.frequentlyAskedQuestions')}
-          onPress={() => navigation.navigate('FAQScreen')}
-        />
-        <ItemListButton
-          icon={FAQIcon}
-          text={t('privacyPolicy')}
-          onPress={() => openURL(privacyPolicyLink)}
-        />
-      </View>
+    <View style={{ flex: 1, paddingBottom: useBottomTabBarHeight() }}>
+      <ScrollView>
+        <View style={styles.container}>
+          <ItemListButton
+            icon={LanguageIcon}
+            text={t('screens.SettingsScreen.changeLanguage')}
+            onPress={() => setLanguageModalVisible(true)}
+          />
+          <ItemListButton
+            icon={AboutIcon}
+            text={t('screens.SettingsScreen.aboutApplication')}
+            onPress={() => navigation.navigate('AboutScreen')}
+          />
+          <ItemListButton
+            icon={FAQIcon}
+            text={t('screens.SettingsScreen.frequentlyAskedQuestions')}
+            onPress={() => navigation.navigate('FAQScreen')}
+          />
+          <ItemListButton
+            icon={FAQIcon}
+            text={t('privacyPolicy')}
+            onPress={() => openURL(privacyPolicyLink)}
+          />
+        </View>
+      </ScrollView>
       <Modal visible={isLanguageModalVisible} onClose={onLanguageModalCancel}>
         <Text style={styles.modalTitle}>
-          {t('screens.settingsScreen.langugageModal.chooseLanguage')}
+          {t('screens.SettingsScreen.langugageModal.chooseLanguage')}
         </Text>
         <CheckBox
           onClick={() => setSelectedLanguage(PreferredLanguage.en)}
@@ -103,10 +105,10 @@ export const SettingsScreen = () => {
         <Button
           style={styles.modalButton}
           onPress={onLanguageModalConfirm}
-          title={t('screens.settingsScreen.langugageModal.confirm')}
+          title={t('screens.SettingsScreen.langugageModal.confirm')}
         />
       </Modal>
-    </SafeAreaView>
+    </View>
   )
 }
 

@@ -23,6 +23,7 @@ export const Header = ({
   rightSlot,
 }: HeaderProps) => {
   const navigation = useNavigation()
+  const screenOptions = scene.descriptor.options
 
   return (
     <View
@@ -46,7 +47,7 @@ export const Header = ({
       </View>
       <View style={styles.centerContainer}>
         <Text style={styles.centerText}>
-          {t(`screens.${scene.route.name}.screenTitle`)}
+          {screenOptions.title ?? t(`screens.${scene.route.name}.screenTitle`)}
         </Text>
       </View>
       <View style={styles.rightContainer}>{rightSlot}</View>

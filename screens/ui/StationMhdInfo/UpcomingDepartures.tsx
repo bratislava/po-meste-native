@@ -182,7 +182,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
                 style={styles.lineDeparture}
                 onPress={() => {
                   globalstateContext.setTimeLineNumber(departure.lineNumber)
-                  navigation.navigate('LineTimeline', {
+                  navigation.navigate('LineTimelineScreen', {
                     tripId: departure.tripId,
                     stopId: station.id,
                   })

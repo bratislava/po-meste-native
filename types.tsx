@@ -75,9 +75,9 @@ export type MapParamList = {
     legs: LegProps[]
     provider: MicromobilityProvider
   }
-  LineTimeline: { tripId: string; stopId: string }
-  Timetable: { stopId: string; lineNumber: string }
-  ChooseLocation: {
+  LineTimelineScreen: { tripId: string; stopId: string }
+  LineTimetableScreen: { stopId: string; lineNumber: string }
+  ChooseLocationScreen: {
     latitude?: number
     longitude?: number
     fromNavigation: boolean
@@ -85,7 +85,7 @@ export type MapParamList = {
     fromCoords: { latitude: number; longitude: number }
     toCoords: { latitude: number; longitude: number }
   }
-  Feedback: undefined
+  FeedbackScreen: undefined
 }
 
 export type SettingsParamList = {

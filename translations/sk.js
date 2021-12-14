@@ -13,11 +13,6 @@ export default {
   fromPlaceholder: 'Odkiaľ idete?',
   toPlaceholder: 'Kamže, kam?',
   findRoute: 'Nájdi trasu',
-  plannerTitle: 'Plánovač',
-  feedbackTitle: 'Spätná väzba',
-  chooseLocationTitle: 'Výber miesta',
-  lineTimelineTitle: 'Časová os linky %{lineNumber}',
-  timetableTitle: 'Grafikon linky %{lineNumber}',
   workDays: 'Pracovný týždeň',
   weekend: 'Víkend',
   holidays: 'Prázdniny, sviatky',
@@ -33,6 +28,18 @@ export default {
   presentPrice: '{{price}}€',
   privacyPolicy: 'Ochrana osobných údajov',
   screens: {
+    PlannerScreen: {
+      screenTitle: 'Plánovač',
+    },
+    ChooseLocationScreen: {
+      screenTitle: 'Výber miesta',
+    },
+    LineTimetableScreen: {
+      screenTitle: 'Grafikon linky %{lineNumber}',
+    },
+    LineTimelineScreen: {
+      screenTitle: 'Časová os linky %{lineNumber}',
+    },
     FromToScreen: {
       screenTitle: 'Kamže, kam?',
     },
@@ -57,6 +64,7 @@ export default {
       },
     },
     FeedbackScreen: {
+      screenTitle: 'Spätná väzba',
       title: 'Ajaj. Čo nefungovalo?',
       text: 'Mrzí nás, že navrhované trasy nesplnili vaše očakávania :(',
       textAreaPlaceholder:

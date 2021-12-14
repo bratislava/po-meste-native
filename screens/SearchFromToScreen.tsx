@@ -1,11 +1,5 @@
 import React, { MutableRefObject, useState, useEffect } from 'react'
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Platform,
-} from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import i18n from 'i18n-js'
 import { ScrollView } from 'react-native-gesture-handler'
 import BottomSheet from '@gorhom/bottom-sheet'

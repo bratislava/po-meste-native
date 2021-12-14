@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 
-import { GlobalStateContext } from '@components/GlobalStateProvider'
+import { GlobalStateContext } from '@components/common/GlobalStateProvider'
 
 import ThumbUp from '@images/thumb-up.svg'
 import ThumbDown from '@images/thumb-down.svg'

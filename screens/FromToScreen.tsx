@@ -45,7 +45,7 @@ import {
   VehicleData,
 } from '../types'
 import FeedbackAsker from './ui/FeedbackAsker/FeedbackAsker'
-import { GlobalStateContext } from '@components/GlobalStateProvider'
+import { GlobalStateContext } from '@components/common/GlobalStateProvider'
 import { useLocationWithPermision } from '@hooks/miscHooks'
 import { OtpPlannerProps } from '@utils/validation'
 import LoadingView from './ui/LoadingView/LoadingView'

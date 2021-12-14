@@ -1,4 +1,20 @@
-import React, { useState, createContext, Dispatch, SetStateAction } from 'react'
+import React, {
+  useState,
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+} from 'react'
+import { SvgProps } from 'react-native-svg'
+
+import i18n from 'i18n-js'
+import * as ExpoLocalization from 'expo-localization'
+import {
+  loadPreferredLanguageFromAsyncStorage,
+  savePreferredLanguageToAsyncStorage,
+} from '@utils/localization'
+
+import { PreferredLanguage, VehicleType } from '../../types'
 
 import MhdChosenSvg from '@images/mhd-filter-chosen.svg'
 import MhdUnchosenSvg from '@images/mhd-filter-unchosen.svg' // TODO add proper icon
@@ -8,14 +24,14 @@ import ScooterChosen from '@images/scooters-filter-chosen.svg'
 import ScooterUnchosen from '@images/scooters-filter-unchosen.svg'
 import ChargersChosen from '@images/chargers-filter-chosen.svg'
 import ChargersUnchosen from '@images/chargers-filter-unchosen.svg'
-import { VehicleType } from '../../types'
-import { SvgProps } from 'react-native-svg'
 
 interface Props {
   children: React.ReactNode
 }
 
 interface ContextProps {
+  preferredLanguage: PreferredLanguage
+  changePreferredLanguage: (lang: PreferredLanguage) => void
   vehicleTypes: VehicleProps[]
   setVehicleTypes: Dispatch<SetStateAction<VehicleProps[]>>
   timeLineNumber?: string
@@ -33,6 +49,26 @@ interface VehicleProps {
 export const GlobalStateContext = createContext({} as ContextProps)
 
 export default function GlobalStateProvider({ children }: Props) {
+  const [preferredLanguage, setPreferredLanguage] = useState<PreferredLanguage>(
+    PreferredLanguage.auto
+  )
+
+  loadPreferredLanguageFromAsyncStorage().then((langugage) => {
+    changePreferredLanguage(langugage)
+  })
+
+  const changePreferredLanguage = useCallback(
+    (language: PreferredLanguage) => {
+      savePreferredLanguageToAsyncStorage(language)
+      setPreferredLanguage(language)
+      i18n.locale =
+        language == PreferredLanguage.auto
+          ? ExpoLocalization.locale?.split('-')[0]
+          : language
+    },
+    [setPreferredLanguage]
+  )
+
   const [timeLineNumber, setTimeLineNumber] = useState<string>()
 
   const [vehicleTypes, setVehicleTypes] = useState<VehicleProps[]>([
@@ -63,6 +99,8 @@ export default function GlobalStateProvider({ children }: Props) {
   return (
     <GlobalStateContext.Provider
       value={{
+        preferredLanguage,
+        changePreferredLanguage,
         vehicleTypes,
         setVehicleTypes,
         timeLineNumber,

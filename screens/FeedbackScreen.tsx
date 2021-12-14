@@ -10,7 +10,7 @@ import Constants from 'expo-constants'
 
 import { ScrollView, TextInput } from 'react-native-gesture-handler'
 
-import { GlobalStateContext } from '@components/GlobalStateProvider'
+import { GlobalStateContext } from '@components/common/GlobalStateProvider'
 
 import ThumbDown from '@images/thumb-down.svg'
 import XIcon from '@images/x.svg'

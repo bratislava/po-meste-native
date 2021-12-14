@@ -16,7 +16,7 @@ import Modal from '@components/Modal'
 import { colors } from '@utils/theme'
 import Button from '@components/Button'
 import CheckBox from 'react-native-check-box'
-import { PrefferedLanguage } from '../../types'
+import { PreferredLanguage } from '../../types'
 
 export const SettingsScreen = () => {
   const privacyPolicyLink = Constants.manifest?.extra?.privacyPolicyLink
@@ -24,11 +24,11 @@ export const SettingsScreen = () => {
   const [isLanguageModalVisible, setLanguageModalVisible] = useState(false)
   const navigation = useNavigation()
 
-  const { preferredLanguage, changePrefferedLangugage } =
+  const { preferredLanguage, changePreferredLanguage } =
     useContext(GlobalStateContext)
 
   const [selectedLangugage, setSelectedLanguage] =
-    useState<PrefferedLanguage>(preferredLanguage)
+    useState<PreferredLanguage>(preferredLanguage)
 
   useEffect(() => {
     setSelectedLanguage(preferredLanguage)
@@ -36,7 +36,7 @@ export const SettingsScreen = () => {
 
   const onLanguageModalConfirm = () => {
     setLanguageModalVisible(false)
-    changePrefferedLangugage(selectedLangugage)
+    changePreferredLanguage(selectedLangugage)
   }
 
   const onLanguageModalCancel = () => {
@@ -74,8 +74,8 @@ export const SettingsScreen = () => {
           {t('screens.settingsScreen.langugageModal.chooseLanguage')}
         </Text>
         <CheckBox
-          onClick={() => setSelectedLanguage(PrefferedLanguage.en)}
-          isChecked={selectedLangugage == PrefferedLanguage.en}
+          onClick={() => setSelectedLanguage(PreferredLanguage.en)}
+          isChecked={selectedLangugage == PreferredLanguage.en}
           style={styles.modalCheckbox}
           rightText="English"
           rightTextStyle={styles.modalCheckboxText}
@@ -83,8 +83,8 @@ export const SettingsScreen = () => {
           uncheckedCheckBoxColor={colors.gray}
         />
         <CheckBox
-          onClick={() => setSelectedLanguage(PrefferedLanguage.sk)}
-          isChecked={selectedLangugage == PrefferedLanguage.sk}
+          onClick={() => setSelectedLanguage(PreferredLanguage.sk)}
+          isChecked={selectedLangugage == PreferredLanguage.sk}
           style={styles.modalCheckbox}
           rightText="Slovenčina"
           rightTextStyle={styles.modalCheckboxText}
@@ -92,8 +92,8 @@ export const SettingsScreen = () => {
           uncheckedCheckBoxColor={colors.gray}
         />
         <CheckBox
-          onClick={() => setSelectedLanguage(PrefferedLanguage.auto)}
-          isChecked={selectedLangugage == PrefferedLanguage.auto}
+          onClick={() => setSelectedLanguage(PreferredLanguage.auto)}
+          isChecked={selectedLangugage == PreferredLanguage.auto}
           style={styles.modalCheckbox}
           rightText="Auto"
           rightTextStyle={styles.modalCheckboxText}

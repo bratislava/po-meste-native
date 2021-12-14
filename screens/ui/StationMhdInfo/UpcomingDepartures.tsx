@@ -43,7 +43,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
     color: string = mhdDefaultColors.grey
   ) => {
     const Icon = getVehicle(vehicleType)
-    return <Icon width={23} height={23} fill={color} />
+    return <Icon height={23} fill={color} />
   }
 
   const getVehicleIconStyledFilter = (
@@ -86,7 +86,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
   return (
     <View style={styles.column}>
       <View style={styles.header}>
-        <View style={styles.firstRow}>
+        <View style={[styles.firstRow, s.horizontalMargin]}>
           <View style={styles.start}>
             <View style={s.icon}>
               <MhdStopSignSvg fill={colors.primary} />
@@ -112,8 +112,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.secondRow}>
-          {/* TODO add loading, see comments https://inovaciebratislava.atlassian.net/browse/PLAN-233 */}
+        <View style={[styles.secondRow, s.horizontalMargin]}>
           {data?.allLines?.map((departure, index) => {
             const isActive = filtersLineNumber.includes(departure.lineNumber)
 
@@ -158,9 +157,16 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
         contentContainerStyle={[
           styles.scrollingVehiclesData,
           styles.contentWrapper,
+          s.horizontalMargin,
         ]}
       >
-        {isLoading ? <LoadingView /> : null}
+        {isLoading && (
+          <LoadingView
+            stylesOuter={styles.elevation}
+            iconWidth={80}
+            iconHeight={80}
+          />
+        )}
         {data?.departures
           ?.filter((departure) =>
             filtersLineNumber.includes(departure.lineNumber)
@@ -227,12 +233,14 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingBottom: 5,
   },
+  elevation: {
+    elevation: 1,
+  },
   firstRow: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
     paddingBottom: 10,
   },
   header: {
@@ -243,7 +251,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
   },
   contentWrapper: {
     paddingBottom: BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
@@ -253,12 +260,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 7,
     paddingHorizontal: 12,
-    marginHorizontal: 5,
+    marginRight: 5,
     borderWidth: 2,
     borderRadius: 10,
   },
   scrollingVehiclesData: {
-    paddingHorizontal: 10,
     paddingVertical: 5,
   },
   lineDeparture: {

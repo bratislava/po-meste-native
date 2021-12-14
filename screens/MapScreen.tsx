@@ -467,13 +467,13 @@ export default function MapScreen() {
           </View>
         </MapView>
       )}
-      {isLoadingMhd ||
-      isLoadingRekola ||
-      isLoadingSlovnaftbajk ||
-      isLoadingTier ||
-      isLoadingZseChargers ? (
-        <LoadingView />
-      ) : null}
+      {(isLoadingMhd ||
+        isLoadingRekola ||
+        isLoadingSlovnaftbajk ||
+        isLoadingTier ||
+        isLoadingZseChargers) && (
+        <LoadingView fullscreen iconWidth={80} iconHeight={80} />
+      )}
       <View style={styles.currentLocation}>
         <TouchableHighlight
           onPress={() =>

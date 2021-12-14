@@ -14,6 +14,7 @@ import { s } from '@utils/globalStyles'
 import { Button } from '../components'
 import ButtonGroup from '@components/ButtonGroup'
 import ErrorView from '@components/ErrorView'
+import LoadingView from './ui/LoadingView/LoadingView'
 
 export default function Timetable({
   route,
@@ -78,6 +79,14 @@ export default function Timetable({
   return (
     <View style={s.container}>
       <View style={styles.column}>
+        {isLoading && (
+          <LoadingView
+            fullscreen
+            stylesOuter={styles.elevation}
+            iconWidth={80}
+            iconHeight={80}
+          />
+        )}
         <View style={styles.headerGrey}>
           <View style={s.horizontalMargin}>
             <View style={styles.header}>
@@ -200,6 +209,9 @@ export default function Timetable({
 const styles = StyleSheet.create({
   column: {
     flex: 1,
+  },
+  elevation: {
+    elevation: 1,
   },
   headerGrey: {
     backgroundColor: 'lightgrey',

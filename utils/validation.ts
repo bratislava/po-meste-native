@@ -202,6 +202,8 @@ const leg = yup.object().shape({
 
 export type LegProps = yup.TypeOf<typeof leg>
 
+export type OtpPlannerProps = yup.Asserts<typeof apiOtpPlanner>
+
 export const apiOtpPlanner = yup.object().shape({
   requestParameters: yup.object().shape({
     date: yup.string(), // "08-23-2021"

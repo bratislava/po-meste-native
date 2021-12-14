@@ -10,14 +10,16 @@ import { LegModes, MicromobilityProvider } from '../../../types'
 import Leg from './Leg'
 import { s } from '@utils/globalStyles'
 import { getColor, getIcon, getProviderName, getTextColor } from '@utils/utils'
+import LoadingView from '../LoadingView/LoadingView'
 
 type Props = {
   provider?: MicromobilityProvider
-  duration: number
-  departureDate: LocalDateTime
-  arriveDate: LocalDateTime
+  duration?: number
+  departureDate?: LocalDateTime
+  arriveDate?: LocalDateTime
   legs?: LegProps[]
-  onPress: () => void
+  onPress?: () => void
+  isLoading?: boolean
 }
 
 const TripMiniature = ({
@@ -27,10 +29,13 @@ const TripMiniature = ({
   arriveDate,
   legs,
   onPress,
+  isLoading,
 }: Props) => {
   const [startStationName, setStartStationName] = useState('')
   const [diffMinutes, setDiffMinutes] = useState(
-    Duration.between(LocalDateTime.now(), departureDate).toMinutes()
+    departureDate !== undefined
+      ? Duration.between(LocalDateTime.now(), departureDate).toMinutes()
+      : undefined
   )
 
   // TODO is this necessary?
@@ -45,13 +50,15 @@ const TripMiniature = ({
   }, [legs])
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setDiffMinutes(
-        Duration.between(LocalDateTime.now(), departureDate).toMinutes()
-      )
-    }, 10000)
-    return () => {
-      clearInterval(timer)
+    if (departureDate) {
+      const timer = setInterval(() => {
+        setDiffMinutes(
+          Duration.between(LocalDateTime.now(), departureDate).toMinutes()
+        )
+      }, 10000)
+      return () => {
+        clearInterval(timer)
+      }
     }
   }, [departureDate])
 
@@ -74,6 +81,7 @@ const TripMiniature = ({
             </Text>
           )}
         </View>
+        {isLoading && <LoadingView fullscreen stylesOuter={styles.elevation} />}
         <View style={styles.containerInner}>
           <View style={styles.leftContainer}>
             {legs && (
@@ -93,11 +101,13 @@ const TripMiniature = ({
             )}
             {startStationName.length > 0 && (
               <View style={styles.atTimeContainer}>
-                <Text style={styles.atTime}>
-                  {diffMinutes < 0
-                    ? i18n.t('beforeIn', { time: Math.abs(diffMinutes) })
-                    : i18n.t('startingIn', { time: diffMinutes })}
-                </Text>
+                {diffMinutes != undefined && (
+                  <Text style={styles.atTime}>
+                    {diffMinutes < 0
+                      ? i18n.t('beforeIn', { time: Math.abs(diffMinutes) })
+                      : i18n.t('startingIn', { time: diffMinutes })}
+                  </Text>
+                )}
                 <Text numberOfLines={1}>
                   {i18n.t('from', {
                     place: startStationName,
@@ -107,14 +117,21 @@ const TripMiniature = ({
             )}
           </View>
           <View style={styles.rightContainer}>
-            <View style={styles.durationContainer}>
-              <Text style={styles.durationNumber}>{duration}</Text>
-              <Text style={styles.durationMin}>min</Text>
-            </View>
+            {duration !== undefined && (
+              <View style={styles.durationContainer}>
+                <Text style={styles.durationNumber}>{duration}</Text>
+                <Text style={styles.durationMin}>min</Text>
+              </View>
+            )}
             <View style={styles.fromToTime}>
               <Text>
-                {departureDate.format(DateTimeFormatter.ofPattern('HH:mm'))} -
-                {arriveDate.format(DateTimeFormatter.ofPattern('HH:mm'))}
+                {departureDate &&
+                  departureDate.format(
+                    DateTimeFormatter.ofPattern('HH:mm')
+                  )}{' '}
+                -
+                {arriveDate &&
+                  arriveDate.format(DateTimeFormatter.ofPattern('HH:mm'))}
               </Text>
             </View>
             <View style={styles.rightContainerBackground}></View>
@@ -137,10 +154,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     overflow: 'hidden',
     backgroundColor: 'white',
+    minHeight: 100,
+    elevation: 10,
   },
   row: {
     display: 'flex',
     flexDirection: 'row',
+    elevation: 10,
   },
   containerInner: {
     flex: 1,
@@ -211,6 +231,9 @@ const styles = StyleSheet.create({
   atTime: {
     fontWeight: 'bold',
     marginRight: 5,
+  },
+  elevation: {
+    elevation: 1,
   },
 })
 

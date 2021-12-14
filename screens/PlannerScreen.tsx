@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useMemo } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack'
-import MapView, { Polyline } from 'react-native-maps'
+import MapView, { Polyline, PROVIDER_GOOGLE } from 'react-native-maps'
 import googlePolyline from 'google-polyline'
 import BottomSheet from '@gorhom/bottom-sheet'
-
 import { MapParamList } from '../types'
 import { TextItinerary } from './ui/TextItinerary/TextItinerary'
 import { HANDLE_HEIGHT, renderHeader } from '@components/BottomSheetHeader'
 import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from './ui/VehicleBar/VehicleBar'
+import { modeColors } from '@utils/constants'
+import { getColor, hexToRgba } from '@utils/utils'
 
 export default function PlannerScreen({
   route,
@@ -47,6 +48,7 @@ export default function PlannerScreen({
       <MapView
         ref={mapRef}
         style={styles.map}
+        provider={PROVIDER_GOOGLE}
         initialRegion={{
           latitude: 48.1512015,
           longitude: 17.1110118,
@@ -57,6 +59,14 @@ export default function PlannerScreen({
         {legs?.reduce<JSX.Element[]>((accumulator, leg, index) => {
           if (leg.legGeometry.points) {
             const latlngs = googlePolyline.decode(leg.legGeometry.points)
+            const color = hexToRgba(
+              leg.rentedBike
+                ? getColor(provider) || '#aaa'
+                : leg.routeColor
+                ? `#${leg.routeColor}`
+                : modeColors[leg.mode || 'DEFAULT'],
+              0.6
+            )
             const marker = (
               <Polyline
                 key={index}
@@ -65,7 +75,7 @@ export default function PlannerScreen({
                   longitude: point[1],
                 }))}
                 lineDashPattern={[1]}
-                strokeColor="#000"
+                strokeColor={color}
                 strokeWidth={6}
               />
             )

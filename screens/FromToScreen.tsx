@@ -8,7 +8,6 @@ import React, {
 } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import i18n from 'i18n-js'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { ScrollView } from 'react-native-gesture-handler'
 import { useQuery } from 'react-query'
 import { useNavigation } from '@react-navigation/native'
@@ -416,7 +415,7 @@ export default function FromToScreen({
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <FromToSelector
           onFromPlacePress={() => fromBottomSheetRef?.current?.snapToIndex(0)}
@@ -501,7 +500,7 @@ export default function FromToScreen({
             </View>
           </>
         )}
-        {dataStandard?.plan?.itineraries?.length != undefined &&
+        {/* {dataStandard?.plan?.itineraries?.length != undefined &&
           dataStandard.plan.itineraries.length > 0 && (
             <FeedbackAsker
               onNegativeFeedbackPress={() => {
@@ -509,7 +508,7 @@ export default function FromToScreen({
               }}
               onPositiveFeedbackPress={handlePositiveFeedback}
             />
-          )}
+          )} */}
       </ScrollView>
       <SearchFromToScreen
         sheetRef={fromBottomSheetRef}
@@ -528,7 +527,7 @@ export default function FromToScreen({
         inputPlaceholder={i18n.t('toPlaceholder')}
         initialSnapIndex={0}
       />
-    </SafeAreaView>
+    </View>
   )
 }
 

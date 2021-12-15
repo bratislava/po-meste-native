@@ -14,7 +14,9 @@ import { Ionicons } from '@expo/vector-icons'
 import { colors, s } from '@utils'
 
 // import MhdSvg from '@icons/mhd.svg'
-// import HistorySvg from '@icons/history-search.svg'
+// import { dummyDataPlaceHistory } from '../dummyData'
+import MhdSvg from '@images/mhd.svg'
+import MarkerSvg from '../assets/images/map-pin-marker.svg'
 
 interface SearchFromToScreen {
   sheetRef: MutableRefObject<BottomSheet | null>
@@ -87,9 +89,24 @@ export default function SearchFromToScreen({
               query={{
                 key: Constants.manifest?.extra?.googlePlacesApiKey,
                 language: 'sk',
-                location: '48.1512015, 17.1110118',
-                radius: '22000', //22 km
+                location: '48.160170, 17.130256',
+                radius: '8788', //8,788 km
                 strictbounds: true,
+              }}
+              renderRow={(result: any) => {
+                const Icon =
+                  result.types[0] === 'transit_station' ? MhdSvg : MarkerSvg
+                return (
+                  <View style={styles.searchResultRow}>
+                    <Icon
+                      style={styles.searchResultRowIcon}
+                      fill={colors.lighterGray}
+                      width={16}
+                      height={16}
+                    />
+                    <Text>{result.structured_formatting.main_text}</Text>
+                  </View>
+                )
               }}
               textInputProps={{
                 selectTextOnFocus: true,
@@ -290,6 +307,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 7,
     zIndex: 1,
+  },
+
+  searchResultRow: {
+    flexDirection: 'row',
+  },
+  searchResultRowIcon: {
+    marginRight: 5,
   },
 })
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useMemo, useState } from 'react'
-import { Dimensions, StyleSheet, useWindowDimensions, View } from 'react-native'
+import { StyleSheet, useWindowDimensions, View } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack'
 import MapView, { Polyline, PROVIDER_GOOGLE } from 'react-native-maps'
 import googlePolyline from 'google-polyline'

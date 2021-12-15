@@ -492,12 +492,11 @@ export default function MapScreen() {
         snapPoints={bottomSheetSnapPoints}
         onClose={handleSheetClose}
         enablePanDownToClose
-        onAnimate={(fromIndex, toIndex) => {
-          console.log(fromIndex, toIndex)
-          if (fromIndex === -1) {
-            setShowCurrentLocationButton(false)
-          } else if (toIndex === -1) {
+        onChange={(index) => {
+          if (index === -1) {
             setShowCurrentLocationButton(true)
+          } else {
+            setShowCurrentLocationButton(false)
           }
         }}
       >

@@ -8,7 +8,7 @@ import React, {
 } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import i18n from 'i18n-js'
-import { ScrollView } from 'react-native-gesture-handler'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { useQuery } from 'react-query'
 import { useNavigation } from '@react-navigation/native'
 import {
@@ -19,7 +19,10 @@ import {
 import { StackScreenProps } from '@react-navigation/stack'
 import * as Location from 'expo-location'
 import BottomSheet from '@gorhom/bottom-sheet'
-import { Instant, LocalDateTime } from '@js-joda/core'
+import { DateTimeFormatter, Instant, LocalDateTime } from '@js-joda/core'
+import DateTimePickerModal from 'react-native-modal-datetime-picker'
+import { Ionicons } from '@expo/vector-icons'
+import { Feather } from '@expo/vector-icons'
 
 import { getTripPlanner } from '@utils/api'
 import SearchFromToScreen from './SearchFromToScreen'
@@ -36,6 +39,7 @@ import { getOtpTravelMode } from '@utils/utils'
 import {
   MapParamList,
   MicromobilityProvider,
+  ScheduleType,
   TravelModes,
   TravelModesOtpApi,
   VehicleData,
@@ -44,6 +48,10 @@ import FeedbackAsker from './ui/FeedbackAsker/FeedbackAsker'
 import { GlobalStateContext } from '@components/GlobalStateProvider'
 import { useLocationWithPermision } from '@hooks/miscHooks'
 import { OtpPlannerProps } from '@utils/validation'
+import LoadingView from './ui/LoadingView/LoadingView'
+import Modal from '@components/Modal'
+import RadioButton from '@components/RadioButton'
+import Link from '@components/Link'
 
 export default function FromToScreen({
   route,
@@ -92,6 +100,14 @@ export default function FromToScreen({
     TravelModes.mhd
   )
 
+  const [scheduledTime, setScheduledTime] = useState<ScheduleType>(
+    ScheduleType.departure
+  )
+
+  const [visibleScheduleModal, setVisibleScheduleModal] = useState(false)
+
+  const [dateTime, setDateTime] = useState(LocalDateTime.now())
+
   const [locationPermisionError, setLocationPermisionError] =
     useState<string>('')
   const [fromGeocode, setFromGeocode] = useState<
@@ -106,14 +122,22 @@ export default function FromToScreen({
     isLoading: isLoadingStandard,
     error: errorStandard,
   } = useQuery(
-    ['getOtpData', fromCoordinates, toCoordinates, selectedVehicle],
+    [
+      'getOtpData',
+      fromCoordinates,
+      toCoordinates,
+      selectedVehicle,
+      dateTime,
+      scheduledTime,
+    ],
     () =>
       fromCoordinates &&
       toCoordinates &&
       getTripPlanner(
         `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
         `${toCoordinates.latitude},${toCoordinates.longitude}`,
-        new Date(),
+        dateTime,
+        scheduledTime === ScheduleType.arrival,
         getOtpTravelMode(selectedVehicle)
       ),
     { enabled: fromCoordinates && toCoordinates ? true : false }
@@ -124,14 +148,21 @@ export default function FromToScreen({
     isLoading: isLoadingRekola,
     error: errorRekola,
   } = useQuery(
-    ['getOtpRekolaData', fromCoordinates, toCoordinates],
+    [
+      'getOtpRekolaData',
+      fromCoordinates,
+      toCoordinates,
+      dateTime,
+      scheduledTime,
+    ],
     () =>
       fromCoordinates &&
       toCoordinates &&
       getTripPlanner(
         `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
         `${toCoordinates.latitude},${toCoordinates.longitude}`,
-        new Date(),
+        dateTime,
+        scheduledTime === ScheduleType.arrival,
         TravelModesOtpApi.rented,
         MicromobilityProvider.rekola
       ),
@@ -143,14 +174,21 @@ export default function FromToScreen({
     isLoading: isLoadingSlovnaftbajk,
     error: errorSlovnaftbajk,
   } = useQuery(
-    ['getOtpSlovnaftbajkData', fromCoordinates, toCoordinates],
+    [
+      'getOtpSlovnaftbajkData',
+      fromCoordinates,
+      toCoordinates,
+      dateTime,
+      scheduledTime,
+    ],
     () =>
       fromCoordinates &&
       toCoordinates &&
       getTripPlanner(
         `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
         `${toCoordinates.latitude},${toCoordinates.longitude}`,
-        new Date(),
+        dateTime,
+        scheduledTime === ScheduleType.arrival,
         TravelModesOtpApi.rented,
         MicromobilityProvider.slovnaftbajk
       ),
@@ -162,14 +200,15 @@ export default function FromToScreen({
     isLoading: isLoadingTier,
     error: errorTier,
   } = useQuery(
-    ['getOtpTierData', fromCoordinates, toCoordinates],
+    ['getOtpTierData', fromCoordinates, toCoordinates, dateTime, scheduledTime],
     () =>
       fromCoordinates &&
       toCoordinates &&
       getTripPlanner(
         `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
         `${toCoordinates.latitude},${toCoordinates.longitude}`,
-        new Date(),
+        dateTime,
+        scheduledTime === ScheduleType.arrival,
         TravelModesOtpApi.rented,
         MicromobilityProvider.tier
       ),
@@ -414,6 +453,38 @@ export default function FromToScreen({
     )
   }
 
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false)
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true)
+  }
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false)
+  }
+
+  const handleConfirm = (date: Date) => {
+    const utcTimestamp = Instant.parse(date.toISOString()) //'1989-08-16T00:00:00.000Z'
+    const localDateTime = LocalDateTime.ofInstant(utcTimestamp)
+
+    setDateTime(localDateTime)
+    hideDatePicker()
+  }
+
+  const hideSchedulePicker = () => {
+    setVisibleScheduleModal(false)
+  }
+
+  const showSchedulePicker = () => {
+    setVisibleScheduleModal(true)
+  }
+
+  const handleOptionChange = (scheduleTime: ScheduleType) => {
+    setScheduledTime(scheduleTime)
+    setVisibleScheduleModal(false)
+    showDatePicker()
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -437,6 +508,37 @@ export default function FromToScreen({
           toPlaceTextPlaceholder={i18n.t('toPlaceholder')}
           onSwitchPlacesPress={onSwitchPlacesPress}
         />
+        <TouchableOpacity
+          style={styles.schedulingContainer}
+          onPress={showSchedulePicker}
+        >
+          <View style={styles.row}>
+            <Feather
+              name="clock"
+              size={15}
+              style={{
+                alignSelf: 'center',
+                color: colors.primary,
+                marginRight: 4,
+              }}
+            />
+            <Text style={styles.schedulingText}>
+              {scheduledTime === ScheduleType.departure &&
+                i18n.t('departure', {
+                  time: dateTime.format(
+                    DateTimeFormatter.ofPattern('dd.MM. HH:mm')
+                  ),
+                })}
+              {scheduledTime === ScheduleType.arrival &&
+                i18n.t('arrival', {
+                  time: dateTime.format(
+                    DateTimeFormatter.ofPattern('dd.MM. HH:mm')
+                  ),
+                })}
+            </Text>
+            <Ionicons size={15} style={styles.ionicon} name="chevron-down" />
+          </View>
+        </TouchableOpacity>
       </View>
       <View>
         <VehicleSelector
@@ -527,6 +629,34 @@ export default function FromToScreen({
         inputPlaceholder={i18n.t('toPlaceholder')}
         initialSnapIndex={0}
       />
+      <Modal visible={visibleScheduleModal} onClose={hideSchedulePicker}>
+        <RadioButton
+          options={[
+            {
+              value: ScheduleType.departure,
+              label: i18n.t('departureText'),
+            },
+            {
+              value: ScheduleType.arrival,
+              label: i18n.t('arrivalText'),
+            },
+          ]}
+          value={scheduledTime}
+          onChangeValue={handleOptionChange}
+        />
+        <Link
+          style={styles.modalDismiss}
+          onPress={hideSchedulePicker}
+          title={i18n.t('cancel')}
+        />
+      </Modal>
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode="datetime"
+        display="spinner"
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
+      />
     </View>
   )
 }
@@ -547,6 +677,21 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     marginVertical: 12,
   },
+  ionicon: {
+    alignSelf: 'center',
+    color: colors.primary,
+    marginLeft: 9,
+  },
+  row: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  schedulingContainer: {
+    marginTop: 10,
+  },
+  schedulingText: {
+    color: colors.primary,
+  },
   header: {
     backgroundColor: 'white',
     paddingHorizontal: 20,
@@ -560,5 +705,9 @@ const styles = StyleSheet.create({
   },
   providerContainer: {
     marginBottom: 10,
+  },
+  modalDismiss: {
+    textAlign: 'center',
+    width: '100%',
   },
 })

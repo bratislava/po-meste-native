@@ -3,6 +3,7 @@ import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useQuery } from 'react-query'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
+import { ScrollView } from 'react-native-gesture-handler'
 
 import MhdStopSignSvg from '@images/stop-sign.svg'
 import ForwardMhdStopSvg from '@images/forward-mhd-stop.svg'
@@ -16,7 +17,7 @@ import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '../VehicleBar/VehicleBar'
 import { getMhdStopStatusData } from '@utils/api'
 import LoadingView from '../LoadingView/LoadingView'
 import { getVehicle } from '@utils/utils'
-import { ScrollView } from 'react-native-gesture-handler'
+import { LineNumber } from '@components/LineNumber'
 
 interface UpcomingDeparturesProps {
   station: MhdStopProps
@@ -199,20 +200,10 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
                         : undefined
                     )}
                   </View>
-                  <Text
-                    style={[
-                      s.lineNumber,
-                      {
-                        backgroundColor: departure.lineColor
-                          ? `#${departure.lineColor}`
-                          : mhdDefaultColors.grey,
-                      },
-                      s.whiteText,
-                      s.boldText,
-                    ]}
-                  >
-                    {departure.lineNumber}
-                  </Text>
+                  <LineNumber
+                    number={departure.lineNumber}
+                    color={departure.lineColor}
+                  />
                   <Text style={[s.blackText, styles.finalStation]}>
                     {departure.finalStopName}
                   </Text>

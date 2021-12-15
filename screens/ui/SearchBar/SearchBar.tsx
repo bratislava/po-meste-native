@@ -1,9 +1,7 @@
 import { useNavigation } from '@react-navigation/native'
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import i18n from 'i18n-js'
-
-import TicketSvg from '@images/ticket.svg'
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -20,10 +18,6 @@ const SearchBar = () => {
       onPress={() => navigation.navigate('FromToScreen')}
     >
       <Text style={styles.searchInput}>{i18n.t('whereTo')}</Text>
-      <View style={styles.searchButton}>
-        {/* TODO change for search icon */}
-        <TicketSvg fill="gray" />
-      </View>
     </TouchableOpacity>
   )
 }

@@ -7,7 +7,7 @@ import React, {
   useRef,
 } from 'react'
 import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps'
-import { StyleSheet, View, ImageURISource } from 'react-native'
+import { StyleSheet, View, ImageURISource, Platform } from 'react-native'
 import BottomSheet from '@gorhom/bottom-sheet'
 import * as Location from 'expo-location'
 import { TouchableHighlight } from 'react-native-gesture-handler'
@@ -44,7 +44,6 @@ import VehicleBar, {
   BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
 } from '@screens/ui/VehicleBar/VehicleBar'
 import LoadingView from '@screens/ui/LoadingView/LoadingView'
-import { renderHeader } from '@components/BottomSheetHeader'
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@navigation/TabBar'
 
 const MIN_DELTA_FOR_XS_MARKER = 0.05
@@ -133,6 +132,9 @@ export default function MapScreen() {
     longitudeDelta: 0.0421,
   })
   const { getLocationWithPermission } = useLocationWithPermision()
+  // useful on Android, where the elevation shadow causes incorrect ordering of elements
+  const [showCurrentLocationButton, setShowCurrentLocationButton] =
+    useState(true)
 
   const bottomSheetRef = useRef<BottomSheet>(null)
 
@@ -140,7 +142,7 @@ export default function MapScreen() {
     if (selectedMicromobilityStation) {
       return ['50%']
     } else {
-      return ['50%', '100%']
+      return ['50%', '95%']
     }
   }, [selectedMicromobilityStation])
 
@@ -371,6 +373,12 @@ export default function MapScreen() {
           }}
           onRegionChangeComplete={(region) => setRegion(region)}
           showsUserLocation
+          mapPadding={{
+            bottom: BOTTOM_VEHICLE_BAR_HEIGHT_ALL + 5,
+            top: 0,
+            right: 0,
+            left: 0,
+          }}
         >
           {vehiclesContext.vehicleTypes?.find(
             (vehicleType) => vehicleType.id === VehicleType.mhd
@@ -456,15 +464,6 @@ export default function MapScreen() {
               },
               []
             )}
-          <View style={styles.currentLocation}>
-            <TouchableHighlight
-              onPress={() =>
-                moveMapToCurrentLocation(() => getLocationWithPermission(true))
-              }
-            >
-              <CurrentLocationSvg />
-            </TouchableHighlight>
-          </View>
         </MapView>
       )}
       {(isLoadingMhd ||
@@ -474,24 +473,32 @@ export default function MapScreen() {
         isLoadingZseChargers) && (
         <LoadingView fullscreen iconWidth={80} iconHeight={80} />
       )}
-      <View style={styles.currentLocation}>
-        <TouchableHighlight
-          onPress={() =>
-            moveMapToCurrentLocation(() => getLocationWithPermission(true))
-          }
-        >
-          <CurrentLocationSvg />
-        </TouchableHighlight>
-      </View>
+      {Platform.select({ ios: true, android: showCurrentLocationButton }) && (
+        <View style={styles.currentLocation}>
+          <TouchableHighlight
+            onPress={() =>
+              moveMapToCurrentLocation(() => getLocationWithPermission(true))
+            }
+          >
+            <CurrentLocationSvg />
+          </TouchableHighlight>
+        </View>
+      )}
       <SearchBar />
       <VehicleBar />
       <BottomSheet
         ref={bottomSheetRef}
         index={-1}
-        handleComponent={renderHeader}
         snapPoints={bottomSheetSnapPoints}
         onClose={handleSheetClose}
         enablePanDownToClose
+        onChange={(index) => {
+          if (index === -1) {
+            setShowCurrentLocationButton(true)
+          } else {
+            setShowCurrentLocationButton(false)
+          }
+        }}
       >
         {selectedChargerStation ? (
           <StationChargerInfo

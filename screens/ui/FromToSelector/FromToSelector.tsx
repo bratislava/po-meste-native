@@ -32,7 +32,7 @@ const FromToSelector = ({
     <View style={styles.container}>
       <View style={styles.arrowContainer}>
         <CircleSvg width={20} height={20} fill={colors.primary} />
-        <DashedLine color={colors.gray} />
+        <DashedLine spacing={4} dashLength={2} color={colors.gray} />
         <TriangleSvg width={20} height={20} fill={colors.primary} />
       </View>
       <View style={styles.inputsContainer}>
@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
   },
   arrowContainer: {
     paddingVertical: 16,
+    alignItems: 'center',
   },
   inputsContainer: {
     flex: 1,

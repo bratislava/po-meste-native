@@ -21,7 +21,7 @@ export default {
   ios: {
     bundleIdentifier: 'com.bratislava.hybaj',
     supportsTablet: false,
-    buildNumber: '17',
+    buildNumber: '18',
     infoPlist: {
       NSLocationWhenInUseUsageDescription:
         'Allow the app to use your location to show it on map and suggest navigation.',
@@ -37,7 +37,7 @@ export default {
   android: {
     softwareKeyboardLayoutMode: 'pan',
     package: 'com.bratislava.hybaj',
-    versionCode: 17,
+    versionCode: 18,
     adaptiveIcon: {
       foregroundImage: './assets/images/adaptive-icon.png',
       backgroundColor: '#ffffff',

@@ -150,7 +150,7 @@ export enum ScheduleType {
   arrival = 'arrival',
 }
 
-export enum PrefferedLanguage {
+export enum PreferredLanguage {
   en = 'en',
   sk = 'sk',
   auto = 'auto',

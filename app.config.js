@@ -15,13 +15,13 @@ export default {
     backgroundColor: '#f5f5f5',
   },
   updates: {
-    fallbackToCacheTimeout: 0,
+    fallbackToCacheTimeout: 5000,
   },
   assetBundlePatterns: ['**/*'],
   ios: {
     bundleIdentifier: 'com.bratislava.hybaj',
     supportsTablet: false,
-    buildNumber: '18',
+    buildNumber: '19',
     infoPlist: {
       NSLocationWhenInUseUsageDescription:
         'Allow the app to use your location to show it on map and suggest navigation.',
@@ -37,7 +37,7 @@ export default {
   android: {
     softwareKeyboardLayoutMode: 'pan',
     package: 'com.bratislava.hybaj',
-    versionCode: 18,
+    versionCode: 19,
     adaptiveIcon: {
       foregroundImage: './assets/images/adaptive-icon.png',
       backgroundColor: '#ffffff',
@@ -57,8 +57,9 @@ export default {
     googleAndroidApiKey: process.env.GOOGLE_ANDROID_API_KEY,
     googlePlacesApiKey: process.env.GOOGLE_PLACES_API_KEY,
     contactEmailAddress: 'pomeste@bratislava.sk',
-    generalTermsAndConditionsLink: 'https://www.google.com',
-    privacyPolicyLink: 'https://www.youtube.com',
+    generalTermsAndConditionsLink:
+      'https://pomeste.bratislava.sk/terms-conditions/',
+    privacyPolicyLink: 'https://pomeste.bratislava.sk/privacy-policy/',
   },
   packagerOpts: {
     config: 'metro.config.js',

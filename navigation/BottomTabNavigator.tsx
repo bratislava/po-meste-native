@@ -82,7 +82,13 @@ function MapNavigator() {
         component={MapScreen}
         options={{ headerShown: false }}
       />
-      <MapStack.Screen name="FromToScreen" component={FromToScreen} />
+      <MapStack.Screen
+        name="FromToScreen"
+        component={FromToScreen}
+        options={{
+          header: (props) => <Header {...props} borderShown={false} />,
+        }}
+      />
       <MapStack.Screen name="PlannerScreen" component={PlannerScreen} />
       <MapStack.Screen
         name="LineTimelineScreen"

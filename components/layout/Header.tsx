@@ -8,19 +8,15 @@ import { StackHeaderProps } from '@react-navigation/stack'
 import { t } from 'i18n-js'
 
 export interface HeaderProps extends StackHeaderProps {
-  useBack?: boolean
   onBack?: () => void
-  leftSlot?: ReactNode
-  rightSlot?: ReactNode
+  borderShown?: boolean
 }
 
 export const Header = ({
   insets,
-  useBack = true,
   scene,
   onBack,
-  leftSlot,
-  rightSlot,
+  borderShown = true,
 }: HeaderProps) => {
   const navigation = useNavigation()
   const screenOptions = scene.descriptor.options
@@ -29,28 +25,31 @@ export const Header = ({
     <View
       style={[
         styles.container,
-        { paddingTop: insets.top, height: insets.top + 64 },
+        {
+          paddingTop: insets.top,
+          height: insets.top + 64,
+          borderBottomWidth: borderShown ? 5 : 0,
+        },
       ]}
     >
       <View style={styles.leftContainer}>
-        {useBack && (
+        {screenOptions.headerLeft === undefined ? (
           <TouchableOpacity
             style={styles.backButton}
-            onPress={() => {
-              onBack ? onBack() : navigation.goBack()
-            }}
+            onPress={() => (onBack ? onBack() : navigation.goBack())}
           >
             <ChevronLeftSmall width={16} height={16} fill={colors.gray} />
           </TouchableOpacity>
+        ) : (
+          screenOptions.headerLeft
         )}
-        {leftSlot}
       </View>
       <View style={styles.centerContainer}>
         <Text style={styles.centerText}>
           {screenOptions.title ?? t(`screens.${scene.route.name}.screenTitle`)}
         </Text>
       </View>
-      <View style={styles.rightContainer}>{rightSlot}</View>
+      <View style={styles.rightContainer}>{screenOptions.headerRight}</View>
     </View>
   )
 }
@@ -60,7 +59,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 5,
     borderBottomColor: colors.primary,
-    borderBottomWidth: 5,
     alignItems: 'center',
     backgroundColor: 'white',
   },

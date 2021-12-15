@@ -18,7 +18,11 @@ export const SettingsScreenNavigation = () => {
         header: (props) => <Header {...props} />,
       }}
     >
-      <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+      <Stack.Screen
+        name="SettingsScreen"
+        component={SettingsScreen}
+        options={{ headerLeft: () => null }}
+      />
       <Stack.Screen name="AboutScreen" component={AboutScreen} />
       <Stack.Screen name="FAQScreen" component={FAQScreen} />
     </Stack.Navigator>

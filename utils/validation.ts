@@ -392,6 +392,9 @@ export const apiMhdTrip = yup.object().shape({
 })
 
 export const apiMhdGrafikon = yup.object().shape({
+  vehicleType: yup
+    .mixed<TransitVehicleType>()
+    .oneOf(Object.values(TransitVehicleType)),
   lineNumber: yup.string(),
   // .required('error-malformed-apiMhdGrafikon-lineNumber'),
   currentStopName: yup.string(),

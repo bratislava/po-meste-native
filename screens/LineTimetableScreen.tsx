@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import _ from 'lodash'
 import {
   ScrollView,
@@ -17,11 +17,12 @@ import { Ionicons } from '@expo/vector-icons'
 import { colors, mhdDefaultColors } from '@utils/theme'
 import { getMhdGrafikon } from '@utils/api'
 import { MapParamList, TimetableType } from '../types'
-import TicketSvg from '@images/ticket.svg'
 import ArrowRight from '@images/arrow-right.svg'
 import { s } from '@utils/globalStyles'
 import ErrorView from '@components/ErrorView'
 import LoadingView from './ui/LoadingView/LoadingView'
+import { getVehicle } from '@utils/utils'
+import { LineNumber } from '@components/LineNumber'
 
 export default function LineTimetableScreen({
   route,
@@ -37,6 +38,32 @@ export default function LineTimetableScreen({
     ['getGrafikon', stopId, lineNumber, date],
     () => getMhdGrafikon(stopId, lineNumber, date)
   )
+
+  const verticalScrollViewRef = useRef<ScrollView | null>(null)
+  const horizontalScrollViewRef = useRef<ScrollView | null>(null)
+  const [highlightedMinutePositionX, setHighlightedMinutePositionX] =
+    useState<number>(0)
+  const [highlightedMinutePositionY, setHighlightedMinutePositionY] =
+    useState<number>(0)
+
+  //scroll to highlighted minute on layout event
+  useEffect(() => {
+    setTimeout(() => {
+      horizontalScrollViewRef.current?.scrollTo({
+        x: highlightedMinutePositionX,
+        animated: true,
+      })
+      verticalScrollViewRef.current?.scrollTo({
+        y: highlightedMinutePositionY,
+        animated: true,
+      })
+    }, 500)
+  }, [
+    highlightedMinutePositionX,
+    highlightedMinutePositionY,
+    verticalScrollViewRef,
+    horizontalScrollViewRef,
+  ])
 
   const formattedData = useMemo(() => {
     const timetableByHours = _.groupBy(data?.timetable, (value) => {
@@ -102,6 +129,24 @@ export default function LineTimetableScreen({
     setDatePickerVisibility(false)
   }
 
+  const getVehicleIconStyledFilter = useCallback(() => {
+    const Icon = getVehicle(data?.vehicleType)
+    return (
+      <Icon
+        width={24}
+        height={24}
+        fill={data?.lineColor ? `#${data?.lineColor}` : mhdDefaultColors.grey}
+      />
+    )
+  }, [data])
+
+  const shouldBeMinuteHighlighted = (
+    indexHours: number,
+    indexMinutes: number
+  ) => {
+    return activeIndex[1] === indexHours && activeIndex[2] === indexMinutes
+  }
+
   if (error) return <ErrorView error={error} action={refetch} />
 
   return (
@@ -118,36 +163,13 @@ export default function LineTimetableScreen({
         <View style={styles.headerGrey}>
           <View style={s.horizontalMargin}>
             <View style={styles.header}>
-              <View style={s.icon}>
-                {/* TODO add right icon https://inovaciebratislava.atlassian.net/browse/PLAN-239 */}
-                <TicketSvg
-                  width={30}
-                  height={40}
-                  fill={
-                    data?.lineColor
-                      ? `#${data?.lineColor}`
-                      : mhdDefaultColors.grey
-                  }
-                />
-              </View>
-              <Text
-                style={[
-                  s.lineNumber,
-                  {
-                    backgroundColor: data?.lineColor
-                      ? `#${data?.lineColor}`
-                      : mhdDefaultColors.grey,
-                  },
-                  s.whiteText,
-                ]}
-              >
-                {data?.lineNumber}
-              </Text>
+              <View style={s.icon}>{getVehicleIconStyledFilter()}</View>
+              <LineNumber number={data?.lineNumber} color={data?.lineColor} />
               <Text style={[styles.startStation, styles.textBold, s.blackText]}>
                 {data?.currentStopName}
               </Text>
               <View style={[s.icon, styles.marginHorizontal]}>
-                <ArrowRight width={10} fill="red" />
+                <ArrowRight width={12} height={12} fill={colors.primary} />
               </View>
               <Text style={s.blackText}>{data?.finalStopName}</Text>
             </View>
@@ -198,53 +220,78 @@ export default function LineTimetableScreen({
           </ButtonGroup> */}
         </View>
         <ScrollView
-          // ref={scrollViewRef}
+          ref={verticalScrollViewRef}
           contentContainerStyle={s.horizontalMargin}
         >
-          <View style={styles.row}>
-            <View style={styles.flexColumn}>
-              {[
-                4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-                21, 22, 23, 0,
-              ].map((hour, indexHours) => {
-                const dataToShow = formattedData.find(
-                  (hourDataRow) => hourDataRow.hour === hour
-                )
-                return (
-                  <View
-                    key={hour}
+          <ScrollView
+            ref={horizontalScrollViewRef}
+            horizontal
+            contentContainerStyle={styles.flexColumn}
+          >
+            {[
+              4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+              22, 23, 0,
+            ].map((hour, indexHours) => {
+              const dataToShow = formattedData.find(
+                (hourDataRow) => hourDataRow.hour === hour
+              )
+              return (
+                <View
+                  key={hour}
+                  style={[
+                    styles.timetableRow,
+                    indexHours % 2 === 0 ? styles.headerEven : null,
+                  ]}
+                  onLayout={(event) =>
+                    activeIndex[1] === indexHours &&
+                    setHighlightedMinutePositionY(event.nativeEvent.layout.y)
+                  }
+                >
+                  <Text
                     style={[
-                      styles.timetableRow,
-                      indexHours % 2 === 0 ? styles.headerGrey : null,
+                      styles.textBold,
+                      styles.hourText,
+                      indexHours % 2 === 0 ? styles.hourEven : null,
                     ]}
                   >
-                    <Text style={[styles.textBold, styles.hourText]}>
-                      {hour}
-                    </Text>
-                    {dataToShow?.minutes.map((minuteData, indexMinutes) => {
-                      return (
+                    {hour}
+                  </Text>
+                  {dataToShow?.minutes.map((minuteData, indexMinutes) => {
+                    return (
+                      <View
+                        key={indexMinutes}
+                        style={[
+                          styles.minuteContainer,
+                          shouldBeMinuteHighlighted(indexHours, indexMinutes)
+                            ? styles.highlightedMinuteContainer
+                            : null,
+                        ]}
+                        onLayout={(event) =>
+                          shouldBeMinuteHighlighted(indexHours, indexMinutes) &&
+                          setHighlightedMinutePositionX(
+                            event.nativeEvent.layout.x
+                          )
+                        }
+                      >
                         <Text
-                          key={indexMinutes}
-                          style={[
-                            styles.minuteText,
-                            activeIndex[1] === indexHours &&
-                            activeIndex[2] === indexMinutes
-                              ? s.bgRed // TODO change this color
-                              : null,
-                          ]}
+                          style={
+                            shouldBeMinuteHighlighted(indexHours, indexMinutes)
+                              ? styles.highlightedMinuteText
+                              : null
+                          }
                         >
                           {minuteData.minute}
                           {minuteData.additionalInfo
                             ? minuteData.additionalInfo
                             : ''}
                         </Text>
-                      )
-                    })}
-                  </View>
-                )
-              })}
-            </View>
-          </View>
+                      </View>
+                    )
+                  })}
+                </View>
+              )
+            })}
+          </ScrollView>
         </ScrollView>
       </View>
       <DateTimePickerModal
@@ -266,7 +313,13 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   headerGrey: {
-    backgroundColor: 'lightgrey',
+    backgroundColor: colors.lightLightGray,
+  },
+  headerEven: {
+    backgroundColor: colors.secondary,
+  },
+  hourEven: {
+    color: colors.primary,
   },
   header: {
     flexDirection: 'row',
@@ -291,28 +344,31 @@ const styles = StyleSheet.create({
   schedulingText: {
     color: colors.primary,
   },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   flexColumn: {
-    width: '100%',
     flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    alignItems: 'stretch',
     marginBottom: 100,
+    minWidth: '100%',
   },
   timetableRow: {
-    width: '100%',
     paddingVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 5,
+    flex: 1,
   },
   hourText: {
     width: 20,
-    marginRight: 20,
+    marginRight: 10,
   },
-  minuteText: {
-    marginRight: 9,
+  minuteContainer: {
+    padding: 4,
+    borderRadius: 5,
+  },
+  highlightedMinuteContainer: {
+    backgroundColor: colors.primary,
+  },
+  highlightedMinuteText: {
+    color: 'white',
   },
 })

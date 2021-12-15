@@ -1,5 +1,11 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useQuery } from 'react-query'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
@@ -112,7 +118,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={[styles.secondRow, s.horizontalMargin]}>
+        <ScrollView horizontal contentContainerStyle={styles.secondRow}>
           {data?.allLines?.map((departure, index) => {
             const isActive = filtersLineNumber.includes(departure.lineNumber)
 
@@ -122,6 +128,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
                 style={[
                   styles.linkFilter,
                   {
+                    marginLeft: index ? 5 : 0,
                     backgroundColor: `${
                       isActive
                         ? '#' + departure.lineColor
@@ -151,7 +158,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
               </TouchableOpacity>
             )
           })}
-        </View>
+        </ScrollView>
       </View>
       <BottomSheetScrollView
         contentContainerStyle={[
@@ -251,6 +258,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 20,
   },
   contentWrapper: {
     paddingBottom: BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
@@ -260,7 +268,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 7,
     paddingHorizontal: 12,
-    marginRight: 5,
     borderWidth: 2,
     borderRadius: 10,
   },

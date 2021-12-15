@@ -16,7 +16,11 @@ export const TicketsScreenNavigation = () => {
         header: (props) => <Header {...props} />,
       }}
     >
-      <Stack.Screen name="SMSScreen" component={SMSScreen} />
+      <Stack.Screen
+        name="SMSScreen"
+        component={SMSScreen}
+        options={{ headerLeft: () => null }}
+      />
     </Stack.Navigator>
   )
 }

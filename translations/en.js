@@ -88,9 +88,9 @@ export default {
       version: 'Version',
       unknown: 'unknown',
       description:
-        'En Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat, rerum voluptate a vitae eligendi inventore officiis delectus, earum repudiandae asperiores ea, reprehenderit exercitationem corporis accusamus voluptatum ut quia explicabo itaque!',
+        'This is first version (Beta) of the MaaS (mobility as a service) application “Po meste”. We are gradually creating an open mobility platform for Bratislava, which will connect public transport with alternative mobility and offer green mobility in one place, from planning, comparison and driving in a few clicks. Walking around the city, by bike, scooter or tram? You will choose. ',
       contact: 'Contact',
-      poweredBy: 'Powered by',
+      createdBy: 'Created thanks to',
       generalTermsAndConditions: 'General terms and conditions',
       inovationsBratislava: 'Inovations Bratislava',
       coFundedByTheEuropeanUnion: 'Co-funded by the European Union',
@@ -101,17 +101,17 @@ export default {
         question1: {
           question: 'What is app po meste?',
           answer:
-            'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+            'This is first version (Beta) of the MaaS (mobility as a service) application “Po meste”. We are gradually creating an open mobility platform for Bratislava, which will connect public transport with alternative mobility and offer green mobility in one place, from planning, comparison and driving in a few clicks. Walking around the city, by bike, scooter or tram? You will choose.',
         },
         question2: {
           question: 'What does beta version mean?',
           answer:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+            'The beta version is in generall a temporary version of an application that is constantly evolving. The goal of the Beta version is to test the functioning of all functionalities in a real environment and gradually fine-tune the application for the best user experience.',
         },
         question3: {
           question: 'Why are there only sms tickets?',
           answer:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+            'Implementing the purchase of electronic tickets is one of the most complicated functionalities. Its deployment is not yet complete. In the meantime, we have incorporated into the application at least the possibility of purchasing SMS tickets.',
         },
       },
       footerText: "Didn't find the answer to your question? Write to us at ",

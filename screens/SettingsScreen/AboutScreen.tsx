@@ -60,7 +60,7 @@ export const AboutScreen = () => {
               title={t('privacyPolicy')}
             />
             <Text style={styles.footerLabel}>
-              {t('screens.AboutScreen.poweredBy')}
+              {t('screens.AboutScreen.createdBy')}
             </Text>
             <View style={styles.poweredByContainer}>
               <View style={styles.poweredByItem}>

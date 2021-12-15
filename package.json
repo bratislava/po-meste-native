@@ -10,7 +10,10 @@
     "check-eslint": "eslint --max-warnings 0 ./components ./hooks ./navigation ./screens ./translations ./utils ./App.tsx",
     "check-ts": "tsc --noEmit --skipLibCheck",
     "check-code": "yarn check-eslint && yarn check-ts",
-    "create-production-apk": "expo build:android --release-channel production -t apk"
+    "create-production-apk": "expo build:android --release-channel production -t apk",
+    "create-production-ipa": "expo build:ios --release-channel production -t archive",
+    "publish-production": "expo publish --release-channel production",
+    "publish-staging": "expo publish --release-channel staging"
   },
   "jest": {
     "preset": "jest-expo"
@@ -19,6 +22,8 @@
     "@expo/vector-icons": "^12.0.0",
     "@gorhom/bottom-sheet": "4",
     "@js-joda/core": "^4.3.1",
+    "@js-joda/timezone": "^2.10.0",
+    "@react-native-community/datetimepicker": "3.5.2",
     "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/bottom-tabs": "5.11.2",
     "@react-navigation/native": "~5.8.10",
@@ -51,6 +56,7 @@
     "react-native-gesture-handler": "~1.10.2",
     "react-native-google-places-autocomplete": "^2.4.1",
     "react-native-maps": "0.28.0",
+    "react-native-modal-datetime-picker": "^13.0.0",
     "react-native-pager-view": "^5.4.6",
     "react-native-reanimated": "~2.2.0",
     "react-native-safe-area-context": "3.2.0",

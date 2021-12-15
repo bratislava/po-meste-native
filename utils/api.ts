@@ -7,6 +7,14 @@ import {
   apiMhdTrip,
 } from './validation'
 import { MicromobilityProvider, TravelModesOtpApi } from '../types'
+import {
+  DateTimeFormatter,
+  LocalDate,
+  LocalDateTime,
+  ZonedDateTime,
+  ZoneId,
+} from '@js-joda/core'
+import '@js-joda/timezone'
 
 const host = 'planner.bratislava.sk'
 const dataHostUrl =
@@ -55,10 +63,24 @@ export const getMhdTrip = async (id: string) =>
   apiMhdTrip.validateSync(await fetchJsonFromApi(`/mhd/trip/${id}`))
 
 // TODO do every query like they do it on Discovery channel, sorry, like this, validate immediately
-export const getMhdGrafikon = async (stopId: string, lineNumber: string) =>
-  apiMhdGrafikon.validateSync(
-    await fetchJsonFromApi(`/mhd/stop/${stopId}/grafikon/${lineNumber}`)
+export const getMhdGrafikon = async (
+  stopId: string,
+  lineNumber: string,
+  date?: LocalDate
+) => {
+  let data = ''
+  if (date) {
+    data = qs.stringify(
+      {
+        date: date.format(DateTimeFormatter.ISO_LOCAL_DATE),
+      },
+      { addQueryPrefix: true }
+    )
+  }
+  return apiMhdGrafikon.validateSync(
+    await fetchJsonFromApi(`/mhd/stop/${stopId}/grafikon/${lineNumber}${data}`)
   )
+}
 
 export const getMhdGrafikonn = (stopId: string, lineNumber: string) =>
   fetchJsonFromApi(`/mhd/stop/${stopId}/grafikon/${lineNumber}`)
@@ -81,26 +103,33 @@ export const getChargersStops = () => fetchJsonFromApi('/zse')
 export const getTripPlanner = async (
   from: string,
   to: string,
-  dateTime: Date,
+  dateTime: LocalDateTime,
+  arriveBy: boolean,
   mode: TravelModesOtpApi = TravelModesOtpApi.transit,
   plannerApi?: MicromobilityProvider
 ) => {
-  const adjustedDate = new Date(dateTime.getTime())
-  if (
+  const adjustedDateTime =
     plannerApi === MicromobilityProvider.rekola ||
     plannerApi == MicromobilityProvider.tier
-  ) {
-    adjustedDate.setHours(adjustedDate.getHours() + 20) // TODO erase when https://inovaciebratislava.atlassian.net/browse/PLAN-268 solved
+      ? dateTime.plusHours(20) // TODO erase when https://inovaciebratislava.atlassian.net/browse/PLAN-268 solved
+      : dateTime
+
+  if (plannerApi === MicromobilityProvider.tier) {
+    console.log('plannerApi adjustedDateTime: ', adjustedDateTime)
   }
+  const zonedTime = ZonedDateTime.of(
+    adjustedDateTime,
+    ZoneId.of('Europe/Bratislava')
+  )
 
   const data = qs.stringify(
     {
       fromPlace: from,
       toPlace: to,
-      time: adjustedDate.toISOString(),
+      time: zonedTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
       mode: mode,
       maxWalkDistance: '4828.032',
-      arriveBy: 'false',
+      arriveBy: arriveBy,
       wheelchair: 'false',
       debugItineraryFilter: 'false',
       locale: 'en',

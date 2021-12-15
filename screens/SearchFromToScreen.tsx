@@ -1,7 +1,7 @@
 import React, { MutableRefObject, useState, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import i18n from 'i18n-js'
-import { ScrollView } from 'react-native-gesture-handler'
+// import { ScrollView } from 'react-native-gesture-handler'
 import BottomSheet from '@gorhom/bottom-sheet'
 import {
   GooglePlaceData,
@@ -11,12 +11,11 @@ import {
 } from 'react-native-google-places-autocomplete'
 import Constants from 'expo-constants'
 import { Ionicons } from '@expo/vector-icons'
-import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@navigation/TabBar'
+// import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@navigation/TabBar'
 
-import { dummyDataPlaceHistory } from '../dummyData'
-import MhdSvg from '@images/mhd.svg'
-import HistorySvg from '@images/history-search.svg'
-import { renderHeader } from '@components/BottomSheetHeader'
+// import { dummyDataPlaceHistory } from '../dummyData'
+// import MhdSvg from '@images/mhd.svg'
+// import HistorySvg from '@images/history-search.svg'
 import { colors } from '@utils/theme'
 import { s } from '@utils/globalStyles'
 
@@ -42,10 +41,10 @@ export default function SearchFromToScreen({
   inputPlaceholder,
   initialSnapIndex,
 }: SearchFromToScreen) {
-  const clearLocationTextInput = () => {
-    googleInputRef.current?.setAddressText('')
-    googleInputRef.current?.focus()
-  }
+  // const clearLocationTextInput = () => {
+  //   googleInputRef.current?.setAddressText('')
+  //   googleInputRef.current?.focus()
+  // }
 
   useEffect(() => {
     if (getMyLocation) {
@@ -64,25 +63,24 @@ export default function SearchFromToScreen({
       ref={sheetRef}
       index={initialSnapIndex}
       snapPoints={['99%']}
-      handleComponent={renderHeader}
       enablePanDownToClose
     >
       <View style={styles.content}>
         <View style={[s.horizontalMargin, styles.content]}>
           <View style={styles.googleFrom}>
             <GooglePlacesAutocomplete
-              renderLeftButton={() => (
-                <Ionicons
-                  onPress={clearLocationTextInput}
-                  size={30}
-                  style={{
-                    alignSelf: 'center',
-                    marginBottom: -3,
-                    color: colors.lighterGray,
-                  }}
-                  name="close"
-                />
-              )}
+              // renderLeftButton={() => (
+              //   <Ionicons
+              //     onPress={clearLocationTextInput}
+              //     size={30}
+              //     style={{
+              //       alignSelf: 'center',
+              //       marginBottom: -3,
+              //       color: colors.lighterGray,
+              //     }}
+              //     name="close"
+              //   />
+              // )}
               ref={googleInputRef}
               styles={autoCompleteStyles}
               enablePoweredByContainer={false}
@@ -108,7 +106,7 @@ export default function SearchFromToScreen({
               }}
             />
           </View>
-          <View>
+          {/* <View>
             <Text style={styles.categoriesTitle}>{i18n.t('myAddresses')}</Text>
             <ScrollView
               contentContainerStyle={styles.horizontalScrollView}
@@ -149,7 +147,7 @@ export default function SearchFromToScreen({
                 </View>
               ))}
             </ScrollView>
-          </View>
+          </View> */}
           <View style={styles.categoryStops}>
             <View style={styles.separatorParent}>
               <View style={styles.separator}></View>
@@ -197,7 +195,7 @@ export default function SearchFromToScreen({
               )}
             </View>
           </View>
-          <View style={styles.categoryStops}>
+          {/* <View style={styles.categoryStops}>
             <View style={styles.separatorParent}>
               <View style={styles.separator}></View>
             </View>
@@ -212,7 +210,7 @@ export default function SearchFromToScreen({
                 </View>
               ))}
             </View>
-          </View>
+          </View> */}
         </View>
       </View>
     </BottomSheet>
@@ -220,32 +218,32 @@ export default function SearchFromToScreen({
 }
 
 const styles = StyleSheet.create({
-  categoriesTitle: {
-    marginTop: 14,
-    marginBottom: 10,
-  },
-  horizontalScrollView: {
-    flexDirection: 'row',
-    borderWidth: 1,
-  },
-  verticalScrollView: {
-    paddingBottom: BOTTOM_TAB_NAVIGATOR_HEIGHT,
-  },
-  horizontalScrollItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 56,
-    marginRight: 10,
-    paddingHorizontal: 10,
-    borderColor: colors.lightGray,
-    borderWidth: 1,
-    borderRadius: 3,
-  },
-  verticalScrollItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 56,
-  },
+  // categoriesTitle: {
+  //   marginTop: 14,
+  //   marginBottom: 10,
+  // },
+  // horizontalScrollView: {
+  //   flexDirection: 'row',
+  //   borderWidth: 1,
+  // },
+  // verticalScrollView: {
+  //   paddingBottom: BOTTOM_TAB_NAVIGATOR_HEIGHT,
+  // },
+  // horizontalScrollItem: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   height: 56,
+  //   marginRight: 10,
+  //   paddingHorizontal: 10,
+  //   borderColor: colors.lightGray,
+  //   borderWidth: 1,
+  //   borderRadius: 3,
+  // },
+  // verticalScrollItem: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   height: 56,
+  // },
   chooseFromMapRow: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -260,16 +258,17 @@ const styles = StyleSheet.create({
   },
   chooseFromMapText: {
     width: 100,
+    alignItems: 'center',
   },
   placeTexts: {
     marginLeft: 10,
   },
-  placeName: {
-    color: colors.primary,
-  },
-  placeAddressMinor: {
-    color: colors.mediumGray,
-  },
+  // placeName: {
+  //   color: colors.primary,
+  // },
+  // placeAddressMinor: {
+  //   color: colors.mediumGray,
+  // },
   categoryStops: {
     marginTop: 14,
   },

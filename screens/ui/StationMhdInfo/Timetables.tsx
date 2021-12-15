@@ -12,6 +12,8 @@ import { getVehicle } from '@utils/utils'
 import { TransitVehicleType } from '../../../types'
 import { colors, mhdDefaultColors } from '@utils/theme'
 import MhdStopSignSvg from '@images/stop-sign.svg'
+import LoadingView from '../LoadingView/LoadingView'
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 
 interface TimetablesProps {
   station: MhdStopProps
@@ -35,15 +37,26 @@ const Timetables = ({ station }: TimetablesProps) => {
 
   return (
     <>
-      <View style={styles.firstRow}>
-        <View style={s.icon}>
-          <MhdStopSignSvg fill={colors.primary} />
+      <View style={styles.greyBackground}>
+        <View style={[styles.firstRow, s.horizontalMargin]}>
+          <View style={s.icon}>
+            <MhdStopSignSvg fill={colors.primary} />
+          </View>
+          <Text>{`${station.name} ${
+            station.platform ? station.platform : ''
+          }`}</Text>
         </View>
-        <Text>{`${station.name} ${
-          station.platform ? station.platform : ''
-        }`}</Text>
       </View>
-      <View style={styles.secondRow}>
+      <BottomSheetScrollView
+        contentContainerStyle={[styles.secondRow, s.horizontalMargin]}
+      >
+        {isLoading && (
+          <LoadingView
+            stylesOuter={styles.elevation}
+            iconWidth={80}
+            iconHeight={80}
+          />
+        )}
         {data?.allLines?.map((departure, index) => {
           return (
             <TouchableOpacity
@@ -87,23 +100,28 @@ const Timetables = ({ station }: TimetablesProps) => {
             </TouchableOpacity>
           )
         })}
-      </View>
+      </BottomSheetScrollView>
     </>
   )
 }
 
 const styles = StyleSheet.create({
+  greyBackground: {
+    backgroundColor: colors.lightLightGray,
+    paddingVertical: 10,
+  },
   firstRow: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    paddingHorizontal: 10,
-    backgroundColor: colors.lightLightGray,
     paddingVertical: 10,
   },
   secondRow: {
     paddingTop: 10,
+  },
+  elevation: {
+    elevation: 1,
   },
   lineDeparture: {
     display: 'flex',
@@ -113,7 +131,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   departureLeft: {
-    paddingHorizontal: 10,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',

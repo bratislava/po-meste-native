@@ -8,8 +8,7 @@ import React, {
 } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import i18n from 'i18n-js'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { ScrollView } from 'react-native-gesture-handler'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { useQuery } from 'react-query'
 import { useNavigation } from '@react-navigation/native'
 import {
@@ -20,7 +19,10 @@ import {
 import { StackScreenProps } from '@react-navigation/stack'
 import * as Location from 'expo-location'
 import BottomSheet from '@gorhom/bottom-sheet'
-import { Instant, LocalDateTime } from '@js-joda/core'
+import { DateTimeFormatter, Instant, LocalDateTime } from '@js-joda/core'
+import DateTimePickerModal from 'react-native-modal-datetime-picker'
+import { Ionicons } from '@expo/vector-icons'
+import { Feather } from '@expo/vector-icons'
 
 import { getTripPlanner } from '@utils/api'
 import SearchFromToScreen from './SearchFromToScreen'
@@ -37,6 +39,7 @@ import { getOtpTravelMode } from '@utils/utils'
 import {
   MapParamList,
   MicromobilityProvider,
+  ScheduleType,
   TravelModes,
   TravelModesOtpApi,
   VehicleData,
@@ -44,7 +47,11 @@ import {
 import FeedbackAsker from './ui/FeedbackAsker/FeedbackAsker'
 import { GlobalStateContext } from '@components/GlobalStateProvider'
 import { useLocationWithPermision } from '@hooks/miscHooks'
+import { OtpPlannerProps } from '@utils/validation'
 import LoadingView from './ui/LoadingView/LoadingView'
+import Modal from '@components/Modal'
+import RadioButton from '@components/RadioButton'
+import Link from '@components/Link'
 
 export default function FromToScreen({
   route,
@@ -93,6 +100,14 @@ export default function FromToScreen({
     TravelModes.mhd
   )
 
+  const [scheduledTime, setScheduledTime] = useState<ScheduleType>(
+    ScheduleType.departure
+  )
+
+  const [visibleScheduleModal, setVisibleScheduleModal] = useState(false)
+
+  const [dateTime, setDateTime] = useState(LocalDateTime.now())
+
   const [locationPermisionError, setLocationPermisionError] =
     useState<string>('')
   const [fromGeocode, setFromGeocode] = useState<
@@ -102,17 +117,30 @@ export default function FromToScreen({
     Location.LocationGeocodedAddress[] | null
   >(null)
 
-  const { data, isLoading, error } = useQuery(
-    ['getOtpData', fromCoordinates, toCoordinates, selectedVehicle],
+  const {
+    data: dataStandard,
+    isLoading: isLoadingStandard,
+    error: errorStandard,
+  } = useQuery(
+    [
+      'getOtpData',
+      fromCoordinates,
+      toCoordinates,
+      selectedVehicle,
+      dateTime,
+      scheduledTime,
+    ],
     () =>
       fromCoordinates &&
       toCoordinates &&
       getTripPlanner(
         `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
         `${toCoordinates.latitude},${toCoordinates.longitude}`,
-        new Date(),
+        dateTime,
+        scheduledTime === ScheduleType.arrival,
         getOtpTravelMode(selectedVehicle)
-      )
+      ),
+    { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
   const {
@@ -120,14 +148,21 @@ export default function FromToScreen({
     isLoading: isLoadingRekola,
     error: errorRekola,
   } = useQuery(
-    ['getOtpRekolaData', fromCoordinates, toCoordinates],
+    [
+      'getOtpRekolaData',
+      fromCoordinates,
+      toCoordinates,
+      dateTime,
+      scheduledTime,
+    ],
     () =>
       fromCoordinates &&
       toCoordinates &&
       getTripPlanner(
         `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
         `${toCoordinates.latitude},${toCoordinates.longitude}`,
-        new Date(),
+        dateTime,
+        scheduledTime === ScheduleType.arrival,
         TravelModesOtpApi.rented,
         MicromobilityProvider.rekola
       ),
@@ -139,17 +174,25 @@ export default function FromToScreen({
     isLoading: isLoadingSlovnaftbajk,
     error: errorSlovnaftbajk,
   } = useQuery(
-    ['getOtpSlovnaftbajkData', fromCoordinates, toCoordinates],
+    [
+      'getOtpSlovnaftbajkData',
+      fromCoordinates,
+      toCoordinates,
+      dateTime,
+      scheduledTime,
+    ],
     () =>
       fromCoordinates &&
       toCoordinates &&
       getTripPlanner(
         `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
         `${toCoordinates.latitude},${toCoordinates.longitude}`,
-        new Date(),
+        dateTime,
+        scheduledTime === ScheduleType.arrival,
         TravelModesOtpApi.rented,
         MicromobilityProvider.slovnaftbajk
-      )
+      ),
+    { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
   const {
@@ -157,17 +200,19 @@ export default function FromToScreen({
     isLoading: isLoadingTier,
     error: errorTier,
   } = useQuery(
-    ['getOtpTierData', fromCoordinates, toCoordinates],
+    ['getOtpTierData', fromCoordinates, toCoordinates, dateTime, scheduledTime],
     () =>
       fromCoordinates &&
       toCoordinates &&
       getTripPlanner(
         `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
         `${toCoordinates.latitude},${toCoordinates.longitude}`,
-        new Date(),
+        dateTime,
+        scheduledTime === ScheduleType.arrival,
         TravelModesOtpApi.rented,
         MicromobilityProvider.tier
-      )
+      ),
+    { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
   useEffect(() => {
@@ -362,8 +407,86 @@ export default function FromToScreen({
     toBottomSheetRef?.current?.close()
   }, [fromCoordinates, navigation, toCoordinates])
 
+  const getElements = (
+    ommitFirst: boolean,
+    isLoading: boolean,
+    data?: OtpPlannerProps,
+    provider?: MicromobilityProvider
+  ) => {
+    return (
+      <>
+        {isLoading && (
+          <TripMiniature provider={provider} isLoading={isLoading} />
+        )}
+        {data?.plan?.itineraries?.map((tripChoice, index) => {
+          // first result for TRANSIT trip is always walking whole trip
+          // alternative is to reduce walking distance in request 'maxWalkDistance' http://dev.opentripplanner.org/apidoc/1.4.0/resource_PlannerResource.html
+          if (
+            selectedVehicle === TravelModes.mhd &&
+            index === 0 &&
+            ommitFirst
+          ) {
+            return undefined
+          } else
+            return (
+              <TripMiniature
+                key={index}
+                onPress={() =>
+                  navigation.navigate('PlannerScreen', {
+                    legs: tripChoice?.legs,
+                    provider: provider,
+                  })
+                }
+                provider={provider}
+                duration={Math.round(tripChoice.duration / 60)}
+                departureDate={LocalDateTime.ofInstant(
+                  Instant.ofEpochMilli(tripChoice.startTime)
+                )}
+                arriveDate={LocalDateTime.ofInstant(
+                  Instant.ofEpochMilli(tripChoice.endTime)
+                )}
+                legs={tripChoice.legs}
+              />
+            )
+        })}
+      </>
+    )
+  }
+
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false)
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true)
+  }
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false)
+  }
+
+  const handleConfirm = (date: Date) => {
+    const utcTimestamp = Instant.parse(date.toISOString()) //'1989-08-16T00:00:00.000Z'
+    const localDateTime = LocalDateTime.ofInstant(utcTimestamp)
+
+    setDateTime(localDateTime)
+    hideDatePicker()
+  }
+
+  const hideSchedulePicker = () => {
+    setVisibleScheduleModal(false)
+  }
+
+  const showSchedulePicker = () => {
+    setVisibleScheduleModal(true)
+  }
+
+  const handleOptionChange = (scheduleTime: ScheduleType) => {
+    setScheduledTime(scheduleTime)
+    setVisibleScheduleModal(false)
+    showDatePicker()
+  }
+
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <FromToSelector
           onFromPlacePress={() => fromBottomSheetRef?.current?.snapToIndex(0)}
@@ -385,6 +508,37 @@ export default function FromToScreen({
           toPlaceTextPlaceholder={i18n.t('toPlaceholder')}
           onSwitchPlacesPress={onSwitchPlacesPress}
         />
+        <TouchableOpacity
+          style={styles.schedulingContainer}
+          onPress={showSchedulePicker}
+        >
+          <View style={styles.row}>
+            <Feather
+              name="clock"
+              size={15}
+              style={{
+                alignSelf: 'center',
+                color: colors.primary,
+                marginRight: 4,
+              }}
+            />
+            <Text style={styles.schedulingText}>
+              {scheduledTime === ScheduleType.departure &&
+                i18n.t('departure', {
+                  time: dateTime.format(
+                    DateTimeFormatter.ofPattern('dd.MM. HH:mm')
+                  ),
+                })}
+              {scheduledTime === ScheduleType.arrival &&
+                i18n.t('arrival', {
+                  time: dateTime.format(
+                    DateTimeFormatter.ofPattern('dd.MM. HH:mm')
+                  ),
+                })}
+            </Text>
+            <Ionicons size={15} style={styles.ionicon} name="chevron-down" />
+          </View>
+        </TouchableOpacity>
       </View>
       <View>
         <VehicleSelector
@@ -394,10 +548,8 @@ export default function FromToScreen({
         />
       </View>
       <ScrollView contentContainerStyle={styles.scrollView}>
-        {isLoading ? (
-          <LoadingView />
-        ) : (
-          data?.plan?.itineraries && (
+        <View>
+          {(isLoadingStandard || dataStandard) && (
             <>
               {selectedVehicle === TravelModes.bicycle && (
                 <Text style={styles.textSizeBig}>{i18n.t('myBike')}</Text>
@@ -405,126 +557,60 @@ export default function FromToScreen({
               {selectedVehicle === TravelModes.scooter && (
                 <Text style={styles.textSizeBig}>{i18n.t('myScooter')}</Text>
               )}
-              {data.plan.itineraries.map((tripChoice, index) => {
-                // first result for TRANSIT trip is always walking whole trip
-                // alternative is to reduce walking distance in request 'maxWalkDistance' http://dev.opentripplanner.org/apidoc/1.4.0/resource_PlannerResource.html
-                if (selectedVehicle === TravelModes.mhd && index === 0) {
-                  return undefined
-                } else
-                  return (
-                    <TripMiniature
-                      key={index}
-                      onPress={() =>
-                        navigation.navigate('PlannerScreen', {
-                          legs: tripChoice?.legs,
-                        })
-                      }
-                      duration={Math.round(tripChoice.duration / 60)}
-                      departureDate={LocalDateTime.ofInstant(
-                        Instant.ofEpochMilli(tripChoice.startTime)
-                      )}
-                      arriveDate={LocalDateTime.ofInstant(
-                        Instant.ofEpochMilli(tripChoice.endTime)
-                      )}
-                      legs={tripChoice.legs}
-                    />
-                  )
-              })}
             </>
-          )
-        )}
+          )}
+          {getElements(true, isLoadingStandard, dataStandard)}
+        </View>
         {selectedVehicle === TravelModes.bicycle && (
           <>
-            <Text style={styles.textSizeBig}>{i18n.t('rentedBike')}</Text>
-
-            {isLoadingSlovnaftbajk ? (
-              <LoadingView />
-            ) : (
-              dataSlovnaftbajk?.plan?.itineraries?.map((tripChoice, index) => (
-                <TripMiniature
-                  key={index}
-                  onPress={() =>
-                    navigation.navigate('PlannerScreen', {
-                      legs: tripChoice?.legs,
-                      provider: MicromobilityProvider.slovnaftbajk,
-                    })
-                  }
-                  provider={MicromobilityProvider.slovnaftbajk}
-                  duration={Math.round(tripChoice.duration / 60)}
-                  departureDate={LocalDateTime.ofInstant(
-                    Instant.ofEpochMilli(tripChoice.startTime)
-                  )}
-                  arriveDate={LocalDateTime.ofInstant(
-                    Instant.ofEpochMilli(tripChoice.endTime)
-                  )}
-                  legs={tripChoice.legs}
-                />
-              ))
+            {(isLoadingSlovnaftbajk ||
+              isLoadingRekola ||
+              dataSlovnaftbajk ||
+              dataRekola) && (
+              <Text style={styles.textSizeBig}>{i18n.t('rentedBike')}</Text>
             )}
-            {isLoadingRekola ? (
-              <LoadingView />
-            ) : (
-              dataRekola?.plan?.itineraries?.map((tripChoice, index) => (
-                <TripMiniature
-                  key={index}
-                  onPress={() =>
-                    navigation.navigate('PlannerScreen', {
-                      legs: tripChoice?.legs,
-                      provider: MicromobilityProvider.rekola,
-                    })
-                  }
-                  provider={MicromobilityProvider.rekola}
-                  duration={Math.round(tripChoice.duration / 60)}
-                  departureDate={LocalDateTime.ofInstant(
-                    Instant.ofEpochMilli(tripChoice.startTime)
-                  )}
-                  arriveDate={LocalDateTime.ofInstant(
-                    Instant.ofEpochMilli(tripChoice.endTime)
-                  )}
-                  legs={tripChoice.legs}
-                />
-              ))
-            )}
+            <View style={styles.providerContainer}>
+              {getElements(
+                false,
+                isLoadingSlovnaftbajk,
+                dataSlovnaftbajk,
+                MicromobilityProvider.slovnaftbajk
+              )}
+            </View>
+            <View style={styles.providerContainer}>
+              {getElements(
+                false,
+                isLoadingRekola,
+                dataRekola,
+                MicromobilityProvider.rekola
+              )}
+            </View>
           </>
         )}
         {selectedVehicle === TravelModes.scooter && (
           <>
-            <Text style={styles.textSizeBig}>{i18n.t('rentedScooter')}</Text>
-            {isLoadingTier ? (
-              <LoadingView />
-            ) : (
-              dataTier?.plan?.itineraries?.map((tripChoice, index) => (
-                <TripMiniature
-                  key={index}
-                  onPress={() =>
-                    navigation.navigate('PlannerScreen', {
-                      legs: tripChoice?.legs,
-                      provider: MicromobilityProvider.tier,
-                    })
-                  }
-                  provider={MicromobilityProvider.tier}
-                  duration={Math.round(tripChoice.duration / 60)}
-                  departureDate={LocalDateTime.ofInstant(
-                    Instant.ofEpochMilli(tripChoice.startTime)
-                  )}
-                  arriveDate={LocalDateTime.ofInstant(
-                    Instant.ofEpochMilli(tripChoice.endTime)
-                  )}
-                  legs={tripChoice.legs}
-                />
-              ))
+            {(isLoadingTier || dataTier) && (
+              <Text style={styles.textSizeBig}>{i18n.t('rentedScooter')}</Text>
             )}
+            <View style={styles.providerContainer}>
+              {getElements(
+                false,
+                isLoadingTier,
+                dataTier,
+                MicromobilityProvider.tier
+              )}
+            </View>
           </>
         )}
-        {data?.plan?.itineraries?.length != undefined &&
-          data.plan.itineraries.length > 0 && (
+        {/* {dataStandard?.plan?.itineraries?.length != undefined &&
+          dataStandard.plan.itineraries.length > 0 && (
             <FeedbackAsker
               onNegativeFeedbackPress={() => {
                 navigation.navigate('Feedback')
               }}
               onPositiveFeedbackPress={handlePositiveFeedback}
             />
-          )}
+          )} */}
       </ScrollView>
       <SearchFromToScreen
         sheetRef={fromBottomSheetRef}
@@ -543,7 +629,35 @@ export default function FromToScreen({
         inputPlaceholder={i18n.t('toPlaceholder')}
         initialSnapIndex={0}
       />
-    </SafeAreaView>
+      <Modal visible={visibleScheduleModal} onClose={hideSchedulePicker}>
+        <RadioButton
+          options={[
+            {
+              value: ScheduleType.departure,
+              label: i18n.t('departureText'),
+            },
+            {
+              value: ScheduleType.arrival,
+              label: i18n.t('arrivalText'),
+            },
+          ]}
+          value={scheduledTime}
+          onChangeValue={handleOptionChange}
+        />
+        <Link
+          style={styles.modalDismiss}
+          onPress={hideSchedulePicker}
+          title={i18n.t('cancel')}
+        />
+      </Modal>
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode="datetime"
+        display="spinner"
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
+      />
+    </View>
   )
 }
 
@@ -563,6 +677,21 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     marginVertical: 12,
   },
+  ionicon: {
+    alignSelf: 'center',
+    color: colors.primary,
+    marginLeft: 9,
+  },
+  row: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  schedulingContainer: {
+    marginTop: 10,
+  },
+  schedulingText: {
+    color: colors.primary,
+  },
   header: {
     backgroundColor: 'white',
     paddingHorizontal: 20,
@@ -573,5 +702,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 65,
+  },
+  providerContainer: {
+    marginBottom: 10,
+  },
+  modalDismiss: {
+    textAlign: 'center',
+    width: '100%',
   },
 })

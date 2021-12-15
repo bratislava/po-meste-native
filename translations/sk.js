@@ -127,4 +127,10 @@ export default {
   beforeIn: 'pred {{time}} min',
   upcomingDepartures: 'Prichádzajúce spoje',
   timetables: 'Grafikony',
+  departure: 'Odchod: {{time}}',
+  arrival: 'Príchod: {{time}}',
+  departureText: 'Odchod',
+  arrivalText: 'Príchod',
+  today: ' (Dnes)',
+  tomorrow: ' (Zajtra)',
 }

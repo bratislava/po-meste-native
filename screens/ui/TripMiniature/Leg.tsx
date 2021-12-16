@@ -8,6 +8,7 @@ import { LegModes } from '../../../types'
 
 import ChevronRightSvg from '@images/chevron-right-small.svg'
 import WalkingSvg from '@images/walking.svg'
+import { LineNumber } from '@components/LineNumber'
 
 type LegProps = {
   shortName?: string
@@ -46,16 +47,7 @@ const Leg = ({
             <Text>min</Text>
           </View>
         </View>
-      )) || (
-        <View
-          style={[
-            styles.legBox,
-            { backgroundColor: color ? `#${color}` : 'black' },
-          ]}
-        >
-          <Text style={styles.legNumber}>{shortName ?? '?'}</Text>
-        </View>
-      )}
+      )) || <LineNumber number={shortName ?? '?'} color={color} />}
 
       {!isLast && (
         <View style={styles.legArrowContainer}>
@@ -72,21 +64,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 10,
   },
-  legBox: {
-    width: 28,
-    height: 28,
-    borderRadius: 4,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   legArrowContainer: {
     alignItems: 'center',
     padding: 4,
-  },
-  legNumber: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   legDurationContainer: {},
   legWalkingContainer: {

@@ -60,6 +60,10 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
     (leg) => leg.from.vertexType === BIKESHARE_PROPERTY
   )
 
+  const getDashedLine = () => {
+    return <DashedLine spacing={4} dashLength={2} color={colors.darkText} />
+  }
+
   const renderProviderIconWithText = (text?: string) => (
     <View style={[styles.card, s.horizontalMargin]}>
       <View style={styles.left}>
@@ -67,9 +71,7 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
           <Icon width={ICON_WIDTH} height={20} />
           <Text style={[styles.textBold, styles.textMargin]}>{text}</Text>
         </View>
-        <View style={styles.dashedLine}>
-          <DashedLine color={colors.darkText} />
-        </View>
+        <View style={styles.dashedLine}>{getDashedLine()}</View>
       </View>
     </View>
   )
@@ -110,9 +112,7 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
                         Start
                       </Text>
                     </View>
-                    <View style={styles.dashedLine}>
-                      <DashedLine color={colors.darkText} />
-                    </View>
+                    <View style={styles.dashedLine}>{getDashedLine()}</View>
                   </View>
                 </View>
               )}
@@ -143,9 +143,7 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
                         </Text>
                       </View>
                     </View>
-                    <View style={styles.dashedLine}>
-                      <DashedLine color={colors.darkText} />
-                    </View>
+                    <View style={styles.dashedLine}>{getDashedLine()}</View>
                   </View>
                 </View>
               )) ||
@@ -167,9 +165,7 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
                           </Text>
                         </View>
                       </View>
-                      <View style={styles.dashedLine}>
-                        <DashedLine color={colors.darkText} />
-                      </View>
+                      <View style={styles.dashedLine}>{getDashedLine()}</View>
                     </View>
                   </View>
                 )) ||
@@ -360,6 +356,7 @@ const styles = StyleSheet.create({
   dashedLine: {
     height: DASHED_HEIGHT,
     width: ICON_WIDTH,
+    alignItems: 'center',
   },
   row: {
     display: 'flex',

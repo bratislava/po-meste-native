@@ -11,7 +11,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 export const FAQScreen = () => {
   const contactEmailAddress = Constants.manifest?.extra?.contactEmailAddress
 
-  const questions = new Array(3).fill(null).map((question, index) => {
+  const questions = new Array(2).fill(null).map((question, index) => {
     return {
       title: t(`screens.FAQScreen.questions.question${index + 1}.question`),
       body: t(`screens.FAQScreen.questions.question${index + 1}.answer`),

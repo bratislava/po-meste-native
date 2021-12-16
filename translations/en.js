@@ -88,7 +88,7 @@ export default {
       version: 'Version',
       unknown: 'unknown',
       description:
-        'This is first version (Beta) of the MaaS (mobility as a service) application “Po meste”. We are gradually creating an open mobility platform for Bratislava, which will connect public transport with alternative mobility and offer green mobility in one place, from planning, comparison and driving in a few clicks. Walking around the city, by bike, scooter or tram? You will choose. ',
+        'Welcome the first version of MaaS (mobility as a service) app Po meste. We are in the process of making a new open platform which is gonna connect public transport with alternative green mobility. Within a few clicks you can plan or compare your journey with all available means of transport. Bicycle, scooter, tramp or walk, choose your preferable way of transport!',
       contact: 'Contact',
       createdBy: 'Created thanks to',
       generalTermsAndConditions: 'General terms and conditions',
@@ -101,14 +101,9 @@ export default {
         question1: {
           question: 'What is app po meste?',
           answer:
-            'This is first version (Beta) of the MaaS (mobility as a service) application “Po meste”. We are gradually creating an open mobility platform for Bratislava, which will connect public transport with alternative mobility and offer green mobility in one place, from planning, comparison and driving in a few clicks. Walking around the city, by bike, scooter or tram? You will choose.',
+            'Welcome the first version of MaaS (mobility as a service) app Po meste. We are in the process of making a new open platform which is gonna connect public transport with alternative green mobility. Within a few clicks you can plan or compare your journey with all available means of transport. Bicycle, scooter, tramp or walk, choose your preferable way of transport!',
         },
         question2: {
-          question: 'What does beta version mean?',
-          answer:
-            'The beta version is in generall a temporary version of an application that is constantly evolving. The goal of the Beta version is to test the functioning of all functionalities in a real environment and gradually fine-tune the application for the best user experience.',
-        },
-        question3: {
           question: 'Why are there only sms tickets?',
           answer:
             'Implementing the purchase of electronic tickets is one of the most complicated functionalities. Its deployment is not yet complete. In the meantime, we have incorporated into the application at least the possibility of purchasing SMS tickets.',

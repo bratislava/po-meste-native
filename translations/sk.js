@@ -88,7 +88,7 @@ export default {
       version: 'Verzia',
       unknown: 'neznáma',
       description:
-        'Pred Vami sa nachádza prvá verzia (Beta) MaaS (mobilita ako služba) aplikácie Po meste.  Pre Bratislavu postupne vytvárame otvorenú platformu, ktorá prepojí MHD s alternatívnou mobilitou a ponúkne na jednom mieste zelenú mobilitu od plánovania, porovnania a jazdy na pár klikov. Po meste peši, bicyklom, kolobežkou alebo električkou ? Je to na Vás.',
+        'Pred Vami sa nachádza prvá verzia MaaS (mobilita ako služba) aplikácie Po meste.  Pre Bratislavu postupne vytvárame otvorenú platformu, ktorá prepojí MHD s alternatívnou mobilitou a ponúkne na jednom mieste zelenú mobilitu od plánovania, porovnania a jazdy na pár klikov. Po meste peši, bicyklom, kolobežkou alebo električkou ? Je to na Vás.',
       contact: 'Kontakt',
       createdBy: 'Vytvorené vďaka',
       generalTermsAndConditions: 'Všeobecné obchodné podmienky',
@@ -101,14 +101,9 @@ export default {
         question1: {
           question: 'Čo je aplikácia po meste?',
           answer:
-            'Pred Vami sa nachádza prvá verzia (Beta) MaaS (mobilita ako služba) aplikácie Po meste. Pre Bratislavu postupne vytvárame otvorenú platformu, ktorá prepojí MHD s alternatívnou mobilitou a ponúkne na jednom mieste zelenú mobilitu od plánovania, porovnania a jazdy na pár klikov. Po meste peši, bicyklom, kolobežkou alebo električkou ? Je to na Vás.',
+            'Pred Vami sa nachádza prvá verzia MaaS (mobilita ako služba) aplikácie Po meste. Pre Bratislavu postupne vytvárame otvorenú platformu, ktorá prepojí MHD s alternatívnou mobilitou a ponúkne na jednom mieste zelenú mobilitu od plánovania, porovnania a jazdy na pár klikov. Po meste peši, bicyklom, kolobežkou alebo električkou ? Je to na Vás.',
         },
         question2: {
-          question: 'Čo znamená beta verzia?',
-          answer:
-            'Beta verzia vo všeobecnosti predstavuje dočasnú verziu aplikácie, ktorá sa priebežne vyvíja. Cieľom Beta verzie je v reálnom prostredí otestovať fungovanie všetkých funkcionalít a postupne doladiť aplikáciu pre najlepšiu spokojnosť používateľov.',
-        },
-        question3: {
           question: 'Prečo su na výber len sms lístky?',
           answer:
             'Implementácia nákupu elektronických lístkov patrí medzi najkomplikovanejšie funkcionality. Jej nasadenie nie je v tomto momente ešte dokončené. Medzičasom sme zakomponovali do aplikácie aspoň môžnosť nákupu SMS lístkov.',

@@ -1,20 +1,24 @@
 import { mhdDefaultColors } from '@utils/theme'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import { TransitVehicleType } from './../types'
 
 interface LineNumberProps {
   number?: string | number
   color?: string
+  vehicleType?: TransitVehicleType
 }
 
 export const LineNumber = ({
   number = '?',
   color = mhdDefaultColors.grey,
+  vehicleType,
 }: LineNumberProps) => {
   return (
     <View
       style={[
         styles.container,
+        vehicleType === TransitVehicleType.tram ? styles.tram : null,
         {
           backgroundColor: color.length === 6 ? `#${color}` : color,
         },
@@ -37,11 +41,14 @@ export const LineNumber = ({
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 16,
+    borderRadius: 4,
     width: 32,
     height: 32,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  tram: {
+    borderRadius: 16,
   },
   text: {
     color: 'white',

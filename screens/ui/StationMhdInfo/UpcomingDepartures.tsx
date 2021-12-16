@@ -203,6 +203,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
                   <LineNumber
                     number={departure.lineNumber}
                     color={departure.lineColor}
+                    vehicleType={departure.vehicleType}
                   />
                   <Text style={[s.blackText, styles.finalStation]}>
                     {departure.finalStopName}

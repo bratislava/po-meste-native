@@ -14,6 +14,7 @@ import { colors, mhdDefaultColors } from '@utils/theme'
 import MhdStopSignSvg from '@images/stop-sign.svg'
 import LoadingView from '../LoadingView/LoadingView'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
+import { LineNumber } from '@components/LineNumber'
 
 interface TimetablesProps {
   station: MhdStopProps
@@ -79,20 +80,10 @@ const Timetables = ({ station }: TimetablesProps) => {
                       : undefined
                   )}
                 </View>
-                <Text
-                  style={[
-                    s.lineNumber,
-                    {
-                      backgroundColor: departure.lineColor
-                        ? `#${departure.lineColor}`
-                        : mhdDefaultColors.grey,
-                    },
-                    s.whiteText,
-                    s.boldText,
-                  ]}
-                >
-                  {departure.lineNumber}
-                </Text>
+                <LineNumber
+                  number={departure.lineNumber}
+                  color={departure.lineColor}
+                />
                 <Text style={[s.blackText, styles.finalStation]}>
                   {departure.usualFinalStop}
                 </Text>

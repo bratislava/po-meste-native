@@ -18,6 +18,7 @@ import { colors, mhdDefaultColors } from '@utils/theme'
 import DashedLine from './ui/DashedLine/DashedLine'
 import { getMhdTrip } from '@utils/api'
 import LoadingView from './ui/LoadingView/LoadingView'
+import { LineNumber } from '@components/LineNumber'
 
 export default function LineTimelineScreen({
   route,
@@ -66,19 +67,7 @@ export default function LineTimelineScreen({
                   }
                 />
               </View>
-              <Text
-                style={[
-                  s.lineNumber,
-                  {
-                    backgroundColor: data?.lineColor
-                      ? `#${data?.lineColor}`
-                      : mhdDefaultColors.grey,
-                  },
-                  s.whiteText,
-                ]}
-              >
-                {data?.lineNumber}
-              </Text>
+              <LineNumber number={data?.lineNumber} color={data?.lineColor} />
               <Text style={[styles.finalStation, s.blackText]}>
                 {data?.finalStopName}
               </Text>

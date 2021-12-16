@@ -1,11 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useQuery } from 'react-query'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
@@ -22,6 +16,7 @@ import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '../VehicleBar/VehicleBar'
 import { getMhdStopStatusData } from '@utils/api'
 import LoadingView from '../LoadingView/LoadingView'
 import { getVehicle } from '@utils/utils'
+import { ScrollView } from 'react-native-gesture-handler'
 
 interface UpcomingDeparturesProps {
   station: MhdStopProps

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ScrollView,
   StyleSheet,
@@ -12,13 +12,14 @@ import { LocalTime, DateTimeFormatter } from '@js-joda/core'
 import { useQuery } from 'react-query'
 
 import { MapParamList } from '../types'
-import TicketSvg from '@images/ticket.svg'
 import { s } from '@utils/globalStyles'
 import { colors, mhdDefaultColors } from '@utils/theme'
 import DashedLine from './ui/DashedLine/DashedLine'
 import { getMhdTrip } from '@utils/api'
 import LoadingView from './ui/LoadingView/LoadingView'
 import { LineNumber } from '@components/LineNumber'
+import { getVehicle } from '@utils/utils'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 
 export default function LineTimelineScreen({
   route,
@@ -40,33 +41,24 @@ export default function LineTimelineScreen({
     scrollViewRef.current?.scrollTo({ y: elementPosition, animated: true })
   }, [elementPosition, scrollViewRef])
 
-  const combineStyles = StyleSheet.flatten([styles.columns, s.horizontalMargin])
+  const getVehicleIconStyledFilter = useCallback(() => {
+    const Icon = getVehicle(data?.vehicleType)
+    return (
+      <Icon
+        width={24}
+        height={24}
+        fill={data?.lineColor ? `#${data?.lineColor}` : mhdDefaultColors.grey}
+      />
+    )
+  }, [data])
+
   return (
-    <View style={s.container}>
-      <View style={styles.column}>
-        {isLoading && (
-          <LoadingView
-            fullscreen
-            stylesOuter={styles.elevation}
-            iconWidth={80}
-            iconHeight={80}
-          />
-        )}
+    <>
+      <View style={{ flex: 1, paddingBottom: useBottomTabBarHeight() }}>
         <View style={styles.headerGrey}>
           <View style={s.horizontalMargin}>
             <View style={styles.header}>
-              <View style={s.icon}>
-                {/* TODO add right icon https://inovaciebratislava.atlassian.net/browse/PLAN-239 */}
-                <TicketSvg
-                  width={30}
-                  height={40}
-                  fill={
-                    data?.lineColor
-                      ? `#${data?.lineColor}`
-                      : mhdDefaultColors.grey
-                  }
-                />
-              </View>
+              <View style={s.icon}>{getVehicleIconStyledFilter()}</View>
               <LineNumber number={data?.lineNumber} color={data?.lineColor} />
               <Text style={[styles.finalStation, s.blackText]}>
                 {data?.finalStopName}
@@ -74,9 +66,18 @@ export default function LineTimelineScreen({
             </View>
           </View>
         </View>
-        <ScrollView ref={scrollViewRef} contentContainerStyle={combineStyles}>
-          {/* TODO style dashed line */}
-          <DashedLine color={colors.darkText} />
+        <ScrollView
+          ref={scrollViewRef}
+          contentContainerStyle={[styles.columns, s.horizontalMargin]}
+        >
+          <View style={styles.dashedLineContainer}>
+            <DashedLine
+              dashLength={1}
+              strokeWidth={4}
+              spacing={12}
+              color={colors.lighterGray}
+            />
+          </View>
           <View style={styles.departures}>
             {data?.timeline?.map((spot, index) => (
               <TouchableOpacity
@@ -99,7 +100,7 @@ export default function LineTimelineScreen({
                     activeIndex && activeIndex > index
                       ? styles.greyText
                       : activeIndex === index
-                      ? styles.redText
+                      ? styles.highlightedText
                       : s.blackText,
                     styles.time,
                   ]}
@@ -113,7 +114,7 @@ export default function LineTimelineScreen({
                     activeIndex && activeIndex > index
                       ? styles.greyText
                       : activeIndex === index
-                      ? styles.redText
+                      ? styles.highlightedText
                       : s.blackText,
                     styles.underlineText,
                   ]}
@@ -125,32 +126,30 @@ export default function LineTimelineScreen({
           </View>
         </ScrollView>
       </View>
-    </View>
+      {isLoading && <LoadingView fullscreen iconWidth={80} iconHeight={80} />}
+    </>
   )
 }
 
 const styles = StyleSheet.create({
-  column: {
-    flex: 1,
-  },
-  elevation: {
-    elevation: 1,
-  },
   headerGrey: {
-    backgroundColor: 'lightgrey',
+    backgroundColor: colors.lightLightGray,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 10,
   },
-  redText: {
-    color: colors.error,
+  dashedLineContainer: {
+    paddingHorizontal: 10,
+  },
+  highlightedText: {
+    color: colors.primary,
     fontWeight: 'bold',
-    fontSize: 25,
+    fontSize: 20,
   },
   greyText: {
-    color: 'grey',
+    color: colors.lighterGray,
   },
   underlineText: {
     textDecorationLine: 'underline',
@@ -162,6 +161,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     marginVertical: 15,
+    paddingLeft: 10,
   },
   time: {
     marginRight: 10,
@@ -172,5 +172,6 @@ const styles = StyleSheet.create({
   departures: {
     flex: 1,
     color: 'black',
+    paddingBottom: 20,
   },
 })

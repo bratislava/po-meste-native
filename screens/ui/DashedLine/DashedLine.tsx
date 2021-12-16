@@ -1,6 +1,6 @@
 import { colors } from '@utils/theme'
-import React, { useState } from 'react'
-import { View, StyleSheet, LayoutRectangle } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, LayoutRectangle } from 'react-native'
 
 import Svg, { G, Line } from 'react-native-svg'
 
@@ -19,23 +19,32 @@ const DashedLine = ({
 }: Props) => {
   const [layout, setlayout] = useState<LayoutRectangle>()
   // TODO think it through
-  const dashes = new Array(Math.floor(layout?.height || 5 / 100)).fill(null)
+  const [dashes, setDashes] = useState<null[]>([])
+
+  useEffect(() => {
+    if (layout) {
+      setDashes(
+        new Array(Math.floor(layout.height / (dashLength + spacing))).fill(null)
+      )
+    }
+  }, [layout, dashLength, spacing])
+
   return (
     <View
-      style={styles.container}
+      style={{ width: strokeWidth, flex: 1 }}
       onLayout={(event) => {
         setlayout(event.nativeEvent.layout)
       }}
     >
-      <Svg height={layout?.height ? layout?.height : 15} width="100%">
+      <Svg height={layout?.height ? layout?.height : 15} width={strokeWidth}>
         <G>
           {dashes.map((_, index) => (
             <Line
               key={index}
-              x1={layout?.width ? layout?.width / 2 : 10}
-              x2={layout?.width ? layout?.width / 2 : 10}
-              y1={index * dashLength * spacing + 3}
-              y2={index * dashLength * spacing + 3 + dashLength}
+              x1={strokeWidth / 2}
+              x2={strokeWidth / 2}
+              y1={index * dashLength + index * spacing + 3}
+              y2={index * dashLength + index * spacing + 3 + dashLength}
               stroke={color}
               strokeLinecap="round"
               strokeWidth={strokeWidth}
@@ -46,11 +55,5 @@ const DashedLine = ({
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-})
 
 export default DashedLine

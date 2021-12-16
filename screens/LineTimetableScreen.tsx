@@ -253,6 +253,10 @@ export default function LineTimetableScreen({
                       styles.hourText,
                       indexHours % 2 === 0 ? styles.hourEven : null,
                     ]}
+                    onLayout={(event) =>
+                      activeIndex[1] === indexHours &&
+                      setHighlightedMinutePositionY(event.nativeEvent.layout.y)
+                    }
                   >
                     {hour}
                   </Text>

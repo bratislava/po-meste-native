@@ -49,7 +49,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
     color: string = mhdDefaultColors.grey
   ) => {
     const Icon = getVehicle(vehicleType)
-    return <Icon height={23} fill={color} />
+    return <Icon height={27} width={27} fill={color} />
   }
 
   const getVehicleIconStyledFilter = (

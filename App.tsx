@@ -40,7 +40,11 @@ Sentry.init({
   debug: true, // Sentry will try to print out useful debugging information if something goes wrong with sending an event. Set this to `false` in production.
 })
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { cacheTime: 60000 },
+  },
+})
 
 Location.setGoogleApiKey(
   Platform.select({

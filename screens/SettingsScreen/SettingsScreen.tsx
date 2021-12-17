@@ -6,7 +6,7 @@ import { t } from 'i18n-js'
 import { openURL } from 'expo-linking'
 
 import { GlobalStateContext } from '@components/common/GlobalStateProvider'
-import ItemListButton from '@screens/ui/ItemListButton/ItemListButton'
+import ItemListButton from '@components/ItemListButton'
 import LanguageIcon from '@icons/language.svg'
 import AboutIcon from '@icons/information.svg'
 import FAQIcon from '@icons/question.svg'

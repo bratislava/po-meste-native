@@ -1,9 +1,8 @@
 import { useNavigation } from '@react-navigation/native'
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
-import i18n from 'i18n-js'
-
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import i18n from 'i18n-js'
 
 const SearchBar = () => {
   const navigation = useNavigation()
@@ -40,9 +39,9 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     width: '80%',
   },
-  searchButton: {
-    marginRight: 20,
-  },
+  // searchButton: {
+  //   marginRight: 20,
+  // },
 })
 
 export default SearchBar

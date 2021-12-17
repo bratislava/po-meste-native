@@ -5,20 +5,26 @@ import { useQuery } from 'react-query'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { ScrollView } from 'react-native-gesture-handler'
 
+import { LocalDateTime, Duration } from '@js-joda/core'
+
+import {
+  GlobalStateContext,
+  BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
+  LoadingView,
+  LineNumber,
+} from '@components'
+import {
+  MhdStopProps,
+  getMhdStopStatusData,
+  getVehicle,
+  colors,
+  mhdDefaultColors,
+  s,
+} from '@utils'
+import { TransitVehicleType } from '@types'
+
 import MhdStopSignSvg from '@icons/stop-sign.svg'
 import ForwardMhdStopSvg from '@icons/forward-mhd-stop.svg'
-import { GlobalStateContext } from '@components/common/GlobalStateProvider'
-import { MhdStopProps } from '@utils/validation'
-import { s } from '@utils/globalStyles'
-import { colors, mhdDefaultColors } from '@utils/theme'
-import { LocalDateTime, Duration } from '@js-joda/core'
-import { TransitVehicleType } from '@types'
-import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '../../../ui/VehicleBar/VehicleBar'
-import { getMhdStopStatusData } from '@utils/api'
-import LoadingView from '@components/LoadingView'
-import { getVehicle } from '@utils/utils'
-import { LineNumber } from '@components/LineNumber'
-import ErrorView from '@components/ErrorView'
 
 interface UpcomingDeparturesProps {
   station: MhdStopProps

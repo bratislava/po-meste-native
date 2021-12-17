@@ -1,12 +1,12 @@
 import React from 'react'
 import { View, StyleSheet, Text, ScrollView } from 'react-native'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import Constants from 'expo-constants'
 import { openURL } from 'expo-linking'
 import { t } from 'i18n-js'
 
-import { Accordion, Link } from '@components/index'
-import { colors } from '@utils/theme'
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
+import { Accordion, Link } from '@components'
+import { colors } from '@utils'
 
 export const FAQScreen = () => {
   const contactEmailAddress = Constants.manifest?.extra?.contactEmailAddress

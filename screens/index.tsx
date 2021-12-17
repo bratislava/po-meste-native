@@ -1,25 +1,22 @@
 import React from 'react'
+import { ColorSchemeName, View } from 'react-native'
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import i18n from 'i18n-js'
+
+import { BottomTabParamList, RootStackParamList } from '@types'
+import { linking } from '@utils'
+
+import NotFoundScreen from '@screens/NotFoundScreen'
+import SettingsScreen from '@screens/SettingsScreen'
+import TicketsScreen from '@screens/TicketsScreen'
+import MapScreen from '@screens/MapScreen'
 
 import HomeSearchSvg from '@icons/home-search.svg'
 import TicketSvg from '@icons/ticket-alt.svg'
 import BurgerMenuSvg from '@icons/burger-menu.svg'
-
-import SettingsScreen from '@screens/SettingsScreen'
-import { BottomTabParamList } from '@types'
-import TicketsScreen from '@screens/TicketsScreen'
-import MapScreen from '@screens/MapScreen'
-
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
-import { ColorSchemeName, View } from 'react-native'
-
-import NotFoundScreen from '@screens/NotFoundScreen'
-import { RootStackParamList } from '@types'
-import linking from '@utils/linking'
-
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 import TabBar from './_partials/TabBar'
 

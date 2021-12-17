@@ -2,8 +2,7 @@ import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { SvgProps } from 'react-native-svg'
 
-import { colors } from '@utils/theme'
-
+import { colors } from '@utils'
 import { LegModes } from '@types'
 
 import ChevronRightSvg from '@icons/chevron-right-small.svg'

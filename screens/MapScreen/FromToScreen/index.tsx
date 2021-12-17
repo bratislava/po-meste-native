@@ -24,22 +24,15 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker'
 import { Ionicons } from '@expo/vector-icons'
 import { Feather } from '@expo/vector-icons'
 
-import { getTripPlanner } from '@utils/api'
-import SearchFromToScreen from '../SearchFromToScreen'
-import TripMiniature from './_partials/TripMiniature'
-import FromToSelector from './_partials/FromToSelector'
-import VehicleSelector from './_partials/VehicleSelector'
-
-import BusSvg from '@icons/bus.svg'
-import CyclingSvg from '@icons/cycling.svg'
-import ScooterSvg from '@icons/scooter.svg'
-import WalkingSvg from '@icons/walking.svg'
-import { colors } from '@utils/theme'
 import {
-  aggregateBicycleLegs,
+  getTripPlanner,
+  colors,
   getOtpTravelMode,
+  OtpPlannerProps,
+  aggregateBicycleLegs,
   getProviderName,
-} from '@utils/utils'
+} from '@utils'
+import { useLocationWithPermision } from '@hooks'
 import {
   MapParamList,
   MicromobilityProvider,
@@ -56,9 +49,7 @@ import {
   Link,
   ErrorView,
 } from '@components'
-import { GlobalStateContext } from '@components/common/GlobalStateProvider'
-import { useLocationWithPermision } from '@hooks/miscHooks'
-import { OtpPlannerProps } from '@utils/validation'
+import { GlobalStateContext } from '@state/GlobalStateProvider'
 
 interface ElementsProps {
   ommitFirst: boolean
@@ -68,6 +59,17 @@ interface ElementsProps {
   error?: any
   refetch?: () => unknown
 }
+
+import SearchFromToScreen from '@screens/MapScreen/SearchFromToScreen'
+
+import TripMiniature from './_partials/TripMiniature'
+import FromToSelector from './_partials/FromToSelector'
+import VehicleSelector from './_partials/VehicleSelector'
+
+import BusSvg from '@icons/bus.svg'
+import CyclingSvg from '@icons/cycling.svg'
+import ScooterSvg from '@icons/scooter.svg'
+import WalkingSvg from '@icons/walking.svg'
 
 export default function FromToScreen({
   route,

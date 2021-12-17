@@ -1,15 +1,15 @@
 import React, { useRef, useState } from 'react'
-import MapView, { PROVIDER_GOOGLE, Region } from 'react-native-maps'
 import { StyleSheet, View, Text } from 'react-native'
+import MapView, { PROVIDER_GOOGLE, Region } from 'react-native-maps'
 import i18n from 'i18n-js'
 import { useNavigation } from '@react-navigation/native'
+import { StackScreenProps } from '@react-navigation/stack'
+
+import { Button } from '@components'
+import { colors, s } from '@utils'
+import { MapParamList } from '@types'
 
 import MarkerSvg from '@icons/map-pin-marker.svg'
-import { Button } from '@components'
-import { StackScreenProps } from '@react-navigation/stack'
-import { MapParamList } from '@types'
-import { colors } from '@utils/theme'
-import { s } from '@utils/globalStyles'
 
 export default function ChooseLocation({
   route,

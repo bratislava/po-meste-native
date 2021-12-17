@@ -4,8 +4,8 @@ import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
 import i18n from 'i18n-js'
 
 import { colors } from '@utils/theme'
-import { Button } from '.'
-import { isApiError, isValidationError } from '@utils/utils'
+import Button from './Button'
+import { isApiError, isValidationError } from '@utils'
 
 interface ErrorViewProps {
   action?: () => unknown

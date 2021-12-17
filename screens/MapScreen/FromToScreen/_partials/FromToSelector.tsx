@@ -1,13 +1,12 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 
-import { colors } from '@utils/theme'
-import { s } from '@utils/globalStyles'
+import { colors, s } from '@utils'
+import { DashedLine } from '@components'
 
 import SwitchSvg from '@icons/switch.svg'
 import CircleSvg from '@icons/circle.svg'
 import TriangleSvg from '@icons/triangle.svg'
-import DashedLine from '@components/DashedLine'
 
 type Props = {
   fromPlaceText?: string

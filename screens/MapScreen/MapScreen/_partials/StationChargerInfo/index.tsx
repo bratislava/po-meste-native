@@ -5,13 +5,11 @@ import AppLink from 'react-native-app-link'
 import { Ionicons } from '@expo/vector-icons'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 
-import { ConnectorProps } from '@utils/validation'
-import { colors } from '@utils/theme'
-import { s } from '@utils/globalStyles'
-import ChargerSvg from '@images/charger.svg'
-import Button from '@components/Button'
+import { s, colors, ConnectorProps } from '@utils'
+import { Button, BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '@components'
 import ConnectorMiniature from './_partials/ConnectorMiniature'
-import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '../../../../components/VehicleBar'
+
+import ChargerSvg from '@images/charger.svg'
 
 interface StationChargerInfoProps {
   name?: string

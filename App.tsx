@@ -1,10 +1,8 @@
-import 'react-native-gesture-handler'
-import { StatusBar } from 'expo-status-bar'
 import React from 'react'
+import { StatusBar } from 'expo-status-bar'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import * as Localization from 'expo-localization'
 import i18n from 'i18n-js'
-import * as translations from './translations'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import * as Location from 'expo-location'
 import Constants from 'expo-constants'
@@ -12,10 +10,11 @@ import * as Sentry from 'sentry-expo'
 import { AppState, AppStateStatus, LogBox, Platform } from 'react-native'
 import { focusManager } from 'react-query'
 
-import useCachedResources from '@hooks/useCachedResources'
-import useColorScheme from '@hooks/useColorScheme'
-import Navigation from '@navigation/index'
-import GlobalStateProvider from '@components/common/GlobalStateProvider'
+import { useCachedResources, useColorScheme } from '@hooks'
+import { GlobalStateProvider } from '@components'
+import Navigation from '@screens/index'
+
+import * as translations from './translations'
 
 i18n.translations = translations
 

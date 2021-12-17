@@ -8,14 +8,18 @@ import {
   LocalDateTime,
 } from '@js-joda/core'
 
-import { colors } from '@utils/theme'
-import { LegProps } from '@utils/validation'
-
+import {
+  colors,
+  LegProps,
+  s,
+  getColor,
+  getIcon,
+  getProviderName,
+  getTextColor,
+} from '@utils'
 import { LegModes, MicromobilityProvider } from '@types'
+import { LoadingView } from '@components'
 import Leg from './Leg'
-import { s } from '@utils/globalStyles'
-import { getColor, getIcon, getProviderName, getTextColor } from '@utils/utils'
-import LoadingView from '@components/LoadingView'
 
 type Props = {
   provider?: MicromobilityProvider

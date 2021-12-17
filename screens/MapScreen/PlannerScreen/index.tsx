@@ -4,13 +4,15 @@ import { StackScreenProps } from '@react-navigation/stack'
 import MapView, { Polyline, PROVIDER_GOOGLE } from 'react-native-maps'
 import googlePolyline from 'google-polyline'
 import BottomSheet from '@gorhom/bottom-sheet'
+
 import { MapParamList } from '@types'
 import { TextItinerary } from './_partials/TextItinerary'
-import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '../../../components/VehicleBar'
 import { modeColors } from '@utils/constants'
 
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components'
 import { getColor, hexToRgba, aggregateBicycleLegs } from '@utils'
+import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '@components'
+import { modeColors, getColor, hexToRgba } from '@utils'
 
 export default function PlannerScreen({
   route,

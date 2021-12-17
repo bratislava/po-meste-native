@@ -2,20 +2,23 @@ import React, { useContext } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { useQuery } from 'react-query'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-
-import { MhdStopProps } from '@utils/validation'
-import { getMhdStopStatusData } from '@utils/api'
-import { GlobalStateContext } from '@components/common/GlobalStateProvider'
 import { useNavigation } from '@react-navigation/core'
-import { s } from '@utils/globalStyles'
-import { getVehicle } from '@utils/utils'
-import { TransitVehicleType } from '@types'
-import { colors, mhdDefaultColors } from '@utils/theme'
-import MhdStopSignSvg from '@icons/stop-sign.svg'
-import LoadingView from '@components/LoadingView'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { LineNumber } from '@components/LineNumber'
 import ErrorView from '@components/ErrorView'
+
+import {
+  MhdStopProps,
+  getMhdStopStatusData,
+  s,
+  getVehicle,
+  colors,
+  mhdDefaultColors,
+} from '@utils'
+import { GlobalStateContext, LoadingView } from '@components'
+import { TransitVehicleType } from '@types'
+
+import MhdStopSignSvg from '@icons/stop-sign.svg'
 
 interface TimetablesProps {
   station: MhdStopProps

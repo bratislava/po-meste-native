@@ -8,16 +8,13 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker'
 import { DateTimeFormatter, Instant, LocalDate } from '@js-joda/core'
 import { Ionicons } from '@expo/vector-icons'
 
-import { colors, mhdDefaultColors } from '@utils/theme'
-import { getMhdGrafikon } from '@utils/api'
+import { colors, mhdDefaultColors, getMhdGrafikon, getVehicle, s } from '@utils'
 import { MapParamList, TimetableType } from '@types'
-import ArrowRight from '@images/arrow-right.svg'
-import { s } from '@utils/globalStyles'
-import ErrorView from '@components/ErrorView'
-import { getVehicle } from '@utils/utils'
-import { LineNumber } from '@components/LineNumber'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { LoadingView } from '@components'
+import { ErrorView, LoadingView, LineNumber } from '@components'
+
+import TicketSvg from '@icons/ticket.svg'
+import ArrowRight from '@icons/arrow-right.svg'
 
 export default function LineTimetableScreen({
   route,

@@ -2,12 +2,12 @@ import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import i18n from 'i18n-js'
 
+import { ChargerStatus, ChargerTypes } from '@types'
+import { s, colors } from '@utils'
+
 import CcsSvg from '@icons/ccs.svg'
 import MennekesSvg from '@icons/mennekes.svg'
 import ChademoSvg from '@icons/chademo.svg'
-import { colors } from '@utils/theme'
-import { ChargerStatus, ChargerTypes } from '@types'
-import { s } from '@utils/globalStyles'
 
 const PADDING_VERTICAL = 10
 type Props = {

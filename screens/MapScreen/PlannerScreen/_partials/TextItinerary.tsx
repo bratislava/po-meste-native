@@ -22,14 +22,25 @@ import DashedLine from '@components/DashedLine'
 import { colors } from '@utils/theme'
 import { STYLES } from '@utils/constants'
 import {
+  LegProps,
+  s,
+  colors,
+  STYLES,
   getColor,
   getIcon,
   getProviderName,
   getTextColor,
   openProviderApp,
-} from '@utils/utils'
-import Button from '@components/Button'
-import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '@components/VehicleBar'
+} from '@utils'
+import { LegModes, MicromobilityProvider } from '@types'
+import { useMhdStopsData } from '@hooks'
+import { DashedLine, Button, BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '@components'
+
+import WalkingSvg from '@icons/walking.svg'
+import EllipseSvg from '@icons/ellipse.svg'
+import CyclingSvg from '@icons/cycling.svg'
+import TramSvg from '@icons/tram.svg'
+import BusSvg from '@icons/bus.svg'
 
 interface TextItineraryProps {
   legs: LegProps[]
@@ -53,7 +64,7 @@ export const TextItinerary = ({
     data: dataMhdStops,
     isLoading: isLoadingMhd,
     errors: errorsMhd,
-  } = useMhdData()
+  } = useMhdStopsData()
 
   const ProviderIcon = provider && getIcon(provider, isScooter)
   const title = provider && getProviderName(provider)

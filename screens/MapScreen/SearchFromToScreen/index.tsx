@@ -1,7 +1,6 @@
 import React, { MutableRefObject, useState, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import i18n from 'i18n-js'
-// import { ScrollView } from 'react-native-gesture-handler'
 import BottomSheet from '@gorhom/bottom-sheet'
 import {
   GooglePlaceData,
@@ -11,13 +10,11 @@ import {
 } from 'react-native-google-places-autocomplete'
 import Constants from 'expo-constants'
 import { Ionicons } from '@expo/vector-icons'
-// import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@navigation/TabBar'
 
-// import { dummyDataPlaceHistory } from '../dummyData'
+import { colors, s } from '@utils'
+
 // import MhdSvg from '@icons/mhd.svg'
 // import HistorySvg from '@icons/history-search.svg'
-import { colors } from '@utils/theme'
-import { s } from '@utils/globalStyles'
 
 interface SearchFromToScreen {
   sheetRef: MutableRefObject<BottomSheet | null>

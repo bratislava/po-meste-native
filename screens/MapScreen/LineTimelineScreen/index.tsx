@@ -13,19 +13,14 @@ import { useQuery } from 'react-query'
 import i18n from 'i18n-js'
 
 import { MapParamList } from '@types'
-import { s } from '@utils/globalStyles'
-import { colors, mhdDefaultColors } from '@utils/theme'
-import DashedLine from '@components/DashedLine'
-import { getMhdTrip } from '@utils/api'
-import { LineNumber, LoadingView } from '@components'
-import { getVehicle } from '@utils/utils'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
-import ErrorView from '@components/ErrorView'
+import { colors, mhdDefaultColors, getMhdTrip, s, getVehicle } from '@utils'
+import { LineNumber, LoadingView, DashedLine, ErrorView } from '@components'
 
 export default function LineTimelineScreen({
   route,
 }: StackScreenProps<MapParamList, 'LineTimelineScreen'>) {
-  const { tripId, stopId } = route?.params
+  const { tripId, stopId } = route.params
 
   const navigation = useNavigation()
   const [elementPosition, setElementPosition] = useState<number>()

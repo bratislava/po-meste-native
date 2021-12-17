@@ -2,9 +2,9 @@ import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 
 import { TicketsParamList } from '@types'
+import { Header } from '@components'
 
 import SMSScreen from './SMSScreen'
-import { Header } from '@components/layout/Header'
 
 const Stack = createStackNavigator<TicketsParamList>()
 

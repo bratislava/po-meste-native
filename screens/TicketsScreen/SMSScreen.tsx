@@ -1,17 +1,13 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View, Alert } from 'react-native'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
+import { ScrollView } from 'react-native-gesture-handler'
 import * as SMS from 'expo-sms'
 import i18n from 'i18n-js'
-import { ScrollView } from 'react-native-gesture-handler'
 
-import {
-  Button,
-  ConfirmationModal,
-  ConfirmationModalProps,
-} from '@components/index'
+import { Button, ConfirmationModal, ConfirmationModalProps } from '@components'
 import { SmsTicketNumbers, SmsTicketPrices, TicketName } from '@types'
-import { presentPrice } from '@utils/utils'
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
+import { presentPrice } from '@utils'
 
 export default function SMSScreen() {
   async function handleSend(receiverNumber: string) {

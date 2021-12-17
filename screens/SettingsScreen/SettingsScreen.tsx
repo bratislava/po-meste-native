@@ -1,22 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
+import { ScrollView } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/core'
 import Constants from 'expo-constants'
 import { t } from 'i18n-js'
 import { openURL } from 'expo-linking'
+import CheckBox from 'react-native-check-box'
 
-import { GlobalStateContext } from '@components/common/GlobalStateProvider'
-import ItemListButton from '@components/ItemListButton'
+import { GlobalStateContext, ItemListButton, Modal, Button } from '@components'
+import { colors } from '@utils'
+import { PreferredLanguage } from '@types'
+
 import LanguageIcon from '@icons/language.svg'
 import AboutIcon from '@icons/information.svg'
 import FAQIcon from '@icons/question.svg'
-import Modal from '@components/Modal'
-import { colors } from '@utils/theme'
-import Button from '@components/Button'
-import CheckBox from 'react-native-check-box'
-import { PreferredLanguage } from '@types'
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
-import { ScrollView } from 'react-native-gesture-handler'
 
 export const SettingsScreen = () => {
   const privacyPolicyLink = Constants.manifest?.extra?.privacyPolicyLink

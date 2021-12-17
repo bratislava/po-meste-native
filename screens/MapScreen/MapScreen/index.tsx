@@ -14,38 +14,43 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useIsFocused } from '@react-navigation/core'
 import i18n from 'i18n-js'
 
-import CurrentLocationSvg from '@icons/current-location.svg'
-import ErrorView from '@components/ErrorView'
-import useRekolaData from '@hooks/useRekolaData'
-import useSlovnaftbajkData from '@hooks/useSlovnaftbajkData'
-import useTierData from '@hooks/useTierData'
-import useMhdData from '@hooks/useMhdStopsData'
-import useZseChargersData from '@hooks/useZseChargersData'
-import { GlobalStateContext } from '@components/common/GlobalStateProvider'
+import { useRekolaData, useSlovnaftbajkData, useTierData } from '@hooks'
+
+import {
+  ErrorView,
+  GlobalStateContext,
+  LoadingView,
+  VehicleBar,
+  BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
+} from '@components'
+import {
+  useMhdStopsData,
+  useZseChargersData,
+  useLocationWithPermision,
+} from '@hooks'
 import {
   ChargerStationProps,
   FreeBikeStatusProps,
   LocalitiesProps,
   MhdStopProps,
   StationMicromobilityProps,
-} from '@utils/validation'
-import StationMhdInfo from '../_partials/StationMhdInfo'
-import StationMicromobilityInfo from '../_partials/StationMicromobilityInfo/StationMicromobilityInfo'
-import StationChargerInfo from '@screens/MapScreen/_partials/StationChargerInfo'
-import { s } from '@utils/globalStyles'
-import { useLocationWithPermision } from '@hooks/miscHooks'
+  s,
+} from '@utils'
 import {
   BikeProvider,
   IconType,
   MicromobilityProvider,
   VehicleType,
 } from '@types'
-import SearchBar from '@screens/MapScreen/_partials/SearchBar'
-import VehicleBar, {
-  BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
-} from '@components/VehicleBar'
-import LoadingView from '@components/LoadingView'
+
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@screens/_partials/TabBar'
+
+import SearchBar from './_partials/SearchBar'
+import StationMhdInfo from './_partials/StationMhdInfo'
+import StationMicromobilityInfo from './_partials/StationMicromobilityInfo'
+import StationChargerInfo from './_partials/StationChargerInfo'
+
+import CurrentLocationSvg from '@icons/current-location.svg'
 
 const MIN_DELTA_FOR_XS_MARKER = 0.05
 const MIN_DELTA_FOR_SM_MARKER = 0.03
@@ -100,7 +105,8 @@ export default function MapScreen() {
     isLoading: isLoadingMhd,
     errors: errorsMhd,
     refetch: refetchMhd,
-  } = useMhdData()
+  } = useMhdStopsData()
+
   const {
     data: dataTier,
     isLoading: isLoadingTier,

@@ -6,19 +6,16 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
 } from 'react-native'
-import Constants from 'expo-constants'
-
+import { useNavigation } from '@react-navigation/native'
 import { ScrollView, TextInput } from 'react-native-gesture-handler'
+import Constants from 'expo-constants'
+import i18n from 'i18n-js'
 
-import { GlobalStateContext } from '@components/common/GlobalStateProvider'
+import { Button, GlobalStateContext } from '@components'
+import { colors } from '@utils/theme'
 
 import ThumbDown from '@icons/thumb-down.svg'
 import XIcon from '@icons/x.svg'
-
-import Button from '@components/Button'
-import { colors } from '@utils/theme'
-import { useNavigation } from '@react-navigation/native'
-import i18n from 'i18n-js'
 
 const FeedbackScreen = () => {
   const [feedbackText, setFeedbackText] = useState('')

@@ -9,8 +9,7 @@ import {
 } from 'react-native-tab-view'
 import i18n from 'i18n-js'
 
-import { MhdStopProps } from '@utils/validation'
-import { colors } from '@utils/theme'
+import { MhdStopProps, colors } from '@utils'
 
 import UpcomingDepartures from './_partials/UpcomingDepartures'
 import Timetables from './_partials/Timetables'

@@ -2,11 +2,11 @@ import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 
 import { SettingsParamList } from '@types'
+import { Header } from '@components'
 
 import SettingsScreen from './SettingsScreen'
 import AboutScreen from './AboutScreen'
 import FAQScreen from './FAQScreen'
-import { Header } from '@components/layout/Header'
 
 const Stack = createStackNavigator<SettingsParamList>()
 

@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 
 import { TravelModes, VehicleData } from '@types'
-import { colors } from '@utils/theme'
+import { colors } from '@utils'
 
 type Props = {
   selectedVehicle: TravelModes

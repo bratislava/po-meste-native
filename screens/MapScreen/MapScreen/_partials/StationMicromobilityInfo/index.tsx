@@ -1,20 +1,21 @@
 import React, { useCallback } from 'react'
 import { Text, View, StyleSheet } from 'react-native'
+import AppLink from 'react-native-app-link'
 import i18n from 'i18n-js'
 
 import {
   FreeBikeStatusProps,
   StationMicromobilityProps,
-} from '@utils/validation'
-import { colors } from '@utils/theme'
-import { s } from '@utils/globalStyles'
-import { rekolaPrice } from '@utils/constants'
+  colors,
+  s,
+  rekolaPrice,
+} from '@utils'
+import { Button } from '@components'
+import { MicromobilityProvider } from '@types'
+
 import RekoloVehicleIconSvg from '@images/rekolo-vehicle-icon.svg'
 import SlovnaftbajkVehicleIconSvg from '@images/slovnaftbajk-vehicle-icon.svg'
 import TierVehicleIconSvg from '@images/tier-vehicle-icon.svg'
-import Button from '@components/Button'
-import { MicromobilityProvider } from '@types'
-import AppLink from 'react-native-app-link'
 
 interface StationMicromobilityInfoProps {
   station: StationMicromobilityProps | FreeBikeStatusProps

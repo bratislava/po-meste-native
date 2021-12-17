@@ -1,17 +1,16 @@
 import React from 'react'
 import { View, StyleSheet, Text, ScrollView } from 'react-native'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import Constants from 'expo-constants'
 import { openURL } from 'expo-linking'
 import { t } from 'i18n-js'
 
-import AppLogo from '@images/app-logo.svg'
-import Footer from '@components/Footer'
-import Link from '@components/Link'
-import { colors } from '@utils/theme'
+import { colors } from '@utils'
+import { ScreenFooter, Link } from '@components'
 
 import InovationBratislavaLogo from '@images/inovation-bratislava-logo.svg'
 import EuropeanUnionLogo from '@images/european-union-logo.svg'
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
+import AppLogo from '@images/app-logo.svg'
 
 export const AboutScreen = () => {
   const contactEmailAddress = Constants.manifest?.extra?.contactEmailAddress
@@ -37,7 +36,7 @@ export const AboutScreen = () => {
             {t('screens.AboutScreen.description')}
           </Text>
         </View>
-        <Footer>
+        <ScreenFooter>
           <View style={styles.footerContainer}>
             <Text style={styles.footerLabel}>
               {t('screens.AboutScreen.contact')}
@@ -77,7 +76,7 @@ export const AboutScreen = () => {
               </View>
             </View>
           </View>
-        </Footer>
+        </ScreenFooter>
       </ScrollView>
     </View>
   )

@@ -14,7 +14,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useIsFocused } from '@react-navigation/core'
 import i18n from 'i18n-js'
 
-import CurrentLocationSvg from '@images/current-location.svg'
+import CurrentLocationSvg from '@icons/current-location.svg'
 import ErrorView from '@components/ErrorView'
 import useRekolaData from '@hooks/useRekolaData'
 import useSlovnaftbajkData from '@hooks/useSlovnaftbajkData'
@@ -39,7 +39,7 @@ import {
   IconType,
   MicromobilityProvider,
   VehicleType,
-} from '../types'
+} from '@types'
 import SearchBar from '@screens/ui/SearchBar/SearchBar'
 import VehicleBar, {
   BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
@@ -62,34 +62,34 @@ type markerIcon = {
 
 const markerIcons: { [index: string]: markerIcon } = {
   mhd: {
-    xs: require('@images/map/mhd/xs.png'),
-    sm: require('@images/map/mhd/sm.png'),
-    md: require('@images/map/mhd/md.png'),
-    lg: require('@images/map/mhd/lg.png'),
+    xs: require('@icons/map/mhd/xs.png'),
+    sm: require('@icons/map/mhd/sm.png'),
+    md: require('@icons/map/mhd/md.png'),
+    lg: require('@icons/map/mhd/lg.png'),
   },
   tier: {
-    xs: require('@images/map/tier/xs.png'),
-    sm: require('@images/map/tier/sm.png'),
-    md: require('@images/map/tier/md.png'),
-    lg: require('@images/map/tier/lg.png'),
+    xs: require('@icons/map/tier/xs.png'),
+    sm: require('@icons/map/tier/sm.png'),
+    md: require('@icons/map/tier/md.png'),
+    lg: require('@icons/map/tier/lg.png'),
   },
   slovnaftbajk: {
-    xs: require('@images/map/slovnaftbajk/xs.png'),
-    sm: require('@images/map/slovnaftbajk/sm.png'),
-    md: require('@images/map/slovnaftbajk/md.png'),
-    lg: require('@images/map/slovnaftbajk/lg.png'),
+    xs: require('@icons/map/slovnaftbajk/xs.png'),
+    sm: require('@icons/map/slovnaftbajk/sm.png'),
+    md: require('@icons/map/slovnaftbajk/md.png'),
+    lg: require('@icons/map/slovnaftbajk/lg.png'),
   },
   rekola: {
-    xs: require('@images/map/rekola/xs.png'),
-    sm: require('@images/map/rekola/sm.png'),
-    md: require('@images/map/rekola/md.png'),
-    lg: require('@images/map/rekola/lg.png'),
+    xs: require('@icons/map/rekola/xs.png'),
+    sm: require('@icons/map/rekola/sm.png'),
+    md: require('@icons/map/rekola/md.png'),
+    lg: require('@icons/map/rekola/lg.png'),
   },
   zse: {
-    xs: require('@images/map/zse/xs.png'),
-    sm: require('@images/map/zse/sm.png'),
-    md: require('@images/map/zse/md.png'),
-    lg: require('@images/map/zse/lg.png'),
+    xs: require('@icons/map/zse/xs.png'),
+    sm: require('@icons/map/zse/sm.png'),
+    md: require('@icons/map/zse/md.png'),
+    lg: require('@icons/map/zse/lg.png'),
   },
 }
 

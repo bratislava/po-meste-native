@@ -9,7 +9,7 @@ import {
   ConfirmationModal,
   ConfirmationModalProps,
 } from '@components/index'
-import { SmsTicketNumbers, SmsTicketPrices, TicketName } from '../../types'
+import { SmsTicketNumbers, SmsTicketPrices, TicketName } from '@types'
 import { presentPrice } from '@utils/utils'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 

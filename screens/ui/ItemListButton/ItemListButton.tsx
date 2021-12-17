@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
-import ChevronRightSmall from '@images/chevron-right-small.svg'
+import ChevronRightSmall from '@icons/chevron-right-small.svg'
 import { colors } from '@utils/theme'
 import { SvgProps } from 'react-native-svg'
 import { TouchableOpacity } from 'react-native-gesture-handler'

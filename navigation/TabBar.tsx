@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
-import TicketSvg from '../assets/images/ticket-alt.svg'
+import TicketSvg from '@icons/ticket-alt.svg'
 
 import { StyleSheet, View, Text, TouchableWithoutFeedback } from 'react-native'
 

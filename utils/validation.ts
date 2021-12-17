@@ -1,6 +1,10 @@
 import * as yup from 'yup'
-import { ChargerStatus, ChargerTypes, LegModes } from '../types'
-import { TransitVehicleType } from '../types'
+import {
+  ChargerStatus,
+  ChargerTypes,
+  LegModes,
+  TransitVehicleType,
+} from '@types'
 import { colorRegex, dateStringRegex, timeStringRegex } from './utils'
 
 export const mhdStop = yup

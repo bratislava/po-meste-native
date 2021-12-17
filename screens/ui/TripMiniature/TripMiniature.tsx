@@ -11,7 +11,7 @@ import {
 import { colors } from '@utils/theme'
 import { LegProps } from '@utils/validation'
 
-import { LegModes, MicromobilityProvider } from '../../../types'
+import { LegModes, MicromobilityProvider } from '@types'
 import Leg from './Leg'
 import { s } from '@utils/globalStyles'
 import { getColor, getIcon, getProviderName, getTextColor } from '@utils/utils'

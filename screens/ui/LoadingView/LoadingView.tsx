@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, View, StyleProp, ViewStyle } from 'react-native'
-import LoadingSvg from '@images/loading-icon.svg'
+import LoadingSvg from '@icons/loading-icon.svg'
 import { NumberProp } from 'react-native-svg'
 
 interface UpcomingDeparturesProps {

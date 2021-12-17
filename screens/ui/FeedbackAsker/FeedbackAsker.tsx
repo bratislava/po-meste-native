@@ -3,8 +3,8 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 
 import { GlobalStateContext } from '@components/common/GlobalStateProvider'
 
-import ThumbUp from '@images/thumb-up.svg'
-import ThumbDown from '@images/thumb-down.svg'
+import ThumbUp from '@icons/thumb-up.svg'
+import ThumbDown from '@icons/thumb-down.svg'
 
 import { colors } from '@utils/theme'
 import i18n from 'i18n-js'

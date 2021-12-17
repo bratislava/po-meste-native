@@ -4,10 +4,10 @@ import { StyleSheet, View, Text } from 'react-native'
 import i18n from 'i18n-js'
 import { useNavigation } from '@react-navigation/native'
 
-import MarkerSvg from '../assets/images/map-pin-marker.svg'
+import MarkerSvg from '@icons/map-pin-marker.svg'
 import { Button } from '../components'
 import { StackScreenProps } from '@react-navigation/stack'
-import { MapParamList } from '../types'
+import { MapParamList } from '@types'
 import { colors } from '../utils/theme'
 import { s } from '../utils/globalStyles'
 

@@ -1,11 +1,11 @@
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { View, StyleSheet, Text } from 'react-native'
-import ChevronLeftSmall from '@images/chevron-left-small.svg'
-import { colors } from '@utils/theme'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { useNavigation } from '@react-navigation/core'
 import { StackHeaderProps } from '@react-navigation/stack'
+import { useNavigation } from '@react-navigation/core'
 import { t } from 'i18n-js'
+import { colors } from '@utils/theme'
+import ChevronLeftSmall from '@icons/chevron-left-small.svg'
 
 export interface HeaderProps extends StackHeaderProps {
   onBack?: () => void

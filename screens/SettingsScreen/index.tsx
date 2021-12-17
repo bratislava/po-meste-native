@@ -1,7 +1,7 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 
-import { SettingsParamList } from '../../types'
+import { SettingsParamList } from '@types'
 
 import SettingsScreen from './SettingsScreen'
 import AboutScreen from './AboutScreen'

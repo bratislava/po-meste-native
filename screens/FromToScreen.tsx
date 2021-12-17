@@ -35,7 +35,7 @@ import CyclingSvg from '@images/cycling.svg'
 import ScooterSvg from '@images/scooter.svg'
 import WalkingSvg from '@images/walking.svg'
 import { colors } from '@utils/theme'
-import { getOtpTravelMode } from '@utils/utils'
+import { aggregateMicromobilityLegs, getOtpTravelMode } from '@utils/utils'
 import {
   MapParamList,
   MicromobilityProvider,
@@ -445,7 +445,11 @@ export default function FromToScreen({
                 arriveDate={LocalDateTime.ofInstant(
                   Instant.ofEpochMilli(tripChoice.endTime)
                 )}
-                legs={tripChoice.legs}
+                legs={
+                  tripChoice.legs
+                    ? aggregateMicromobilityLegs(tripChoice.legs)
+                    : undefined
+                }
               />
             )
         })}

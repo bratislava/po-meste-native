@@ -35,7 +35,7 @@ import CyclingSvg from '@images/cycling.svg'
 import ScooterSvg from '@images/scooter.svg'
 import WalkingSvg from '@images/walking.svg'
 import { colors } from '@utils/theme'
-import { aggregateMicromobilityLegs, getOtpTravelMode } from '@utils/utils'
+import { aggregateBicycleLegs, getOtpTravelMode } from '@utils/utils'
 import {
   MapParamList,
   MicromobilityProvider,
@@ -447,7 +447,7 @@ export default function FromToScreen({
                 )}
                 legs={
                   tripChoice.legs
-                    ? aggregateMicromobilityLegs(tripChoice.legs)
+                    ? aggregateBicycleLegs(tripChoice.legs)
                     : undefined
                 }
               />

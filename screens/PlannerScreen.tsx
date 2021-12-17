@@ -9,7 +9,7 @@ import { TextItinerary } from './ui/TextItinerary/TextItinerary'
 import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from './ui/VehicleBar/VehicleBar'
 import { modeColors } from '@utils/constants'
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@navigation/TabBar'
-import { getColor, hexToRgba, aggregateMicromobilityLegs } from '@utils/utils'
+import { getColor, hexToRgba, aggregateBicycleLegs } from '@utils/utils'
 
 export default function PlannerScreen({
   route,
@@ -106,10 +106,7 @@ export default function PlannerScreen({
         snapPoints={bottomSheetSnapPoints}
         onChange={setSheetIndex}
       >
-        <TextItinerary
-          legs={aggregateMicromobilityLegs(legs)}
-          provider={provider}
-        />
+        <TextItinerary legs={aggregateBicycleLegs(legs)} provider={provider} />
       </BottomSheet>
     </View>
   )

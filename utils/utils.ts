@@ -152,11 +152,13 @@ export const hexToRgba = (color: string, alpha: number) => {
   return result
 }
 
-export const aggregateMicromobilityLegs = (legs: LegProps[]) => {
-  const containsBicycle = legs.findIndex((leg) => leg.mode == LegModes.bicycle)
+export const aggregateBicycleLegs = (legs: LegProps[]) => {
+  const tripContainsBicycle = legs.findIndex(
+    (leg) => leg.mode == LegModes.bicycle
+  )
   const filterWalksBetweenBicycles = legs.filter((leg, index) => {
     return !(
-      containsBicycle > -1 &&
+      tripContainsBicycle > -1 &&
       leg.mode == LegModes.walk &&
       index > 0 &&
       index < legs.length - 1 &&
@@ -164,23 +166,23 @@ export const aggregateMicromobilityLegs = (legs: LegProps[]) => {
       leg.duration < 60
     )
   })
-  const aggregateBicycleLegs = filterWalksBetweenBicycles.reduce(
-    (reduced: LegProps[], leg) => {
-      const previousLeg = reduced[reduced.length - 1]
+  const connectBicycleLegs = filterWalksBetweenBicycles.reduce(
+    (connected: LegProps[], currentLeg) => {
+      const previousLeg = connected[connected.length - 1]
       if (
-        reduced.length &&
+        connected.length &&
         previousLeg.mode === LegModes.bicycle &&
-        leg.mode === LegModes.bicycle &&
-        previousLeg.duration &&
-        previousLeg.distance
+        currentLeg.mode === LegModes.bicycle &&
+        previousLeg.duration !== undefined &&
+        previousLeg.distance !== undefined
       ) {
-        previousLeg.duration += leg.duration || 0
-        previousLeg.distance += leg.distance || 0
-        previousLeg.endTime = leg.endTime
-      } else reduced.push(_.cloneDeep(leg))
-      return reduced
+        previousLeg.duration += currentLeg.duration || 0
+        previousLeg.distance += currentLeg.distance || 0
+        previousLeg.endTime = currentLeg.endTime
+      } else connected.push(_.cloneDeep(currentLeg))
+      return connected
     },
     []
   )
-  return aggregateBicycleLegs
+  return connectBicycleLegs
 }

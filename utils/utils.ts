@@ -1,7 +1,8 @@
 import i18n from 'i18n-js'
 import AppLink from 'react-native-app-link'
-
+import _ from 'lodash'
 import {
+  LegModes,
   MicromobilityProvider,
   TransitVehicleType,
   TravelModes,
@@ -15,6 +16,7 @@ import RekoloSvg from '@images/rekolo.svg'
 import TramSvg from '@images/tram.svg'
 import TrolleybusSvg from '@images/trolleybus.svg'
 import BusSvg from '@images/bus.svg'
+import { LegProps } from './validation'
 
 export const presentPrice = (price: number /* in cents */) => {
   return i18n.t('presentPrice', { price: (price / 100).toFixed(2) })
@@ -147,4 +149,39 @@ export const hexToRgba = (color: string, alpha: number) => {
     16
   )}, ${alpha})`
   return result
+}
+
+export const aggregateBicycleLegs = (legs: LegProps[]) => {
+  const tripContainsBicycle = legs.findIndex(
+    (leg) => leg.mode === LegModes.bicycle
+  )
+  const filterWalksBetweenBicycles = legs.filter((leg, index) => {
+    return !(
+      tripContainsBicycle > -1 &&
+      leg.mode === LegModes.walk &&
+      index > 0 &&
+      index < legs.length - 1 &&
+      leg.duration &&
+      leg.duration < 60
+    )
+  })
+  const connectBicycleLegs = filterWalksBetweenBicycles.reduce(
+    (connected: LegProps[], currentLeg) => {
+      const previousLeg = connected[connected.length - 1]
+      if (
+        connected.length &&
+        previousLeg.mode === LegModes.bicycle &&
+        currentLeg.mode === LegModes.bicycle &&
+        previousLeg.duration !== undefined &&
+        previousLeg.distance !== undefined
+      ) {
+        previousLeg.duration += currentLeg.duration || 0
+        previousLeg.distance += currentLeg.distance || 0
+        previousLeg.endTime = currentLeg.endTime
+      } else connected.push(_.cloneDeep(currentLeg))
+      return connected
+    },
+    []
+  )
+  return connectBicycleLegs
 }

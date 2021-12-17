@@ -1,7 +1,6 @@
 import i18n from 'i18n-js'
 import AppLink from 'react-native-app-link'
 import _ from 'lodash'
-
 import {
   LegModes,
   MicromobilityProvider,
@@ -154,12 +153,12 @@ export const hexToRgba = (color: string, alpha: number) => {
 
 export const aggregateBicycleLegs = (legs: LegProps[]) => {
   const tripContainsBicycle = legs.findIndex(
-    (leg) => leg.mode == LegModes.bicycle
+    (leg) => leg.mode === LegModes.bicycle
   )
   const filterWalksBetweenBicycles = legs.filter((leg, index) => {
     return !(
       tripContainsBicycle > -1 &&
-      leg.mode == LegModes.walk &&
+      leg.mode === LegModes.walk &&
       index > 0 &&
       index < legs.length - 1 &&
       leg.duration &&

@@ -14,8 +14,8 @@ import { Ionicons } from '@expo/vector-icons'
 // import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@navigation/TabBar'
 
 // import { dummyDataPlaceHistory } from '../dummyData'
-// import MhdSvg from '@images/mhd.svg'
-// import HistorySvg from '@images/history-search.svg'
+// import MhdSvg from '@icons/mhd.svg'
+// import HistorySvg from '@icons/history-search.svg'
 import { colors } from '@utils/theme'
 import { s } from '@utils/globalStyles'
 

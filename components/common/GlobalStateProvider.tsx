@@ -14,16 +14,16 @@ import {
   savePreferredLanguageToAsyncStorage,
 } from '@utils/localization'
 
-import { PreferredLanguage, VehicleType } from '../../types'
+import { PreferredLanguage, VehicleType } from '@types'
 
-import MhdChosenSvg from '@images/mhd-filter-chosen.svg'
-import MhdUnchosenSvg from '@images/mhd-filter-unchosen.svg' // TODO add proper icon
-import BicyclesChosen from '@images/bicycles-filter-chosen.svg'
-import BicyclesUnchosen from '@images/bicycles-filter-unchosen.svg'
-import ScooterChosen from '@images/scooters-filter-chosen.svg'
-import ScooterUnchosen from '@images/scooters-filter-unchosen.svg'
-import ChargersChosen from '@images/chargers-filter-chosen.svg'
-import ChargersUnchosen from '@images/chargers-filter-unchosen.svg'
+import MhdChosenSvg from '@icons/mhd-filter-chosen.svg'
+import MhdUnchosenSvg from '@icons/mhd-filter-unchosen.svg' // TODO add proper icon
+import BicyclesChosen from '@icons/bicycles-filter-chosen.svg'
+import BicyclesUnchosen from '@icons/bicycles-filter-unchosen.svg'
+import ScooterChosen from '@icons/scooters-filter-chosen.svg'
+import ScooterUnchosen from '@icons/scooters-filter-unchosen.svg'
+import ChargersChosen from '@icons/chargers-filter-chosen.svg'
+import ChargersUnchosen from '@icons/chargers-filter-unchosen.svg'
 
 interface Props {
   children: React.ReactNode

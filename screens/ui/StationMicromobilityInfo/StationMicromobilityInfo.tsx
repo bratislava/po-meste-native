@@ -13,7 +13,7 @@ import RekoloVehicleIconSvg from '@images/rekolo-vehicle-icon.svg'
 import SlovnaftbajkVehicleIconSvg from '@images/slovnaftbajk-vehicle-icon.svg'
 import TierVehicleIconSvg from '@images/tier-vehicle-icon.svg'
 import Button from '@components/Button'
-import { MicromobilityProvider } from '../../../types'
+import { MicromobilityProvider } from '@types'
 import AppLink from 'react-native-app-link'
 
 interface StationMicromobilityInfoProps {

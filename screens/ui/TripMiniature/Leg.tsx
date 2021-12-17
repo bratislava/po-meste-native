@@ -4,10 +4,10 @@ import { SvgProps } from 'react-native-svg'
 
 import { colors } from '@utils/theme'
 
-import { LegModes } from '../../../types'
+import { LegModes } from '@types'
 
-import ChevronRightSvg from '@images/chevron-right-small.svg'
-import WalkingSvg from '@images/walking.svg'
+import ChevronRightSvg from '@icons/chevron-right-small.svg'
+import WalkingSvg from '@icons/walking.svg'
 import { LineNumber } from '@components/LineNumber'
 
 type LegProps = {

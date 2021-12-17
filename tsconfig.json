@@ -5,12 +5,15 @@
     "baseUrl": "./",
     "paths": {
       "@components/*": ["./components/*"],
+      "@components": ["./components"],
       "@screens/*": ["./screens/*"],
       "@navigation/*": ["./navigation/*"],
       "@hooks/*": ["./hooks/*"],
       "@images/*": ["./assets/images/*"],
+      "@icons/*": ["./assets/icons/*"],
       "@utils/*": ["./utils/*"],
-      "@fonts/*": ["./assets/fonts/*"]
+      "@fonts/*": ["./assets/fonts/*"],
+      "@types": ["./types"]
     }
   }
 }

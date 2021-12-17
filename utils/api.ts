@@ -6,7 +6,7 @@ import {
   apiMhdStopStatus,
   apiMhdTrip,
 } from './validation'
-import { MicromobilityProvider, TravelModesOtpApi } from '../types'
+import { MicromobilityProvider, TravelModesOtpApi } from '@types'
 import {
   DateTimeFormatter,
   LocalDate,

@@ -4,9 +4,9 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { colors } from '@utils/theme'
 import { s } from '@utils/globalStyles'
 
-import SwitchSvg from '@images/switch.svg'
-import CircleSvg from '@images/circle.svg'
-import TriangleSvg from '@images/triangle.svg'
+import SwitchSvg from '@icons/switch.svg'
+import CircleSvg from '@icons/circle.svg'
+import TriangleSvg from '@icons/triangle.svg'
 import DashedLine from '../DashedLine/DashedLine'
 
 type Props = {

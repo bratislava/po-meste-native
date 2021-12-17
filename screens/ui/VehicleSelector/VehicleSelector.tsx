@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from 'react-native'
 
-import { TravelModes, VehicleData } from '../../../types'
+import { TravelModes, VehicleData } from '@types'
 import { colors } from '@utils/theme'
 
 type Props = {

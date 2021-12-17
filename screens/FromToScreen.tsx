@@ -30,10 +30,10 @@ import TripMiniature from './ui/TripMiniature/TripMiniature'
 import FromToSelector from './ui/FromToSelector/FromToSelector'
 import VehicleSelector from './ui/VehicleSelector/VehicleSelector'
 
-import BusSvg from '@images/bus.svg'
-import CyclingSvg from '@images/cycling.svg'
-import ScooterSvg from '@images/scooter.svg'
-import WalkingSvg from '@images/walking.svg'
+import BusSvg from '@icons/bus.svg'
+import CyclingSvg from '@icons/cycling.svg'
+import ScooterSvg from '@icons/scooter.svg'
+import WalkingSvg from '@icons/walking.svg'
 import { colors } from '@utils/theme'
 import {
   aggregateBicycleLegs,
@@ -47,7 +47,7 @@ import {
   TravelModes,
   TravelModesOtpApi,
   VehicleData,
-} from '../types'
+} from '@types'
 import FeedbackAsker from './ui/FeedbackAsker/FeedbackAsker'
 import { GlobalStateContext } from '@components/common/GlobalStateProvider'
 import { useLocationWithPermision } from '@hooks/miscHooks'

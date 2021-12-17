@@ -7,19 +7,20 @@ import {
   TransitVehicleType,
   TravelModes,
   TravelModesOtpApi,
-} from '../types'
+} from '@types'
 import { colors } from './theme'
-import CyclingSvg from '@images/cycling.svg'
-import ScooterSvg from '@images/scooter.svg'
-import SlovnaftbajkSvg from '@images/slovnaftbajk.svg'
-import TierSvg from '@images/tier.svg'
-import RekoloSvg from '@images/rekolo.svg'
-import TramSvg from '@images/tram.svg'
-import TrolleybusSvg from '@images/trolleybus.svg'
-import BusSvg from '@images/bus.svg'
 import { LegProps } from './validation'
 import { ValidationError } from 'yup'
 import { API_ERROR_TEXT } from './constants'
+
+import CyclingSvg from '@icons/cycling.svg'
+import ScooterSvg from '@icons/scooter.svg'
+import SlovnaftbajkSvg from '@icons/slovnaftbajk.svg'
+import TierSvg from '@icons/tier.svg'
+import RekoloSvg from '@icons/rekolo.svg'
+import TramSvg from '@icons/tram.svg'
+import TrolleybusSvg from '@icons/trolleybus.svg'
+import BusSvg from '@icons/bus.svg'
 
 export const presentPrice = (price: number /* in cents */) => {
   return i18n.t('presentPrice', { price: (price / 100).toFixed(2) })

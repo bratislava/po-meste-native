@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { PreferredLanguage } from '../types'
+import { PreferredLanguage } from '@types'
 
 export const loadPreferredLanguageFromAsyncStorage =
   async (): Promise<PreferredLanguage> => {

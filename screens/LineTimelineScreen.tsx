@@ -12,7 +12,7 @@ import { LocalTime, DateTimeFormatter } from '@js-joda/core'
 import { useQuery } from 'react-query'
 import i18n from 'i18n-js'
 
-import { MapParamList } from '../types'
+import { MapParamList } from '@types'
 import { s } from '@utils/globalStyles'
 import { colors, mhdDefaultColors } from '@utils/theme'
 import DashedLine from './ui/DashedLine/DashedLine'

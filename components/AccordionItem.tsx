@@ -5,9 +5,9 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { StyleSheet, Text, View, Animated, ViewStyle } from 'react-native'
+import { StyleSheet, Text, View, Animated } from 'react-native'
 
-import ChevronRightSmall from '@images/chevron-right-small.svg'
+import ChevronRightSmall from '@icons/chevron-right-small.svg'
 import { colors } from '@utils/theme'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 

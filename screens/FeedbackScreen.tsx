@@ -12,8 +12,8 @@ import { ScrollView, TextInput } from 'react-native-gesture-handler'
 
 import { GlobalStateContext } from '@components/common/GlobalStateProvider'
 
-import ThumbDown from '@images/thumb-down.svg'
-import XIcon from '@images/x.svg'
+import ThumbDown from '@icons/thumb-down.svg'
+import XIcon from '@icons/x.svg'
 
 import Button from '@components/Button'
 import { colors } from '@utils/theme'

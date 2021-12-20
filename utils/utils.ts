@@ -10,6 +10,7 @@ import {
 } from '../types'
 import { colors } from './theme'
 import CyclingSvg from '@images/cycling.svg'
+import ScooterSvg from '@images/scooter.svg'
 import SlovnaftbajkSvg from '@images/slovnaftbajk.svg'
 import TierSvg from '@images/tier.svg'
 import RekoloSvg from '@images/rekolo.svg'
@@ -39,7 +40,7 @@ export const getOtpTravelMode = (mode: TravelModes) => {
     case TravelModes.bicycle:
       return TravelModesOtpApi.bicycle
     case TravelModes.scooter:
-      return TravelModesOtpApi.rented
+      return TravelModesOtpApi.bicycle
     case TravelModes.walk:
       return TravelModesOtpApi.walk
     default:
@@ -60,7 +61,10 @@ export const getProviderName = (provider: MicromobilityProvider) => {
   }
 }
 
-export const getIcon = (provider?: MicromobilityProvider) => {
+export const getIcon = (
+  provider?: MicromobilityProvider,
+  isScooter?: boolean
+) => {
   switch (provider) {
     case MicromobilityProvider.rekola:
       return RekoloSvg
@@ -69,7 +73,7 @@ export const getIcon = (provider?: MicromobilityProvider) => {
     case MicromobilityProvider.tier:
       return TierSvg
     default:
-      return CyclingSvg
+      return isScooter ? ScooterSvg : CyclingSvg
   }
 }
 

@@ -20,6 +20,7 @@ type Props = {
   legs?: LegProps[]
   onPress?: () => void
   isLoading?: boolean
+  isScooter?: boolean
 }
 
 const TripMiniature = ({
@@ -30,6 +31,7 @@ const TripMiniature = ({
   legs,
   onPress,
   isLoading,
+  isScooter,
 }: Props) => {
   const [startStationName, setStartStationName] = useState('')
   const [diffMinutes, setDiffMinutes] = useState(
@@ -94,7 +96,7 @@ const TripMiniature = ({
                     duration={leg.duration}
                     color={leg.routeColor}
                     shortName={leg.routeShortName}
-                    TransportIcon={getIcon(provider)}
+                    TransportIcon={getIcon(provider, isScooter)}
                   />
                 ))}
               </View>

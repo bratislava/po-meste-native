@@ -435,6 +435,7 @@ export default function FromToScreen({
                   navigation.navigate('PlannerScreen', {
                     legs: tripChoice?.legs,
                     provider: provider,
+                    isScooter: selectedVehicle === TravelModes.scooter,
                   })
                 }
                 provider={provider}
@@ -450,6 +451,7 @@ export default function FromToScreen({
                     ? aggregateBicycleLegs(tripChoice.legs)
                     : undefined
                 }
+                isScooter={selectedVehicle === TravelModes.scooter}
               />
             )
         })}

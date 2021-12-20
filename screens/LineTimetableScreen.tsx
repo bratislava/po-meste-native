@@ -1,12 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import _ from 'lodash'
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-} from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import i18n from 'i18n-js'
 import { StackScreenProps } from '@react-navigation/stack'
 import { useQuery } from 'react-query'
@@ -23,6 +17,7 @@ import ErrorView from '@components/ErrorView'
 import LoadingView from './ui/LoadingView/LoadingView'
 import { getVehicle } from '@utils/utils'
 import { LineNumber } from '@components/LineNumber'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 export default function LineTimetableScreen({
   route,
@@ -176,7 +171,7 @@ export default function LineTimetableScreen({
           </View>
         </View>
         <View style={[s.horizontalMargin, styles.timetableDayType]}>
-          <TouchableHighlight onPress={showSchedulePicker}>
+          <TouchableOpacity onPress={showSchedulePicker}>
             <Text style={styles.schedulingText}>
               {date.format(DateTimeFormatter.ofPattern('dd.MM.'))}
               {LocalDate.now().toString() === date.toString() &&
@@ -192,7 +187,7 @@ export default function LineTimetableScreen({
                 name="chevron-down"
               />
             </Text>
-          </TouchableHighlight>
+          </TouchableOpacity>
           {/* <ButtonGroup style={styles.row}> //TODO left for https://inovaciebratislava.atlassian.net/browse/PLAN-293
             {Object.keys(TimetableType).map((key) => {
               return (

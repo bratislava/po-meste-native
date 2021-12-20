@@ -122,7 +122,7 @@ export const TextItinerary = ({
                       </View>
                       {/* TODO add location based on google or get it from previous screen */}
                       <Text style={[styles.textMargin, styles.textBold]}>
-                        Start
+                        {i18n.t('start')}
                       </Text>
                     </View>
                     <View style={styles.dashedLine}>{getDashedLine()}</View>
@@ -291,7 +291,7 @@ export const TextItinerary = ({
                       </View>
                       {/* TODO add location based on google or get it from previous screen */}
                       <Text style={[styles.textMargin, styles.textBold]}>
-                        End
+                        {i18n.t('end')}
                       </Text>
                     </View>
                   </View>

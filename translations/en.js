@@ -181,4 +181,6 @@ export default {
   arrivalText: 'Arrival',
   today: ' (Today)',
   tomorrow: ' (Tomorrow)',
+  start: 'Start',
+  end: 'End',
 }

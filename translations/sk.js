@@ -183,4 +183,6 @@ export default {
   arrivalText: 'Príchod',
   today: ' (Dnes)',
   tomorrow: ' (Zajtra)',
+  start: 'Štart',
+  end: 'Koniec',
 }

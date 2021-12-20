@@ -10,6 +10,7 @@ import WheelchairSvg from '@images/wheelchair.svg'
 import WalkingSvg from '@images/walking.svg'
 import EllipseSvg from '@images/ellipse.svg'
 import CyclingSvg from '@images/cycling.svg'
+import ScooterSvg from '@images/scooter.svg'
 import TramSvg from '@images/tram.svg'
 import BusSvg from '@images/bus.svg'
 import { LegProps } from '@utils/validation'
@@ -31,7 +32,8 @@ import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '@screens/ui/VehicleBar/VehicleBar
 
 interface TextItineraryProps {
   legs: LegProps[]
-  provider: MicromobilityProvider
+  provider?: MicromobilityProvider
+  isScooter?: boolean
 }
 
 const ICON_WIDTH = 20
@@ -40,7 +42,11 @@ const PADDING_HORIZONTAL = 10
 
 const BIKESHARE_PROPERTY = 'BIKESHARE'
 
-export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
+export const TextItinerary = ({
+  legs,
+  provider,
+  isScooter,
+}: TextItineraryProps) => {
   // getData from /mhd/trip/{legs.tripId.substring(2)}
   const {
     data: dataMhdStops,
@@ -48,8 +54,8 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
     errors: errorsMhd,
   } = useMhdData()
 
-  const Icon = provider && getIcon(provider)
-  const title = getProviderName(provider)
+  const ProviderIcon = provider && getIcon(provider, isScooter)
+  const title = provider && getProviderName(provider)
 
   const getFirstRentedInstanceIndex = legs.findIndex(
     (leg) => leg.from.vertexType === BIKESHARE_PROPERTY
@@ -64,23 +70,30 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
     return <DashedLine spacing={4} dashLength={2} color={colors.darkText} />
   }
 
-  const renderProviderIconWithText = (text?: string) => (
-    <View style={[styles.card, s.horizontalMargin]}>
-      <View style={styles.left}>
-        <View style={styles.inline}>
-          <Icon width={ICON_WIDTH} height={20} />
-          <Text style={[styles.textBold, styles.textMargin]}>{text}</Text>
+  const renderProviderIconWithText = (text?: string) => {
+    return (
+      <View style={[styles.card, s.horizontalMargin]}>
+        <View style={styles.left}>
+          <View style={styles.inline}>
+            {ProviderIcon && <ProviderIcon width={ICON_WIDTH} height={20} />}
+            <Text style={[styles.textBold, styles.textMargin]}>{text}</Text>
+          </View>
+          <View style={styles.dashedLine}>{getDashedLine()}</View>
         </View>
-        <View style={styles.dashedLine}>{getDashedLine()}</View>
       </View>
-    </View>
-  )
+    )
+  }
+
+  const getMobilityIcon = (isScooter?: boolean) => {
+    const Icon = isScooter ? ScooterSvg : CyclingSvg
+    return <Icon width={ICON_WIDTH} height={20} fill={colors.darkText} />
+  }
 
   return (
     <BottomSheetScrollView style={styles.container}>
-      {(title || Icon) && (
+      {(title || ProviderIcon) && (
         <View style={[styles.card, s.horizontalMargin]}>
-          <Icon width={30} height={30} />
+          {ProviderIcon && <ProviderIcon width={30} height={30} />}
           {title && (
             <Text style={[styles.textMargin, styles.textBold]}>{title}</Text>
           )}
@@ -109,7 +122,7 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
                       </View>
                       {/* TODO add location based on google or get it from previous screen */}
                       <Text style={[styles.textMargin, styles.textBold]}>
-                        Start
+                        {i18n.t('start')}
                       </Text>
                     </View>
                     <View style={styles.dashedLine}>{getDashedLine()}</View>
@@ -151,11 +164,7 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
                   <View style={[styles.card, s.horizontalMargin]}>
                     <View style={styles.left}>
                       <View style={styles.inline}>
-                        <CyclingSvg
-                          width={ICON_WIDTH}
-                          height={20}
-                          fill={colors.darkText}
-                        />
+                        {getMobilityIcon(isScooter)}
                         <View style={styles.textMargin}>
                           <Text>
                             {leg.duration &&
@@ -264,7 +273,6 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
                     </View>
                   </View>
                 ))}
-
               {getLastRentedInstanceIndex === index &&
                 renderProviderIconWithText(leg.to.name)}
               {index === legs.length - 1 && (
@@ -283,7 +291,7 @@ export const TextItinerary = ({ legs, provider }: TextItineraryProps) => {
                       </View>
                       {/* TODO add location based on google or get it from previous screen */}
                       <Text style={[styles.textMargin, styles.textBold]}>
-                        End
+                        {i18n.t('end')}
                       </Text>
                     </View>
                   </View>

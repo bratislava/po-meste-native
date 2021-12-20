@@ -18,6 +18,7 @@ export default function PlannerScreen({
   const [sheetIndex, setSheetIndex] = useState(1)
   const provider = route?.params?.provider
   const legs = route?.params?.legs
+  const isScooter = route?.params?.isScooter
   const bottomSheetSnapPoints = [
     BOTTOM_VEHICLE_BAR_HEIGHT_ALL + 30,
     '60%',
@@ -106,7 +107,11 @@ export default function PlannerScreen({
         snapPoints={bottomSheetSnapPoints}
         onChange={setSheetIndex}
       >
-        <TextItinerary legs={aggregateBicycleLegs(legs)} provider={provider} />
+        <TextItinerary
+          legs={aggregateBicycleLegs(legs)}
+          provider={provider}
+          isScooter={isScooter}
+        />
       </BottomSheet>
     </View>
   )

@@ -37,11 +37,7 @@ const TripMiniature = ({
   isLoading,
 }: Props) => {
   const [startStationName, setStartStationName] = useState('')
-  const [diffMinutes, setDiffMinutes] = useState(
-    departureDateTime !== undefined
-      ? Duration.between(LocalDateTime.now(), departureDateTime).toMinutes()
-      : undefined
-  )
+  const [diffMinutes, setDiffMinutes] = useState<number | undefined>(undefined)
   const [firstStopDateTime, setFirstStopDateTime] = useState<
     LocalDateTime | undefined
   >(undefined)
@@ -58,6 +54,16 @@ const TripMiniature = ({
             LocalDateTime.ofInstant(
               Instant.ofEpochMilli(firstStop.from.departure)
             )
+          )
+
+        firstStop.from.departure &&
+          setDiffMinutes(
+            Duration.between(
+              LocalDateTime.now(),
+              LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(firstStop.from.departure)
+              )
+            ).toMinutes()
           )
         setStartStationName(firstStop.from.name || '')
       }

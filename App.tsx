@@ -9,7 +9,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import * as Location from 'expo-location'
 import Constants from 'expo-constants'
 import * as Sentry from 'sentry-expo'
-import { AppState, AppStateStatus, Platform } from 'react-native'
+import { AppState, AppStateStatus, LogBox, Platform } from 'react-native'
 import { focusManager } from 'react-query'
 
 import useCachedResources from '@hooks/useCachedResources'
@@ -40,6 +40,7 @@ Sentry.init({
   debug: true, // Sentry will try to print out useful debugging information if something goes wrong with sending an event. Set this to `false` in production.
 })
 
+LogBox.ignoreLogs(['Setting a timer']) // https://github.com/tannerlinsley/react-query/issues/1259#issuecomment-799630607
 const queryClient = new QueryClient()
 
 Location.setGoogleApiKey(

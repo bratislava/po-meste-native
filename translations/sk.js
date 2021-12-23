@@ -185,4 +185,18 @@ export default {
   tomorrow: ' (Zajtra)',
   start: 'Štart',
   end: 'Koniec',
+  errorViewTitle: 'Niečo sa pokazilo.',
+  errorViewBody:
+    'Prosím skontrolujte svoje internetové pripojenie a skúste znovu.',
+  errorViewActionText: 'Skús znovu',
+  errorViewResetText: 'Odhlasiť sa',
+  errorViewCancelText: 'Zrušiť',
+  dataMhdStopsError: 'Nepodarilo sa načítať MHD zástavky',
+  dataRekolaError: 'Nepodarilo sa načítať Rekola',
+  dataSlovnaftbajkError: 'Nepodarilo sa načítať Slovnaftbajky',
+  dataTierError: 'Nepodarilo sa načítať Tier',
+  dataZseChargersError: 'Nepodarilo sa načítať nabíjačky',
+  dataLineTimelineScreenError: 'Nepodarilo sa načítať jazdu',
+  dataLineTimetableScreenError: 'Nepodarilo sa načítať grafikon',
+  dataPlannerTripError: 'Nepodarilo sa načítať jazdu {{provider}}',
 }

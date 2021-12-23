@@ -24,12 +24,14 @@ export default function useStationsData({
     data: dataStationInformation,
     isLoading: isLoadingStationInformation,
     error: errorStationInformation,
+    refetch: refetchStationInformation,
   } = useQuery(stationInformationQueryKey, getStationInformation)
 
   const {
     data: dataStationStatus,
     isLoading: isLoadingStationStatus,
     error: errorStationStatus,
+    refetch: refetchStationStatus,
   } = useQuery(stationStatusQueryKey, getStationStatus)
 
   const validatedData = useMemo(() => {
@@ -65,5 +67,13 @@ export default function useStationsData({
     data: validatedData,
     isLoading: isLoadingStationInformation || isLoadingStationStatus,
     error: errorStationInformation || errorStationStatus || validationErrors,
+    refetch: () => {
+      if (errorStationInformation) {
+        refetchStationInformation()
+      }
+      if (errorStationStatus) {
+        refetchStationStatus()
+      }
+    },
   }
 }

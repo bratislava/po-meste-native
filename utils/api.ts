@@ -15,6 +15,8 @@ import {
   ZoneId,
 } from '@js-joda/core'
 import '@js-joda/timezone'
+import * as Sentry from '@sentry/react-native'
+import { API_ERROR_TEXT } from './constants'
 
 const host = 'planner.bratislava.sk'
 const dataHostUrl =
@@ -25,16 +27,16 @@ const otpSlovnaftbajkPlannerUrl = `https://slovnaftbajk.${host}/routers/default/
 const otpTierPlannerUrl = `https://tier.${host}/routers/default/plan`
 
 // we should throw throwables only, so it's useful to extend Error class to contain useful info
-export class ApiError extends Error {
-  status: number
-  response: Response
-  constructor(response: Response) {
-    super(response.statusText)
-    this.status = response.status
-    this.response = response
-    this.name = 'ApiError'
-  }
-}
+// export class ApiError extends Error {
+//   // status: number
+//   // response: Response
+//   constructor(response: Response) {
+//     super('No status text') // TODO response.statusText returns null which throw nasty error
+//     // this.status = response.status || 0
+//     // this.response = response
+//     this.name = 'ApiError'
+//   }
+// }
 
 // helper with a common fetch pattern for json endpoints & baked in host
 const fetchJsonFromApi = async (path: string, options?: RequestInit) => {
@@ -42,7 +44,8 @@ const fetchJsonFromApi = async (path: string, options?: RequestInit) => {
   if (response.ok) {
     return response.json()
   } else {
-    throw new ApiError(response)
+    Sentry.setExtra('responseManual', response)
+    throw new Error(API_ERROR_TEXT)
   }
 }
 
@@ -51,7 +54,8 @@ const fetchJsonFromOtpApi = async (plannerAddress: string, path: string) => {
   if (response.ok) {
     return response.json()
   } else {
-    throw new ApiError(response)
+    Sentry.setExtra('responseManual', response)
+    throw new Error(API_ERROR_TEXT)
   }
 }
 
@@ -82,9 +86,6 @@ export const getMhdGrafikon = async (
   )
 }
 
-export const getMhdGrafikonn = (stopId: string, lineNumber: string) =>
-  fetchJsonFromApi(`/mhd/stop/${stopId}/grafikon/${lineNumber}`)
-
 export const getRekolaStationInformation = () =>
   fetchJsonFromApi('/rekola/station_information.json')
 export const getRekolaStationStatus = () =>
@@ -114,9 +115,6 @@ export const getTripPlanner = async (
       ? dateTime.plusHours(20) // TODO erase when https://inovaciebratislava.atlassian.net/browse/PLAN-268 solved
       : dateTime
 
-  if (plannerApi === MicromobilityProvider.tier) {
-    console.log('plannerApi adjustedDateTime: ', adjustedDateTime)
-  }
   const zonedTime = ZonedDateTime.of(
     adjustedDateTime,
     ZoneId.of('Europe/Bratislava')

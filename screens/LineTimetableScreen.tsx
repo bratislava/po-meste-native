@@ -147,7 +147,14 @@ export default function LineTimetableScreen({
     return activeIndex[1] === indexHours && activeIndex[2] === indexMinutes
   }
 
-  if (error) return <ErrorView error={error} action={refetch} />
+  if (!isLoading && error)
+    return (
+      <ErrorView
+        errorMessage={i18n.t('dataLineTimetableScreenError')}
+        error={error}
+        action={refetch}
+      />
+    )
 
   return (
     <View style={s.container}>

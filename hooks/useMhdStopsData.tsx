@@ -6,7 +6,10 @@ import { getMhdStops } from '../utils/api'
 
 export default function useMhdData() {
   const [validationErrors, setValidationErrors] = useState()
-  const { data, isLoading, error } = useQuery('getMhdStops', getMhdStops)
+  const { data, isLoading, error, refetch } = useQuery(
+    'getMhdStops',
+    getMhdStops
+  )
 
   const validatedMhdStops = useMemo(() => {
     try {
@@ -21,5 +24,6 @@ export default function useMhdData() {
     data: validatedMhdStops,
     isLoading,
     errors: error || validationErrors,
+    refetch,
   }
 }

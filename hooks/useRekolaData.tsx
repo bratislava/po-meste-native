@@ -6,7 +6,7 @@ import {
 import useStationData from './useStationsData'
 
 export default function useRekolaData() {
-  const { data, isLoading, error } = useStationData({
+  const { data, isLoading, error, refetch } = useStationData({
     stationInformationQueryKey: 'getRekolaStationInformation',
     getStationInformation: getRekolaStationInformation,
     stationStatusQueryKey: 'getRekolaStationStatus',
@@ -17,5 +17,6 @@ export default function useRekolaData() {
     data,
     isLoading,
     error,
+    refetch,
   }
 }

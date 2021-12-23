@@ -35,7 +35,11 @@ import CyclingSvg from '@images/cycling.svg'
 import ScooterSvg from '@images/scooter.svg'
 import WalkingSvg from '@images/walking.svg'
 import { colors } from '@utils/theme'
-import { aggregateBicycleLegs, getOtpTravelMode } from '@utils/utils'
+import {
+  aggregateBicycleLegs,
+  getOtpTravelMode,
+  getProviderName,
+} from '@utils/utils'
 import {
   MapParamList,
   MicromobilityProvider,
@@ -52,6 +56,7 @@ import LoadingView from './ui/LoadingView/LoadingView'
 import Modal from '@components/Modal'
 import RadioButton from '@components/RadioButton'
 import Link from '@components/Link'
+import ErrorView from '@components/ErrorView'
 
 export default function FromToScreen({
   route,
@@ -121,6 +126,7 @@ export default function FromToScreen({
     data: dataStandard,
     isLoading: isLoadingStandard,
     error: errorStandard,
+    refetch: refetchStandard,
   } = useQuery(
     [
       'getOtpData',
@@ -147,6 +153,7 @@ export default function FromToScreen({
     data: dataRekola,
     isLoading: isLoadingRekola,
     error: errorRekola,
+    refetch: refetchRekola,
   } = useQuery(
     [
       'getOtpRekolaData',
@@ -173,6 +180,7 @@ export default function FromToScreen({
     data: dataSlovnaftbajk,
     isLoading: isLoadingSlovnaftbajk,
     error: errorSlovnaftbajk,
+    refetch: refetchSlovnaftbajk,
   } = useQuery(
     [
       'getOtpSlovnaftbajkData',
@@ -199,6 +207,7 @@ export default function FromToScreen({
     data: dataTier,
     isLoading: isLoadingTier,
     error: errorTier,
+    refetch: refetchTier,
   } = useQuery(
     ['getOtpTierData', fromCoordinates, toCoordinates, dateTime, scheduledTime],
     () =>
@@ -411,8 +420,21 @@ export default function FromToScreen({
     ommitFirst: boolean,
     isLoading: boolean,
     data?: OtpPlannerProps,
-    provider?: MicromobilityProvider
+    provider?: MicromobilityProvider,
+    error?: any,
+    refetch?: () => unknown
   ) => {
+    if (!isLoading && error)
+      return (
+        <ErrorView
+          errorMessage={i18n.t('dataPlannerTripError', {
+            provider: (provider && getProviderName(provider)) || '',
+          })}
+          error={error}
+          action={refetch}
+        />
+      )
+
     return (
       <>
         {isLoading && (
@@ -555,7 +577,7 @@ export default function FromToScreen({
       </View>
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View>
-          {(isLoadingStandard || dataStandard) && (
+          {(isLoadingStandard || dataStandard || errorStandard) && (
             <>
               {selectedVehicle === TravelModes.bicycle && (
                 <Text style={styles.textSizeBig}>{i18n.t('myBike')}</Text>
@@ -565,14 +587,23 @@ export default function FromToScreen({
               )}
             </>
           )}
-          {getElements(true, isLoadingStandard, dataStandard)}
+          {getElements(
+            true,
+            isLoadingStandard,
+            dataStandard,
+            undefined,
+            errorStandard,
+            refetchStandard
+          )}
         </View>
         {selectedVehicle === TravelModes.bicycle && (
           <>
             {(isLoadingSlovnaftbajk ||
               isLoadingRekola ||
               dataSlovnaftbajk ||
-              dataRekola) && (
+              dataRekola ||
+              errorSlovnaftbajk ||
+              errorRekola) && (
               <Text style={styles.textSizeBig}>{i18n.t('rentedBike')}</Text>
             )}
             <View style={styles.providerContainer}>
@@ -580,7 +611,9 @@ export default function FromToScreen({
                 false,
                 isLoadingSlovnaftbajk,
                 dataSlovnaftbajk,
-                MicromobilityProvider.slovnaftbajk
+                MicromobilityProvider.slovnaftbajk,
+                errorSlovnaftbajk,
+                refetchSlovnaftbajk
               )}
             </View>
             <View style={styles.providerContainer}>
@@ -588,14 +621,16 @@ export default function FromToScreen({
                 false,
                 isLoadingRekola,
                 dataRekola,
-                MicromobilityProvider.rekola
+                MicromobilityProvider.rekola,
+                errorRekola,
+                refetchRekola
               )}
             </View>
           </>
         )}
         {selectedVehicle === TravelModes.scooter && (
           <>
-            {(isLoadingTier || dataTier) && (
+            {(isLoadingTier || dataTier || errorTier) && (
               <Text style={styles.textSizeBig}>{i18n.t('rentedScooter')}</Text>
             )}
             <View style={styles.providerContainer}>
@@ -603,7 +638,9 @@ export default function FromToScreen({
                 false,
                 isLoadingTier,
                 dataTier,
-                MicromobilityProvider.tier
+                MicromobilityProvider.tier,
+                errorTier,
+                refetchTier
               )}
             </View>
           </>

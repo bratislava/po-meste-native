@@ -6,7 +6,7 @@ import {
 import useStationData from './useStationsData'
 
 export default function useSlovnaftbajkData() {
-  const { data, isLoading, error } = useStationData({
+  const { data, isLoading, error, refetch } = useStationData({
     stationInformationQueryKey: 'getSlovnaftbajkStationInformation',
     getStationInformation: getSlovnaftbajkStationInformation,
     stationStatusQueryKey: 'getSlovnaftbajkStationStatus',
@@ -17,5 +17,6 @@ export default function useSlovnaftbajkData() {
     data,
     isLoading,
     error,
+    refetch,
   }
 }

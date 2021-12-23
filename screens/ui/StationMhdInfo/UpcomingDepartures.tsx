@@ -34,7 +34,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
   const [filtersLineNumber, setFiltersLineNumber] = useState<string[]>([])
 
   useEffect(() => {
-    const interval = setInterval(() => refetch(), 30000)
+    const interval = setInterval(() => refetch(), 10000)
     return () => {
       clearInterval(interval)
     }

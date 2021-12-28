@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import i18n from 'i18n-js'
 
 import { BottomTabParamList, RootStackParamList } from '@types'
-import { linking } from '@utils'
+import { colors, linking } from '@utils'
 
 import NotFoundScreen from '@screens/NotFoundScreen'
 import SettingsScreen from '@screens/SettingsScreen'
@@ -34,10 +34,11 @@ const BottomTabNavigator = () => {
   return (
     <BottomTab.Navigator
       initialRouteName="Map"
-      tabBarOptions={{
-        activeTintColor: '#FD4344',
-      }}
       tabBar={(props) => <TabBar {...props} />}
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: colors.primary,
+      }}
     >
       <BottomTab.Screen
         name="Tickets"

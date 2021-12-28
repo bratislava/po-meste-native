@@ -11,7 +11,6 @@ const Stack = createStackNavigator<TicketsParamList>()
 export const TicketsScreenNavigation = () => {
   return (
     <Stack.Navigator
-      headerMode="screen"
       screenOptions={{
         header: (props) => <Header {...props} />,
       }}

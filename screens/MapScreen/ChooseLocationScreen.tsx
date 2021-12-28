@@ -73,10 +73,13 @@ export default function ChooseLocation({
               latitude: region?.latitude,
               longitude: region?.longitude,
             }
-            navigation.navigate('FromToScreen', {
-              from: fromNavigation ? naviagtionInstructions : fromCoords,
-              to: toNavigation ? naviagtionInstructions : toCoords,
-            })
+            navigation.navigate(
+              'FromToScreen' as never,
+              {
+                from: fromNavigation ? naviagtionInstructions : fromCoords,
+                to: toNavigation ? naviagtionInstructions : toCoords,
+              } as never
+            )
           }}
         ></Button>
       </View>

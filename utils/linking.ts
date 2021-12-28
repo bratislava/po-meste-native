@@ -4,9 +4,11 @@
  * https://reactnavigation.org/docs/configuring-links
  */
 
+import { LinkingOptions } from '@react-navigation/native'
+import { RootStackParamList } from '@types'
 import * as Linking from 'expo-linking'
 
-export default {
+const linking: LinkingOptions<RootStackParamList> = {
   prefixes: [Linking.makeUrl('/')],
   config: {
     screens: {
@@ -17,14 +19,10 @@ export default {
               MapScreen: 'one',
             },
           },
-          TabTwo: {
-            screens: {
-              TabTwoScreen: 'two',
-            },
-          },
         },
       },
       NotFound: '*',
     },
   },
 }
+export default linking

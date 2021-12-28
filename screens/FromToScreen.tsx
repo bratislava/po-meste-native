@@ -52,11 +52,19 @@ import FeedbackAsker from './ui/FeedbackAsker/FeedbackAsker'
 import { GlobalStateContext } from '@components/common/GlobalStateProvider'
 import { useLocationWithPermision } from '@hooks/miscHooks'
 import { OtpPlannerProps } from '@utils/validation'
-import LoadingView from './ui/LoadingView/LoadingView'
 import Modal from '@components/Modal'
 import RadioButton from '@components/RadioButton'
 import Link from '@components/Link'
 import ErrorView from '@components/ErrorView'
+
+interface ElementsProps {
+  ommitFirst: boolean
+  isLoading: boolean
+  data?: OtpPlannerProps
+  provider?: MicromobilityProvider
+  error?: any
+  refetch?: () => unknown
+}
 
 export default function FromToScreen({
   route,
@@ -416,14 +424,14 @@ export default function FromToScreen({
     toBottomSheetRef?.current?.close()
   }, [fromCoordinates, navigation, toCoordinates])
 
-  const getElements = (
-    ommitFirst: boolean,
-    isLoading: boolean,
-    data?: OtpPlannerProps,
-    provider?: MicromobilityProvider,
-    error?: any,
-    refetch?: () => unknown
-  ) => {
+  const getElements = ({
+    ommitFirst,
+    isLoading,
+    data,
+    provider,
+    error,
+    refetch,
+  }: ElementsProps) => {
     if (!isLoading && error)
       return (
         <ErrorView
@@ -587,14 +595,14 @@ export default function FromToScreen({
               )}
             </>
           )}
-          {getElements(
-            true,
-            isLoadingStandard,
-            dataStandard,
-            undefined,
-            errorStandard,
-            refetchStandard
-          )}
+          {getElements({
+            ommitFirst: true,
+            isLoading: isLoadingStandard,
+            data: dataStandard,
+            provider: undefined,
+            error: errorStandard,
+            refetch: refetchStandard,
+          })}
         </View>
         {selectedVehicle === TravelModes.bicycle && (
           <>
@@ -607,24 +615,24 @@ export default function FromToScreen({
               <Text style={styles.textSizeBig}>{i18n.t('rentedBike')}</Text>
             )}
             <View style={styles.providerContainer}>
-              {getElements(
-                false,
-                isLoadingSlovnaftbajk,
-                dataSlovnaftbajk,
-                MicromobilityProvider.slovnaftbajk,
-                errorSlovnaftbajk,
-                refetchSlovnaftbajk
-              )}
+              {getElements({
+                ommitFirst: false,
+                isLoading: isLoadingSlovnaftbajk,
+                data: dataSlovnaftbajk,
+                provider: MicromobilityProvider.slovnaftbajk,
+                error: errorSlovnaftbajk,
+                refetch: refetchSlovnaftbajk,
+              })}
             </View>
             <View style={styles.providerContainer}>
-              {getElements(
-                false,
-                isLoadingRekola,
-                dataRekola,
-                MicromobilityProvider.rekola,
-                errorRekola,
-                refetchRekola
-              )}
+              {getElements({
+                ommitFirst: false,
+                isLoading: isLoadingRekola,
+                data: dataRekola,
+                provider: MicromobilityProvider.rekola,
+                error: errorRekola,
+                refetch: refetchRekola,
+              })}
             </View>
           </>
         )}
@@ -634,14 +642,14 @@ export default function FromToScreen({
               <Text style={styles.textSizeBig}>{i18n.t('rentedScooter')}</Text>
             )}
             <View style={styles.providerContainer}>
-              {getElements(
-                false,
-                isLoadingTier,
-                dataTier,
-                MicromobilityProvider.tier,
-                errorTier,
-                refetchTier
-              )}
+              {getElements({
+                ommitFirst: false,
+                isLoading: isLoadingTier,
+                data: dataTier,
+                provider: MicromobilityProvider.tier,
+                error: errorTier,
+                refetch: refetchTier,
+              })}
             </View>
           </>
         )}

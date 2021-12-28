@@ -1,12 +1,11 @@
 import * as Sentry from '@sentry/react-native'
-import React, { useCallback, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
 import i18n from 'i18n-js'
-import { ValidationError } from 'yup'
 
 import { colors } from '@utils/theme'
 import { Button } from '.'
-import { API_ERROR_TEXT } from '@utils/constants'
+import { isApiError, isValidationError } from '@utils/utils'
 
 interface ErrorViewProps {
   action?: () => unknown
@@ -37,16 +36,6 @@ const ErrorView = ({
   isFullscreen,
   styleWrapper,
 }: ErrorViewMerged) => {
-  const isValidationError = useCallback(
-    (error) => error instanceof ValidationError,
-    []
-  )
-
-  const isApiError = useCallback(
-    (error) => error instanceof Error && error.message === API_ERROR_TEXT,
-    []
-  )
-
   useEffect(() => {
     if (isValidationError(error)) {
       Sentry.captureException(error, {
@@ -72,7 +61,7 @@ const ErrorView = ({
     } else if (errorMessage) {
       Sentry.captureMessage(errorMessage, Sentry.Severity.Error)
     }
-  }, [isValidationError, isApiError, error, errorMessage])
+  }, [error, errorMessage])
 
   if (isValidationError(error)) {
     // TODO add proper error message

@@ -68,12 +68,8 @@ export default function useStationsData({
     isLoading: isLoadingStationInformation || isLoadingStationStatus,
     error: errorStationInformation || errorStationStatus || validationErrors,
     refetch: () => {
-      if (errorStationInformation) {
-        refetchStationInformation()
-      }
-      if (errorStationStatus) {
-        refetchStationStatus()
-      }
+      refetchStationInformation()
+      refetchStationStatus()
     },
   }
 }

@@ -18,11 +18,13 @@ import { useRekolaData, useSlovnaftbajkData, useTierData } from '@hooks'
 
 import {
   ErrorView,
-  GlobalStateContext,
   LoadingView,
   VehicleBar,
   BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
 } from '@components'
+
+import { GlobalStateContext } from '@state/GlobalStateProvider'
+
 import {
   useMhdStopsData,
   useZseChargersData,
@@ -43,7 +45,7 @@ import {
   VehicleType,
 } from '@types'
 
-import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@screens/_partials/TabBar'
+import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components/navigation/TabBar'
 
 import SearchBar from './_partials/SearchBar'
 import StationMhdInfo from './_partials/StationMhdInfo'

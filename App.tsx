@@ -11,7 +11,7 @@ import { AppState, AppStateStatus, LogBox, Platform } from 'react-native'
 import { focusManager } from 'react-query'
 
 import { useCachedResources, useColorScheme } from '@hooks'
-import { GlobalStateProvider } from '@components'
+import GlobalStateProvider from '@state/GlobalStateProvider'
 import Navigation from '@screens/index'
 
 import * as translations from './translations'

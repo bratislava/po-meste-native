@@ -6,13 +6,13 @@ import googlePolyline from 'google-polyline'
 import BottomSheet from '@gorhom/bottom-sheet'
 
 import { MapParamList } from '@types'
-import { TextItinerary } from './_partials/TextItinerary'
-import { modeColors } from '@utils/constants'
+import {
+  BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
+  BOTTOM_TAB_NAVIGATOR_HEIGHT,
+} from '@components'
+import { modeColors, getColor, hexToRgba, aggregateBicycleLegs } from '@utils'
 
-import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components'
-import { getColor, hexToRgba, aggregateBicycleLegs } from '@utils'
-import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '@components'
-import { modeColors, getColor, hexToRgba } from '@utils'
+import { TextItinerary } from './_partials/TextItinerary'
 
 export default function PlannerScreen({
   route,

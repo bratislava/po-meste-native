@@ -440,10 +440,10 @@ export default function FromToScreen({
                 }
                 provider={provider}
                 duration={Math.round(tripChoice.duration / 60)}
-                departureDate={LocalDateTime.ofInstant(
+                departureDateTime={LocalDateTime.ofInstant(
                   Instant.ofEpochMilli(tripChoice.startTime)
                 )}
-                arriveDate={LocalDateTime.ofInstant(
+                arriveDateTime={LocalDateTime.ofInstant(
                   Instant.ofEpochMilli(tripChoice.endTime)
                 )}
                 legs={

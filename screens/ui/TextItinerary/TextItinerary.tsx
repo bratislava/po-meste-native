@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleSheet, Text } from 'react-native'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
-import { Instant, LocalTime } from '@js-joda/core'
+import { DateTimeFormatter, Instant, LocalTime } from '@js-joda/core'
 import { Ionicons } from '@expo/vector-icons'
 import i18n from 'i18n-js'
 import _ from 'lodash'
@@ -268,8 +268,16 @@ export const TextItinerary = ({
                       </View>
                     </View>
                     <View style={styles.right}>
-                      <Text>{startTime?.toString()}</Text>
-                      <Text>{endTime?.toString()}</Text>
+                      <Text>
+                        {startTime &&
+                          startTime.format(
+                            DateTimeFormatter.ofPattern('HH:mm')
+                          )}
+                      </Text>
+                      <Text>
+                        {endTime &&
+                          endTime.format(DateTimeFormatter.ofPattern('HH:mm'))}
+                      </Text>
                     </View>
                   </View>
                 ))}

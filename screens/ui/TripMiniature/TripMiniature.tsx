@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import i18n from 'i18n-js'
-import { DateTimeFormatter, Duration, LocalDateTime } from '@js-joda/core'
+import {
+  DateTimeFormatter,
+  Duration,
+  Instant,
+  LocalDateTime,
+} from '@js-joda/core'
 
 import { colors } from '@utils/theme'
 import { LegProps } from '@utils/validation'
@@ -15,8 +20,8 @@ import LoadingView from '../LoadingView/LoadingView'
 type Props = {
   provider?: MicromobilityProvider
   duration?: number
-  departureDate?: LocalDateTime
-  arriveDate?: LocalDateTime
+  departureDateTime?: LocalDateTime
+  arriveDateTime?: LocalDateTime
   legs?: LegProps[]
   onPress?: () => void
   isLoading?: boolean
@@ -26,43 +31,59 @@ type Props = {
 const TripMiniature = ({
   provider,
   duration,
-  departureDate,
-  arriveDate,
+  departureDateTime,
+  arriveDateTime,
   legs,
   onPress,
   isLoading,
   isScooter,
 }: Props) => {
   const [startStationName, setStartStationName] = useState('')
-  const [diffMinutes, setDiffMinutes] = useState(
-    departureDate !== undefined
-      ? Duration.between(LocalDateTime.now(), departureDate).toMinutes()
-      : undefined
-  )
+  const [diffMinutes, setDiffMinutes] = useState<number | undefined>(undefined)
+  const [firstStopDateTime, setFirstStopDateTime] = useState<
+    LocalDateTime | undefined
+  >(undefined)
 
   // TODO is this necessary?
   useEffect(() => {
     if (legs) {
-      setStartStationName(
-        legs.find(
-          (leg) => leg.mode === LegModes.bus || leg.mode === LegModes.tram
-        )?.from.name || ''
+      const firstStop = legs.find(
+        (leg) => leg.mode === LegModes.bus || leg.mode === LegModes.tram
       )
+      if (firstStop) {
+        firstStop.from.departure &&
+          setFirstStopDateTime(
+            LocalDateTime.ofInstant(
+              Instant.ofEpochMilli(firstStop.from.departure)
+            )
+          )
+
+        firstStop.from.departure &&
+          setDiffMinutes(
+            Duration.between(
+              LocalDateTime.now(),
+              LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(firstStop.from.departure)
+              )
+            ).toMinutes()
+          )
+        setStartStationName(firstStop.from.name || '')
+      }
     }
   }, [legs])
 
   useEffect(() => {
-    if (departureDate) {
+    if (firstStopDateTime) {
       const timer = setInterval(() => {
         setDiffMinutes(
-          Duration.between(LocalDateTime.now(), departureDate).toMinutes()
+          Duration.between(LocalDateTime.now(), firstStopDateTime).toMinutes()
         )
       }, 10000)
       return () => {
         clearInterval(timer)
       }
     }
-  }, [departureDate])
+  }, [firstStopDateTime])
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
@@ -127,13 +148,13 @@ const TripMiniature = ({
             )}
             <View style={styles.fromToTime}>
               <Text>
-                {departureDate &&
-                  departureDate.format(
+                {departureDateTime &&
+                  departureDateTime.format(
                     DateTimeFormatter.ofPattern('HH:mm')
                   )}{' '}
                 -
-                {arriveDate &&
-                  arriveDate.format(DateTimeFormatter.ofPattern('HH:mm'))}
+                {arriveDateTime &&
+                  arriveDateTime.format(DateTimeFormatter.ofPattern('HH:mm'))}
               </Text>
             </View>
             <View style={styles.rightContainerBackground}></View>

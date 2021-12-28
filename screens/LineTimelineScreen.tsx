@@ -10,6 +10,7 @@ import { StackScreenProps } from '@react-navigation/stack'
 import { useNavigation } from '@react-navigation/native'
 import { LocalTime, DateTimeFormatter } from '@js-joda/core'
 import { useQuery } from 'react-query'
+import i18n from 'i18n-js'
 
 import { MapParamList } from '../types'
 import { s } from '@utils/globalStyles'
@@ -20,6 +21,7 @@ import LoadingView from './ui/LoadingView/LoadingView'
 import { LineNumber } from '@components/LineNumber'
 import { getVehicle } from '@utils/utils'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
+import ErrorView from '@components/ErrorView'
 
 export default function LineTimelineScreen({
   route,
@@ -28,9 +30,11 @@ export default function LineTimelineScreen({
 
   const navigation = useNavigation()
   const [elementPosition, setElementPosition] = useState<number>()
+  const bottomTabBarHeight = useBottomTabBarHeight()
   const scrollViewRef = useRef<ScrollView | null>(null)
-  const { data, isLoading, error } = useQuery(['getMhdTrip', tripId], () =>
-    getMhdTrip(tripId)
+  const { data, isLoading, error, refetch } = useQuery(
+    ['getMhdTrip', tripId],
+    () => getMhdTrip(tripId)
   )
 
   const activeIndex = useMemo(
@@ -52,9 +56,18 @@ export default function LineTimelineScreen({
     )
   }, [data])
 
+  if (!isLoading && error)
+    return (
+      <ErrorView
+        errorMessage={i18n.t('dataLineTimelineScreenError')}
+        error={error}
+        action={refetch}
+      />
+    )
+
   return (
     <>
-      <View style={{ flex: 1, paddingBottom: useBottomTabBarHeight() }}>
+      <View style={{ flex: 1, paddingBottom: bottomTabBarHeight }}>
         <View style={styles.headerGrey}>
           <View style={s.horizontalMargin}>
             <View style={styles.header}>

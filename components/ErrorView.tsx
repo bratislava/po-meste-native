@@ -1,15 +1,18 @@
 import * as Sentry from '@sentry/react-native'
-import React, { useCallback, useEffect } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, { useEffect } from 'react'
+import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
 import i18n from 'i18n-js'
-import { ValidationError } from 'yup'
 
 import { colors } from '@utils/theme'
 import { Button } from '.'
+import { isApiError, isValidationError } from '@utils/utils'
 
 interface ErrorViewProps {
   action?: () => unknown
   reset?: () => unknown
+  cancel?: () => unknown
+  isFullscreen?: boolean
+  styleWrapper?: StyleProp<ViewStyle>
 }
 
 interface ErrorViewPropsError extends ErrorViewProps {
@@ -24,12 +27,15 @@ interface ErrorViewMerged
   extends ErrorViewPropsError,
     ErrorViewPropsErrorMessage {}
 
-const ErrorView = ({ error, errorMessage, action, reset }: ErrorViewMerged) => {
-  const isValidationError = useCallback(
-    (error) => error instanceof ValidationError,
-    []
-  )
-
+const ErrorView = ({
+  error,
+  errorMessage,
+  action,
+  reset,
+  cancel,
+  isFullscreen,
+  styleWrapper,
+}: ErrorViewMerged) => {
   useEffect(() => {
     if (isValidationError(error)) {
       Sentry.captureException(error, {
@@ -38,8 +44,14 @@ const ErrorView = ({ error, errorMessage, action, reset }: ErrorViewMerged) => {
           rawData: JSON.stringify(error),
         },
       })
-    }
-    if (error) {
+    } else if (isApiError(error)) {
+      Sentry.captureException(error, {
+        extra: {
+          exceptionType: 'api error manual',
+          rawData: JSON.stringify(error),
+        },
+      })
+    } else if (error) {
       Sentry.captureException(error, {
         extra: {
           exceptionType: 'other error',
@@ -49,7 +61,7 @@ const ErrorView = ({ error, errorMessage, action, reset }: ErrorViewMerged) => {
     } else if (errorMessage) {
       Sentry.captureMessage(errorMessage, Sentry.Severity.Error)
     }
-  }, [isValidationError, error, errorMessage])
+  }, [error, errorMessage])
 
   if (isValidationError(error)) {
     // TODO add proper error message
@@ -57,7 +69,13 @@ const ErrorView = ({ error, errorMessage, action, reset }: ErrorViewMerged) => {
   }
 
   return (
-    <View style={styles.wrapper}>
+    <View
+      style={[
+        styles.wrapper,
+        styleWrapper,
+        isFullscreen ? styles.fullscreen : null,
+      ]}
+    >
       <View style={styles.container}>
         <Text style={styles.error}>
           {errorMessage || i18n.t('errorViewTitle')}
@@ -65,7 +83,7 @@ const ErrorView = ({ error, errorMessage, action, reset }: ErrorViewMerged) => {
         <Text style={styles.bodyText}>{i18n.t('errorViewBody')}</Text>
         {action && (
           <Button
-            title={i18n.t('actionText')}
+            title={i18n.t('errorViewActionText')}
             variant="secondary"
             onPress={() => action()} // on purpose
             style={styles.action}
@@ -73,9 +91,17 @@ const ErrorView = ({ error, errorMessage, action, reset }: ErrorViewMerged) => {
         )}
         {reset && (
           <Button
-            title={i18n.t('resetText')}
+            title={i18n.t('errorViewResetText')}
             variant="primary"
             onPress={reset}
+            style={styles.action}
+          />
+        )}
+        {cancel && (
+          <Button
+            title={i18n.t('errorViewCancelText')}
+            variant="primary"
+            onPress={cancel}
             style={styles.action}
           />
         )}
@@ -85,8 +111,11 @@ const ErrorView = ({ error, errorMessage, action, reset }: ErrorViewMerged) => {
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
+  fullscreen: {
     flexGrow: 1,
+  },
+  wrapper: {
+    marginVertical: 20,
     justifyContent: 'center',
   },
   container: {

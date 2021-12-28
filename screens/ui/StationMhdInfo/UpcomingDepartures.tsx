@@ -18,6 +18,7 @@ import { getMhdStopStatusData } from '@utils/api'
 import LoadingView from '../LoadingView/LoadingView'
 import { getVehicle } from '@utils/utils'
 import { LineNumber } from '@components/LineNumber'
+import ErrorView from '@components/ErrorView'
 
 interface UpcomingDeparturesProps {
   station: MhdStopProps
@@ -28,7 +29,10 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
 
   const { data, isLoading, error, refetch } = useQuery(
     ['getMhdStopStatusData', station.id],
-    () => getMhdStopStatusData(station.id)
+    () => getMhdStopStatusData(station.id),
+    {
+      retry: 0,
+    }
   )
 
   const [filtersLineNumber, setFiltersLineNumber] = useState<string[]>([])
@@ -84,6 +88,15 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
     },
     [data?.allLines, filtersLineNumber]
   )
+
+  if (!isLoading && error)
+    return (
+      <ErrorView
+        error={error}
+        action={refetch}
+        styleWrapper={styles.errorWrapper}
+      />
+    )
 
   return (
     <View style={styles.column}>
@@ -223,6 +236,9 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
 }
 
 const styles = StyleSheet.create({
+  errorWrapper: {
+    marginVertical: 20,
+  },
   column: {
     flex: 1,
     paddingBottom: 5,

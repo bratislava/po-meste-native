@@ -12,6 +12,7 @@ import BottomSheet from '@gorhom/bottom-sheet'
 import * as Location from 'expo-location'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useIsFocused } from '@react-navigation/core'
+import i18n from 'i18n-js'
 
 import CurrentLocationSvg from '@images/current-location.svg'
 import ErrorView from '@components/ErrorView'
@@ -98,17 +99,32 @@ export default function MapScreen() {
     data: dataMhd,
     isLoading: isLoadingMhd,
     errors: errorsMhd,
+    refetch: refetchMhd,
   } = useMhdData()
   const {
     data: dataTier,
     isLoading: isLoadingTier,
     refetch: refetchTier,
+    errors: errorsTier,
   } = useTierData()
-  const { data: dataZseChargers, isLoading: isLoadingZseChargers } =
-    useZseChargersData()
-  const { data: dataMergedRekola, isLoading: isLoadingRekola } = useRekolaData()
-  const { data: dataMergedSlovnaftbajk, isLoading: isLoadingSlovnaftbajk } =
-    useSlovnaftbajkData()
+  const {
+    data: dataZseChargers,
+    isLoading: isLoadingZseChargers,
+    errors: errorsZseChargers,
+    refetch: refetchZseChargers,
+  } = useZseChargersData()
+  const {
+    data: dataMergedRekola,
+    isLoading: isLoadingRekola,
+    error: errorsRekola,
+    refetch: refetchRekola,
+  } = useRekolaData()
+  const {
+    data: dataMergedSlovnaftbajk,
+    isLoading: isLoadingSlovnaftbajk,
+    error: errorsSlovnaftbajk,
+    refetch: refetchSlovnaftbajk,
+  } = useSlovnaftbajkData()
 
   const mapRef = useRef<MapView>(null)
 
@@ -356,116 +372,131 @@ export default function MapScreen() {
     [filterBikeInView, getIcon]
   )
 
+  const dataError = (
+    isLoading: boolean,
+    errors: any,
+    refetch: () => unknown,
+    errorMessage: string
+  ) => {
+    if (!isLoading) {
+      return (
+        <View style={styles.errorBackground}>
+          <ErrorView
+            errorMessage={errorMessage}
+            error={errors}
+            action={refetch}
+          />
+        </View>
+      )
+    }
+  }
+
   return (
     <View style={styles.container}>
-      {errorsMhd ? (
-        <ErrorView error={errorsMhd} />
-      ) : (
-        <MapView
-          ref={mapRef}
-          provider={PROVIDER_GOOGLE}
-          style={styles.map}
-          initialRegion={{
-            latitude: 48.1512015,
-            longitude: 17.1110118,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-          onRegionChangeComplete={(region) => setRegion(region)}
-          showsUserLocation
-          mapPadding={{
-            bottom: BOTTOM_VEHICLE_BAR_HEIGHT_ALL + 5,
-            top: 0,
-            right: 0,
-            left: 0,
-          }}
-        >
-          {vehiclesContext.vehicleTypes?.find(
-            (vehicleType) => vehicleType.id === VehicleType.mhd
-          )?.show &&
-            dataMhd?.stops &&
-            filterMhdInView(dataMhd.stops).map((stop) => (
+      <MapView
+        ref={mapRef}
+        provider={PROVIDER_GOOGLE}
+        style={styles.map}
+        initialRegion={{
+          latitude: 48.1512015,
+          longitude: 17.1110118,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+        onRegionChangeComplete={(region) => setRegion(region)}
+        showsUserLocation
+        mapPadding={{
+          bottom: BOTTOM_VEHICLE_BAR_HEIGHT_ALL + 5,
+          top: 0,
+          right: 0,
+          left: 0,
+        }}
+      >
+        {vehiclesContext.vehicleTypes?.find(
+          (vehicleType) => vehicleType.id === VehicleType.mhd
+        )?.show &&
+          dataMhd?.stops &&
+          filterMhdInView(dataMhd.stops).map((stop) => (
+            <Marker
+              key={stop.id}
+              coordinate={{
+                latitude: parseFloat(stop.gpsLat),
+                longitude: parseFloat(stop.gpsLon),
+              }}
+              tracksViewChanges={false}
+              onPress={() => {
+                setSelectedBikeStation(undefined)
+                setSelectedChargerStation(undefined)
+                setSelectedMicromobilityProvider(undefined)
+                setSelectedMhdStation(stop)
+              }}
+              icon={getIcon(IconType.mhd)}
+            />
+          ))}
+        {vehiclesContext.vehicleTypes?.find(
+          (vehicleType) => vehicleType.id === VehicleType.scooter
+        )?.show &&
+          dataTier &&
+          filterTierInView(dataTier).map((vehicle) => {
+            return (
               <Marker
-                key={stop.id}
-                coordinate={{
-                  latitude: parseFloat(stop.gpsLat),
-                  longitude: parseFloat(stop.gpsLon),
-                }}
+                key={vehicle.bike_id}
+                coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
                 tracksViewChanges={false}
                 onPress={() => {
-                  setSelectedBikeStation(undefined)
+                  setSelectedMhdStation(undefined)
                   setSelectedChargerStation(undefined)
-                  setSelectedMicromobilityProvider(undefined)
-                  setSelectedMhdStation(stop)
+                  setSelectedBikeStation(vehicle)
+                  setSelectedMicromobilityProvider(MicromobilityProvider.tier)
                 }}
-                icon={getIcon(IconType.mhd)}
+                icon={getIcon(IconType.tier)}
               />
-            ))}
-          {vehiclesContext.vehicleTypes?.find(
-            (vehicleType) => vehicleType.id === VehicleType.scooter
-          )?.show &&
-            dataTier &&
-            filterTierInView(dataTier).map((vehicle) => {
-              return (
-                <Marker
-                  key={vehicle.bike_id}
-                  coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
-                  tracksViewChanges={false}
-                  onPress={() => {
-                    setSelectedMhdStation(undefined)
-                    setSelectedChargerStation(undefined)
-                    setSelectedBikeStation(vehicle)
-                    setSelectedMicromobilityProvider(MicromobilityProvider.tier)
-                  }}
-                  icon={getIcon(IconType.tier)}
-                />
-              )
-            })}
+            )
+          })}
 
-          {vehiclesContext.vehicleTypes?.find(
-            (vehicleType) => vehicleType.id === VehicleType.bicycle
-          )?.show &&
-            dataMergedRekola &&
-            renderStations(dataMergedRekola, BikeProvider.rekola)}
-          {vehiclesContext.vehicleTypes?.find(
-            (vehicleType) => vehicleType.id === VehicleType.bicycle
-          )?.show &&
-            dataMergedSlovnaftbajk &&
-            renderStations(dataMergedSlovnaftbajk, BikeProvider.slovnaftbajk)}
-          {vehiclesContext.vehicleTypes?.find(
-            (vehicleType) => vehicleType.id === VehicleType.chargers
-          )?.show &&
-            dataZseChargers &&
-            filterZseChargersInView(dataZseChargers).reduce<JSX.Element[]>(
-              (accumulator, charger) => {
-                if (
-                  charger.coordinates.latitude &&
-                  charger.coordinates.longitude
-                ) {
-                  const marker = (
-                    <Marker
-                      key={charger.id}
-                      coordinate={{
-                        latitude: charger.coordinates.latitude,
-                        longitude: charger.coordinates.longitude,
-                      }}
-                      tracksViewChanges={false}
-                      icon={getIcon(IconType.zse)}
-                      onPress={() => {
-                        setSelectedMhdStation(undefined)
-                        setSelectedBikeStation(undefined)
-                        setSelectedMicromobilityProvider(undefined)
-                        setSelectedChargerStation(charger)
-                      }}
-                    />
-                  )
-                  return accumulator.concat(marker)
-                } else return accumulator
-              },
-              []
-            )}
-        </MapView>
-      )}
+        {vehiclesContext.vehicleTypes?.find(
+          (vehicleType) => vehicleType.id === VehicleType.bicycle
+        )?.show &&
+          dataMergedRekola &&
+          renderStations(dataMergedRekola, BikeProvider.rekola)}
+        {vehiclesContext.vehicleTypes?.find(
+          (vehicleType) => vehicleType.id === VehicleType.bicycle
+        )?.show &&
+          dataMergedSlovnaftbajk &&
+          renderStations(dataMergedSlovnaftbajk, BikeProvider.slovnaftbajk)}
+        {vehiclesContext.vehicleTypes?.find(
+          (vehicleType) => vehicleType.id === VehicleType.chargers
+        )?.show &&
+          dataZseChargers &&
+          filterZseChargersInView(dataZseChargers).reduce<JSX.Element[]>(
+            (accumulator, charger) => {
+              if (
+                charger.coordinates.latitude &&
+                charger.coordinates.longitude
+              ) {
+                const marker = (
+                  <Marker
+                    key={charger.id}
+                    coordinate={{
+                      latitude: charger.coordinates.latitude,
+                      longitude: charger.coordinates.longitude,
+                    }}
+                    tracksViewChanges={false}
+                    icon={getIcon(IconType.zse)}
+                    onPress={() => {
+                      setSelectedMhdStation(undefined)
+                      setSelectedBikeStation(undefined)
+                      setSelectedMicromobilityProvider(undefined)
+                      setSelectedChargerStation(charger)
+                    }}
+                  />
+                )
+                return accumulator.concat(marker)
+              } else return accumulator
+            },
+            []
+          )}
+      </MapView>
       {(isLoadingMhd ||
         isLoadingRekola ||
         isLoadingSlovnaftbajk ||
@@ -485,6 +516,41 @@ export default function MapScreen() {
         </View>
       )}
       <SearchBar />
+      {errorsMhd &&
+        dataError(
+          isLoadingMhd,
+          errorsMhd,
+          refetchMhd,
+          i18n.t('dataMhdStopsError')
+        )}
+      {errorsRekola &&
+        dataError(
+          isLoadingRekola,
+          errorsRekola,
+          refetchRekola,
+          i18n.t('dataRekolaError')
+        )}
+      {errorsSlovnaftbajk &&
+        dataError(
+          isLoadingSlovnaftbajk,
+          errorsSlovnaftbajk,
+          refetchSlovnaftbajk,
+          i18n.t('dataSlovnaftbajkError')
+        )}
+      {errorsTier &&
+        dataError(
+          isLoadingTier,
+          errorsTier,
+          refetchTier,
+          i18n.t('dataTierError')
+        )}
+      {errorsZseChargers &&
+        dataError(
+          isLoadingZseChargers,
+          errorsZseChargers,
+          refetchZseChargers,
+          i18n.t('dataZseChargersError')
+        )}
       <VehicleBar />
       <BottomSheet
         ref={bottomSheetRef}
@@ -546,5 +612,17 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     ...s.shadow,
     elevation: 7,
+  },
+  errorBackground: {
+    display: 'flex',
+    flex: 1,
+    position: 'absolute',
+    top: 100,
+    width: '90%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+    alignItems: 'center',
+    borderRadius: 15,
   },
 })

@@ -15,6 +15,7 @@ import MhdStopSignSvg from '@images/stop-sign.svg'
 import LoadingView from '../LoadingView/LoadingView'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { LineNumber } from '@components/LineNumber'
+import ErrorView from '@components/ErrorView'
 
 interface TimetablesProps {
   station: MhdStopProps
@@ -23,9 +24,12 @@ interface TimetablesProps {
 const Timetables = ({ station }: TimetablesProps) => {
   const navigation = useNavigation()
   const globalStateContext = useContext(GlobalStateContext)
-  const { data, isLoading, error } = useQuery(
+  const { data, isLoading, error, refetch } = useQuery(
     ['getMhdStopStatusData', station.id],
-    () => getMhdStopStatusData(station.id)
+    () => getMhdStopStatusData(station.id),
+    {
+      retry: 0,
+    }
   )
 
   const getVehicleIconStyled = (
@@ -35,6 +39,15 @@ const Timetables = ({ station }: TimetablesProps) => {
     const Icon = getVehicle(vehicleType)
     return <Icon width={30} height={30} fill={color} />
   }
+
+  if (!isLoading && error)
+    return (
+      <ErrorView
+        error={error}
+        action={refetch}
+        styleWrapper={styles.errorWrapper}
+      />
+    )
 
   return (
     <>
@@ -97,6 +110,9 @@ const Timetables = ({ station }: TimetablesProps) => {
 }
 
 const styles = StyleSheet.create({
+  errorWrapper: {
+    marginVertical: 20,
+  },
   greyBackground: {
     backgroundColor: colors.lightLightGray,
     paddingVertical: 10,

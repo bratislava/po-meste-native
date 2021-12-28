@@ -11,3 +11,5 @@ export const modeColors = {
   TRAM: '#800',
   DEFAULT: '#aaa',
 }
+
+export const API_ERROR_TEXT = 'ApiErrorText'

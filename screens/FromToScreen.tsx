@@ -35,7 +35,11 @@ import CyclingSvg from '@images/cycling.svg'
 import ScooterSvg from '@images/scooter.svg'
 import WalkingSvg from '@images/walking.svg'
 import { colors } from '@utils/theme'
-import { aggregateBicycleLegs, getOtpTravelMode } from '@utils/utils'
+import {
+  aggregateBicycleLegs,
+  getOtpTravelMode,
+  getProviderName,
+} from '@utils/utils'
 import {
   MapParamList,
   MicromobilityProvider,
@@ -48,10 +52,19 @@ import FeedbackAsker from './ui/FeedbackAsker/FeedbackAsker'
 import { GlobalStateContext } from '@components/common/GlobalStateProvider'
 import { useLocationWithPermision } from '@hooks/miscHooks'
 import { OtpPlannerProps } from '@utils/validation'
-import LoadingView from './ui/LoadingView/LoadingView'
 import Modal from '@components/Modal'
 import RadioButton from '@components/RadioButton'
 import Link from '@components/Link'
+import ErrorView from '@components/ErrorView'
+
+interface ElementsProps {
+  ommitFirst: boolean
+  isLoading: boolean
+  data?: OtpPlannerProps
+  provider?: MicromobilityProvider
+  error?: any
+  refetch?: () => unknown
+}
 
 export default function FromToScreen({
   route,
@@ -121,6 +134,7 @@ export default function FromToScreen({
     data: dataStandard,
     isLoading: isLoadingStandard,
     error: errorStandard,
+    refetch: refetchStandard,
   } = useQuery(
     [
       'getOtpData',
@@ -147,6 +161,7 @@ export default function FromToScreen({
     data: dataRekola,
     isLoading: isLoadingRekola,
     error: errorRekola,
+    refetch: refetchRekola,
   } = useQuery(
     [
       'getOtpRekolaData',
@@ -173,6 +188,7 @@ export default function FromToScreen({
     data: dataSlovnaftbajk,
     isLoading: isLoadingSlovnaftbajk,
     error: errorSlovnaftbajk,
+    refetch: refetchSlovnaftbajk,
   } = useQuery(
     [
       'getOtpSlovnaftbajkData',
@@ -199,6 +215,7 @@ export default function FromToScreen({
     data: dataTier,
     isLoading: isLoadingTier,
     error: errorTier,
+    refetch: refetchTier,
   } = useQuery(
     ['getOtpTierData', fromCoordinates, toCoordinates, dateTime, scheduledTime],
     () =>
@@ -407,12 +424,25 @@ export default function FromToScreen({
     toBottomSheetRef?.current?.close()
   }, [fromCoordinates, navigation, toCoordinates])
 
-  const getElements = (
-    ommitFirst: boolean,
-    isLoading: boolean,
-    data?: OtpPlannerProps,
-    provider?: MicromobilityProvider
-  ) => {
+  const getElements = ({
+    ommitFirst,
+    isLoading,
+    data,
+    provider,
+    error,
+    refetch,
+  }: ElementsProps) => {
+    if (!isLoading && error)
+      return (
+        <ErrorView
+          errorMessage={i18n.t('dataPlannerTripError', {
+            provider: (provider && getProviderName(provider)) || '',
+          })}
+          error={error}
+          action={refetch}
+        />
+      )
+
     return (
       <>
         {isLoading && (
@@ -555,7 +585,7 @@ export default function FromToScreen({
       </View>
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View>
-          {(isLoadingStandard || dataStandard) && (
+          {(isLoadingStandard || dataStandard || errorStandard) && (
             <>
               {selectedVehicle === TravelModes.bicycle && (
                 <Text style={styles.textSizeBig}>{i18n.t('myBike')}</Text>
@@ -565,46 +595,61 @@ export default function FromToScreen({
               )}
             </>
           )}
-          {getElements(true, isLoadingStandard, dataStandard)}
+          {getElements({
+            ommitFirst: true,
+            isLoading: isLoadingStandard,
+            data: dataStandard,
+            provider: undefined,
+            error: errorStandard,
+            refetch: refetchStandard,
+          })}
         </View>
         {selectedVehicle === TravelModes.bicycle && (
           <>
             {(isLoadingSlovnaftbajk ||
               isLoadingRekola ||
               dataSlovnaftbajk ||
-              dataRekola) && (
+              dataRekola ||
+              errorSlovnaftbajk ||
+              errorRekola) && (
               <Text style={styles.textSizeBig}>{i18n.t('rentedBike')}</Text>
             )}
             <View style={styles.providerContainer}>
-              {getElements(
-                false,
-                isLoadingSlovnaftbajk,
-                dataSlovnaftbajk,
-                MicromobilityProvider.slovnaftbajk
-              )}
+              {getElements({
+                ommitFirst: false,
+                isLoading: isLoadingSlovnaftbajk,
+                data: dataSlovnaftbajk,
+                provider: MicromobilityProvider.slovnaftbajk,
+                error: errorSlovnaftbajk,
+                refetch: refetchSlovnaftbajk,
+              })}
             </View>
             <View style={styles.providerContainer}>
-              {getElements(
-                false,
-                isLoadingRekola,
-                dataRekola,
-                MicromobilityProvider.rekola
-              )}
+              {getElements({
+                ommitFirst: false,
+                isLoading: isLoadingRekola,
+                data: dataRekola,
+                provider: MicromobilityProvider.rekola,
+                error: errorRekola,
+                refetch: refetchRekola,
+              })}
             </View>
           </>
         )}
         {selectedVehicle === TravelModes.scooter && (
           <>
-            {(isLoadingTier || dataTier) && (
+            {(isLoadingTier || dataTier || errorTier) && (
               <Text style={styles.textSizeBig}>{i18n.t('rentedScooter')}</Text>
             )}
             <View style={styles.providerContainer}>
-              {getElements(
-                false,
-                isLoadingTier,
-                dataTier,
-                MicromobilityProvider.tier
-              )}
+              {getElements({
+                ommitFirst: false,
+                isLoading: isLoadingTier,
+                data: dataTier,
+                provider: MicromobilityProvider.tier,
+                error: errorTier,
+                refetch: refetchTier,
+              })}
             </View>
           </>
         )}

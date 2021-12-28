@@ -6,16 +6,10 @@ import {
 import useStationData from './useStationsData'
 
 export default function useSlovnaftbajkData() {
-  const { data, isLoading, error } = useStationData({
+  return useStationData({
     stationInformationQueryKey: 'getSlovnaftbajkStationInformation',
     getStationInformation: getSlovnaftbajkStationInformation,
     stationStatusQueryKey: 'getSlovnaftbajkStationStatus',
     getStationStatus: getSlovnaftbajkStationStatus,
   })
-
-  return {
-    data,
-    isLoading,
-    error,
-  }
 }

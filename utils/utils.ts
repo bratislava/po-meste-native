@@ -18,6 +18,8 @@ import TramSvg from '@images/tram.svg'
 import TrolleybusSvg from '@images/trolleybus.svg'
 import BusSvg from '@images/bus.svg'
 import { LegProps } from './validation'
+import { ValidationError } from 'yup'
+import { API_ERROR_TEXT } from './constants'
 
 export const presentPrice = (price: number /* in cents */) => {
   return i18n.t('presentPrice', { price: (price / 100).toFixed(2) })
@@ -189,3 +191,9 @@ export const aggregateBicycleLegs = (legs: LegProps[]) => {
   )
   return connectBicycleLegs
 }
+
+export const isValidationError = (error: any) =>
+  error instanceof ValidationError
+
+export const isApiError = (error: any) =>
+  error instanceof Error && error.message === API_ERROR_TEXT

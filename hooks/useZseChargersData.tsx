@@ -7,7 +7,7 @@ import { apiZseChargers } from '../utils/validation'
 
 export default function useZseChargersData() {
   const [validationErrors, setValidationErrors] = useState()
-  const { data, isLoading, error } = useQuery(
+  const { data, isLoading, error, refetch } = useQuery(
     'getChargersStops',
     getChargersStops
   )
@@ -25,5 +25,6 @@ export default function useZseChargersData() {
     data: validatedZseChargers?.localities,
     isLoading,
     errors: error || validationErrors,
+    refetch,
   }
 }

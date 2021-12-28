@@ -92,10 +92,13 @@ export default function LineTimelineScreen({
                 style={styles.departureLine}
                 onPress={() => {
                   data?.lineNumber &&
-                    navigation.navigate('LineTimetableScreen', {
-                      stopId: spot.stopId,
-                      lineNumber: data.lineNumber,
-                    })
+                    navigation.navigate(
+                      'LineTimetableScreen' as never,
+                      {
+                        stopId: spot.stopId,
+                        lineNumber: data.lineNumber,
+                      } as never
+                    )
                 }}
                 onLayout={(event) =>
                   activeIndex == index &&

@@ -410,24 +410,30 @@ export default function FromToScreen({
   }, [getLocationAsync])
 
   const setLocationFromMapFrom = useCallback(() => {
-    navigation.navigate('ChooseLocationScreen', {
-      latitude: fromCoordinates?.latitude,
-      longitude: fromCoordinates?.longitude,
-      fromNavigation: true,
-      fromCoords: fromCoordinates,
-      toCoords: toCoordinates,
-    })
+    navigation.navigate(
+      'ChooseLocationScreen' as never,
+      {
+        latitude: fromCoordinates?.latitude,
+        longitude: fromCoordinates?.longitude,
+        fromNavigation: true,
+        fromCoords: fromCoordinates,
+        toCoords: toCoordinates,
+      } as never
+    )
     fromBottomSheetRef?.current?.close()
   }, [fromCoordinates, navigation, toCoordinates])
 
   const setLocationFromMapTo = useCallback(() => {
-    navigation.navigate('ChooseLocationScreen', {
-      latitude: toCoordinates?.latitude,
-      longitude: toCoordinates?.longitude,
-      toNavigation: true,
-      fromCoords: fromCoordinates,
-      toCoords: toCoordinates,
-    })
+    navigation.navigate(
+      'ChooseLocationScreen' as never,
+      {
+        latitude: toCoordinates?.latitude,
+        longitude: toCoordinates?.longitude,
+        toNavigation: true,
+        fromCoords: fromCoordinates,
+        toCoords: toCoordinates,
+      } as never
+    )
     toBottomSheetRef?.current?.close()
   }, [fromCoordinates, navigation, toCoordinates])
 
@@ -469,11 +475,14 @@ export default function FromToScreen({
               <TripMiniature
                 key={index}
                 onPress={() =>
-                  navigation.navigate('PlannerScreen', {
-                    legs: tripChoice?.legs,
-                    provider: provider,
-                    isScooter: selectedVehicle === TravelModes.scooter,
-                  })
+                  navigation.navigate(
+                    'PlannerScreen' as never,
+                    {
+                      legs: tripChoice?.legs,
+                      provider: provider,
+                      isScooter: selectedVehicle === TravelModes.scooter,
+                    } as never
+                  )
                 }
                 provider={provider}
                 duration={Math.round(tripChoice.duration / 60)}

@@ -55,12 +55,12 @@ export const SettingsScreen = () => {
           <ItemListButton
             icon={AboutIcon}
             text={t('screens.SettingsScreen.aboutApplication')}
-            onPress={() => navigation.navigate('AboutScreen')}
+            onPress={() => navigation.navigate('AboutScreen' as never)}
           />
           <ItemListButton
             icon={FAQIcon}
             text={t('screens.SettingsScreen.frequentlyAskedQuestions')}
-            onPress={() => navigation.navigate('FAQScreen')}
+            onPress={() => navigation.navigate('FAQScreen' as never)}
           />
           <ItemListButton
             icon={FAQIcon}

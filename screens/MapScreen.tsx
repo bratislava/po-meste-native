@@ -10,7 +10,7 @@ import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps'
 import { StyleSheet, View, ImageURISource, Platform } from 'react-native'
 import BottomSheet from '@gorhom/bottom-sheet'
 import * as Location from 'expo-location'
-import { TouchableHighlight } from 'react-native-gesture-handler'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useIsFocused } from '@react-navigation/core'
 
 import CurrentLocationSvg from '@images/current-location.svg'
@@ -475,13 +475,13 @@ export default function MapScreen() {
       )}
       {Platform.select({ ios: true, android: showCurrentLocationButton }) && (
         <View style={styles.currentLocation}>
-          <TouchableHighlight
+          <TouchableOpacity
             onPress={() =>
               moveMapToCurrentLocation(() => getLocationWithPermission(true))
             }
           >
             <CurrentLocationSvg />
-          </TouchableHighlight>
+          </TouchableOpacity>
         </View>
       )}
       <SearchBar />

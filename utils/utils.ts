@@ -23,7 +23,7 @@ import TrolleybusSvg from '@icons/trolleybus.svg'
 import BusSvg from '@icons/bus.svg'
 
 export const presentPrice = (price: number /* in cents */) => {
-  return i18n.t('presentPrice', { price: (price / 100).toFixed(2) })
+  return i18n.t('common.presentPrice', { price: (price / 100).toFixed(2) })
 }
 
 export const dateStringRegex =
@@ -54,11 +54,11 @@ export const getOtpTravelMode = (mode: TravelModes) => {
 export const getProviderName = (provider: MicromobilityProvider) => {
   switch (provider) {
     case MicromobilityProvider.rekola:
-      return i18n.t('providerNames.rekola')
+      return i18n.t('common.providerNames.rekola')
     case MicromobilityProvider.tier:
-      return i18n.t('providerNames.tier')
+      return i18n.t('common.providerNames.tier')
     case MicromobilityProvider.slovnaftbajk:
-      return i18n.t('providerNames.slovnaftbajk')
+      return i18n.t('common.providerNames.slovnaftbajk')
     default:
       return undefined
   }

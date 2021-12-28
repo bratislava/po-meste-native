@@ -45,13 +45,13 @@ export const useLocationWithPermision = () => {
 
       if (status !== Location.PermissionStatus.GRANTED) {
         if (shouldAlert) {
-          nativeAlert(i18n.t('permissionLocation'), [
+          nativeAlert(i18n.t('common.permissionLocation'), [
             {
-              text: i18n.t('openSettings'),
+              text: i18n.t('common.openSettings'),
               onPress: () => openAppSettings(),
             },
             {
-              text: i18n.t('cancelLocationPermission'),
+              text: i18n.t('common.cancelLocationPermission'),
               onPress: undefined,
             },
           ])

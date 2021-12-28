@@ -25,10 +25,10 @@ const Feedback = ({
       <View style={styles.container}>
         <View style={styles.textContainer}>
           <Text style={styles.title}>
-            {i18n.t('components.feedbackAsker.title')}
+            {i18n.t('components.FeedbackAsker.title')}
           </Text>
           <Text style={styles.subtitle}>
-            {i18n.t('components.feedbackAsker.text')}
+            {i18n.t('components.FeedbackAsker.text')}
           </Text>
         </View>
         <View style={styles.buttonContainer}>
@@ -67,10 +67,10 @@ const Feedback = ({
         </View>
         <View style={styles.textContainer}>
           <Text style={styles.title}>
-            {i18n.t('components.feedbackAsker.thankYouTitle')}
+            {i18n.t('components.FeedbackAsker.thankYouTitle')}
           </Text>
           <Text style={styles.subtitle}>
-            {i18n.t('components.feedbackAsker.thankYouText')}
+            {i18n.t('components.FeedbackAsker.thankYouText')}
           </Text>
         </View>
       </View>

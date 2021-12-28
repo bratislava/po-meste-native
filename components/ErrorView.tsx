@@ -65,7 +65,7 @@ const ErrorView = ({
 
   if (isValidationError(error)) {
     // TODO add proper error message
-    return <Text>{i18n.t('validationError')}</Text>
+    return <Text>{i18n.t('components.ErrorView.validationError')}</Text>
   }
 
   return (
@@ -78,7 +78,7 @@ const ErrorView = ({
     >
       <View style={styles.container}>
         <Text style={styles.error}>
-          {errorMessage || i18n.t('errorViewTitle')}
+          {errorMessage || i18n.t('components.ErrorView.errorViewTitle')}
         </Text>
         <Text style={styles.bodyText}>{i18n.t('errorViewBody')}</Text>
         {action && (

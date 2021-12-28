@@ -62,13 +62,13 @@ const StationMicromobilityInfo = ({
     let title = undefined
     switch (provider) {
       case MicromobilityProvider.rekola:
-        title = i18n.t('rekolaBikesTitle')
+        title = i18n.t('screens.MapScreen.rekolaBikesTitle')
         break
       case MicromobilityProvider.slovnaftbajk:
-        title = i18n.t('slovnaftbikesTitle')
+        title = i18n.t('screens.MapScreen.slovnaftbikesTitle')
         break
       case MicromobilityProvider.tier:
-        title = i18n.t('tierTitle')
+        title = i18n.t('screens.MapScreen.tierTitle')
         break
     }
     return title
@@ -84,9 +84,9 @@ const StationMicromobilityInfo = ({
       </View>
       <View style={styles.priceWrapper}>
         <Text style={s.horizontalMargin}>
-          {i18n.t('price')}
+          {i18n.t('screens.MapScreen.price')}
           <Text style={s.boldText}>
-            {i18n.t('rekolaPriceFrom', {
+            {i18n.t('screens.MapScreen.rekolaPriceFrom', {
               money: (rekolaPrice.amount / 100).toFixed(2), // TODO change for real price based on provider etc.
               time: rekolaPrice.duration,
             })}
@@ -99,28 +99,28 @@ const StationMicromobilityInfo = ({
           <View>
             {station.num_bikes_available !== undefined && (
               <Text>
-                {i18n.t('availableBikes', {
+                {i18n.t('screens.MapScreen.availableBikes', {
                   amount: station.num_bikes_available,
                 })}
               </Text>
             )}
             {station.num_docks_available !== undefined && (
               <Text>
-                {i18n.t('freeBikeSpaces', {
+                {i18n.t('screens.MapScreen.freeBikeSpaces', {
                   amount: station.num_docks_available,
                 })}
               </Text>
             )}
             {station.original?.attributes?.licencePlate !== undefined && ( // TODO remove from original
               <Text>
-                {i18n.t('licencePlate', {
+                {i18n.t('screens.MapScreen.licencePlate', {
                   id: station.original.attributes?.licencePlate, // TODO remove from original
                 })}
               </Text>
             )}
             {station?.original?.attributes?.batteryLevel !== undefined && ( // TODO remove from original
               <Text>
-                {i18n.t('batteryCharge', {
+                {i18n.t('screens.MapScreen.batteryCharge', {
                   amount: station?.original?.attributes?.batteryLevel, // TODO remove from original
                 })}
               </Text>
@@ -170,7 +170,7 @@ const StationMicromobilityInfo = ({
                     break
                 }
               }}
-              title={i18n.t('rent', { provider })}
+              title={i18n.t('screens.MapScreen.rent', { provider })}
             />
           </View>
         </View>

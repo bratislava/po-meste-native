@@ -62,7 +62,7 @@ const FeedbackScreen = () => {
           <Button
             style={styles.button}
             onPress={handleFeedbackSent}
-            title={i18n.t('send')}
+            title={i18n.t('common.send')}
             disabled={!feedbackText.length}
           />
         </ScrollView>
@@ -80,7 +80,7 @@ const FeedbackScreen = () => {
             />
           </TouchableOpacity>
           <View>
-            <Text style={styles.title}>{i18n.t('thankYou')}!</Text>
+            <Text style={styles.title}>{i18n.t('common.thankYou')}!</Text>
             <Text style={styles.text}>
               {i18n.t('screens.feedbackScreen.thankYouText')}
             </Text>

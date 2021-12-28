@@ -132,7 +132,7 @@ export const TextItinerary = ({
                       </View>
                       {/* TODO add location based on google or get it from previous screen */}
                       <Text style={[styles.textMargin, styles.textBold]}>
-                        {i18n.t('start')}
+                        {i18n.t('screens.PlannerScreen.start')}
                       </Text>
                     </View>
                     <View style={styles.dashedLine}>{getDashedLine()}</View>
@@ -153,14 +153,14 @@ export const TextItinerary = ({
                       <View style={styles.textMargin}>
                         {leg.duration !== undefined && (
                           <Text>
-                            {i18n.t('minShort', {
+                            {i18n.t('screens.PlannerScreen.minShort', {
                               count: Math.floor(leg.duration / 60),
                             })}
                           </Text>
                         )}
                         <Text>
                           {leg.distance !== undefined &&
-                            i18n.t('distanceShort', {
+                            i18n.t('screens.PlannerScreen.distanceShort', {
                               count: Math.floor(leg.distance),
                             })}
                         </Text>
@@ -178,7 +178,7 @@ export const TextItinerary = ({
                         <View style={styles.textMargin}>
                           <Text>
                             {leg.duration &&
-                              i18n.t('minShort', {
+                              i18n.t('screens.PlannerScreen.minShort', {
                                 count: Math.floor(leg.duration / 60),
                               })}
                           </Text>
@@ -249,7 +249,7 @@ export const TextItinerary = ({
                             <Text style={styles.greyText}>
                               {leg?.to?.stopIndex &&
                                 leg?.from?.stopIndex &&
-                                i18n.t('stops', {
+                                i18n.t('common.stops', {
                                   count: leg.to.stopIndex - leg.from.stopIndex,
                                 })}
                             </Text>
@@ -257,7 +257,7 @@ export const TextItinerary = ({
                               {`${
                                 leg?.duration &&
                                 ', ' +
-                                  i18n.t('minutes', {
+                                  i18n.t('common.minutes', {
                                     count: Math.floor(leg?.duration / 60),
                                   })
                               }`}
@@ -304,7 +304,7 @@ export const TextItinerary = ({
                       </View>
                       {/* TODO add location based on google or get it from previous screen */}
                       <Text style={[styles.textMargin, styles.textBold]}>
-                        {i18n.t('end')}
+                        {i18n.t('screens.PlannerScreen.end')}
                       </Text>
                     </View>
                   </View>
@@ -321,7 +321,7 @@ export const TextItinerary = ({
             }}
             titleStyle={{ color: getTextColor(provider) }}
             onPress={() => openProviderApp(provider)}
-            title={i18n.t('openApp', {
+            title={i18n.t('screens.PlannerScreen.openApp', {
               provider: title,
             })}
           />

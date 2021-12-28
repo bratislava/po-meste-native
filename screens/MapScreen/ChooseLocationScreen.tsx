@@ -54,7 +54,11 @@ export default function ChooseLocation({
         </View>
       </View>
       <View style={styles.sheet}>
-        <Text>{i18n.t('moveTheMapAndSelectTheDesiredPoint')}</Text>
+        <Text>
+          {i18n.t(
+            'screens.ChooseLocationScreen.moveTheMapAndSelectTheDesiredPoint'
+          )}
+        </Text>
         <View style={styles.addressWrapper}>
           <MarkerSvg fill={colors.black} width={20} height={20} />
           <Text style={styles.addressText}>
@@ -63,7 +67,7 @@ export default function ChooseLocation({
         </View>
         <Button
           style={styles.confirm}
-          title={i18n.t('confirmLocation')}
+          title={i18n.t('screens.ChooseLocationScreen.confirmLocation')}
           onPress={() => {
             const naviagtionInstructions = {
               latitude: region?.latitude,

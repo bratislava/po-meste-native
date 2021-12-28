@@ -31,15 +31,15 @@ const ConnectorMiniature = ({
         <View style={styles.leftContainer}>
           <Text style={[styles.type, s.boldText]}>{type}</Text>
           <View style={styles.chargerInfo}>
-            <Text>{i18n.t('chargingPrice')}</Text>
+            <Text>{i18n.t('screens.MapScreen.chargingPrice')}</Text>
             <Text style={s.boldText}>{chargingPrice}</Text>
           </View>
           <View style={styles.chargerInfo}>
-            <Text>{i18n.t('parkingPrice')}</Text>
+            <Text>{i18n.t('screens.MapScreen.parkingPrice')}</Text>
             <Text style={s.boldText}>{parkingPrice}</Text>
           </View>
           <View style={styles.chargerInfo}>
-            <Text>{i18n.t('freeParkingTime')}</Text>
+            <Text>{i18n.t('screens.MapScreen.freeParkingTime')}</Text>
             <Text style={s.boldText}>{freeParkingTime}</Text>
           </View>
         </View>

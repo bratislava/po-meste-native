@@ -64,7 +64,7 @@ export const SettingsScreen = () => {
           />
           <ItemListButton
             icon={FAQIcon}
-            text={t('privacyPolicy')}
+            text={t('common.privacyPolicy')}
             onPress={() => openURL(privacyPolicyLink)}
           />
         </View>

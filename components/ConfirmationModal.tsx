@@ -39,7 +39,9 @@ export default function ConfirmationModal({
     <Modal visible={visible} onClose={onClose}>
       {title && <Text style={styles.modalTitle}>{title}</Text>}
       {bodyText && <Text style={styles.modalText}>{bodyText}</Text>}
-      <Text style={styles.modalText}>{i18n.t('doYouWantToContinue')}</Text>
+      <Text style={styles.modalText}>
+        {i18n.t('common.doYouWantToContinue')}
+      </Text>
       {requiredCheckboxText && (
         <CheckBox
           onClick={() => setChecked(!isChecked)}
@@ -55,7 +57,7 @@ export default function ConfirmationModal({
         disabled={requiredCheckboxText ? !isChecked : false}
         style={styles.modalButton}
         onPress={onConfirm}
-        title={confirmText ?? i18n.t('continue')}
+        title={confirmText ?? i18n.t('common.continue')}
       />
     </Modal>
   )

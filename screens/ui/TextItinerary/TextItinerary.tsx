@@ -89,6 +89,17 @@ export const TextItinerary = ({
     return <Icon width={ICON_WIDTH} height={20} fill={colors.darkText} />
   }
 
+  const trimStopId = (stopId: string | undefined) => {
+    return dataMhdStops?.stops?.map((mhdStop) => {
+      // mhdStop.id: 32500002
+      // leg.to.stopId: 1:000000032500002
+      const trimedStopId = _.trimStart(_.trimStart(stopId, '1:'), '0')
+      return trimedStopId === mhdStop.id && mhdStop.platform
+        ? ` ${mhdStop.platform}`
+        : ''
+    })
+  }
+
   return (
     <BottomSheetScrollView style={styles.container}>
       {(title || ProviderIcon) && (
@@ -222,13 +233,7 @@ export const TextItinerary = ({
                         <View>
                           <Text style={[styles.textBold, styles.textSizeBig]}>
                             {leg.from.name}
-                            {dataMhdStops?.stops?.map((mhdStop) => {
-                              return leg.from.stopId?.includes(
-                                mhdStop.id.toString()
-                              )
-                                ? mhdStop.platform
-                                : ''
-                            })}
+                            {trimStopId(leg.from.stopId)}
                           </Text>
                           <View style={styles.heading}>
                             <Ionicons
@@ -264,6 +269,7 @@ export const TextItinerary = ({
                         {/* TODO add platform when it's available https://inovaciebratislava.atlassian.net/browse/PLAN-256 */}
                         <Text style={[styles.textBold, styles.textSizeBig]}>
                           {leg.to.name}
+                          {trimStopId(leg.to.stopId)}
                         </Text>
                       </View>
                     </View>

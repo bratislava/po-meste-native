@@ -14,13 +14,6 @@ import ScooterSvg from '@icons/scooter.svg'
 import TramSvg from '@icons/tram.svg'
 import BusSvg from '@icons/bus.svg'
 
-import { LegProps } from '@utils/validation'
-import { LegModes, MicromobilityProvider } from '@types'
-import { s } from '@utils/globalStyles'
-import useMhdData from '@hooks/useMhdStopsData'
-import DashedLine from '@components/DashedLine'
-import { colors } from '@utils/theme'
-import { STYLES } from '@utils/constants'
 import {
   LegProps,
   s,
@@ -35,12 +28,6 @@ import {
 import { LegModes, MicromobilityProvider } from '@types'
 import { useMhdStopsData } from '@hooks'
 import { DashedLine, Button, BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '@components'
-
-import WalkingSvg from '@icons/walking.svg'
-import EllipseSvg from '@icons/ellipse.svg'
-import CyclingSvg from '@icons/cycling.svg'
-import TramSvg from '@icons/tram.svg'
-import BusSvg from '@icons/bus.svg'
 
 interface TextItineraryProps {
   legs: LegProps[]

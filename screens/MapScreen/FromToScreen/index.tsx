@@ -32,7 +32,9 @@ import {
   aggregateBicycleLegs,
   getProviderName,
 } from '@utils'
+
 import { useLocationWithPermision } from '@hooks'
+
 import {
   MapParamList,
   MicromobilityProvider,
@@ -408,7 +410,7 @@ export default function FromToScreen({
   }, [getLocationAsync])
 
   const setLocationFromMapFrom = useCallback(() => {
-    navigation.navigate('ChooseLocation', {
+    navigation.navigate('ChooseLocationScreen', {
       latitude: fromCoordinates?.latitude,
       longitude: fromCoordinates?.longitude,
       fromNavigation: true,
@@ -419,7 +421,7 @@ export default function FromToScreen({
   }, [fromCoordinates, navigation, toCoordinates])
 
   const setLocationFromMapTo = useCallback(() => {
-    navigation.navigate('ChooseLocation', {
+    navigation.navigate('ChooseLocationScreen', {
       latitude: toCoordinates?.latitude,
       longitude: toCoordinates?.longitude,
       toNavigation: true,

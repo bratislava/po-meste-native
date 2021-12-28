@@ -8,7 +8,6 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { LocalDateTime, Duration } from '@js-joda/core'
 
 import {
-  GlobalStateContext,
   BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
   LoadingView,
   LineNumber,

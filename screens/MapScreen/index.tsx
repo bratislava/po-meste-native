@@ -8,7 +8,7 @@ import PlannerScreen from '@screens/MapScreen/PlannerScreen'
 import LineTimelineScreen from '@screens/MapScreen/LineTimelineScreen'
 import LineTimetableScreen from '@screens/MapScreen/LineTimetableScreen'
 import ChooseLocationScreen from '@screens/MapScreen/ChooseLocationScreen'
-import FeedbackScreen from '@screens/FeedbackScreen'
+import FeedbackScreen from '@screens/FeedbackScreen/FeedbackScreen'
 import { MapParamList } from '@types'
 
 import { Header } from '@components'

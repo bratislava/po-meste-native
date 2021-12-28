@@ -56,7 +56,7 @@ export const AboutScreen = () => {
             <Link
               style={styles.footerLink}
               onPress={() => openURL(privacyPolicyLink)}
-              title={t('privacyPolicy')}
+              title={t('common.privacyPolicy')}
             />
             <Text style={styles.footerLabel}>
               {t('screens.AboutScreen.createdBy')}

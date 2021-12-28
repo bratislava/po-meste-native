@@ -34,7 +34,7 @@ export default function Modal({
         <Link
           style={styles.modalDismiss}
           onPress={onClose}
-          title={t('cancel')}
+          title={t('common.cancel')}
         />
       </View>
     </NativeModal>

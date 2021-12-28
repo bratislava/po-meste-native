@@ -309,7 +309,7 @@ export default function FromToScreen({
           latitude,
           longitude,
         })
-        setFromName(i18n.t('currentPosition'))
+        setFromName(i18n.t('screens.FromToScreen.currentPosition'))
       }
     },
     [getLocationWithPermission]
@@ -547,8 +547,10 @@ export default function FromToScreen({
               ? `${toProp.latitude}, ${toProp.longitude}`
               : undefined)
           }
-          fromPlaceTextPlaceholder={i18n.t('fromPlaceholder')}
-          toPlaceTextPlaceholder={i18n.t('toPlaceholder')}
+          fromPlaceTextPlaceholder={i18n.t(
+            'screens.FromToScreen.fromPlaceholder'
+          )}
+          toPlaceTextPlaceholder={i18n.t('screens.FromToScreen.toPlaceholder')}
           onSwitchPlacesPress={onSwitchPlacesPress}
         />
         <TouchableOpacity
@@ -567,13 +569,13 @@ export default function FromToScreen({
             />
             <Text style={styles.schedulingText}>
               {scheduledTime === ScheduleType.departure &&
-                i18n.t('departure', {
+                i18n.t('screens.FromToScreen.departure', {
                   time: dateTime.format(
                     DateTimeFormatter.ofPattern('dd.MM. HH:mm')
                   ),
                 })}
               {scheduledTime === ScheduleType.arrival &&
-                i18n.t('arrival', {
+                i18n.t('screens.FromToScreen.arrival', {
                   time: dateTime.format(
                     DateTimeFormatter.ofPattern('dd.MM. HH:mm')
                   ),
@@ -595,10 +597,14 @@ export default function FromToScreen({
           {(isLoadingStandard || dataStandard || errorStandard) && (
             <>
               {selectedVehicle === TravelModes.bicycle && (
-                <Text style={styles.textSizeBig}>{i18n.t('myBike')}</Text>
+                <Text style={styles.textSizeBig}>
+                  {i18n.t('screens.FromToScreen.myBike')}
+                </Text>
               )}
               {selectedVehicle === TravelModes.scooter && (
-                <Text style={styles.textSizeBig}>{i18n.t('myScooter')}</Text>
+                <Text style={styles.textSizeBig}>
+                  {i18n.t('screens.FromToScreen.myScooter')}
+                </Text>
               )}
             </>
           )}
@@ -619,7 +625,9 @@ export default function FromToScreen({
               dataRekola ||
               errorSlovnaftbajk ||
               errorRekola) && (
-              <Text style={styles.textSizeBig}>{i18n.t('rentedBike')}</Text>
+              <Text style={styles.textSizeBig}>
+                {i18n.t('screens.FromToScreen.rentedBike')}
+              </Text>
             )}
             <View style={styles.providerContainer}>
               {getElements({
@@ -646,7 +654,9 @@ export default function FromToScreen({
         {selectedVehicle === TravelModes.scooter && (
           <>
             {(isLoadingTier || dataTier || errorTier) && (
-              <Text style={styles.textSizeBig}>{i18n.t('rentedScooter')}</Text>
+              <Text style={styles.textSizeBig}>
+                {i18n.t('screens.FromToScreen.rentedScooter')}
+              </Text>
             )}
             <View style={styles.providerContainer}>
               {getElements({
@@ -676,7 +686,7 @@ export default function FromToScreen({
         onGooglePlaceChosen={onGooglePlaceFromChosen}
         googleInputRef={fromRef}
         setLocationFromMap={setLocationFromMapFrom}
-        inputPlaceholder={i18n.t('fromPlaceholder')}
+        inputPlaceholder={i18n.t('screens.FromToScreen.fromPlaceholder')}
         initialSnapIndex={-1}
       />
       <SearchFromToScreen
@@ -684,7 +694,7 @@ export default function FromToScreen({
         onGooglePlaceChosen={onGooglePlaceToChosen}
         googleInputRef={toRef}
         setLocationFromMap={setLocationFromMapTo}
-        inputPlaceholder={i18n.t('toPlaceholder')}
+        inputPlaceholder={i18n.t('screens.FromToScreen.toPlaceholder')}
         initialSnapIndex={0}
       />
       <Modal visible={visibleScheduleModal} onClose={hideSchedulePicker}>
@@ -692,11 +702,11 @@ export default function FromToScreen({
           options={[
             {
               value: ScheduleType.departure,
-              label: i18n.t('departureText'),
+              label: i18n.t('screens.FromToScreen.departureText'),
             },
             {
               value: ScheduleType.arrival,
-              label: i18n.t('arrivalText'),
+              label: i18n.t('screens.FromToScreen.arrivalText'),
             },
           ]}
           value={scheduledTime}
@@ -705,7 +715,7 @@ export default function FromToScreen({
         <Link
           style={styles.modalDismiss}
           onPress={hideSchedulePicker}
-          title={i18n.t('cancel')}
+          title={i18n.t('common.cancel')}
         />
       </Modal>
       <DateTimePickerModal

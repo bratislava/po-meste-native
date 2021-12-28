@@ -104,7 +104,7 @@ export default function SearchFromToScreen({
             />
           </View>
           {/* <View>
-            <Text style={styles.categoriesTitle}>{i18n.t('myAddresses')}</Text>
+            <Text style={styles.categoriesTitle}>{i18n.t('screens.SearchFromToScreen.myAddresses')}</Text>
             <ScrollView
               contentContainerStyle={styles.horizontalScrollView}
               horizontal
@@ -164,7 +164,7 @@ export default function SearchFromToScreen({
                     />
                     <View style={[styles.placeTexts, styles.chooseFromMapText]}>
                       <Text style={styles.placeAddress}>
-                        {i18n.t('currentPosition')}
+                        {i18n.t('screens.SearchFromToScreen.currentPosition')}
                       </Text>
                     </View>
                   </View>
@@ -184,7 +184,9 @@ export default function SearchFromToScreen({
                     />
                     <View style={[styles.placeTexts, styles.chooseFromMapText]}>
                       <Text style={styles.placeAddress}>
-                        {i18n.t('choosePlaceFromMap')}
+                        {i18n.t(
+                          'screens.SearchFromToScreen.choosePlaceFromMap'
+                        )}
                       </Text>
                     </View>
                   </View>

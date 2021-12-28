@@ -16,7 +16,9 @@ const SearchBar = () => {
       }}
       onPress={() => navigation.navigate('FromToScreen')}
     >
-      <Text style={styles.searchInput}>{i18n.t('whereTo')}</Text>
+      <Text style={styles.searchInput}>
+        {i18n.t('screens.MapScreen.whereTo')}
+      </Text>
     </TouchableOpacity>
   )
 }

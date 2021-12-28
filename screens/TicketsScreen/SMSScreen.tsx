@@ -15,9 +15,9 @@ export default function SMSScreen() {
     if (isAvailable) {
       await SMS.sendSMSAsync(receiverNumber, '.')
     } else {
-      Alert.alert('', i18n.t('smsNotAvailable'), [
+      Alert.alert('', i18n.t('screens.SMSScreen.smsNotAvailable'), [
         {
-          text: i18n.t('smsOK'),
+          text: i18n.t('screens.SMSScreen.smsOK'),
         },
       ])
     }
@@ -87,8 +87,9 @@ export default function SMSScreen() {
     <View style={{ flex: 1, paddingBottom: useBottomTabBarHeight() }}>
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollView}>
-          <Text style={styles.title}>{i18n.t('smsTicketTitle')}</Text>
-          <Text style={styles.smsInfo}>{i18n.t('smsInfo')}</Text>
+          <Text style={styles.smsInfo}>
+            {i18n.t('screens.SMSScreen.smsInfo')}
+          </Text>
           {ticketNames.map((ticketName, i) => {
             return (
               <View key={i} style={styles.buttonFullWidth}>
@@ -103,11 +104,11 @@ export default function SMSScreen() {
           })}
           <View style={styles.separator}></View>
           <Text style={styles.smsInfo}>
-            {i18n.t('ticketDuplicateDescription')}
+            {i18n.t('screens.SMSScreen.ticketDuplicateDescription')}
           </Text>
           <View style={[styles.buttonFullWidth, { marginHorizontal: 71 }]}>
             <Button
-              title={i18n.t('ticketDuplicate')}
+              title={i18n.t('screens.SMSScreen.ticketDuplicate')}
               onPress={() => handleSend(SmsTicketNumbers.ticketDuplicate)}
               isFullWidth
               size="small"
@@ -139,14 +140,6 @@ const styles = StyleSheet.create({
   scrollView: {
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  title: {
-    // fontSize: 25,
-    // fontWeight: '500',
-    marginTop: 33,
-    // marginBottom: 46,
-    textTransform: 'uppercase',
-    // lineHeight: 30,
   },
   smsInfo: {
     // marginHorizontal: 28,

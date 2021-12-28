@@ -33,7 +33,7 @@ const StationChargerInfo = ({
     >
       <View style={styles.backgroundColorWhite}>
         <View style={[styles.header, s.horizontalMargin]}>
-          <Text>{i18n.t('zseChargerTitle')}</Text>
+          <Text>{i18n.t('screens.MapScreen.zseChargerTitle')}</Text>
           <Text style={[s.boldText, styles.fontBiggest]}>{name}</Text>
         </View>
       </View>
@@ -87,7 +87,7 @@ const StationChargerInfo = ({
                     }}
                     name="car"
                   />
-                  {i18n.t('parkingSpaces', {
+                  {i18n.t('screens.MapScreen.parkingSpaces', {
                     amount: numberOfParkingSpaces,
                   })}
                 </Text>
@@ -106,7 +106,7 @@ const StationChargerInfo = ({
                     .then()
                     .catch()
                 }
-                title={i18n.t('startZseCharger')}
+                title={i18n.t('screens.MapScreen.startZseCharger')}
               />
             </View>
           </View>
@@ -115,7 +115,7 @@ const StationChargerInfo = ({
       <View>
         <View style={s.horizontalMargin}>
           <Text style={[s.boldText, styles.fontBigger, styles.connectorsTitle]}>
-            {i18n.t('chargingPoints')}
+            {i18n.t('screens.MapScreen.chargingPoints')}
           </Text>
           {connectors?.map((connector) => {
             const { id, status, type, pricing } = connector

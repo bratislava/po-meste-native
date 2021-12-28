@@ -43,7 +43,7 @@ const BottomTabNavigator = () => {
         name="Tickets"
         component={TicketsScreen}
         options={{
-          title: i18n.t('tickets'),
+          title: i18n.t('common.tickets'),
           tabBarIcon: TicketSvg,
         }}
       />
@@ -51,7 +51,7 @@ const BottomTabNavigator = () => {
         name="Map"
         component={MapScreen}
         options={{
-          title: i18n.t('searching'),
+          title: i18n.t('common.searching'),
           tabBarIcon: HomeSearchSvg,
         }}
       />
@@ -59,7 +59,7 @@ const BottomTabNavigator = () => {
         name="Settings"
         component={SettingsScreen}
         options={{
-          title: i18n.t('settings'),
+          title: i18n.t('common.settings'),
           tabBarIcon: BurgerMenuSvg,
         }}
       />

@@ -131,12 +131,16 @@ const TripMiniature = ({
                 {diffMinutes != undefined && (
                   <Text style={styles.atTime}>
                     {diffMinutes < 0
-                      ? i18n.t('beforeIn', { time: Math.abs(diffMinutes) })
-                      : i18n.t('startingIn', { time: diffMinutes })}
+                      ? i18n.t('screens.FromToScreen.beforeIn', {
+                          time: Math.abs(diffMinutes),
+                        })
+                      : i18n.t('screens.FromToScreen.startingIn', {
+                          time: diffMinutes,
+                        })}
                   </Text>
                 )}
                 <Text numberOfLines={1}>
-                  {i18n.t('from', {
+                  {i18n.t('screens.FromToScreen.from', {
                     place: startStationName,
                   })}
                 </Text>

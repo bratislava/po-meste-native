@@ -179,9 +179,9 @@ export default function LineTimetableScreen({
             <Text style={styles.schedulingText}>
               {date.format(DateTimeFormatter.ofPattern('dd.MM.'))}
               {LocalDate.now().toString() === date.toString() &&
-                i18n.t('today')}
+                i18n.t('common.today')}
               {LocalDate.now().toString() === date.minusDays(1).toString() &&
-                i18n.t('tomorrow')}
+                i18n.t('common.tomorrow')}
               <Ionicons
                 size={15}
                 style={{
@@ -208,9 +208,9 @@ export default function LineTimetableScreen({
                       setActiveTimetable(TimetableType.holidays)
                   }}
                   title={
-                    (key === TimetableType.workDays && i18n.t('workDays')) ||
-                    (key === TimetableType.weekend && i18n.t('weekend')) ||
-                    (key === TimetableType.holidays && i18n.t('holidays')) ||
+                    (key === TimetableType.workDays && i18n.t('common.workDays')) ||
+                    (key === TimetableType.weekend && i18n.t('common.weekend')) ||
+                    (key === TimetableType.holidays && i18n.t('common.holidays')) ||
                     ''
                   }
                 />

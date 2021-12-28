@@ -3,6 +3,7 @@ import { View, StyleSheet, Text } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { StackHeaderProps } from '@react-navigation/stack'
 import { useNavigation } from '@react-navigation/core'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { t } from 'i18n-js'
 import { colors } from '@utils/theme'
 import ChevronLeftSmall from '@icons/chevron-left-small.svg'
@@ -13,13 +14,13 @@ export interface HeaderProps extends StackHeaderProps {
 }
 
 export const Header = ({
-  insets,
-  scene,
+  options,
+  route,
   onBack,
   borderShown = true,
 }: HeaderProps) => {
   const navigation = useNavigation()
-  const screenOptions = scene.descriptor.options
+  const insets = useSafeAreaInsets()
 
   return (
     <View
@@ -33,7 +34,7 @@ export const Header = ({
       ]}
     >
       <View style={styles.leftContainer}>
-        {screenOptions.headerLeft === undefined ? (
+        {options.headerLeft === undefined ? (
           <TouchableOpacity
             style={styles.backButton}
             onPress={() => (onBack ? onBack() : navigation.goBack())}
@@ -41,15 +42,15 @@ export const Header = ({
             <ChevronLeftSmall width={16} height={16} fill={colors.gray} />
           </TouchableOpacity>
         ) : (
-          screenOptions.headerLeft
+          options.headerLeft
         )}
       </View>
       <View style={styles.centerContainer}>
         <Text style={styles.centerText}>
-          {screenOptions.title ?? t(`screens.${scene.route.name}.screenTitle`)}
+          {options.title ?? t(`screens.${route.name}.screenTitle`)}
         </Text>
       </View>
-      <View style={styles.rightContainer}>{screenOptions.headerRight}</View>
+      <View style={styles.rightContainer}>{options.headerRight}</View>
     </View>
   )
 }

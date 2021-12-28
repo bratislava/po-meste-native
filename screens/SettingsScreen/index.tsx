@@ -13,7 +13,6 @@ const Stack = createStackNavigator<SettingsParamList>()
 export const SettingsScreenNavigation = () => {
   return (
     <Stack.Navigator
-      headerMode="screen"
       screenOptions={{
         header: (props) => <Header {...props} />,
       }}

@@ -8,7 +8,7 @@ import PlannerScreen from '@screens/MapScreen/PlannerScreen'
 import LineTimelineScreen from '@screens/MapScreen/LineTimelineScreen'
 import LineTimetableScreen from '@screens/MapScreen/LineTimetableScreen'
 import ChooseLocationScreen from '@screens/MapScreen/ChooseLocationScreen'
-import FeedbackScreen from '@screens/FeedbackScreen/FeedbackScreen'
+import FeedbackScreen from '@screens/FeedbackScreen'
 import { MapParamList } from '@types'
 
 import { Header } from '@components'
@@ -20,7 +20,6 @@ const MapScreenNavigation = () => {
   const globalstateContext = useContext(GlobalStateContext)
   return (
     <MapStack.Navigator
-      headerMode="screen"
       screenOptions={{
         header: (props) => <Header {...props} />,
       }}

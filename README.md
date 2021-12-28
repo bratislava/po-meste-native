@@ -76,7 +76,7 @@ We use [yup](https://github.com/jquense/yup). Useful not only as a sanity check 
 
 TODO separate release channels for versions
 
-**When to bump version and when to bump just the buildNumber and versionCode ?** BuildNumber and versionCode *must* change with every build (try to keep them in sync). We up the version every time we want to distribute something new to the end user through App/Play store.
+**When to bump version and when to bump just the buildNumber and versionCode ?** BuildNumber and versionCode **must** change with every build (try to keep them in sync). We up the version every time we want to distribute something new to the end user through App/Play store.
 
 ### Give new versions to testers over Expo Go
 
@@ -127,4 +127,6 @@ You need a Mac with installed XCode or [Transporter app](https://apps.apple.com/
 
 ## Additional info
 
-When application is installed from play store, version installed is always from last `.apk` file uploaded to store, then OTA updates is applied.
+1. When application is installed from play store, version installed is always from last `.apk` file uploaded to store, then OTA updates is applied.
+2. Map won't load. If API keys are changed, they won't work until produced `.apk` is uploaded in Play store. Then google store signs new release and activate new keys. Some info in [Expo docs](https://docs.expo.dev/versions/latest/sdk/map-view/#2-have-your-apps-sha-1-certificate-fingerprint)
+3. Google store id change is not possible. [Info](https://stackoverflow.com/questions/17582289/is-it-possible-to-change-the-package-name-of-an-android-app-on-google-play)

@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 
-import { GlobalStateContext } from '@components/common/GlobalStateProvider'
-import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@screens/_partials/TabBar'
+import { GlobalStateContext } from '@state/GlobalStateProvider'
+import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components/navigation/TabBar'
 import { SvgProps } from 'react-native-svg'
 
 const BOTTOM_VEHICLE_BAR_HEIGHT = 50

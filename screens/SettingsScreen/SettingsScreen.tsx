@@ -8,7 +8,8 @@ import { t } from 'i18n-js'
 import { openURL } from 'expo-linking'
 import CheckBox from 'react-native-check-box'
 
-import { GlobalStateContext, ItemListButton, Modal, Button } from '@components'
+import { ItemListButton, Modal, Button } from '@components'
+import { GlobalStateContext } from '@state/GlobalStateProvider'
 import { colors } from '@utils'
 import { PreferredLanguage } from '@types'
 

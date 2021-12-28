@@ -15,7 +15,8 @@ import {
   colors,
   mhdDefaultColors,
 } from '@utils'
-import { GlobalStateContext, LoadingView } from '@components'
+import { LoadingView } from '@components'
+import { GlobalStateContext } from '@state/GlobalStateProvider'
 import { TransitVehicleType } from '@types'
 
 import MhdStopSignSvg from '@icons/stop-sign.svg'

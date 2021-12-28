@@ -11,7 +11,8 @@ import ChooseLocationScreen from '@screens/MapScreen/ChooseLocationScreen'
 import FeedbackScreen from '@screens/FeedbackScreen'
 import { MapParamList } from '@types'
 
-import { Header, GlobalStateContext } from '@components'
+import { Header } from '@components'
+import { GlobalStateContext } from '@state/GlobalStateProvider'
 
 const MapStack = createStackNavigator<MapParamList>()
 

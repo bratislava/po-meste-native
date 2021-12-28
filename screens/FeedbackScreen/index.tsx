@@ -11,7 +11,8 @@ import { ScrollView, TextInput } from 'react-native-gesture-handler'
 import Constants from 'expo-constants'
 import i18n from 'i18n-js'
 
-import { Button, GlobalStateContext } from '@components'
+import { Button } from '@components'
+import { GlobalStateContext } from '@state/GlobalStateProvider'
 import { colors } from '@utils/theme'
 
 import ThumbDown from '@icons/thumb-down.svg'

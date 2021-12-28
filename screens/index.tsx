@@ -18,7 +18,7 @@ import HomeSearchSvg from '@icons/home-search.svg'
 import TicketSvg from '@icons/ticket-alt.svg'
 import BurgerMenuSvg from '@icons/burger-menu.svg'
 
-import TabBar from './_partials/TabBar'
+import { TabBar } from '@components'
 
 const Theme = {
   ...DefaultTheme,

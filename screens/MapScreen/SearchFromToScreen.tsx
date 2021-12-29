@@ -31,6 +31,11 @@ interface SearchFromToScreen {
   initialSnapIndex: number
 }
 
+// for some reason, there is wrong typing on GooglePlaceData, so this is the fix :)
+interface FixedGooglePlaceData extends GooglePlaceData {
+  types: string[]
+}
+
 export default function SearchFromToScreen({
   sheetRef,
   getMyLocation,
@@ -90,12 +95,15 @@ export default function SearchFromToScreen({
                 key: Constants.manifest?.extra?.googlePlacesApiKey,
                 language: 'sk',
                 location: '48.160170, 17.130256',
-                radius: '8788', //8,788 km
+                radius: '20788', //20,788 km
                 strictbounds: true,
               }}
-              renderRow={(result: any) => {
+              renderRow={(result: GooglePlaceData) => {
+                const fixedResult = result as FixedGooglePlaceData
                 const Icon =
-                  result.types[0] === 'transit_station' ? MhdSvg : MarkerSvg
+                  fixedResult.types[0] === 'transit_station'
+                    ? MhdSvg
+                    : MarkerSvg
                 return (
                   <View style={styles.searchResultRow}>
                     <Icon

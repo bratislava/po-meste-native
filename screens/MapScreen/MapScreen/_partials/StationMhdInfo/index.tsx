@@ -55,8 +55,11 @@ const StationMhdInfo = ({ station }: StationMhdInfoProps) => {
   const layout = useWindowDimensions()
   const [index, setIndex] = React.useState(0)
   const routes = [
-    { key: Routes.upcomingDepartures, title: i18n.t('upcomingDepartures') },
-    { key: Routes.timetables, title: i18n.t('timetables') },
+    {
+      key: Routes.upcomingDepartures,
+      title: i18n.t('screens.MapScreen.upcomingDepartures'),
+    },
+    { key: Routes.timetables, title: i18n.t('screens.MapScreen.timetables') },
   ]
 
   const renderScene = ({

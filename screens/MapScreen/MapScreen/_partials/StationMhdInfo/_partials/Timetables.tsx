@@ -82,10 +82,13 @@ const Timetables = ({ station }: TimetablesProps) => {
               style={styles.lineDeparture}
               onPress={() => {
                 globalStateContext.setTimeLineNumber(departure.lineNumber)
-                navigation.navigate('LineTimetableScreen', {
-                  lineNumber: departure.lineNumber,
-                  stopId: station.id,
-                })
+                navigation.navigate(
+                  'LineTimetableScreen' as never,
+                  {
+                    lineNumber: departure.lineNumber,
+                    stopId: station.id,
+                  } as never
+                )
               }}
             >
               <View style={styles.departureLeft}>

@@ -55,6 +55,8 @@ export default {
       parkingPrice: 'parking price: ',
       freeParkingTime: 'free parking: ',
       parkingSpaces: '{{amount}} parking spaces',
+      upcomingDepartures: 'Upcoming Departures',
+      timetables: 'Timetables',
     },
     PlannerScreen: {
       screenTitle: 'Planner',
@@ -87,8 +89,6 @@ export default {
       from: 'from {{place}}',
       startingIn: 'in {{time}} min',
       beforeIn: 'before {{time}} min',
-      upcomingDepartures: 'Upcoming Departures',
-      timetables: 'Timetables',
       departure: 'Departure: {{time}}',
       arrival: 'Arrival: {{time}}',
       departureText: 'Departure',

@@ -11,6 +11,7 @@ import {
   BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
   LoadingView,
   LineNumber,
+  ErrorView,
 } from '@components'
 import {
   MhdStopProps,
@@ -120,13 +121,16 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
             <TouchableOpacity
               style={styles.navigateToIcon}
               onPress={() =>
-                navigation.navigate('FromToScreen', {
-                  from: {
-                    name: station.name,
-                    latitude: parseFloat(station.gpsLat),
-                    longitude: parseFloat(station.gpsLon),
-                  },
-                })
+                navigation.navigate(
+                  'FromToScreen' as never,
+                  {
+                    from: {
+                      name: station.name,
+                      latitude: parseFloat(station.gpsLat),
+                      longitude: parseFloat(station.gpsLon),
+                    },
+                  } as never
+                )
               }
             >
               <ForwardMhdStopSvg fill={colors.primary} height={20} width={20} />
@@ -204,10 +208,13 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
                 style={styles.lineDeparture}
                 onPress={() => {
                   globalstateContext.setTimeLineNumber(departure.lineNumber)
-                  navigation.navigate('LineTimelineScreen', {
-                    tripId: departure.tripId,
-                    stopId: station.id,
-                  })
+                  navigation.navigate(
+                    'LineTimelineScreen' as never,
+                    {
+                      tripId: departure.tripId,
+                      stopId: station.id,
+                    } as never
+                  )
                 }}
               >
                 <View style={styles.departureLeft}>

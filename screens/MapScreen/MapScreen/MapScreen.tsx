@@ -413,6 +413,7 @@ export default function MapScreen() {
         }}
         onRegionChangeComplete={(region) => setRegion(region)}
         showsUserLocation
+        showsMyLocationButton={false}
         mapPadding={{
           bottom: BOTTOM_VEHICLE_BAR_HEIGHT_ALL + 5,
           top: 0,

@@ -95,6 +95,7 @@ export default {
       arrival: 'Príchod: {{time}}',
       departureText: 'Odchod',
       arrivalText: 'Príchod',
+      currentPosition: 'Aktuálna poloha',
     },
     SearchFromToScreen: {
       myAddresses: 'Moje adresy',

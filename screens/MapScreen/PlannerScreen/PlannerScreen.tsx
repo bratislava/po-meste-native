@@ -68,6 +68,7 @@ export default function PlannerScreen({
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
+        showsUserLocation
         mapPadding={{
           // this tells it not to render anything interesting under the bottom sheet
           // needs finetuning but as a quick hack does the job

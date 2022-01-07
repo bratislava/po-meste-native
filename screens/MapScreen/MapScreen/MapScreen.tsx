@@ -191,22 +191,13 @@ export default function MapScreen() {
     ) => {
       const currentLocation = await permisionDeniedCallback()
       if (currentLocation) {
-        mapRef.current?.fitToCoordinates(
-          [
-            currentLocation.coords,
-            {
-              latitude: currentLocation.coords.latitude + 0.0025,
-              longitude: currentLocation.coords.longitude + 0.002,
-            },
-            {
-              latitude: currentLocation.coords.latitude - 0.0025,
-              longitude: currentLocation.coords.longitude - 0.002,
-            },
-          ],
-          {
-            edgePadding: { bottom: 100, top: 100, left: 100, right: 100 },
-          }
-        )
+        mapRef.current?.animateCamera({
+          center: currentLocation.coords,
+          zoom: 17,
+          // TODO altitude needs to be set for IOS
+          // https://github.com/react-native-maps/react-native-maps/blob/master/docs/mapview.md#types part camera
+          altitude: undefined,
+        })
       }
     },
     []

@@ -407,7 +407,7 @@ export default function MapScreen() {
         showsMyLocationButton={false}
         mapPadding={{
           bottom: BOTTOM_VEHICLE_BAR_HEIGHT_ALL + 5,
-          top: 0,
+          top: 80,
           right: 0,
           left: 0,
         }}

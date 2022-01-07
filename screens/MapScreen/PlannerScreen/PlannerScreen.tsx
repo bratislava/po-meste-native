@@ -1,18 +1,28 @@
-import React, { useEffect, useRef, useMemo, useState } from 'react'
-import { StyleSheet, useWindowDimensions, View } from 'react-native'
+import React, { useEffect, useRef, useMemo, useState, useCallback } from 'react'
+import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack'
 import MapView, { Polyline, PROVIDER_GOOGLE } from 'react-native-maps'
 import googlePolyline from 'google-polyline'
 import BottomSheet from '@gorhom/bottom-sheet'
+import * as Location from 'expo-location'
 
 import { MapParamList } from '@types'
 import {
   BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
   BOTTOM_TAB_NAVIGATOR_HEIGHT,
 } from '@components'
-import { modeColors, getColor, hexToRgba, aggregateBicycleLegs } from '@utils'
+import {
+  modeColors,
+  getColor,
+  hexToRgba,
+  aggregateBicycleLegs,
+  s,
+} from '@utils'
 
 import { TextItinerary } from './_partials/TextItinerary'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { useLocationWithPermision } from '@hooks/miscHooks'
+import CurrentLocationSvg from '@icons/current-location.svg'
 
 export default function PlannerScreen({
   route,
@@ -28,6 +38,7 @@ export default function PlannerScreen({
     '95%',
   ]
   const { height } = useWindowDimensions()
+  const { getLocationWithPermission } = useLocationWithPermision()
   // keep this in sync with the middle bottomSheetSnapPoint percentage
   const middleSnapPointMapPadding = 0.5 * (height - BOTTOM_TAB_NAVIGATOR_HEIGHT) // TODO add top bar to the equation instead of rounding down to 0.5
   const bottomMapPaddingForSheeptSnapPoints = [
@@ -50,11 +61,20 @@ export default function PlannerScreen({
       }),
     [legs]
   )
-  useEffect(() => {
-    setTimeout(() => {
-      mapRef.current?.fitToCoordinates(allMarkers)
-    }, 250)
-  }, [allMarkers, mapRef])
+
+  const moveMapToCurrentLocation = useCallback(
+    async (
+      permisionDeniedCallback: () => Promise<
+        Location.LocationObject | undefined
+      >
+    ) => {
+      const currentLocation = await permisionDeniedCallback()
+      if (currentLocation) {
+        mapRef.current?.animateCamera({ center: currentLocation.coords })
+      }
+    },
+    []
+  )
 
   return (
     <View style={styles.container}>
@@ -68,7 +88,9 @@ export default function PlannerScreen({
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
+        onLayout={() => mapRef.current?.fitToCoordinates(allMarkers)}
         showsUserLocation
+        showsMyLocationButton={false}
         mapPadding={{
           // this tells it not to render anything interesting under the bottom sheet
           // needs finetuning but as a quick hack does the job
@@ -106,6 +128,17 @@ export default function PlannerScreen({
           return accumulator
         }, [])}
       </MapView>
+      {Platform.select({ ios: true, android: true }) && (
+        <View style={styles.currentLocation}>
+          <TouchableOpacity
+            onPress={() =>
+              moveMapToCurrentLocation(() => getLocationWithPermission(true))
+            }
+          >
+            <CurrentLocationSvg />
+          </TouchableOpacity>
+        </View>
+      )}
       <BottomSheet
         index={1}
         snapPoints={bottomSheetSnapPoints}
@@ -134,5 +167,15 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+  },
+  currentLocation: {
+    position: 'absolute',
+    top: 10,
+    right: 20,
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 30,
+    ...s.shadow,
+    elevation: 7,
   },
 })

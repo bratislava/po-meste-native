@@ -7,7 +7,7 @@ import React, {
   useRef,
 } from 'react'
 import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps'
-import { StyleSheet, View, ImageURISource, Platform } from 'react-native'
+import { StyleSheet, View, ImageURISource, Platform, Image } from 'react-native'
 import BottomSheet from '@gorhom/bottom-sheet'
 import * as Location from 'expo-location'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -362,10 +362,21 @@ export default function MapScreen() {
                   setSelectedChargerStation(undefined)
                 }}
                 icon={
-                  bikeProvider === BikeProvider.rekola
-                    ? getIcon(IconType.rekola)
-                    : bikeProvider === BikeProvider.slovnaftbajk
-                    ? getIcon(IconType.slovnaftbajk)
+                  Platform.OS === 'android'
+                    ? bikeProvider === BikeProvider.rekola
+                      ? getIcon(IconType.rekola)
+                      : bikeProvider === BikeProvider.slovnaftbajk
+                      ? getIcon(IconType.slovnaftbajk)
+                      : undefined
+                    : undefined
+                }
+                image={
+                  Platform.OS === 'ios'
+                    ? bikeProvider === BikeProvider.rekola
+                      ? getIcon(IconType.rekola)
+                      : bikeProvider === BikeProvider.slovnaftbajk
+                      ? getIcon(IconType.slovnaftbajk)
+                      : undefined
                     : undefined
                 }
               />
@@ -403,7 +414,6 @@ export default function MapScreen() {
     <View style={styles.container}>
       <MapView
         ref={mapRef}
-        provider={PROVIDER_GOOGLE}
         style={styles.map}
         initialRegion={{
           latitude: 48.1512015,
@@ -438,7 +448,10 @@ export default function MapScreen() {
                 setSelectedMicromobilityProvider(undefined)
                 setSelectedMhdStation(stop)
               }}
-              icon={getIcon(IconType.mhd)}
+              icon={
+                Platform.OS === 'android' ? getIcon(IconType.mhd) : undefined
+              }
+              image={Platform.OS === 'ios' ? getIcon(IconType.mhd) : undefined}
             />
           ))}
         {vehiclesContext.vehicleTypes?.find(
@@ -457,7 +470,12 @@ export default function MapScreen() {
                   setSelectedBikeStation(vehicle)
                   setSelectedMicromobilityProvider(MicromobilityProvider.tier)
                 }}
-                icon={getIcon(IconType.tier)}
+                icon={
+                  Platform.OS === 'android' ? getIcon(IconType.tier) : undefined
+                }
+                image={
+                  Platform.OS === 'ios' ? getIcon(IconType.tier) : undefined
+                }
               />
             )
           })}
@@ -490,7 +508,14 @@ export default function MapScreen() {
                       longitude: charger.coordinates.longitude,
                     }}
                     tracksViewChanges={false}
-                    icon={getIcon(IconType.zse)}
+                    icon={
+                      Platform.OS === 'android'
+                        ? getIcon(IconType.zse)
+                        : undefined
+                    }
+                    image={
+                      Platform.OS === 'ios' ? getIcon(IconType.zse) : undefined
+                    }
                     onPress={() => {
                       setSelectedMhdStation(undefined)
                       setSelectedBikeStation(undefined)

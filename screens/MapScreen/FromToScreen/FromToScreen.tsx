@@ -30,6 +30,7 @@ import {
   OtpPlannerProps,
   aggregateBicycleLegs,
   getProviderName,
+  IteneraryProps,
 } from '@utils'
 
 import { useLocationWithPermision } from '@hooks'
@@ -44,6 +45,41 @@ import {
 } from '@types'
 import { FeedbackAsker, Modal, RadioButton, Link, ErrorView } from '@components'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
+
+const vehiclesDefault: VehicleData[] = [
+  {
+    mode: TravelModes.mhd,
+    icon: BusSvg,
+    estimatedTimeMin: undefined,
+    estimatedTimeMax: undefined,
+    priceMin: undefined,
+    priceMax: undefined,
+  },
+  {
+    mode: TravelModes.bicycle,
+    icon: CyclingSvg,
+    estimatedTimeMin: undefined,
+    estimatedTimeMax: undefined,
+    priceMin: undefined,
+    priceMax: undefined,
+  },
+  {
+    mode: TravelModes.scooter,
+    icon: ScooterSvg,
+    estimatedTimeMin: undefined,
+    estimatedTimeMax: undefined,
+    priceMin: undefined,
+    priceMax: undefined,
+  },
+  {
+    mode: TravelModes.walk,
+    icon: WalkingSvg,
+    estimatedTimeMin: undefined,
+    estimatedTimeMax: undefined,
+    priceMin: undefined,
+    priceMax: undefined,
+  },
+]
 
 interface ElementsProps {
   ommitFirst: boolean
@@ -107,6 +143,8 @@ export default function FromToScreen({
   const toRef = useRef<GooglePlacesAutocompleteRef | null>(null)
   const fromBottomSheetRef = useRef<BottomSheet>(null)
   const toBottomSheetRef = useRef<BottomSheet>(null)
+
+  const [vehicles, setVehicles] = useState<VehicleData[]>(vehiclesDefault)
 
   const [selectedVehicle, setSelectedVehicle] = useState<TravelModes>(
     TravelModes.mhd
@@ -306,6 +344,113 @@ export default function FromToScreen({
     setToName(toPropName)
   }, [toPropName, toPropCoordinates, setToCoordinates, setToName])
 
+  const getMinimalDurationFromIteneraries = (
+    iteneraries: IteneraryProps[][]
+  ) => {
+    return Math.min(
+      ...iteneraries.flatMap((tripChoice) =>
+        tripChoice.map((tripChoice) => tripChoice.duration || Infinity)
+      )
+    )
+  }
+  const getMaximalDurationFromIteneraries = (
+    iteneraries: IteneraryProps[][]
+  ) => {
+    return Math.max(
+      ...iteneraries.flatMap((tripChoice) =>
+        tripChoice.map((tripChoice) => tripChoice.duration || -Infinity)
+      )
+    )
+  }
+
+  const getAdjustedVehicleData = (
+    minDuration: number,
+    maxDuration: number,
+    oldVehicles: VehicleData[],
+    travelMode: TravelModes
+  ) => {
+    return oldVehicles.map((vehiclesType) => {
+      if (vehiclesType.mode === travelMode) {
+        return {
+          ...vehiclesType,
+          estimatedTimeMin:
+            minDuration !== Infinity ? Math.round(minDuration / 60) : undefined,
+          estimatedTimeMax:
+            maxDuration !== -Infinity
+              ? Math.round(maxDuration / 60)
+              : undefined,
+        }
+      } else {
+        return vehiclesType
+      }
+    })
+  }
+
+  const adjustMinMaxTravelTime = useCallback(
+    (itineraries: IteneraryProps[][], travelMode: TravelModes) => {
+      const minDuration = getMinimalDurationFromIteneraries([...itineraries])
+
+      const maxDuration = getMaximalDurationFromIteneraries([...itineraries])
+
+      setVehicles((oldVehicles) =>
+        getAdjustedVehicleData(
+          minDuration,
+          maxDuration,
+          oldVehicles,
+          travelMode
+        )
+      )
+    },
+    []
+  )
+
+  useEffect(() => {
+    adjustMinMaxTravelTime(
+      [
+        dataSlovnaftbajk?.plan?.itineraries
+          ? dataSlovnaftbajk?.plan?.itineraries
+          : [],
+        dataRekola?.plan?.itineraries ? dataRekola?.plan?.itineraries : [],
+        dataMyBike?.plan?.itineraries ? dataMyBike?.plan?.itineraries : [],
+      ],
+      TravelModes.bicycle
+    )
+  }, [dataSlovnaftbajk, dataRekola, dataMyBike, adjustMinMaxTravelTime])
+
+  useEffect(() => {
+    adjustMinMaxTravelTime(
+      [
+        dataTier?.plan?.itineraries ? dataTier?.plan?.itineraries : [],
+        dataMyScooter?.plan?.itineraries
+          ? dataMyScooter?.plan?.itineraries
+          : [],
+      ],
+      TravelModes.scooter
+    )
+  }, [dataTier, dataMyScooter, adjustMinMaxTravelTime])
+
+  useEffect(() => {
+    adjustMinMaxTravelTime(
+      [
+        dataMhd?.plan?.itineraries
+          ? // first result for TRANSIT trip is always walking whole trip
+            // alternative is to reduce walking distance in request 'maxWalkDistance' http://dev.opentripplanner.org/apidoc/1.4.0/resource_PlannerResource.html
+            dataMhd?.plan?.itineraries.filter(
+              (_itenerary, index) => index !== 0
+            )
+          : [],
+      ],
+      TravelModes.mhd
+    )
+  }, [adjustMinMaxTravelTime, dataMhd])
+
+  useEffect(() => {
+    adjustMinMaxTravelTime(
+      [dataWalk?.plan?.itineraries ? dataWalk?.plan?.itineraries : []],
+      TravelModes.walk
+    )
+  }, [adjustMinMaxTravelTime, dataWalk])
+
   const getGeocodeAsync = useCallback(
     async (
       location: { latitude: number; longitude: number },
@@ -419,33 +564,6 @@ export default function FromToScreen({
   const onVehicleChange = (mode: TravelModes) => {
     setSelectedVehicle(mode)
   }
-
-  const vehicles: VehicleData[] = [
-    {
-      mode: TravelModes.mhd,
-      icon: BusSvg,
-      estimatedTime: '? - ? min',
-      price: '~?,??€',
-    },
-    {
-      mode: TravelModes.bicycle,
-      icon: CyclingSvg,
-      estimatedTime: '? min',
-      price: '~?,??€',
-    },
-    {
-      mode: TravelModes.scooter,
-      icon: ScooterSvg,
-      estimatedTime: '? min',
-      price: '~?,??€',
-    },
-    {
-      mode: TravelModes.walk,
-      icon: WalkingSvg,
-      estimatedTime: '? min',
-      price: '--',
-    },
-  ]
 
   const onSwitchPlacesPress = useCallback(() => {
     const fromNameAlt = fromName

@@ -208,6 +208,27 @@ export type LegProps = yup.TypeOf<typeof leg>
 
 export type OtpPlannerProps = yup.Asserts<typeof apiOtpPlanner>
 
+const iteneraryObject = yup.object().shape({
+  duration: yup.number().required('error-malformed-duration'), // 3991
+  startTime: yup.number().required('error-malformed-startTime'), // 1635431403000
+  endTime: yup.number().required('error-malformed-endTime'),
+  walkTime: yup.number(), //1240,
+  transitTime: yup.number(), //0,
+  waitingTime: yup.number(), //0,
+  walkDistance: yup.number(), //5161.642999999999,
+  walkLimitExceeded: yup.bool(), //true,
+  elevationLost: yup.number(), //0.0,
+  elevationGained: yup.number(), //0.0,
+  transfers: yup.number(), //0,
+  fare: yup.object().shape({
+    fare: yup.object().shape({}),
+    details: yup.object().shape({}),
+  }),
+  legs: yup.array().ensure().of(leg),
+})
+
+export type IteneraryProps = yup.TypeOf<typeof iteneraryObject>
+
 export const apiOtpPlanner = yup.object().shape({
   requestParameters: yup.object().shape({
     date: yup.string(), // "08-23-2021"
@@ -239,29 +260,7 @@ export const apiOtpPlanner = yup.object().shape({
       lat: yup.number(), //48.154162386386886,
       vertexType: yup.string(), //"NORMAL"
     }),
-    itineraries: yup
-      .array()
-      .ensure()
-      .of(
-        yup.object().shape({
-          duration: yup.number().required('error-malformed-duration'), // 3991
-          startTime: yup.number().required('error-malformed-startTime'), // 1635431403000
-          endTime: yup.number().required('error-malformed-endTime'),
-          walkTime: yup.number(), //1240,
-          transitTime: yup.number(), //0,
-          waitingTime: yup.number(), //0,
-          walkDistance: yup.number(), //5161.642999999999,
-          walkLimitExceeded: yup.bool(), //true,
-          elevationLost: yup.number(), //0.0,
-          elevationGained: yup.number(), //0.0,
-          transfers: yup.number(), //0,
-          fare: yup.object().shape({
-            fare: yup.object().shape({}),
-            details: yup.object().shape({}),
-          }),
-          legs: yup.array().ensure().of(leg),
-        })
-      ),
+    itineraries: yup.array().ensure().of(iteneraryObject),
   }),
 })
 

@@ -85,6 +85,8 @@ export default {
       fromPlaceholder: 'Odkiaľ idete?',
       toPlaceholder: 'Kamže, kam?',
       myBike: 'Vlastný bicykel',
+      walk: 'Pešia trasa',
+      transit: 'Verejná doprava',
       rentedBike: 'Bicykel na prenájom',
       myScooter: 'Vlastná kolobežka',
       rentedScooter: 'Kolobežka na prenájom',

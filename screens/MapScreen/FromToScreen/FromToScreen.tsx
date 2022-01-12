@@ -27,7 +27,6 @@ import { Feather } from '@expo/vector-icons'
 import {
   getTripPlanner,
   colors,
-  getOtpTravelMode,
   OtpPlannerProps,
   aggregateBicycleLegs,
   getProviderName,
@@ -43,14 +42,7 @@ import {
   TravelModesOtpApi,
   VehicleData,
 } from '@types'
-import {
-  FeedbackAsker,
-  LoadingView,
-  Modal,
-  RadioButton,
-  Link,
-  ErrorView,
-} from '@components'
+import { FeedbackAsker, Modal, RadioButton, Link, ErrorView } from '@components'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 
 interface ElementsProps {
@@ -138,16 +130,55 @@ export default function FromToScreen({
   >(null)
 
   const {
-    data: dataStandard,
-    isLoading: isLoadingStandard,
-    error: errorStandard,
-    refetch: refetchStandard,
+    data: dataMhd,
+    isLoading: isLoadingMhd,
+    error: errorMhd,
+    refetch: refetchMhd,
+  } = useQuery(
+    ['getOtpDataMhd', fromCoordinates, toCoordinates, dateTime, scheduledTime],
+    () =>
+      fromCoordinates &&
+      toCoordinates &&
+      getTripPlanner(
+        `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+        `${toCoordinates.latitude},${toCoordinates.longitude}`,
+        dateTime,
+        scheduledTime === ScheduleType.arrival,
+        TravelModesOtpApi.transit
+      ),
+    { enabled: fromCoordinates && toCoordinates ? true : false }
+  )
+
+  const {
+    data: dataWalk,
+    isLoading: isLoadingWalk,
+    error: errorWalk,
+    refetch: refetchWalk,
+  } = useQuery(
+    ['getOtpDataWalk', fromCoordinates, toCoordinates, dateTime, scheduledTime],
+    () =>
+      fromCoordinates &&
+      toCoordinates &&
+      getTripPlanner(
+        `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+        `${toCoordinates.latitude},${toCoordinates.longitude}`,
+        dateTime,
+        scheduledTime === ScheduleType.arrival,
+        TravelModesOtpApi.walk
+      ),
+    { enabled: fromCoordinates && toCoordinates ? true : false }
+  )
+
+  const {
+    data: dataMyBike,
+    isLoading: isLoadingMyBike,
+    error: errorMyBike,
+    refetch: refetchMyBike,
   } = useQuery(
     [
-      'getOtpData',
+      'getOtpDataMyBike',
       fromCoordinates,
       toCoordinates,
-      selectedVehicle,
       dateTime,
       scheduledTime,
     ],
@@ -159,7 +190,33 @@ export default function FromToScreen({
         `${toCoordinates.latitude},${toCoordinates.longitude}`,
         dateTime,
         scheduledTime === ScheduleType.arrival,
-        getOtpTravelMode(selectedVehicle)
+        TravelModesOtpApi.bicycle
+      ),
+    { enabled: fromCoordinates && toCoordinates ? true : false }
+  )
+
+  const {
+    data: dataMyScooter,
+    isLoading: isLoadingMyScooter,
+    error: errorMyScooter,
+    refetch: refetchMyScooter,
+  } = useQuery(
+    [
+      'getOtpDataMyScooter',
+      fromCoordinates,
+      toCoordinates,
+      dateTime,
+      scheduledTime,
+    ],
+    () =>
+      fromCoordinates &&
+      toCoordinates &&
+      getTripPlanner(
+        `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+        `${toCoordinates.latitude},${toCoordinates.longitude}`,
+        dateTime,
+        scheduledTime === ScheduleType.arrival,
+        TravelModesOtpApi.bicycle
       ),
     { enabled: fromCoordinates && toCoordinates ? true : false }
   )
@@ -602,32 +659,39 @@ export default function FromToScreen({
         />
       </View>
       <ScrollView contentContainerStyle={styles.scrollView}>
-        <View>
-          {(isLoadingStandard || dataStandard || errorStandard) && (
-            <>
-              {selectedVehicle === TravelModes.bicycle && (
+        {selectedVehicle === TravelModes.mhd && (
+          <View>
+            {(isLoadingMhd || dataMhd || errorMhd) && (
+              <Text style={styles.textSizeBig}>
+                {i18n.t('screens.FromToScreen.transit')}
+              </Text>
+            )}
+            {getElements({
+              ommitFirst: true,
+              isLoading: isLoadingMhd,
+              data: dataMhd,
+              provider: undefined,
+              error: errorMhd,
+              refetch: refetchMhd,
+            })}
+          </View>
+        )}
+        {selectedVehicle === TravelModes.bicycle && (
+          <>
+            {(isLoadingMyBike || dataMyBike || errorMyBike) &&
+              selectedVehicle === TravelModes.bicycle && (
                 <Text style={styles.textSizeBig}>
                   {i18n.t('screens.FromToScreen.myBike')}
                 </Text>
               )}
-              {selectedVehicle === TravelModes.scooter && (
-                <Text style={styles.textSizeBig}>
-                  {i18n.t('screens.FromToScreen.myScooter')}
-                </Text>
-              )}
-            </>
-          )}
-          {getElements({
-            ommitFirst: true,
-            isLoading: isLoadingStandard,
-            data: dataStandard,
-            provider: undefined,
-            error: errorStandard,
-            refetch: refetchStandard,
-          })}
-        </View>
-        {selectedVehicle === TravelModes.bicycle && (
-          <>
+            {getElements({
+              ommitFirst: true,
+              isLoading: isLoadingMyBike,
+              data: dataMyBike,
+              provider: undefined,
+              error: errorMyBike,
+              refetch: refetchMyBike,
+            })}
             {(isLoadingSlovnaftbajk ||
               isLoadingRekola ||
               dataSlovnaftbajk ||
@@ -662,6 +726,20 @@ export default function FromToScreen({
         )}
         {selectedVehicle === TravelModes.scooter && (
           <>
+            {(isLoadingMyScooter || dataMyScooter || errorMyScooter) && (
+              <Text style={styles.textSizeBig}>
+                {i18n.t('screens.FromToScreen.myScooter')}
+              </Text>
+            )}
+            {getElements({
+              ommitFirst: true,
+              isLoading: isLoadingMyScooter,
+              data: dataMyScooter,
+              provider: undefined,
+              error: errorMyScooter,
+              refetch: refetchMyScooter,
+            })}
+
             {(isLoadingTier || dataTier || errorTier) && (
               <Text style={styles.textSizeBig}>
                 {i18n.t('screens.FromToScreen.rentedScooter')}
@@ -677,6 +755,23 @@ export default function FromToScreen({
                 refetch: refetchTier,
               })}
             </View>
+          </>
+        )}
+        {selectedVehicle === TravelModes.walk && (
+          <>
+            {(isLoadingWalk || dataWalk || errorWalk) && (
+              <Text style={styles.textSizeBig}>
+                {i18n.t('screens.FromToScreen.walk')}
+              </Text>
+            )}
+            {getElements({
+              ommitFirst: false,
+              isLoading: isLoadingWalk,
+              data: dataWalk,
+              provider: undefined,
+              error: errorWalk,
+              refetch: refetchWalk,
+            })}
           </>
         )}
         {/* {dataStandard?.plan?.itineraries?.length != undefined &&

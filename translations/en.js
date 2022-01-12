@@ -83,6 +83,8 @@ export default {
       fromPlaceholder: 'From...',
       toPlaceholder: 'To...',
       myBike: 'My bike',
+      walk: 'Walk trip',
+      transit: 'Transit',
       rentedBike: 'Rented bicycles',
       myScooter: 'My scooter',
       rentedScooter: 'Rented scooter',

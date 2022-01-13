@@ -19,8 +19,7 @@ import * as Sentry from '@sentry/react-native'
 import { API_ERROR_TEXT } from './constants'
 
 const host = 'planner.bratislava.sk'
-const dataHostUrl =
-  Constants.manifest?.extra?.apiHost || `https://live-dev.${host}`
+const dataHostUrl = Constants.manifest?.extra?.apiHost || `https://live.${host}`
 const otpPlannerUrl = `https://api.${host}/otp/routers/default/plan` // TODO use otp.planner.bratislava.sk
 const otpRekolaPlannerUrl = `https://rekola.${host}/routers/default/plan`
 const otpSlovnaftbajkPlannerUrl = `https://slovnaftbajk.${host}/routers/default/plan`

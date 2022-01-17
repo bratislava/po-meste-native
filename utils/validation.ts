@@ -363,6 +363,8 @@ export const apiMhdStopStatus = yup.object().shape({
         vehicleType: yup
           .mixed<TransitVehicleType>()
           .oneOf(Object.values(TransitVehicleType)), // TODO this is dangerous because when something unexpected comes like number 20 all data is considered unvalidated
+        delay: yup.number().nullable(), //39,
+        isLive: yup.boolean(), //true
       })
     ),
 })

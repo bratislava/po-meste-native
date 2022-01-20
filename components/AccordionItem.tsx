@@ -5,11 +5,16 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { StyleSheet, Text, View, Animated } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  Animated,
+  TouchableOpacity,
+} from 'react-native'
 
 import ChevronRightSmall from '@icons/chevron-right-small.svg'
 import { colors } from '@utils/theme'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 
 interface AccorionItemProps {
   isOpen?: boolean

@@ -1,6 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import _ from 'lodash'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+} from 'react-native'
 import i18n from 'i18n-js'
 import { StackScreenProps } from '@react-navigation/stack'
 import { useQuery } from 'react-query'
@@ -10,7 +16,6 @@ import { Ionicons } from '@expo/vector-icons'
 
 import { colors, mhdDefaultColors, getMhdGrafikon, getVehicle, s } from '@utils'
 import { MapParamList, TimetableType } from '@types'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { ErrorView, LoadingView, LineNumber } from '@components'
 
 import TicketSvg from '@icons/ticket.svg'

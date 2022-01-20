@@ -7,10 +7,15 @@ import React, {
   useRef,
 } from 'react'
 import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps'
-import { StyleSheet, View, ImageURISource, Platform } from 'react-native'
+import {
+  StyleSheet,
+  View,
+  ImageURISource,
+  Platform,
+  TouchableOpacity,
+} from 'react-native'
 import BottomSheet from '@gorhom/bottom-sheet'
 import * as Location from 'expo-location'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useIsFocused } from '@react-navigation/core'
 import i18n from 'i18n-js'
 
@@ -191,22 +196,13 @@ export default function MapScreen() {
     ) => {
       const currentLocation = await permisionDeniedCallback()
       if (currentLocation) {
-        mapRef.current?.fitToCoordinates(
-          [
-            currentLocation.coords,
-            {
-              latitude: currentLocation.coords.latitude + 0.0025,
-              longitude: currentLocation.coords.longitude + 0.002,
-            },
-            {
-              latitude: currentLocation.coords.latitude - 0.0025,
-              longitude: currentLocation.coords.longitude - 0.002,
-            },
-          ],
-          {
-            edgePadding: { bottom: 100, top: 100, left: 100, right: 100 },
-          }
-        )
+        mapRef.current?.animateCamera({
+          center: currentLocation.coords,
+          zoom: 17,
+          // TODO altitude needs to be set for Apple maps
+          // https://github.com/react-native-maps/react-native-maps/blob/master/docs/mapview.md#types part camera
+          altitude: undefined,
+        })
       }
     },
     []
@@ -413,9 +409,10 @@ export default function MapScreen() {
         }}
         onRegionChangeComplete={(region) => setRegion(region)}
         showsUserLocation
+        showsMyLocationButton={false}
         mapPadding={{
           bottom: BOTTOM_VEHICLE_BAR_HEIGHT_ALL + 5,
-          top: 0,
+          top: 80,
           right: 0,
           left: 0,
         }}

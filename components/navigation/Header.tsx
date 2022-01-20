@@ -1,6 +1,5 @@
 import React from 'react'
-import { View, StyleSheet, Text } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { StackHeaderProps } from '@react-navigation/stack'
 import { useNavigation } from '@react-navigation/core'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'

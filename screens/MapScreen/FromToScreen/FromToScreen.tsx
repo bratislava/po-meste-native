@@ -6,9 +6,9 @@ import React, {
   useCallback,
   useContext,
 } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import i18n from 'i18n-js'
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import { ScrollView } from 'react-native-gesture-handler'
 import { useQuery } from 'react-query'
 import { useNavigation } from '@react-navigation/native'
 import {

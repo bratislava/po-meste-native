@@ -46,8 +46,10 @@ export enum ChargerTypes {
 export type VehicleData = {
   mode: TravelModes
   icon: React.FC<SvgProps>
-  estimatedTime: string
-  price: string
+  estimatedTimeMin: number | undefined
+  estimatedTimeMax: number | undefined
+  priceMin: number | undefined
+  priceMax: number | undefined
 }
 
 export type RootStackParamList = {

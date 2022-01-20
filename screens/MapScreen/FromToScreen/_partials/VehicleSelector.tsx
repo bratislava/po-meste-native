@@ -53,7 +53,15 @@ const VehicleSelector = ({
                     : {},
                 ]}
               >
-                {vehicle.estimatedTime}
+                {vehicle.estimatedTimeMin}
+                {vehicle.estimatedTimeMin !== undefined &&
+                  vehicle.estimatedTimeMax !== undefined &&
+                  ` - `}
+                {vehicle.estimatedTimeMax}
+                {vehicle.estimatedTimeMin !== undefined ||
+                vehicle.estimatedTimeMax !== undefined
+                  ? ` min`
+                  : `? - ? min`}
               </Text>
               <Text
                 style={[
@@ -63,7 +71,7 @@ const VehicleSelector = ({
                     : {},
                 ]}
               >
-                {vehicle.price}
+                {vehicle.priceMin}
               </Text>
             </TouchableOpacity>
           )

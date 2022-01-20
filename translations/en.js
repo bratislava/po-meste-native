@@ -95,6 +95,7 @@ export default {
       arrival: 'Arrival: {{time}}',
       departureText: 'Departure',
       arrivalText: 'Arrival',
+      currentPosition: 'Current location',
     },
     SearchFromToScreen: {
       myAddresses: 'My addresses',

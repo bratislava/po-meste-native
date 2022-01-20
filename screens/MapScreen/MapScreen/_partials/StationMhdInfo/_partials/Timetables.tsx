@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { useQuery } from 'react-query'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/core'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { LineNumber } from '@components/LineNumber'

@@ -1,5 +1,11 @@
-import React, { useEffect, useRef, useMemo, useState, useCallback } from 'react'
-import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native'
+import React, { useRef, useMemo, useState, useCallback } from 'react'
+import {
+  Platform,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+  TouchableOpacity,
+} from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack'
 import MapView, { Polyline, PROVIDER_GOOGLE } from 'react-native-maps'
 import googlePolyline from 'google-polyline'
@@ -20,7 +26,6 @@ import {
 } from '@utils'
 
 import { TextItinerary } from './_partials/TextItinerary'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useLocationWithPermision } from '@hooks/miscHooks'
 import CurrentLocationSvg from '@icons/current-location.svg'
 

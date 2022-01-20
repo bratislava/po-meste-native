@@ -7,10 +7,15 @@ import React, {
   useRef,
 } from 'react'
 import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps'
-import { StyleSheet, View, ImageURISource, Platform } from 'react-native'
+import {
+  StyleSheet,
+  View,
+  ImageURISource,
+  Platform,
+  TouchableOpacity,
+} from 'react-native'
 import BottomSheet from '@gorhom/bottom-sheet'
 import * as Location from 'expo-location'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useIsFocused } from '@react-navigation/core'
 import i18n from 'i18n-js'
 
@@ -194,7 +199,7 @@ export default function MapScreen() {
         mapRef.current?.animateCamera({
           center: currentLocation.coords,
           zoom: 17,
-          // TODO altitude needs to be set for IOS
+          // TODO altitude needs to be set for Apple maps
           // https://github.com/react-native-maps/react-native-maps/blob/master/docs/mapview.md#types part camera
           altitude: undefined,
         })

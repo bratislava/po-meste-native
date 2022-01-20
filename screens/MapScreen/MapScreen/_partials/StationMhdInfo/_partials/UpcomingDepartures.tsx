@@ -25,6 +25,7 @@ import { TransitVehicleType } from '@types'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 
 import MhdStopSignSvg from '@icons/stop-sign.svg'
+import IsLiveSvg from '@icons/is-live.svg'
 import ForwardMhdStopSvg from '@icons/forward-mhd-stop.svg'
 
 interface UpcomingDeparturesProps {
@@ -198,9 +199,15 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
             filtersLineNumber.includes(departure.lineNumber)
           )
           ?.map((departure, index) => {
-            const diffMinutes = Duration.between(
+            const diffMinutesDelay = Duration.between(
               LocalDateTime.now(),
-              LocalDateTime.parse(`${departure.date}T${departure.time}`)
+              departure.delay
+                ? LocalDateTime.parse(`${departure.date}T${departure.time}`)
+                    .plusSeconds(departure.delay)
+                    .plusMinutes(1)
+                : LocalDateTime.parse(
+                    `${departure.date}T${departure.time}`
+                  ).plusSeconds(59) // as requested in PLAN-352 check print screen :)
             ).toMinutes()
             return (
               <TouchableOpacity
@@ -236,8 +243,11 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
                   </Text>
                 </View>
                 <View style={styles.departureRight}>
+                  {departure.isLive && <IsLiveSvg />}
                   <Text>
-                    {diffMinutes > 1 ? `${diffMinutes} min` : '<1 min'}
+                    {diffMinutesDelay >= 1
+                      ? `${diffMinutesDelay} min`
+                      : '<1 min'}
                   </Text>
                 </View>
               </TouchableOpacity>

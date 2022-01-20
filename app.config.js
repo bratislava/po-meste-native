@@ -52,7 +52,7 @@ export default {
     favicon: './assets/images/favicon.png',
   },
   extra: {
-    apiHost: 'https://live-dev.planner.bratislava.sk',
+    apiHost: 'https://live.planner.bratislava.sk',
     googleIOsApiKey: process.env.GOOGLE_IOS_API_KEY,
     googleAndroidApiKey: process.env.GOOGLE_ANDROID_API_KEY,
     googlePlacesApiKey: process.env.GOOGLE_PLACES_API_KEY,

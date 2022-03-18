@@ -19,7 +19,23 @@ const VehicleBar = () => {
 
   const onVehicleClick = (id: string) => {
     vehiclesContext.setVehicleTypes((oldVehicleTypes) => {
+      let clickedOnShown = false
+      let oneNotShown = false
+      const clickedOnSingleShown = oldVehicleTypes.some((vehicleType) => {
+        if (vehicleType.id === id && vehicleType.show === true) {
+          clickedOnShown = true
+        } else if (vehicleType.id !== id && vehicleType.show === false) {
+          oneNotShown = true
+        }
+        return clickedOnShown && oneNotShown
+      })
       const newVehicleTypes = oldVehicleTypes.map((vehicleType) => {
+        if (clickedOnSingleShown) {
+          return {
+            ...vehicleType,
+            show: true,
+          }
+        }
         return {
           ...vehicleType,
           show: id === vehicleType.id ? true : false,

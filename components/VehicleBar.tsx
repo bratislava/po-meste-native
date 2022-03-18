@@ -22,9 +22,9 @@ const VehicleBar = () => {
       let clickedOnShown = false
       let oneNotShown = false
       const clickedOnSingleShown = oldVehicleTypes.some((vehicleType) => {
-        if (vehicleType.id == id && vehicleType.show == true) {
+        if (vehicleType.id === id && vehicleType.show === true) {
           clickedOnShown = true
-        } else if (vehicleType.id !== id && vehicleType.show == false) {
+        } else if (vehicleType.id !== id && vehicleType.show === false) {
           oneNotShown = true
         }
         return clickedOnShown && oneNotShown

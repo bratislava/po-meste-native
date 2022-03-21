@@ -59,6 +59,8 @@ import StationChargerInfo from './_partials/StationChargerInfo'
 
 import CurrentLocationSvg from '@icons/current-location.svg'
 
+import { customMapStyle } from './customMapStyle'
+
 const MIN_DELTA_FOR_XS_MARKER = 0.05
 const MIN_DELTA_FOR_SM_MARKER = 0.03
 const MIN_DELTA_FOR_MD_MARKER = 0.01
@@ -401,7 +403,7 @@ export default function MapScreen() {
         ref={mapRef}
         provider={PROVIDER_GOOGLE}
         style={styles.map}
-        customMapStyle={googleMapsGeneratedJSON}
+        customMapStyle={customMapStyle}
         initialRegion={{
           latitude: 48.1512015,
           longitude: 17.1110118,

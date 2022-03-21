@@ -58,6 +58,9 @@ const fetchJsonFromOtpApi = async (plannerAddress: string, path: string) => {
   }
 }
 
+//for testing purposes
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
 export const getMhdStops = async () => fetchJsonFromApi('/mhd/stops')
 export const getMhdStopStatusData = async (id: string) =>
   apiMhdStopStatus.validateSync(await fetchJsonFromApi(`/mhd/stop/${id}`))
@@ -98,7 +101,7 @@ export const getSlovnaftbajkStationStatus = () =>
 export const getTierFreeBikeStatus = () =>
   fetchJsonFromApi('/tier/free_bike_status.json')
 
-export const getChargersStops = () => fetchJsonFromApi('/zse')
+export const getChargersStops = async () => fetchJsonFromApi('/zse')
 
 export const getTripPlanner = async (
   from: string,

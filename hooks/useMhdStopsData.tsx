@@ -3,6 +3,7 @@ import { useQuery } from 'react-query'
 
 import { apiMhdStops } from '../utils/validation'
 import { getMhdStops } from '../utils/api'
+import { getCachedStops } from '@utils/utils'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function useMhdData() {
@@ -11,12 +12,9 @@ export default function useMhdData() {
     'getMhdStops',
     getMhdStops
   )
-  const getCachedData = async () => {
-    const cachedMhdStops = await AsyncStorage.getItem('mhdStops')
-    if (cachedMhdStops == null) return null
-    return JSON.parse(cachedMhdStops)
-  }
-  const { data: cachedData } = useQuery('getCachedMhdStops', getCachedData)
+  const { data: cachedData } = useQuery('getCachedMhdStops', () =>
+    getCachedStops('mhdStops')
+  )
 
   const validatedMhdStops = useMemo(() => {
     if (data == null) return cachedData

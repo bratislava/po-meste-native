@@ -401,6 +401,7 @@ export default function MapScreen() {
         ref={mapRef}
         provider={PROVIDER_GOOGLE}
         style={styles.map}
+        customMapStyle={googleMapsGeneratedJSON}
         initialRegion={{
           latitude: 48.1512015,
           longitude: 17.1110118,
@@ -592,6 +593,8 @@ export default function MapScreen() {
     </View>
   )
 }
+
+const googleMapsGeneratedJSON: any = []
 
 const styles = StyleSheet.create({
   container: {

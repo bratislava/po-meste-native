@@ -21,6 +21,7 @@ import RekoloSvg from '@icons/rekolo.svg'
 import TramSvg from '@icons/tram.svg'
 import TrolleybusSvg from '@icons/trolleybus.svg'
 import BusSvg from '@icons/bus.svg'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export const presentPrice = (price: number /* in cents */) => {
   return i18n.t('common.presentPrice', { price: (price / 100).toFixed(2) })
@@ -198,3 +199,27 @@ export const isValidationError = (error: any) =>
 
 export const isApiError = (error: any) =>
   error instanceof Error && error.message === API_ERROR_TEXT
+
+export const getCachedStops = async (
+  index: string,
+  hoursUntilDeprecated = 24
+) => {
+  const timestampString = await AsyncStorage.getItem(`${index}Timestamp`)
+  if (timestampString != null) {
+    const timestamp = new Date(timestampString)
+    const timeDifferenceInHours =
+      Math.abs(new Date().getTime() - timestamp.getTime()) / 36e5
+    if (timeDifferenceInHours > hoursUntilDeprecated) {
+      AsyncStorage.removeItem(index)
+      return null
+    }
+  }
+  const cachedStops = await AsyncStorage.getItem(index)
+  if (cachedStops == null) return null
+  return JSON.parse(cachedStops)
+}
+
+export const setCachedStops = async (index: string, data: any) => {
+  AsyncStorage.setItem(index, data)
+  AsyncStorage.setItem(`${index}Timestamp`, new Date().toISOString())
+}

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
+import { getCachedStops, setCachedStops } from '@utils/utils'
 
 import {
   apiRekolaStationInformation,
@@ -34,7 +35,15 @@ export default function useStationsData({
     refetch: refetchStationStatus,
   } = useQuery(stationStatusQueryKey, getStationStatus)
 
+  const providerIndex = stationInformationQueryKey.slice(3, -18).toLowerCase()
+
+  const { data: cachedStationData } = useQuery(providerIndex, () =>
+    getCachedStops(providerIndex)
+  )
+
   const validatedData = useMemo(() => {
+    if (dataStationStatus == null || dataStationInformation == null)
+      return cachedStationData
     try {
       const validatedStationInformation =
         apiRekolaStationInformation.validateSync(dataStationInformation).data
@@ -55,13 +64,14 @@ export default function useStationsData({
           }
           return mergedStation
         })
+        setCachedStops(providerIndex, JSON.stringify(merged))
         return merged
       }
-    } catch (e) {
+    } catch (e: any) {
       setValidationErrors(e.errors)
       console.log(e)
     }
-  }, [dataStationStatus, dataStationInformation])
+  }, [dataStationStatus, dataStationInformation, cachedStationData])
 
   return {
     data: validatedData,

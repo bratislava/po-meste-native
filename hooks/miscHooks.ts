@@ -25,10 +25,19 @@ export const nativeAlert = (
 
 export const useLocationWithPermision = () => {
   const getLocation = useCallback(async () => {
-    const location = await Location.getCurrentPositionAsync({
-      accuracy: Location.Accuracy.Highest,
-    })
-    return location
+    try {
+      const location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Highest,
+      })
+      return location
+    } catch (e: any) {
+      const { code } = e
+      if (code === 'E_LOCATION_SETTINGS_UNSATISFIED') {
+        //TODO Handle denied location permission
+        console.log('Denied location permission')
+      }
+      return null
+    }
   }, [])
 
   const openAppSettings = () => {
@@ -63,6 +72,5 @@ export const useLocationWithPermision = () => {
     },
     [getLocation]
   )
-
   return { getLocationWithPermission }
 }

@@ -1,13 +1,28 @@
 import React, { useContext } from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native'
 
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components/navigation/TabBar'
 import { SvgProps } from 'react-native-svg'
 
+import {
+  useMhdStopsData,
+  useZseChargersData,
+  useRekolaData,
+  useSlovnaftbajkData,
+  useTierData,
+} from '@hooks'
+import { VehicleType } from '@types'
+
 const BOTTOM_VEHICLE_BAR_HEIGHT = 50
 const BOTTOM_VEHICLE_BAR_MARGIN_BOTTOM = 10
 const BOTTOM_TAB_NAVIGATOR_SPACING = 7.5
+const ICON_SIZE = 30
 
 export const BOTTOM_VEHICLE_BAR_HEIGHT_ALL =
   BOTTOM_VEHICLE_BAR_HEIGHT +
@@ -16,6 +31,12 @@ export const BOTTOM_VEHICLE_BAR_HEIGHT_ALL =
 
 const VehicleBar = () => {
   const vehiclesContext = useContext(GlobalStateContext)
+
+  const { isLoading: isLoadingMhd } = useMhdStopsData()
+  const { isLoading: isLoadingTier } = useTierData()
+  const { isLoading: isLoadingZseChargers } = useZseChargersData()
+  const { isLoading: isLoadingRekola } = useRekolaData()
+  const { isLoading: isLoadingSlovnaftbajk } = useSlovnaftbajkData()
 
   const onVehicleClick = (id: string) => {
     vehiclesContext.setVehicleTypes((oldVehicleTypes) => {
@@ -45,15 +66,35 @@ const VehicleBar = () => {
     })
   }
 
-  const getVehicleIconStyled = (icon: () => React.FC<SvgProps>) => {
+  const getVehicleIconStyled = (
+    isLoading: boolean,
+    icon: () => React.FC<SvgProps>
+  ) => {
     const Icon = icon()
-    return <Icon width={30} height={30} />
+    return (
+      <View>
+        {isLoading && (
+          <ActivityIndicator
+            size="large"
+            color="#FF5D52"
+            style={styles.loadingWheel}
+          />
+        )}
+        <Icon width={ICON_SIZE} height={ICON_SIZE} />
+      </View>
+    )
   }
 
   return (
     <View style={styles.vehicleBar}>
       {vehiclesContext.vehicleTypes?.map((vehicleType, index) => {
         const { id, icon, show } = vehicleType
+        const isLoading =
+          (id === VehicleType.mhd && isLoadingMhd) ||
+          (id === VehicleType.bicycle &&
+            (isLoadingRekola || isLoadingSlovnaftbajk)) ||
+          (id === VehicleType.chargers && isLoadingZseChargers) ||
+          (id === VehicleType.scooter && isLoadingTier)
         return (
           <TouchableOpacity
             key={id}
@@ -65,7 +106,7 @@ const VehicleBar = () => {
             ]}
             onPress={() => onVehicleClick(id)}
           >
-            {getVehicleIconStyled(() => icon(show))}
+            {getVehicleIconStyled(isLoading, () => icon(show))}
           </TouchableOpacity>
         )
       })}
@@ -95,6 +136,12 @@ const styles = StyleSheet.create({
   },
   iconRight: {
     marginRight: 20,
+  },
+  loadingWheel: {
+    position: 'absolute',
+    zIndex: 2,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
   },
 })
 

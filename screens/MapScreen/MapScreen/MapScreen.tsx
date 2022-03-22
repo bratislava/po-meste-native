@@ -505,11 +505,11 @@ export default function MapScreen() {
             []
           )}
       </MapView>
-      {(isLoadingMhd ||
-        isLoadingRekola ||
-        isLoadingSlovnaftbajk ||
-        isLoadingTier ||
-        isLoadingZseChargers) && (
+      {isLoadingMhd &&
+        isLoadingRekola &&
+        isLoadingSlovnaftbajk &&
+        isLoadingTier &&
+        isLoadingZseChargers && (
           <LoadingView fullscreen iconWidth={80} iconHeight={80} />
         )}
       {Platform.select({ ios: true, android: showCurrentLocationButton }) && (

@@ -18,6 +18,7 @@ import {
   useTierData,
 } from '@hooks'
 import { VehicleType } from '@types'
+import * as Progress from 'react-native-progress'
 
 const BOTTOM_VEHICLE_BAR_HEIGHT = 50
 const BOTTOM_VEHICLE_BAR_MARGIN_BOTTOM = 10
@@ -74,9 +75,12 @@ const VehicleBar = () => {
     return (
       <View>
         {isLoading && (
-          <ActivityIndicator
-            size="large"
+          <Progress.CircleSnail
             color="#FF5D52"
+            size={ICON_SIZE + 6}
+            borderWidth={0}
+            spinDuration={2000}
+            thickness={3}
             style={styles.loadingWheel}
           />
         )}
@@ -140,8 +144,10 @@ const styles = StyleSheet.create({
   loadingWheel: {
     position: 'absolute',
     zIndex: 2,
-    width: ICON_SIZE,
-    height: ICON_SIZE,
+    top: -3,
+    left: -3,
+    width: ICON_SIZE + 6,
+    height: ICON_SIZE + 6,
   },
 })
 

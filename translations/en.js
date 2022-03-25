@@ -43,7 +43,10 @@ export default {
       tierTitle: 'TIER scooter',
       zseChargerTitle: 'Charging station/s',
       price: 'Price: ',
-      rekolaPriceFrom: 'from {{money}}€/{{time}} min',
+      dailyTicket: 'daily ticket',
+      micromobilityPriceFrom: 'from {{price}}€/{{duration}}{{unit}}',
+      micromobilityWithUnlockPriceFrom:
+        '{{unlockPrice}}€ + {{price}}€/{{duration}}{{unit}}',
       rent: 'Rent {{provider}}',
       availableBikes: 'Available bikes: {{amount}}',
       freeBikeSpaces: 'Free bike spaces: {{amount}}',

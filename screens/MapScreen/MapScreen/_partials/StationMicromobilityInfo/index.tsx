@@ -9,6 +9,9 @@ import {
   colors,
   s,
   rekolaPrice,
+  slovnaftbajkPrice,
+  tierPrice,
+  presentPrice,
 } from '@utils'
 import { Button } from '@components'
 import { MicromobilityProvider } from '@types'
@@ -58,26 +61,67 @@ const StationMicromobilityInfo = ({
     return color
   }, [provider])
 
-  const getTitle = useCallback(() => {
+  const getTitlePrice = useCallback(() => {
     let title = undefined
+    let providerPrice: {
+      unlockPrice?: number
+      price: number
+      duration: number
+      unit: { translate: boolean; text: string }
+      translationOption: string
+    } | null = null
     switch (provider) {
       case MicromobilityProvider.rekola:
         title = i18n.t('screens.MapScreen.rekolaBikesTitle')
+        providerPrice = rekolaPrice
         break
       case MicromobilityProvider.slovnaftbajk:
         title = i18n.t('screens.MapScreen.slovnaftbikesTitle')
+        providerPrice = slovnaftbajkPrice
         break
       case MicromobilityProvider.tier:
         title = i18n.t('screens.MapScreen.tierTitle')
+        providerPrice = tierPrice
         break
     }
-    return title
+    const translationOption = providerPrice.translationOption
+    const formattedPrice = {
+      unlockPrice: providerPrice.unlockPrice,
+      price: providerPrice.price / 100,
+      duration: providerPrice.duration.toString(),
+      unit: providerPrice.unit.translate
+        ? i18n.t(providerPrice.unit.text)
+        : providerPrice.unit.text,
+    }
+    if (providerPrice.price % 100 !== 0) {
+      formattedPrice.price.toFixed(2)
+    }
+    if (
+      providerPrice.unlockPrice != undefined &&
+      formattedPrice.unlockPrice != undefined
+    ) {
+      formattedPrice.unlockPrice /= 100
+      if (providerPrice.unlockPrice % 100 !== 0) {
+        formattedPrice.price.toFixed(2)
+      }
+    }
+    if (providerPrice.duration === 1) formattedPrice.duration = ''
+    else {
+      formattedPrice.duration = formattedPrice.duration + ' '
+    }
+    const price = i18n.t(translationOption, {
+      ...formattedPrice,
+      price: formattedPrice.price.toString().replace('.', ','),
+      unlockPrice: formattedPrice.unlockPrice?.toString().replace('.', ','),
+    })
+    return { title, price }
   }, [provider])
 
+  const providerTitlePrice = getTitlePrice()
   return (
     <View style={styles.container}>
       <View style={[styles.header, s.horizontalMargin]}>
-        <Text>{getTitle()}</Text>
+        <Text>{providerTitlePrice.title}</Text>
         {station.name && (
           <Text style={[s.boldText, styles.fontBigger]}>{station.name}</Text>
         )}
@@ -85,12 +129,7 @@ const StationMicromobilityInfo = ({
       <View style={styles.priceWrapper}>
         <Text style={s.horizontalMargin}>
           {i18n.t('screens.MapScreen.price')}
-          <Text style={s.boldText}>
-            {i18n.t('screens.MapScreen.rekolaPriceFrom', {
-              money: (rekolaPrice.amount / 100).toFixed(2), // TODO change for real price based on provider etc.
-              time: rekolaPrice.duration,
-            })}
-          </Text>
+          <Text style={s.boldText}>{providerTitlePrice.price}</Text>
         </Text>
       </View>
       <View style={[s.horizontalMargin, styles.additionalInfoWrapper]}>

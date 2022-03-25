@@ -45,7 +45,10 @@ export default {
       tierTitle: 'TIER kolobežka',
       zseChargerTitle: 'Nabíjacia stanica/e',
       price: 'Cena: ',
-      rekolaPriceFrom: 'od {{money}}€/{{time}} min',
+      dailyTicket: 'denný lístok',
+      micromobilityPriceFrom: 'od {{price}}€/{{duration}}{{unit}}',
+      micromobilityWithUnlockPriceFrom:
+        '{{unlockPrice}}€ + {{price}}€/{{duration}}{{unit}}',
       rent: 'Prenajať {{provider}}',
       availableBikes: 'Voľné bicykle: {{amount}}',
       freeBikeSpaces: 'Voľné doky: {{amount}}',

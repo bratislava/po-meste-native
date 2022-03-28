@@ -16,14 +16,14 @@ import {
 
 import { PreferredLanguage, VehicleType } from '@types'
 
-import MhdChosenSvg from '@icons/mhd-filter-chosen.svg'
-import MhdUnchosenSvg from '@icons/mhd-filter-unchosen.svg' // TODO add proper icon
-import BicyclesChosen from '@icons/bicycles-filter-chosen.svg'
-import BicyclesUnchosen from '@icons/bicycles-filter-unchosen.svg'
-import ScooterChosen from '@icons/scooters-filter-chosen.svg'
-import ScooterUnchosen from '@icons/scooters-filter-unchosen.svg'
-import ChargersChosen from '@icons/chargers-filter-chosen.svg'
-import ChargersUnchosen from '@icons/chargers-filter-unchosen.svg'
+import MhdChosenSvg from '@icons/map-filters/mhd-filter-chosen.svg'
+import MhdUnchosenSvg from '@icons/map-filters/mhd-filter-unchosen.svg' // TODO add proper icon
+import BicyclesChosen from '@icons/map-filters/bicycles-filter-chosen.svg'
+import BicyclesUnchosen from '@icons/map-filters/bicycles-filter-unchosen.svg'
+import ScooterChosen from '@icons/map-filters/scooters-filter-chosen.svg'
+import ScooterUnchosen from '@icons/map-filters/scooters-filter-unchosen.svg'
+import ChargersChosen from '@icons/map-filters/chargers-filter-chosen.svg'
+import ChargersUnchosen from '@icons/map-filters/chargers-filter-unchosen.svg'
 
 interface Props {
   children: React.ReactNode
@@ -40,7 +40,7 @@ interface ContextProps {
   setFeedbackSent: Dispatch<SetStateAction<boolean>>
 }
 
-interface VehicleProps {
+export interface VehicleProps {
   id: string
   show: boolean
   icon: (show: boolean) => React.FC<SvgProps>

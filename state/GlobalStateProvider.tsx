@@ -40,7 +40,7 @@ interface ContextProps {
   setFeedbackSent: Dispatch<SetStateAction<boolean>>
 }
 
-interface VehicleProps {
+export interface VehicleProps {
   id: string
   show: boolean
   icon: (show: boolean) => React.FC<SvgProps>

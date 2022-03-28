@@ -199,12 +199,13 @@ export const TextItinerary = ({
                     })}
                 </Text>
                 <Text style={styles.greyText}>
-                  {`${leg?.duration &&
+                  {`${
+                    leg?.duration &&
                     ', ' +
-                    i18n.t('common.minutes', {
-                      count: Math.floor(leg?.duration / 60),
-                    })
-                    }`}
+                      i18n.t('common.minutes', {
+                        count: Math.floor(leg?.duration / 60),
+                      })
+                  }`}
                 </Text>
                 {/* TODO add multiple bus stops between api request when api for trip is available => /mhd/trip/{legs[].tripId}*/}
               </View>

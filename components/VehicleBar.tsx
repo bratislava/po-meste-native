@@ -45,7 +45,7 @@ const VehicleFilterTouchable = ({
 }: VehicleFilterTouchableProps) => {
   const { id, icon, show } = vehicleType
   const vehiclesContext = useContext(GlobalStateContext)
-  const [isPressed, setPressed] = useState(false)
+  const [isPressed, setIsPressed] = useState(false)
 
   const onVehicleClick = (id: string) => {
     vehiclesContext.setVehicleTypes((oldVehicleTypes) => {
@@ -92,8 +92,8 @@ const VehicleFilterTouchable = ({
           : {},
       ]}
       onPress={() => onVehicleClick(id)}
-      onPressIn={() => setPressed(true)}
-      onPressOut={() => setPressed(false)}
+      onPressIn={() => setIsPressed(true)}
+      onPressOut={() => setIsPressed(false)}
     >
       {getVehicleIconStyled(() => icon(isPressed ? true : show))}
     </TouchableHighlight>

@@ -59,7 +59,7 @@ import StationChargerInfo from './_partials/StationChargerInfo'
 
 import CurrentLocationSvg from '@icons/current-location.svg'
 
-import { customMapStyle } from './customMapStyle'
+import { customMapStyle } from '../customMapStyle'
 
 const MIN_DELTA_FOR_XS_MARKER = 0.05
 const MIN_DELTA_FOR_SM_MARKER = 0.03

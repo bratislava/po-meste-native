@@ -9,10 +9,10 @@ import _ from 'lodash'
 // import WheelchairSvg from '@icons/wheelchair.svg'
 import WalkingSvg from '@icons/walking.svg'
 import EllipseSvg from '@icons/ellipse.svg'
-import CyclingSvg from '@icons/cycling.svg'
-import ScooterSvg from '@icons/scooter.svg'
-import TramSvg from '@icons/tram.svg'
-import BusSvg from '@icons/bus.svg'
+import CyclingSvg from '@icons/vehicles/cycling.svg'
+import ScooterSvg from '@icons/vehicles/scooter.svg'
+import TramSvg from '@icons/vehicles/tram.svg'
+import BusSvg from '@icons/vehicles/bus.svg'
 
 import {
   LegProps,
@@ -254,13 +254,12 @@ export const TextItinerary = ({
                                 })}
                             </Text>
                             <Text style={styles.greyText}>
-                              {`${
-                                leg?.duration &&
+                              {`${leg?.duration &&
                                 ', ' +
-                                  i18n.t('common.minutes', {
-                                    count: Math.floor(leg?.duration / 60),
-                                  })
-                              }`}
+                                i18n.t('common.minutes', {
+                                  count: Math.floor(leg?.duration / 60),
+                                })
+                                }`}
                             </Text>
                             {/* TODO add multiple bus stops between api request when api for trip is available => /mhd/trip/{legs[].tripId}*/}
                           </View>

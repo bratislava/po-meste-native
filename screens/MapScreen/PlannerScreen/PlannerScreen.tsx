@@ -28,6 +28,7 @@ import {
 import { TextItinerary } from './_partials/TextItinerary'
 import { useLocationWithPermision } from '@hooks/miscHooks'
 import CurrentLocationSvg from '@icons/current-location.svg'
+import { customMapStyle } from '../customMapStyle'
 
 export default function PlannerScreen({
   route,
@@ -86,6 +87,7 @@ export default function PlannerScreen({
       <MapView
         ref={mapRef}
         style={styles.map}
+        customMapStyle={customMapStyle}
         provider={PROVIDER_GOOGLE}
         initialRegion={{
           latitude: 48.1512015,
@@ -112,8 +114,8 @@ export default function PlannerScreen({
               leg.rentedBike
                 ? getColor(provider) || '#aaa'
                 : leg.routeColor
-                ? `#${leg.routeColor}`
-                : modeColors[leg.mode || 'DEFAULT'],
+                  ? `#${leg.routeColor}`
+                  : modeColors[leg.mode || 'DEFAULT'],
               0.6
             )
             const marker = (

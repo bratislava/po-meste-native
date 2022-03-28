@@ -1,4 +1,4 @@
-# Hybaj
+# Po meste
 
 React Native Expo app. Bootstraped with expo typescript tabs example.
 
@@ -98,7 +98,7 @@ yarn publish-staging
 yarn publish-production
 ```
 
-1. `app.config.js` property `version` MUST be moddified
+1. `app.config.js` property `version` and `android.versionCode` and `ios.buildNumber` as well MUST be moddified
 2. `yarn publish-production`
 
 ### Release new (Internal) Android version

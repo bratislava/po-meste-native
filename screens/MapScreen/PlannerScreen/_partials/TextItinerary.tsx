@@ -53,6 +53,9 @@ export const TextItinerary = ({
     errors: errorsMhd,
   } = useMhdStopsData()
 
+  type ArrayElement<A> = A extends readonly (infer T)[] ? T : any
+  type LegType = ArrayElement<typeof legs>
+
   const ProviderIcon = provider && getIcon(provider, isScooter)
   const title = provider && getProviderName(provider)
 
@@ -83,7 +86,7 @@ export const TextItinerary = ({
     )
   }
 
-  const renderTransitOnFoot = (leg) => {
+  const renderTransitOnFoot = (leg: LegType) => {
     return (
       <View style={[styles.card, s.horizontalMargin]}>
         <View style={styles.left}>
@@ -111,7 +114,7 @@ export const TextItinerary = ({
     )
   }
 
-  const renderTransitOnMicromobility = (leg) => {
+  const renderTransitOnMicromobility = (leg: LegType) => {
     return (
       <View style={[styles.card, s.horizontalMargin]}>
         <View style={styles.left}>
@@ -132,7 +135,11 @@ export const TextItinerary = ({
     )
   }
 
-  const renderTransitOnOther = (leg, startTime, endTime) => {
+  const renderTransitOnOther = (
+    leg: LegType,
+    startTime: '' | LocalTime | undefined,
+    endTime: 0 | LocalTime | undefined
+  ) => {
     return (
       <View
         style={[
@@ -290,12 +297,12 @@ export const TextItinerary = ({
                 renderProviderIconWithText(leg.from.name)}
               {getLastRentedInstanceIndex === index &&
                 renderProviderIconWithText(leg.from.name)}
-              {(leg.mode === LegModes.walk && renderTransitOnFoot(leg)) ||
-                (leg.mode === LegModes.bicycle &&
-                  renderTransitOnMicromobility(leg)) ||
-                (leg.mode !== LegModes.bicycle &&
-                  leg.mode !== LegModes.walk &&
-                  renderTransitOnOther(leg, startTime, endTime))}
+              {leg.mode === LegModes.walk && renderTransitOnFoot(leg)}
+              {leg.mode === LegModes.bicycle &&
+                renderTransitOnMicromobility(leg)}
+              {leg.mode !== LegModes.bicycle &&
+                leg.mode !== LegModes.walk &&
+                renderTransitOnOther(leg, startTime, endTime)}
               {index === legs.length - 1 && (
                 <View style={[styles.card, s.horizontalMargin]}>
                   <View style={styles.left}>

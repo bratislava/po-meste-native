@@ -53,9 +53,6 @@ export const TextItinerary = ({
     errors: errorsMhd,
   } = useMhdStopsData()
 
-  type ArrayElement<A> = A extends readonly (infer T)[] ? T : any
-  type LegType = ArrayElement<typeof legs>
-
   const ProviderIcon = provider && getIcon(provider, isScooter)
   const title = provider && getProviderName(provider)
 
@@ -86,7 +83,7 @@ export const TextItinerary = ({
     )
   }
 
-  const renderTransitOnFoot = (leg: LegType) => {
+  const renderTransitOnFoot = (leg: LegProps) => {
     return (
       <View style={[styles.card, s.horizontalMargin]}>
         <View style={styles.left}>
@@ -114,7 +111,7 @@ export const TextItinerary = ({
     )
   }
 
-  const renderTransitOnMicromobility = (leg: LegType) => {
+  const renderTransitOnMicromobility = (leg: LegProps) => {
     return (
       <View style={[styles.card, s.horizontalMargin]}>
         <View style={styles.left}>
@@ -136,7 +133,7 @@ export const TextItinerary = ({
   }
 
   const renderTransitOnOther = (
-    leg: LegType,
+    leg: LegProps,
     startTime: '' | LocalTime | undefined,
     endTime: 0 | LocalTime | undefined
   ) => {

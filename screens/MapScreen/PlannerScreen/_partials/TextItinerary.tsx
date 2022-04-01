@@ -14,6 +14,14 @@ import ScooterSvg from '@icons/scooter.svg'
 import TramSvg from '@icons/tram.svg'
 import BusSvg from '@icons/bus.svg'
 
+import RekolaHeaderSvg from '@icons/bottom-route-headers/rekola.svg'
+import SlovnaftbajkHeaderSvg from '@icons/bottom-route-headers/slovnaftbajk.svg'
+import TierHeaderSvg from '@icons/bottom-route-headers/tier.svg'
+
+import OwnBicycle from '@icons/bottom-route-headers/own-bicycle.svg'
+import OwnScooter from '@icons/bottom-route-headers/own-scooter.svg'
+import Walking from '@icons/bottom-route-headers/walking.svg'
+
 import {
   LegProps,
   s,
@@ -24,8 +32,9 @@ import {
   getProviderName,
   getTextColor,
   openProviderApp,
+  getHeaderBgColor,
 } from '@utils'
-import { LegModes, MicromobilityProvider } from '@types'
+import { LegModes, MicromobilityProvider, TravelModes } from '@types'
 import { useMhdStopsData } from '@hooks'
 import { DashedLine, Button, BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '@components'
 
@@ -33,6 +42,7 @@ interface TextItineraryProps {
   legs: LegProps[]
   provider?: MicromobilityProvider
   isScooter?: boolean
+  travelMode: TravelModes
 }
 
 const ICON_WIDTH = 20
@@ -45,6 +55,7 @@ export const TextItinerary = ({
   legs,
   provider,
   isScooter,
+  travelMode,
 }: TextItineraryProps) => {
   // getData from /mhd/trip/{legs.tripId.substring(2)}
   const {
@@ -55,6 +66,44 @@ export const TextItinerary = ({
 
   const ProviderIcon = provider && getIcon(provider, isScooter)
   const title = provider && getProviderName(provider)
+  const getHeaderIcon = (
+    provider: MicromobilityProvider | undefined,
+    travelMode: TravelModes
+  ) => {
+    switch (provider) {
+      case MicromobilityProvider.rekola:
+        return RekolaHeaderSvg
+      case MicromobilityProvider.slovnaftbajk:
+        return SlovnaftbajkHeaderSvg
+      case MicromobilityProvider.tier:
+        return TierHeaderSvg
+      default:
+        break
+    }
+    switch (travelMode) {
+      case TravelModes.bicycle:
+        return OwnBicycle
+      case TravelModes.scooter:
+        return OwnScooter
+      case TravelModes.walk:
+        return Walking
+      default:
+        break
+    }
+  }
+  const HeaderIcon = getHeaderIcon(provider, travelMode)
+  const getHeaderTextColor = (provider: MicromobilityProvider | undefined) => {
+    switch (provider) {
+      case MicromobilityProvider.rekola:
+        return '#FFFFFF'
+      case MicromobilityProvider.slovnaftbajk:
+        return '#454545'
+      case MicromobilityProvider.tier:
+        return '#454545'
+      default:
+        return '#FFFFFF'
+    }
+  }
 
   const getFirstRentedInstanceIndex = legs.findIndex(
     (leg) => leg.from.vertexType === BIKESHARE_PROPERTY
@@ -250,16 +299,50 @@ export const TextItinerary = ({
     })
   }
 
+  const headerTitle = (minutes = 13): string => {
+    if (title) return title
+    if (travelMode === TravelModes.mhd)
+      return i18n.t('screens.PlannerScreen.mhdHeader', { minutes })
+    if (travelMode === TravelModes.bicycle)
+      return i18n.t('screens.FromToScreen.myBike')
+    if (travelMode === TravelModes.scooter)
+      return i18n.t('screens.FromToScreen.myScooter')
+    if (travelMode === TravelModes.walk)
+      return i18n.t('screens.FromToScreen.walk')
+    return ''
+  }
+
   return (
     <BottomSheetScrollView style={styles.container}>
-      {(title || ProviderIcon) && (
-        <View style={[styles.card, s.horizontalMargin]}>
-          {ProviderIcon && <ProviderIcon width={30} height={30} />}
-          {title && (
-            <Text style={[styles.textMargin, styles.textBold]}>{title}</Text>
-          )}
-        </View>
-      )}
+      <View
+        style={[
+          styles.card,
+          s.horizontalPadding,
+          styles.cardHeader,
+          { backgroundColor: getHeaderBgColor(travelMode, provider) },
+        ]}
+      >
+        {HeaderIcon && <HeaderIcon width={30} height={30} />}
+        <Text
+          style={[
+            styles.textMargin,
+            styles.textBold,
+            { color: getHeaderTextColor(provider) },
+          ]}
+        >
+          {headerTitle()}
+        </Text>
+        {!title && travelMode === TravelModes.mhd && (
+          <Text
+            style={[
+              styles.textSizeBig,
+              { color: getHeaderTextColor(provider) },
+            ]}
+          >
+            {title || ' Meno zastávky'}
+          </Text>
+        )}
+      </View>
       <View style={[styles.containerContent, styles.paddingVertical]}>
         {legs.map((leg, index) => {
           const startTime =
@@ -345,16 +428,13 @@ export const TextItinerary = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.white,
-    marginBottom: BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
+    backgroundColor: colors.lightLightGray,
   },
   paddingVertical: {
     paddingVertical: 20,
   },
   containerContent: {
     backgroundColor: colors.lightLightGray,
-    borderTopWidth: 2,
-    borderTopColor: colors.primary,
   },
   inline: {
     display: 'flex',
@@ -363,6 +443,11 @@ const styles = StyleSheet.create({
   },
   textMargin: {
     marginLeft: 10,
+  },
+  cardHeader: {
+    borderRadius: 0,
+    justifyContent: 'center',
+    paddingBottom: 14,
   },
   card: {
     paddingHorizontal: PADDING_HORIZONTAL,

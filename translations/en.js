@@ -63,6 +63,7 @@ export default {
     },
     PlannerScreen: {
       screenTitle: 'Planner',
+      mhdHeader: 'in {{minutes}} min from',
       minShort: 'Transit {{count}} min',
       distanceShort: '{{count}}m',
       openApp: 'Open application {{provider}}',

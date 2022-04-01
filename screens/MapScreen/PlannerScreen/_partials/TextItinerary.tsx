@@ -13,6 +13,7 @@ import CyclingSvg from '@icons/vehicles/cycling.svg'
 import ScooterSvg from '@icons/vehicles/scooter.svg'
 import TramSvg from '@icons/vehicles/tram.svg'
 import BusSvg from '@icons/vehicles/bus.svg'
+import TrolleybusSvg from '@icons/vehicles/trolleybus.svg'
 
 import {
   LegProps,
@@ -24,6 +25,7 @@ import {
   getProviderName,
   getTextColor,
   openProviderApp,
+  trolleybusLineNumbers,
 } from '@utils'
 import { LegModes, MicromobilityProvider } from '@types'
 import { useMhdStopsData } from '@hooks'
@@ -154,13 +156,22 @@ export const TextItinerary = ({
               fill={`#${leg.routeColor}`}
             />
           )}
-          {leg.mode === LegModes.bus && (
-            <BusSvg
-              width={ICON_WIDTH}
-              height={20}
-              fill={`#${leg.routeColor}`}
-            />
-          )}
+          {leg.mode === LegModes.bus &&
+            ((trolleybusLineNumbers.includes(
+              Number.parseInt(leg.routeShortName ?? '')
+            ) && (
+              <TrolleybusSvg
+                width={ICON_WIDTH}
+                height={20}
+                fill={`#${leg.routeColor}`}
+              />
+            )) || (
+              <BusSvg
+                width={ICON_WIDTH}
+                height={20}
+                fill={`#${leg.routeColor}`}
+              />
+            ))}
         </View>
         <View style={styles.middle}>
           <View>

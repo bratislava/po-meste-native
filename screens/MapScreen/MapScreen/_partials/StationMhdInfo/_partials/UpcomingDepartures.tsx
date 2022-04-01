@@ -202,12 +202,10 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
             const diffMinutesDelay = Duration.between(
               LocalDateTime.now(),
               departure.delay
-                ? LocalDateTime.parse(`${departure.date}T${departure.time}`)
-                    .plusSeconds(departure.delay)
-                    .plusMinutes(1)
-                : LocalDateTime.parse(
+                ? LocalDateTime.parse(
                     `${departure.date}T${departure.time}`
-                  ).plusSeconds(59) // as requested in PLAN-352 check print screen :)
+                  ).plusSeconds(departure.delay)
+                : LocalDateTime.parse(`${departure.date}T${departure.time}`)
             ).toMinutes()
             return (
               <TouchableOpacity

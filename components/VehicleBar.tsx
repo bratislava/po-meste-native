@@ -1,14 +1,10 @@
-import React, { useContext } from 'react'
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  ActivityIndicator,
-} from 'react-native'
+import React, { useContext, useState } from 'react'
+import { View, StyleSheet } from 'react-native'
 
-import { GlobalStateContext } from '@state/GlobalStateProvider'
+import { GlobalStateContext, VehicleProps } from '@state/GlobalStateProvider'
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components/navigation/TabBar'
 import { SvgProps } from 'react-native-svg'
+import { TouchableHighlight } from 'react-native-gesture-handler'
 
 import {
   useMhdStopsData,
@@ -38,6 +34,43 @@ const VehicleBar = () => {
   const { isLoading: isLoadingZseChargers } = useZseChargersData()
   const { isLoading: isLoadingRekola } = useRekolaData()
   const { isLoading: isLoadingSlovnaftbajk } = useSlovnaftbajkData()
+  return (
+    <View style={styles.vehicleBar}>
+      {vehiclesContext.vehicleTypes?.map((vehicleType, index) => {
+        const { id } = vehicleType
+        const isLoading =
+          (id === VehicleType.mhd && isLoadingMhd) ||
+          (id === VehicleType.bicycle &&
+            (isLoadingRekola || isLoadingSlovnaftbajk)) ||
+          (id === VehicleType.chargers && isLoadingZseChargers) ||
+          (id === VehicleType.scooter && isLoadingTier)
+        return (
+          <VehicleFilterTouchable
+            key={index}
+            vehicleType={vehicleType}
+            index={index}
+            isLoading={isLoading}
+          />
+        )
+      })}
+    </View>
+  )
+}
+
+interface VehicleFilterTouchableProps {
+  vehicleType: VehicleProps
+  index: number
+  isLoading: boolean
+}
+
+const VehicleFilterTouchable = ({
+  vehicleType,
+  index,
+  isLoading,
+}: VehicleFilterTouchableProps) => {
+  const { id, icon, show } = vehicleType
+  const vehiclesContext = useContext(GlobalStateContext)
+  const [isPressed, setIsPressed] = useState(false)
 
   const onVehicleClick = (id: string) => {
     vehiclesContext.setVehicleTypes((oldVehicleTypes) => {
@@ -90,31 +123,22 @@ const VehicleBar = () => {
   }
 
   return (
-    <View style={styles.vehicleBar}>
-      {vehiclesContext.vehicleTypes?.map((vehicleType, index) => {
-        const { id, icon, show } = vehicleType
-        const isLoading =
-          (id === VehicleType.mhd && isLoadingMhd) ||
-          (id === VehicleType.bicycle &&
-            (isLoadingRekola || isLoadingSlovnaftbajk)) ||
-          (id === VehicleType.chargers && isLoadingZseChargers) ||
-          (id === VehicleType.scooter && isLoadingTier)
-        return (
-          <TouchableOpacity
-            key={id}
-            style={[
-              index === 0 ? styles.iconLeft : {},
-              index === vehiclesContext.vehicleTypes.length - 1
-                ? styles.iconRight
-                : {},
-            ]}
-            onPress={() => onVehicleClick(id)}
-          >
-            {getVehicleIconStyled(isLoading, () => icon(show))}
-          </TouchableOpacity>
-        )
-      })}
-    </View>
+    <TouchableHighlight
+      key={id}
+      underlayColor="#000000"
+      style={[
+        styles.icon,
+        index === 0 ? styles.iconLeft : {},
+        index === vehiclesContext.vehicleTypes.length - 1
+          ? styles.iconRight
+          : {},
+      ]}
+      onPress={() => onVehicleClick(id)}
+      onPressIn={() => setIsPressed(true)}
+      onPressOut={() => setIsPressed(false)}
+    >
+      {getVehicleIconStyled(isLoading, () => icon(isPressed ? true : show))}
+    </TouchableHighlight>
   )
 }
 
@@ -133,7 +157,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: 'white',
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: ICON_SIZE / 2,
+  },
+  icon: {
+    borderRadius: ICON_SIZE / 2,
   },
   iconLeft: {
     marginLeft: 20,

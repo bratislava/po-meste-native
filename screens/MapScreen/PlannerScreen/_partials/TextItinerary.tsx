@@ -83,6 +83,157 @@ export const TextItinerary = ({
     )
   }
 
+  const renderTransitOnFoot = (leg: LegProps) => {
+    return (
+      <View style={[styles.card, s.horizontalMargin]}>
+        <View style={styles.left}>
+          <View style={styles.inline}>
+            <WalkingSvg width={ICON_WIDTH} height={20} fill={colors.darkText} />
+            <View style={styles.textMargin}>
+              {leg.duration !== undefined && (
+                <Text>
+                  {i18n.t('screens.PlannerScreen.minShort', {
+                    count: Math.floor(leg.duration / 60),
+                  })}
+                </Text>
+              )}
+              <Text>
+                {leg.distance !== undefined &&
+                  i18n.t('screens.PlannerScreen.distanceShort', {
+                    count: Math.floor(leg.distance),
+                  })}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.dashedLine}>{getDashedLine()}</View>
+        </View>
+      </View>
+    )
+  }
+
+  const renderTransitOnMicromobility = (leg: LegProps) => {
+    return (
+      <View style={[styles.card, s.horizontalMargin]}>
+        <View style={styles.left}>
+          <View style={styles.inline}>
+            {getMobilityIcon(isScooter)}
+            <View style={styles.textMargin}>
+              <Text>
+                {leg.duration &&
+                  i18n.t('screens.PlannerScreen.minShort', {
+                    count: Math.floor(leg.duration / 60),
+                  })}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.dashedLine}>{getDashedLine()}</View>
+        </View>
+      </View>
+    )
+  }
+
+  const renderTransitOnOther = (
+    leg: LegProps,
+    startTime: '' | LocalTime | undefined,
+    endTime: 0 | LocalTime | undefined
+  ) => {
+    return (
+      <View
+        style={[
+          styles.card,
+          s.horizontalMargin,
+          styles.whiteCard,
+          styles.cardVerticalMargin,
+        ]}
+      >
+        <View style={styles.left}>
+          {leg.mode === LegModes.tram && (
+            <TramSvg
+              width={ICON_WIDTH}
+              height={20}
+              fill={`#${leg.routeColor}`}
+            />
+          )}
+          {leg.mode === LegModes.bus && (
+            <BusSvg
+              width={ICON_WIDTH}
+              height={20}
+              fill={`#${leg.routeColor}`}
+            />
+          )}
+        </View>
+        <View style={styles.middle}>
+          <View>
+            <View
+              style={[
+                s.lineNumber,
+                { backgroundColor: `#${leg.routeColor}` },
+                styles.lineNumberMarginRight,
+              ]}
+            >
+              <Text style={{ color: `#${leg.routeTextColor}` }}>
+                {leg.routeShortName}
+              </Text>
+            </View>
+            {/* <WheelchairSvg width={30} height={20} /> // TODO add when trip data is available*/}
+          </View>
+          <View style={styles.stopsContainer}>
+            <View>
+              <Text style={[styles.textBold, styles.textSizeBig]}>
+                {leg.from.name}
+                {trimStopId(leg.from.stopId)}
+              </Text>
+              <View style={styles.heading}>
+                <Ionicons
+                  size={15}
+                  style={{
+                    alignSelf: 'center',
+                    marginBottom: -3,
+                  }}
+                  name="arrow-forward"
+                />
+                <Text>{leg.headsign}</Text>
+              </View>
+              <View style={styles.mhdTripAdditionalInfoWrapper}>
+                <Text style={styles.greyText}>
+                  {leg?.to?.stopIndex &&
+                    leg?.from?.stopIndex &&
+                    i18n.t('common.stops', {
+                      count: leg.to.stopIndex - leg.from.stopIndex,
+                    })}
+                </Text>
+                <Text style={styles.greyText}>
+                  {`${
+                    leg?.duration &&
+                    ', ' +
+                      i18n.t('common.minutes', {
+                        count: Math.floor(leg?.duration / 60),
+                      })
+                  }`}
+                </Text>
+                {/* TODO add multiple bus stops between api request when api for trip is available => /mhd/trip/{legs[].tripId}*/}
+              </View>
+            </View>
+            {/* TODO add platform when it's available https://inovaciebratislava.atlassian.net/browse/PLAN-256 */}
+            <Text style={[styles.textBold, styles.textSizeBig]}>
+              {leg.to.name}
+              {trimStopId(leg.to.stopId)}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.right}>
+          <Text>
+            {startTime &&
+              startTime.format(DateTimeFormatter.ofPattern('HH:mm'))}
+          </Text>
+          <Text>
+            {endTime && endTime.format(DateTimeFormatter.ofPattern('HH:mm'))}
+          </Text>
+        </View>
+      </View>
+    )
+  }
+
   const getMobilityIcon = (isScooter?: boolean) => {
     const Icon = isScooter ? ScooterSvg : CyclingSvg
     return <Icon width={ICON_WIDTH} height={20} fill={colors.darkText} />
@@ -141,152 +292,14 @@ export const TextItinerary = ({
               )}
               {getFirstRentedInstanceIndex === index &&
                 renderProviderIconWithText(leg.from.name)}
-              {(leg.mode === LegModes.walk && (
-                <View style={[styles.card, s.horizontalMargin]}>
-                  <View style={styles.left}>
-                    <View style={styles.inline}>
-                      <WalkingSvg
-                        width={ICON_WIDTH}
-                        height={20}
-                        fill={colors.darkText}
-                      />
-                      <View style={styles.textMargin}>
-                        {leg.duration !== undefined && (
-                          <Text>
-                            {i18n.t('screens.PlannerScreen.minShort', {
-                              count: Math.floor(leg.duration / 60),
-                            })}
-                          </Text>
-                        )}
-                        <Text>
-                          {leg.distance !== undefined &&
-                            i18n.t('screens.PlannerScreen.distanceShort', {
-                              count: Math.floor(leg.distance),
-                            })}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={styles.dashedLine}>{getDashedLine()}</View>
-                  </View>
-                </View>
-              )) ||
-                (leg.mode === LegModes.bicycle && (
-                  <View style={[styles.card, s.horizontalMargin]}>
-                    <View style={styles.left}>
-                      <View style={styles.inline}>
-                        {getMobilityIcon(isScooter)}
-                        <View style={styles.textMargin}>
-                          <Text>
-                            {leg.duration &&
-                              i18n.t('screens.PlannerScreen.minShort', {
-                                count: Math.floor(leg.duration / 60),
-                              })}
-                          </Text>
-                        </View>
-                      </View>
-                      <View style={styles.dashedLine}>{getDashedLine()}</View>
-                    </View>
-                  </View>
-                )) ||
-                (leg.mode !== LegModes.bicycle && leg.mode !== LegModes.walk && (
-                  <View
-                    style={[
-                      styles.card,
-                      s.horizontalMargin,
-                      styles.whiteCard,
-                      styles.cardVerticalMargin,
-                    ]}
-                  >
-                    <View style={styles.left}>
-                      {leg.mode === LegModes.tram && (
-                        <TramSvg
-                          width={ICON_WIDTH}
-                          height={20}
-                          fill={`#${leg.routeColor}`}
-                        />
-                      )}
-                      {leg.mode === LegModes.bus && (
-                        <BusSvg
-                          width={ICON_WIDTH}
-                          height={20}
-                          fill={`#${leg.routeColor}`}
-                        />
-                      )}
-                    </View>
-                    <View style={styles.middle}>
-                      <View>
-                        <View
-                          style={[
-                            s.lineNumber,
-                            { backgroundColor: `#${leg.routeColor}` },
-                            styles.lineNumberMarginRight,
-                          ]}
-                        >
-                          <Text style={{ color: `#${leg.routeTextColor}` }}>
-                            {leg.routeShortName}
-                          </Text>
-                        </View>
-                        {/* <WheelchairSvg width={30} height={20} /> // TODO add when trip data is available*/}
-                      </View>
-                      <View style={styles.stopsContainer}>
-                        <View>
-                          <Text style={[styles.textBold, styles.textSizeBig]}>
-                            {leg.from.name}
-                            {trimStopId(leg.from.stopId)}
-                          </Text>
-                          <View style={styles.heading}>
-                            <Ionicons
-                              size={15}
-                              style={{
-                                alignSelf: 'center',
-                                marginBottom: -3,
-                              }}
-                              name="arrow-forward"
-                            />
-                            <Text>{leg.headsign}</Text>
-                          </View>
-                          <View style={styles.mhdTripAdditionalInfoWrapper}>
-                            <Text style={styles.greyText}>
-                              {leg?.to?.stopIndex &&
-                                leg?.from?.stopIndex &&
-                                i18n.t('common.stops', {
-                                  count: leg.to.stopIndex - leg.from.stopIndex,
-                                })}
-                            </Text>
-                            <Text style={styles.greyText}>
-                              {`${leg?.duration &&
-                                ', ' +
-                                i18n.t('common.minutes', {
-                                  count: Math.floor(leg?.duration / 60),
-                                })
-                                }`}
-                            </Text>
-                            {/* TODO add multiple bus stops between api request when api for trip is available => /mhd/trip/{legs[].tripId}*/}
-                          </View>
-                        </View>
-                        {/* TODO add platform when it's available https://inovaciebratislava.atlassian.net/browse/PLAN-256 */}
-                        <Text style={[styles.textBold, styles.textSizeBig]}>
-                          {leg.to.name}
-                          {trimStopId(leg.to.stopId)}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={styles.right}>
-                      <Text>
-                        {startTime &&
-                          startTime.format(
-                            DateTimeFormatter.ofPattern('HH:mm')
-                          )}
-                      </Text>
-                      <Text>
-                        {endTime &&
-                          endTime.format(DateTimeFormatter.ofPattern('HH:mm'))}
-                      </Text>
-                    </View>
-                  </View>
-                ))}
               {getLastRentedInstanceIndex === index &&
-                renderProviderIconWithText(leg.to.name)}
+                renderProviderIconWithText(leg.from.name)}
+              {leg.mode === LegModes.walk && renderTransitOnFoot(leg)}
+              {leg.mode === LegModes.bicycle &&
+                renderTransitOnMicromobility(leg)}
+              {leg.mode !== LegModes.bicycle &&
+                leg.mode !== LegModes.walk &&
+                renderTransitOnOther(leg, startTime, endTime)}
               {index === legs.length - 1 && (
                 <View style={[styles.card, s.horizontalMargin]}>
                   <View style={styles.left}>

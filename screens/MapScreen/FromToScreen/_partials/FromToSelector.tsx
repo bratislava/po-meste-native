@@ -30,9 +30,9 @@ const FromToSelector = ({
   return (
     <View style={styles.container}>
       <View style={styles.arrowContainer}>
-        <CircleSvg width={20} height={20} fill={colors.primary} />
+        <CircleSvg width={14} height={14} fill={colors.primary} />
         <DashedLine spacing={4} dashLength={2} color={colors.gray} />
-        <TriangleSvg width={20} height={20} fill={colors.primary} />
+        <TriangleSvg width={14} height={14} fill={colors.primary} />
       </View>
       <View style={styles.inputsContainer}>
         <TouchableOpacity onPress={onFromPlacePress} style={styles.input}>

@@ -241,7 +241,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
                   </Text>
                 </View>
                 <View style={styles.departureRight}>
-                  {departure.isLive && <IsLiveSvg />}
+                  {departure.isLive && <IsLiveSvg fill="#ADCD00" />}
                   <Text>
                     {diffMinutesDelay >= 1
                       ? `${diffMinutesDelay} min`

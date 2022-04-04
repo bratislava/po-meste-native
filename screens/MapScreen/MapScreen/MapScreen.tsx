@@ -61,6 +61,8 @@ import CurrentLocationSvg from '@icons/current-location.svg'
 
 import { customMapStyle } from './customMapStyle'
 
+import { colors } from '@utils'
+
 const MIN_DELTA_FOR_XS_MARKER = 0.05
 const MIN_DELTA_FOR_SM_MARKER = 0.03
 const MIN_DELTA_FOR_MD_MARKER = 0.01
@@ -246,10 +248,10 @@ export default function MapScreen() {
         return latDelta >= MIN_DELTA_FOR_XS_MARKER
           ? icons.xs
           : latDelta >= MIN_DELTA_FOR_SM_MARKER
-            ? icons.sm
-            : latDelta >= MIN_DELTA_FOR_MD_MARKER
-              ? icons.md
-              : icons.lg
+          ? icons.sm
+          : latDelta >= MIN_DELTA_FOR_MD_MARKER
+          ? icons.md
+          : icons.lg
       } else {
         return undefined
       }
@@ -363,8 +365,8 @@ export default function MapScreen() {
                   bikeProvider === BikeProvider.rekola
                     ? getIcon(IconType.rekola)
                     : bikeProvider === BikeProvider.slovnaftbajk
-                      ? getIcon(IconType.slovnaftbajk)
-                      : undefined
+                    ? getIcon(IconType.slovnaftbajk)
+                    : undefined
                 }
               />
             )
@@ -519,7 +521,7 @@ export default function MapScreen() {
               moveMapToCurrentLocation(() => getLocationWithPermission(true))
             }
           >
-            <CurrentLocationSvg />
+            <CurrentLocationSvg fill={colors.primary} />
           </TouchableOpacity>
         </View>
       )}

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { DateTimeFormatter, Instant, LocalTime } from '@js-joda/core'
@@ -63,6 +63,21 @@ export const TextItinerary = ({
     isLoading: isLoadingMhd,
     errors: errorsMhd,
   } = useMhdStopsData()
+  const [timeNow, setTimeNow] = useState(LocalTime.now())
+  const [updateEveryMinuteInterval, setUpdateEveryMinuteInterval] = useState<
+    number | undefined
+  >(undefined)
+
+  useEffect(() => {
+    if (travelMode === TravelModes.mhd)
+      setUpdateEveryMinuteInterval(
+        window.setInterval(() => setTimeNow(LocalTime.now()), 60 * 1000)
+      )
+    return () => {
+      if (travelMode === TravelModes.mhd)
+        clearInterval(updateEveryMinuteInterval)
+    }
+  }, [])
 
   const ProviderIcon = provider && getIcon(provider, isScooter)
   const title = provider && getProviderName(provider)
@@ -113,6 +128,8 @@ export const TextItinerary = ({
     legs,
     (leg) => leg.from.vertexType === BIKESHARE_PROPERTY
   )
+
+  const firstStop = legs.find((leg) => leg.from.vertexType === 'TRANSIT')
 
   const getDashedLine = () => {
     return <DashedLine spacing={4} dashLength={2} color={colors.darkText} />
@@ -299,7 +316,7 @@ export const TextItinerary = ({
     })
   }
 
-  const headerTitle = (minutes = 13): string => {
+  const headerTitle = (minutes = '13'): string => {
     if (title) return title
     switch (travelMode) {
       case TravelModes.mhd:
@@ -333,7 +350,16 @@ export const TextItinerary = ({
             { color: getHeaderTextColor(provider) },
           ]}
         >
-          {headerTitle()}
+          {headerTitle(
+            firstStop?.startTime && //TODO Live data from getMhdStopStatusData(firstStop.id)
+              Math.floor(
+                (LocalTime.ofInstant(
+                  Instant.ofEpochMilli(parseInt(firstStop.startTime))
+                ).toSecondOfDay() -
+                  LocalTime.now().toSecondOfDay()) /
+                  60
+              ).toString()
+          )}
         </Text>
         {!title && travelMode === TravelModes.mhd && (
           <Text
@@ -342,7 +368,12 @@ export const TextItinerary = ({
               { color: getHeaderTextColor(provider) },
             ]}
           >
-            {title || ' Meno zastávky'}
+            {title ||
+              ` ${firstStop?.from.name}${
+                firstStop?.from.platformCode
+                  ? ' ' + firstStop?.from.platformCode
+                  : ''
+              }`}
           </Text>
         )}
       </View>

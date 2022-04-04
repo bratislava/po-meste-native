@@ -301,15 +301,18 @@ export const TextItinerary = ({
 
   const headerTitle = (minutes = 13): string => {
     if (title) return title
-    if (travelMode === TravelModes.mhd)
-      return i18n.t('screens.PlannerScreen.mhdHeader', { minutes })
-    if (travelMode === TravelModes.bicycle)
-      return i18n.t('screens.FromToScreen.myBike')
-    if (travelMode === TravelModes.scooter)
-      return i18n.t('screens.FromToScreen.myScooter')
-    if (travelMode === TravelModes.walk)
-      return i18n.t('screens.FromToScreen.walk')
-    return ''
+    switch (travelMode) {
+      case TravelModes.mhd:
+        return i18n.t('screens.PlannerScreen.mhdHeader', { minutes })
+      case TravelModes.bicycle:
+        return i18n.t('screens.FromToScreen.myBike')
+      case TravelModes.scooter:
+        return i18n.t('screens.FromToScreen.myScooter')
+      case TravelModes.walk:
+        return i18n.t('screens.FromToScreen.walk')
+      default:
+        return ''
+    }
   }
 
   return (

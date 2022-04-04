@@ -291,7 +291,7 @@ export default function MapScreen() {
 
   const filterBikeInView = useCallback(
     (data: StationMicromobilityProps[]) => {
-      if (region) {
+      if (region && Array.isArray(data)) {
         const inRange = data.filter((stop) => {
           if (stop.lat && stop.lon) {
             return filterInView(stop.lat, stop.lon, region)

@@ -200,7 +200,7 @@ export const isValidationError = (error: any) =>
 export const isApiError = (error: any) =>
   error instanceof Error && error.message === API_ERROR_TEXT
 
-export const getCachedStops = async (
+export const getCachedStopsWithDeprecation = async (
   index: string,
   hoursUntilDeprecated = 24
 ) => {
@@ -219,7 +219,28 @@ export const getCachedStops = async (
   return JSON.parse(cachedStops)
 }
 
-export const setCachedStops = async (index: string, data: any) => {
-  AsyncStorage.setItem(index, data)
-  AsyncStorage.setItem(`${index}Timestamp`, new Date().toISOString())
+export const getCachedStops = async (index: string) => {
+  const cachedStops = await AsyncStorage.getItem(index)
+  if (cachedStops == null) return null
+  return JSON.parse(cachedStops)
+}
+
+export const setCachedStops = async (
+  index: string,
+  data: any,
+  dataset?: string
+) => {
+  AsyncStorage.setItem(index, JSON.stringify(data))
+  if (dataset) setLatestDataset(dataset)
+  //AsyncStorage.setItem(`${index}Timestamp`, new Date().toISOString())
+}
+
+export const getLatestDataset = async () => {
+  const latestDataSet = await AsyncStorage.getItem('latestDataset')
+  console.log({ latestDataSet })
+  return latestDataSet
+}
+
+export const setLatestDataset = async (newDataSetNumber: string) => {
+  AsyncStorage.setItem('latestDataset', newDataSetNumber)
 }

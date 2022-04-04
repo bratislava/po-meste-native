@@ -2,31 +2,64 @@ import { useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
 
 import { apiMhdStops } from '../utils/validation'
-import { getMhdStops } from '../utils/api'
-import { getCachedStops } from '@utils/utils'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { getHealth, getMhdStops } from '../utils/api'
+import {
+  getCachedStops,
+  getLatestDataset,
+  setCachedStops,
+  setLatestDataset,
+} from '@utils/utils'
 
 export default function useMhdData() {
   const [validationErrors, setValidationErrors] = useState()
-  const { data, isLoading, error, refetch } = useQuery(
-    'getMhdStops',
-    getMhdStops
-  )
+  const [hasFetched, setHasFetched] = useState(false)
   const { data: cachedData } = useQuery('getCachedMhdStops', () =>
     getCachedStops('mhdStops')
   )
+  const { data: healthData, error: healthError } = useQuery(
+    'getHealth',
+    getHealth
+  )
+  const { data: latestDatasetData } = useQuery(
+    'getLastDataSet',
+    getLatestDataset
+  )
+  const { data, isLoading, error, refetch } = useQuery(
+    ['getMhdStops', healthData, latestDatasetData, healthError],
+    getMhdStops,
+    {
+      enabled:
+        !hasFetched &&
+        ((healthData != undefined &&
+          latestDatasetData != undefined &&
+          healthData?.latestDataset !== latestDatasetData) ||
+          healthError != null),
+    }
+  )
 
   const validatedMhdStops = useMemo(() => {
-    if (data == null) return cachedData
+    healthData &&
+      console.log(
+        '\x1b[92m%s\x1b[0m',
+        healthData?.latestDataset === latestDatasetData
+          ? 'Timestamp matches, NOT fetching'
+          : 'Timestamp differs, fetching'
+      )
+    if (data == undefined) return cachedData
     try {
+      setHasFetched(true)
       const mhdStops = apiMhdStops.validateSync(data)
-      AsyncStorage.setItem('mhdStops', JSON.stringify(mhdStops))
+      setCachedStops(
+        'mhdStops',
+        mhdStops,
+        healthData && healthData.latestDataset
+      )
       return mhdStops
     } catch (e: any) {
       setValidationErrors(e.errors)
       console.log(e)
     }
-  }, [data, cachedData])
+  }, [data, cachedData, healthData])
 
   return {
     data: validatedMhdStops,

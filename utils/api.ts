@@ -61,7 +61,16 @@ const fetchJsonFromOtpApi = async (plannerAddress: string, path: string) => {
 //for testing purposes
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-export const getMhdStops = async () => fetchJsonFromApi('/mhd/stops')
+export const getHealth = async () => {
+  const health = await fetchJsonFromApi('/health')
+  console.log({ health })
+  return health
+}
+
+export const getMhdStops = async () => {
+  console.log('\x1b[92m%s\x1b[0m', 'fetching mhdStop data')
+  return fetchJsonFromApi('/mhd/stops')
+}
 export const getMhdStopStatusData = async (id: string) =>
   apiMhdStopStatus.validateSync(await fetchJsonFromApi(`/mhd/stop/${id}`))
 
@@ -113,7 +122,7 @@ export const getTripPlanner = async (
 ) => {
   const adjustedDateTime =
     plannerApi === MicromobilityProvider.rekola ||
-      plannerApi == MicromobilityProvider.tier
+    plannerApi == MicromobilityProvider.tier
       ? dateTime.plusHours(20) // TODO erase when https://inovaciebratislava.atlassian.net/browse/PLAN-268 solved
       : dateTime
 

@@ -220,14 +220,6 @@ export const getCachedStops = async (
 }
 
 export const setCachedStops = async (index: string, data: any) => {
-  AsyncStorage.setItem(index, JSON.stringify(data))
+  AsyncStorage.setItem(index, data)
   AsyncStorage.setItem(`${index}Timestamp`, new Date().toISOString())
-}
-
-export const getLatestDataset = async () => {
-  return await AsyncStorage.getItem('latestDataset')
-}
-
-export const setLatestDataset = async (newDataSetNumber: string) => {
-  AsyncStorage.setItem('latestDataset', newDataSetNumber)
 }

@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react'
-import { View, StyleSheet, Text } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { DateTimeFormatter, Instant, LocalTime } from '@js-joda/core'
-import { Ionicons } from '@expo/vector-icons'
 import i18n from 'i18n-js'
 import _ from 'lodash'
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 
 // import WheelchairSvg from '@icons/wheelchair.svg'
-import WalkingSvg from '@icons/walking.svg'
-import EllipseSvg from '@icons/ellipse.svg'
+import BusSvg from '@icons/bus.svg'
 import CyclingSvg from '@icons/cycling.svg'
+import EllipseSvg from '@icons/ellipse.svg'
 import ScooterSvg from '@icons/scooter.svg'
 import TramSvg from '@icons/tram.svg'
-import BusSvg from '@icons/bus.svg'
+import WalkingSvg from '@icons/walking.svg'
 
 import RekolaHeaderSvg from '@icons/bottom-route-headers/rekola.svg'
 import SlovnaftbajkHeaderSvg from '@icons/bottom-route-headers/slovnaftbajk.svg'
@@ -22,21 +22,21 @@ import OwnBicycle from '@icons/bottom-route-headers/own-bicycle.svg'
 import OwnScooter from '@icons/bottom-route-headers/own-scooter.svg'
 import Walking from '@icons/bottom-route-headers/walking.svg'
 
+import { Button, DashedLine } from '@components'
+import { useMhdStopsData } from '@hooks'
+import { LegModes, MicromobilityProvider, TravelModes } from '@types'
 import {
-  LegProps,
-  s,
   colors,
-  STYLES,
   getColor,
+  getHeaderBgColor,
   getIcon,
   getProviderName,
   getTextColor,
+  LegProps,
   openProviderApp,
-  getHeaderBgColor,
+  s,
+  STYLES,
 } from '@utils'
-import { LegModes, MicromobilityProvider, TravelModes } from '@types'
-import { useMhdStopsData } from '@hooks'
-import { DashedLine, Button, BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '@components'
 
 interface TextItineraryProps {
   legs: LegProps[]

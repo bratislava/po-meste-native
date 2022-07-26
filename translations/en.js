@@ -31,8 +31,10 @@ export default {
     },
     providerNames: {
       rekola: 'Rekola',
-      slovnaftbajk: 'Slovnaftbajk',
-      tier: 'TIER',
+      slovnaftbajk: 'Slovnaft BAjk',
+      tier: 'Tier',
+      blinkee: 'Blinkee',
+      bolt: 'Bolt',
     },
   },
   screens: {

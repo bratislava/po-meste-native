@@ -1,35 +1,35 @@
-import React from 'react'
-import { View, StyleSheet, Text } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { DateTimeFormatter, Instant, LocalTime } from '@js-joda/core'
-import { Ionicons } from '@expo/vector-icons'
 import i18n from 'i18n-js'
 import _ from 'lodash'
+import React from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 
 // import WheelchairSvg from '@icons/wheelchair.svg'
-import WalkingSvg from '@icons/walking.svg'
 import EllipseSvg from '@icons/ellipse.svg'
+import BusSvg from '@icons/vehicles/bus.svg'
 import CyclingSvg from '@icons/vehicles/cycling.svg'
 import ScooterSvg from '@icons/vehicles/scooter.svg'
 import TramSvg from '@icons/vehicles/tram.svg'
-import BusSvg from '@icons/vehicles/bus.svg'
 import TrolleybusSvg from '@icons/vehicles/trolleybus.svg'
+import WalkingSvg from '@icons/walking.svg'
 
+import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL, Button, DashedLine } from '@components'
+import { useMhdStopsData } from '@hooks'
+import { LegModes, MicromobilityProvider } from '@types'
 import {
-  LegProps,
-  s,
   colors,
-  STYLES,
   getColor,
   getIcon,
   getProviderName,
   getTextColor,
+  LegProps,
   openProviderApp,
+  s,
+  STYLES,
   trolleybusLineNumbers,
 } from '@utils'
-import { LegModes, MicromobilityProvider } from '@types'
-import { useMhdStopsData } from '@hooks'
-import { DashedLine, Button, BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '@components'
 
 interface TextItineraryProps {
   legs: LegProps[]
@@ -157,15 +157,15 @@ export const TextItinerary = ({
             />
           )}
           {leg.mode === LegModes.bus &&
-            ((trolleybusLineNumbers.includes(
+            (trolleybusLineNumbers.includes(
               Number.parseInt(leg.routeShortName ?? '')
-            ) && (
+            ) ? (
               <TrolleybusSvg
                 width={ICON_WIDTH}
                 height={20}
                 fill={`#${leg.routeColor}`}
               />
-            )) || (
+            ) : (
               <BusSvg
                 width={ICON_WIDTH}
                 height={20}

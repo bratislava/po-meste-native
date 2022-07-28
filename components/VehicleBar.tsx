@@ -1,19 +1,20 @@
 import React, { useContext, useState } from 'react'
-import { View, StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
-import { GlobalStateContext, VehicleProps } from '@state/GlobalStateProvider'
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components/navigation/TabBar'
-import { SvgProps } from 'react-native-svg'
+import { GlobalStateContext, VehicleProps } from '@state/GlobalStateProvider'
 import { TouchableHighlight } from 'react-native-gesture-handler'
+import { SvgProps } from 'react-native-svg'
 
 import {
   useMhdStopsData,
-  useZseChargersData,
   useRekolaData,
   useSlovnaftbajkData,
   useTierData,
+  useZseChargersData,
 } from '@hooks'
 import { VehicleType } from '@types'
+import { colors } from '@utils/theme'
 import * as Progress from 'react-native-progress'
 
 const BOTTOM_VEHICLE_BAR_HEIGHT = 50
@@ -109,7 +110,7 @@ const VehicleFilterTouchable = ({
       <View>
         {isLoading && (
           <Progress.CircleSnail
-            color="#FF5D52"
+            color={colors.gray}
             size={ICON_SIZE + 6}
             borderWidth={0}
             spinDuration={2000}

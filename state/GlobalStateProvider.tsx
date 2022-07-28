@@ -1,29 +1,31 @@
 import React, {
-  useState,
   createContext,
   Dispatch,
   SetStateAction,
   useCallback,
+  useState,
 } from 'react'
 import { SvgProps } from 'react-native-svg'
 
-import i18n from 'i18n-js'
-import * as ExpoLocalization from 'expo-localization'
 import {
   loadPreferredLanguageFromAsyncStorage,
   savePreferredLanguageToAsyncStorage,
 } from '@utils/localization'
+import * as ExpoLocalization from 'expo-localization'
+import i18n from 'i18n-js'
 
 import { PreferredLanguage, VehicleType } from '@types'
 
-import MhdChosenSvg from '@icons/map-filters/mhd-filter-chosen.svg'
-import MhdUnchosenSvg from '@icons/map-filters/mhd-filter-unchosen.svg' // TODO add proper icon
+import { useLocationWithPermision } from '@hooks/miscHooks'
 import BicyclesChosen from '@icons/map-filters/bicycles-filter-chosen.svg'
 import BicyclesUnchosen from '@icons/map-filters/bicycles-filter-unchosen.svg'
-import ScooterChosen from '@icons/map-filters/scooters-filter-chosen.svg'
-import ScooterUnchosen from '@icons/map-filters/scooters-filter-unchosen.svg'
 import ChargersChosen from '@icons/map-filters/chargers-filter-chosen.svg'
 import ChargersUnchosen from '@icons/map-filters/chargers-filter-unchosen.svg'
+import MhdChosenSvg from '@icons/map-filters/mhd-filter-chosen.svg'
+import MhdUnchosenSvg from '@icons/map-filters/mhd-filter-unchosen.svg' // TODO add proper icon
+import ScooterChosen from '@icons/map-filters/scooters-filter-chosen.svg'
+import ScooterUnchosen from '@icons/map-filters/scooters-filter-unchosen.svg'
+import { LocationObject } from 'expo-location'
 
 interface Props {
   children: React.ReactNode
@@ -38,6 +40,10 @@ interface ContextProps {
   setTimeLineNumber: React.Dispatch<React.SetStateAction<string | undefined>>
   isFeedbackSent: boolean
   setFeedbackSent: Dispatch<SetStateAction<boolean>>
+  getLocationWithPermission: (
+    shouldAlert: boolean,
+    reask?: boolean
+  ) => Promise<LocationObject | null | undefined>
 }
 
 export interface VehicleProps {
@@ -68,6 +74,8 @@ export default function GlobalStateProvider({ children }: Props) {
     },
     [setPreferredLanguage]
   )
+
+  const { getLocationWithPermission } = useLocationWithPermision()
 
   const [timeLineNumber, setTimeLineNumber] = useState<string>()
 
@@ -107,6 +115,7 @@ export default function GlobalStateProvider({ children }: Props) {
         setTimeLineNumber,
         isFeedbackSent,
         setFeedbackSent,
+        getLocationWithPermission,
       }}
     >
       {children}

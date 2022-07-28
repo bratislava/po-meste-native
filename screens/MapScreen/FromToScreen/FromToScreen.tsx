@@ -1,40 +1,39 @@
+import { Feather, Ionicons } from '@expo/vector-icons'
+import BottomSheet from '@gorhom/bottom-sheet'
+import { DateTimeFormatter, Instant, LocalDateTime } from '@js-joda/core'
+import { useNavigation } from '@react-navigation/native'
+import { StackScreenProps } from '@react-navigation/stack'
+import * as Location from 'expo-location'
+import i18n from 'i18n-js'
 import React, {
-  useMemo,
-  useState,
-  useEffect,
-  useRef,
   useCallback,
   useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import i18n from 'i18n-js'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import { useQuery } from 'react-query'
-import { useNavigation } from '@react-navigation/native'
 import {
   GooglePlaceData,
   GooglePlaceDetail,
   GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete'
-import { StackScreenProps } from '@react-navigation/stack'
-import * as Location from 'expo-location'
-import BottomSheet from '@gorhom/bottom-sheet'
-import { DateTimeFormatter, Instant, LocalDateTime } from '@js-joda/core'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
-import { Ionicons } from '@expo/vector-icons'
-import { Feather } from '@expo/vector-icons'
+import { useQuery } from 'react-query'
 
 import {
-  getTripPlanner,
-  colors,
-  OtpPlannerProps,
   aggregateBicycleLegs,
+  colors,
   getProviderName,
+  getTripPlanner,
   IteneraryProps,
+  OtpPlannerProps,
 } from '@utils'
 
-import { useLocationWithPermision } from '@hooks'
-
+import { ErrorView, Link, Modal, RadioButton } from '@components'
+import { GlobalStateContext } from '@state/GlobalStateProvider'
 import {
   MapParamList,
   MicromobilityProvider,
@@ -43,8 +42,6 @@ import {
   TravelModesOtpApi,
   VehicleData,
 } from '@types'
-import { FeedbackAsker, Modal, RadioButton, Link, ErrorView } from '@components'
-import { GlobalStateContext } from '@state/GlobalStateProvider'
 
 const vehiclesDefault: VehicleData[] = [
   {
@@ -92,8 +89,8 @@ interface ElementsProps {
 
 import SearchFromToScreen from '@screens/MapScreen/SearchFromToScreen'
 
-import TripMiniature from './_partials/TripMiniature'
 import FromToSelector from './_partials/FromToSelector'
+import TripMiniature from './_partials/TripMiniature'
 import VehicleSelector from './_partials/VehicleSelector'
 
 import BusSvg from '@icons/bus.svg'
@@ -127,10 +124,12 @@ export default function FromToScreen({
       undefined,
     [toProp]
   )
-  const { getLocationWithPermission } = useLocationWithPermision()
 
   const fromPropName = fromProp?.name
   const toPropName = toProp?.name
+
+  const { setFeedbackSent, getLocationWithPermission } =
+    useContext(GlobalStateContext)
 
   const navigation = useNavigation()
   const [fromCoordinates, setFromCoordinates] = useState(fromPropCoordinates)
@@ -502,9 +501,10 @@ export default function FromToScreen({
       setCoordinates: (location: {
         latitude: number
         longitude: number
-      }) => void
+      }) => void,
+      reask: boolean
     ) => {
-      const location = await getLocationWithPermission(true)
+      const location = await getLocationWithPermission(true, reask)
       if (location) {
         const { latitude, longitude } = location.coords
         setCoordinates({
@@ -555,8 +555,6 @@ export default function FromToScreen({
     []
   )
 
-  const { setFeedbackSent } = useContext(GlobalStateContext)
-
   const handlePositiveFeedback = () => {
     setFeedbackSent(true)
   }
@@ -579,10 +577,13 @@ export default function FromToScreen({
     setToCoordinates(fromCoordinatesAlt)
   }, [fromCoordinates, fromName, toCoordinates, toName])
 
-  const getMyLocation = useCallback(() => {
-    fromBottomSheetRef?.current?.close()
-    getLocationAsync(setFromCoordinates)
-  }, [getLocationAsync])
+  const getMyLocation = useCallback(
+    (reask = false) => {
+      fromBottomSheetRef?.current?.close()
+      getLocationAsync(setFromCoordinates, reask)
+    },
+    [getLocationAsync]
+  )
 
   const setLocationFromMapFrom = useCallback(() => {
     navigation.navigate(

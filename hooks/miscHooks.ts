@@ -1,13 +1,13 @@
-import { useCallback } from 'react'
-import {
-  Alert,
-  Platform,
-  Linking,
-  AlertButton,
-  AlertOptions,
-} from 'react-native'
 import * as Location from 'expo-location'
 import i18n from 'i18n-js'
+import { useCallback, useState } from 'react'
+import {
+  Alert,
+  AlertButton,
+  AlertOptions,
+  Linking,
+  Platform,
+} from 'react-native'
 
 export const nativeAlert = (
   message?: string | false,
@@ -24,21 +24,27 @@ export const nativeAlert = (
 }
 
 export const useLocationWithPermision = () => {
-  const getLocation = useCallback(async () => {
-    try {
-      const location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Highest,
-      })
-      return location
-    } catch (e: any) {
-      const { code } = e
-      if (code === 'E_LOCATION_SETTINGS_UNSATISFIED') {
-        //TODO Handle denied location permission
-        console.log('Denied location permission')
+  const [isDenied, setIsDenied] = useState(false)
+  const getLocation = useCallback(
+    async (reask = false) => {
+      if (isDenied && !reask) return null
+      try {
+        const location = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Highest,
+        })
+        return location
+      } catch (e: any) {
+        const { code } = e
+        if (code === 'E_LOCATION_SETTINGS_UNSATISFIED') {
+          //TODO Handle denied location permission
+          setIsDenied(true)
+          console.log('Denied location permission')
+        }
+        return null
       }
-      return null
-    }
-  }, [])
+    },
+    [isDenied]
+  )
 
   const openAppSettings = () => {
     if (Platform.OS === 'ios') {
@@ -49,7 +55,7 @@ export const useLocationWithPermision = () => {
   }
 
   const getLocationWithPermission = useCallback(
-    async (shouldAlert: boolean) => {
+    async (shouldAlert: boolean, reask = false) => {
       const { status } = await Location.requestForegroundPermissionsAsync()
 
       if (status !== Location.PermissionStatus.GRANTED) {
@@ -66,7 +72,7 @@ export const useLocationWithPermision = () => {
           ])
         }
       } else {
-        return getLocation()
+        return getLocation(reask)
       }
       return
     },

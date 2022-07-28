@@ -31,11 +31,7 @@ import {
 
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 
-import {
-  useLocationWithPermision,
-  useMhdStopsData,
-  useZseChargersData,
-} from '@hooks'
+import { useMhdStopsData, useZseChargersData } from '@hooks'
 import {
   BikeProvider,
   IconType,
@@ -172,7 +168,7 @@ export default function MapScreen() {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   })
-  const { getLocationWithPermission } = useLocationWithPermision()
+  const getLocationWithPermission = vehiclesContext.getLocationWithPermission
   // useful on Android, where the elevation shadow causes incorrect ordering of elements
   const [showCurrentLocationButton, setShowCurrentLocationButton] =
     useState(true)
@@ -203,7 +199,7 @@ export default function MapScreen() {
   const moveMapToCurrentLocation = useCallback(
     async (
       permisionDeniedCallback: () => Promise<
-        Location.LocationObject | undefined
+        Location.LocationObject | undefined | null
       >
     ) => {
       const currentLocation = await permisionDeniedCallback()
@@ -536,7 +532,9 @@ export default function MapScreen() {
         <View style={styles.currentLocation}>
           <TouchableOpacity
             onPress={() =>
-              moveMapToCurrentLocation(() => getLocationWithPermission(true))
+              moveMapToCurrentLocation(() =>
+                getLocationWithPermission(true, true)
+              )
             }
           >
             <CurrentLocationSvg fill={colors.primary} />

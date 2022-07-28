@@ -1,21 +1,21 @@
 // TODO copied from different project, might need cleanup if we're to use it
-import React from 'react'
+import React, { useState } from 'react'
 import {
   GestureResponderEvent,
   StyleProp,
   StyleSheet,
+  Text,
   TextStyle,
   TouchableHighlight,
   View,
   ViewStyle,
-  Text,
 } from 'react-native'
 import { colors } from '../utils/theme'
 
 const styles = StyleSheet.create({
   touchable: {
     borderRadius: 1000,
-    borderWidth: 1,
+    borderWidth: 2,
   },
   touchableFullWidth: {
     flex: 1,
@@ -35,18 +35,21 @@ const styles = StyleSheet.create({
   },
   // eslint-disable-next-line react-native/no-unused-styles
   small: {
-    height: 32,
-    borderRadius: 16,
+    height: 40,
+    borderRadius: 20,
+    paddingHorizontal: 20,
   },
   // eslint-disable-next-line react-native/no-unused-styles
   medium: {
-    height: 40,
-    borderRadius: 20,
+    height: 50,
+    borderRadius: 25,
+    paddingHorizontal: 25,
   },
   // eslint-disable-next-line react-native/no-unused-styles
   large: {
-    height: 48,
-    borderRadius: 24,
+    height: 60,
+    borderRadius: 30,
+    paddingHorizontal: 30,
   },
   // eslint-disable-next-line react-native/no-unused-styles
   iconSpacing: {
@@ -63,66 +66,67 @@ const disabledAlpha = '50' // 0.25
 const COLORS = {
   backgroundColor: {
     primary: colors.primary,
-    'primary-submit': colors.green,
-    secondary: 'transparent',
-    filled: colors.secondary,
-    tertiary: 'transparent',
+    secondary: colors.secondary,
+    tertiary: colors.tertiary,
+    outlined: colors.white,
+    approve: colors.green,
     danger: colors.error,
-    chat: 'transparent',
   },
   disabledBackgroundColor: {
-    primary: `${colors.primary}${disabledAlpha}`,
-    'primary-submit': colors.gray,
-    secondary: 'transparent',
-    filled: `${colors.secondary}${disabledAlpha}`,
-    tertiary: 'transparent',
-    danger: `${colors.error}${disabledAlpha}`,
-    chat: 'transparent',
+    primary: colors.gray,
+    secondary: colors.gray,
+    tertiary: colors.gray,
+    outlined: colors.white,
+    approve: colors.gray,
+    danger: colors.gray,
   },
   underlayColor: {
-    primary: colors.primary,
-    'primary-submit': colors.primary,
-    secondary: colors.secondary,
-    filled: colors.secondary,
-    tertiary: '#e5e5e5',
-    danger: colors.error,
-    chat: '#e5e5e5',
+    primary: '#B3413A',
+    secondary: '#D3B7B4',
+    tertiary: '#581F22',
+    outlined: '#D3B7B4',
+    approve: '#4A9158',
+    danger: '#C83838',
   },
   iconColor: {
     primary: colors.white,
-    'primary-submit': colors.white,
     secondary: colors.secondary,
     tertiary: colors.lightText,
-    filled: colors.white,
+    outlined: colors.white,
+    approve: colors.white,
     danger: colors.white,
-    chat: colors.darkText,
   },
   textColor: {
     primary: colors.white,
-    'primary-submit': colors.white,
-    secondary: colors.secondary,
-    tertiary: colors.lightText,
-    filled: colors.white,
+    secondary: colors.tertiary,
+    tertiary: colors.white,
+    outlined: colors.tertiary,
+    approve: colors.white,
     danger: colors.white,
-    chat: colors.darkText,
+  },
+  disabledTextColor: {
+    primary: colors.white,
+    secondary: colors.white,
+    tertiary: colors.white,
+    outlined: colors.gray,
+    approve: colors.white,
+    danger: colors.white,
   },
   borderColor: {
     primary: 'transparent',
-    'primary-submit': 'transparent',
-    secondary: colors.secondary,
-    filled: 'transparent',
+    secondary: 'transparent',
     tertiary: 'transparent',
+    outlined: colors.tertiary,
+    approve: 'transparent',
     danger: 'transparent',
-    chat: 'transparent',
   },
   disabledBorderColor: {
     primary: 'transparent',
-    'primary-submit': 'transparent',
-    secondary: `${colors.secondary}${disabledAlpha}`,
-    filled: 'transparent',
+    secondary: 'transparent',
     tertiary: 'transparent',
+    outlined: colors.gray,
+    approve: 'transparent',
     danger: 'transparent',
-    chat: 'transparent',
   },
 }
 
@@ -140,14 +144,20 @@ type FontWeightType =
   | '900'
 
 const FONT_WEIGHT: { [key: string]: FontWeightType } = {
-  primary: 'normal',
-  'primary-submit': 'bold',
-  secondary: 'normal',
-  tertiary: 'normal',
-  filled: 'normal',
-  danger: 'normal',
-  chat: 'normal',
+  primary: 'bold',
+  approve: 'bold',
+  secondary: 'bold',
+  tertiary: 'bold',
+  outlined: 'bold',
+  danger: 'bold',
 }
+
+const FONT_SIZE: { [key: string]: number } = {
+  small: 14,
+  medium: 16,
+  large: 22,
+}
+
 interface ButtonProps {
   onPress: (event: GestureResponderEvent) => void
   title?: string
@@ -156,12 +166,11 @@ interface ButtonProps {
   isFullWidth?: boolean
   variant?:
     | 'primary'
-    | 'primary-submit'
+    | 'approve'
     | 'secondary'
     | 'tertiary'
-    | 'filled'
+    | 'outlined'
     | 'danger'
-    | 'chat'
   size?: 'small' | 'medium' | 'large'
   style?: StyleProp<ViewStyle>
   titleStyle?: StyleProp<TextStyle>
@@ -184,10 +193,29 @@ const Button = ({
   testID,
 }: ButtonProps) => {
   const showDisabledStyle = disabled && !loading
+  const [isPressed, setIsPressed] = useState(false)
+  const renderText = (text: string) => (
+    <Text
+      style={[
+        {
+          color: disabled
+            ? COLORS.disabledTextColor[variant]
+            : COLORS.textColor[variant],
+          fontWeight: FONT_WEIGHT[variant],
+          fontSize: FONT_SIZE[size],
+        },
+        titleStyle,
+      ]}
+    >
+      {text}
+    </Text>
+  )
 
   return (
     <TouchableHighlight
       onPress={onPress}
+      onShowUnderlay={() => setIsPressed(true)}
+      onHideUnderlay={() => setIsPressed(false)}
       underlayColor={COLORS.underlayColor[variant]}
       disabled={disabled || loading}
       style={[
@@ -201,6 +229,8 @@ const Button = ({
             : COLORS.backgroundColor[variant],
           borderColor: showDisabledStyle
             ? COLORS.disabledBorderColor[variant]
+            : isPressed
+            ? 'transparent'
             : COLORS.borderColor[variant],
         },
         style,
@@ -209,33 +239,9 @@ const Button = ({
     >
       <View style={[styles.container, styles[size]]}>
         {loading ? (
-          <Text
-            style={[
-              {
-                color: COLORS.textColor[variant],
-                fontWeight: FONT_WEIGHT[variant],
-              },
-              titleStyle,
-            ]}
-          >
-            Loading...
-          </Text>
+          renderText('Loading...')
         ) : (
-          <>
-            {!!title && (
-              <Text
-                style={[
-                  {
-                    color: COLORS.textColor[variant],
-                    fontWeight: FONT_WEIGHT[variant],
-                  },
-                  titleStyle,
-                ]}
-              >
-                {title}
-              </Text>
-            )}
-          </>
+          <>{!!title && renderText(title)}</>
         )}
       </View>
     </TouchableHighlight>

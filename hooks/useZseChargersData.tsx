@@ -1,17 +1,19 @@
-import _ from 'lodash'
 import { useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
 
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useNetInfo } from '@react-native-community/netinfo'
+import { getCachedStops } from '@utils/utils'
 import { getChargersStops } from '../utils/api'
 import { apiZseChargers } from '../utils/validation'
-import { getCachedStops } from '@utils/utils'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function useZseChargersData() {
+  const netInfo = useNetInfo()
   const [validationErrors, setValidationErrors] = useState()
   const { data, isLoading, error, refetch } = useQuery(
     'getChargersStops',
-    getChargersStops
+    getChargersStops,
+    { enabled: netInfo.isConnected ?? false }
   )
   const { data: cachedData } = useQuery('getCachedChargerStops', () =>
     getCachedStops('chargerStops')
@@ -33,6 +35,6 @@ export default function useZseChargersData() {
     data: validatedZseChargers?.localities,
     isLoading,
     errors: error || validationErrors,
-    refetch,
+    refetch: () => (netInfo.isConnected ? refetch() : null),
   }
 }

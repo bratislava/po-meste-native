@@ -1,23 +1,28 @@
+import { useNetInfo } from '@react-native-community/netinfo'
 import { useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
 import { getTierFreeBikeStatus } from '../utils/api'
 import { apiFreeBikeStatus } from '../utils/validation'
 
 export default function useTierData() {
+  const netInfo = useNetInfo()
   const [validationErrors, setValidationErrors] = useState()
   const { data, isLoading, error, refetch } = useQuery(
     'getTierFreeBikeStatus',
-    getTierFreeBikeStatus
+    getTierFreeBikeStatus,
+    { enabled: netInfo.isConnected ?? false }
   )
 
   const validatedTier = useMemo(() => {
-    try {
-      const validatedStationInformation =
-        apiFreeBikeStatus.validateSync(data).data.bikes
-      return validatedStationInformation
-    } catch (e) {
-      setValidationErrors(e.errors)
-      console.log(e)
+    if (data) {
+      try {
+        const validatedStationInformation =
+          apiFreeBikeStatus.validateSync(data).data.bikes
+        return validatedStationInformation
+      } catch (e) {
+        setValidationErrors(e.errors)
+        console.log(e)
+      }
     }
   }, [data])
 
@@ -25,6 +30,6 @@ export default function useTierData() {
     data: validatedTier,
     isLoading: isLoading,
     errors: error || validationErrors,
-    refetch,
+    refetch: () => (netInfo.isConnected ? refetch() : null),
   }
 }

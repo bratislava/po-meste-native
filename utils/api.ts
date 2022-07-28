@@ -1,12 +1,3 @@
-import Constants from 'expo-constants'
-import qs from 'qs'
-import {
-  apiMhdGrafikon,
-  apiOtpPlanner,
-  apiMhdStopStatus,
-  apiMhdTrip,
-} from './validation'
-import { MicromobilityProvider, TravelModesOtpApi } from '@types'
 import {
   DateTimeFormatter,
   LocalDate,
@@ -16,7 +7,16 @@ import {
 } from '@js-joda/core'
 import '@js-joda/timezone'
 import * as Sentry from '@sentry/react-native'
+import { MicromobilityProvider, TravelModesOtpApi } from '@types'
+import Constants from 'expo-constants'
+import qs from 'qs'
 import { API_ERROR_TEXT } from './constants'
+import {
+  apiMhdGrafikon,
+  apiMhdStopStatus,
+  apiMhdTrip,
+  apiOtpPlanner,
+} from './validation'
 
 const host = 'planner.bratislava.sk'
 const dataHostUrl = Constants.manifest?.extra?.apiHost || `https://live.${host}`
@@ -39,6 +39,7 @@ const otpTierPlannerUrl = `https://tier.${host}/routers/default/plan`
 
 // helper with a common fetch pattern for json endpoints & baked in host
 const fetchJsonFromApi = async (path: string, options?: RequestInit) => {
+  console.log('\x1b[36m%s\x1b[0m', `Fetching from '${path}'`)
   const response = await fetch(`${dataHostUrl}${path}`, options)
   if (response.ok) {
     return response.json()
@@ -63,7 +64,6 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export const getHealth = async () => {
   const health = await fetchJsonFromApi('/health')
-  console.log({ health })
   return health
 }
 

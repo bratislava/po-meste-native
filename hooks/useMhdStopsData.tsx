@@ -1,16 +1,14 @@
 import { useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
 
-import { apiMhdStops } from '../utils/validation'
+import { useNetInfo } from '@react-native-community/netinfo'
+import { getCachedStops, getLatestDataset, setCachedStops } from '@utils/utils'
 import { getHealth, getMhdStops } from '../utils/api'
-import {
-  getCachedStops,
-  getLatestDataset,
-  setCachedStops,
-  setLatestDataset,
-} from '@utils/utils'
+import { apiMhdStops } from '../utils/validation'
 
 export default function useMhdData() {
+  const netInfo = useNetInfo()
+  const isConnected = netInfo.isConnected ?? false
   const [validationErrors, setValidationErrors] = useState()
   const [hasFetched, setHasFetched] = useState(false)
   const { data: cachedData } = useQuery('getCachedMhdStops', () =>
@@ -18,7 +16,10 @@ export default function useMhdData() {
   )
   const { data: healthData, error: healthError } = useQuery(
     'getHealth',
-    getHealth
+    getHealth,
+    {
+      enabled: isConnected,
+    }
   )
   const { data: latestDatasetData } = useQuery(
     'getLastDataSet',
@@ -29,6 +30,7 @@ export default function useMhdData() {
     getMhdStops,
     {
       enabled:
+        isConnected &&
         !hasFetched &&
         ((healthData != undefined &&
           latestDatasetData != undefined &&
@@ -65,6 +67,6 @@ export default function useMhdData() {
     data: validatedMhdStops,
     isLoading,
     errors: error || validationErrors,
-    refetch,
+    refetch: () => (isConnected ? refetch() : null),
   }
 }

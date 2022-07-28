@@ -1,6 +1,3 @@
-import i18n from 'i18n-js'
-import AppLink from 'react-native-app-link'
-import _ from 'lodash'
 import {
   LegModes,
   MicromobilityProvider,
@@ -8,19 +5,22 @@ import {
   TravelModes,
   TravelModesOtpApi,
 } from '@types'
-import { colors } from './theme'
-import { LegProps } from './validation'
+import i18n from 'i18n-js'
+import _ from 'lodash'
+import AppLink from 'react-native-app-link'
 import { ValidationError } from 'yup'
 import { API_ERROR_TEXT } from './constants'
+import { colors } from './theme'
+import { LegProps } from './validation'
 
+import BusSvg from '@icons/bus.svg'
 import CyclingSvg from '@icons/cycling.svg'
+import RekoloSvg from '@icons/rekolo.svg'
 import ScooterSvg from '@icons/scooter.svg'
 import SlovnaftbajkSvg from '@icons/slovnaftbajk.svg'
 import TierSvg from '@icons/tier.svg'
-import RekoloSvg from '@icons/rekolo.svg'
 import TramSvg from '@icons/tram.svg'
 import TrolleybusSvg from '@icons/trolleybus.svg'
-import BusSvg from '@icons/bus.svg'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export const presentPrice = (price: number /* in cents */) => {
@@ -237,7 +237,6 @@ export const setCachedStops = async (
 
 export const getLatestDataset = async () => {
   const latestDataSet = await AsyncStorage.getItem('latestDataset')
-  console.log({ latestDataSet })
   return latestDataSet
 }
 

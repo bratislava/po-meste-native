@@ -1,61 +1,62 @@
+import BottomSheet from '@gorhom/bottom-sheet'
+import { useNetInfo } from '@react-native-community/netinfo'
+import { useIsFocused } from '@react-navigation/core'
+import * as Location from 'expo-location'
+import i18n from 'i18n-js'
 import React, {
   useCallback,
   useContext,
-  useState,
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from 'react'
-import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps'
 import {
-  StyleSheet,
-  View,
   ImageURISource,
   Platform,
+  StyleSheet,
   TouchableOpacity,
+  View,
 } from 'react-native'
-import BottomSheet from '@gorhom/bottom-sheet'
-import * as Location from 'expo-location'
-import { useIsFocused } from '@react-navigation/core'
-import i18n from 'i18n-js'
+import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
 
 import { useRekolaData, useSlovnaftbajkData, useTierData } from '@hooks'
 
 import {
+  BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
   ErrorView,
   LoadingView,
   VehicleBar,
-  BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
 } from '@components'
 
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 
 import {
+  useLocationWithPermision,
   useMhdStopsData,
   useZseChargersData,
-  useLocationWithPermision,
 } from '@hooks'
-import {
-  ChargerStationProps,
-  FreeBikeStatusProps,
-  LocalitiesProps,
-  MhdStopProps,
-  StationMicromobilityProps,
-  s,
-} from '@utils'
 import {
   BikeProvider,
   IconType,
   MicromobilityProvider,
   VehicleType,
 } from '@types'
+import {
+  ChargerStationProps,
+  FreeBikeStatusProps,
+  LocalitiesProps,
+  MhdStopProps,
+  s,
+  StationMicromobilityProps,
+} from '@utils'
 
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components/navigation/TabBar'
 
 import SearchBar from './_partials/SearchBar'
+import StationChargerInfo from './_partials/StationChargerInfo'
 import StationMhdInfo from './_partials/StationMhdInfo'
 import StationMicromobilityInfo from './_partials/StationMicromobilityInfo'
-import StationChargerInfo from './_partials/StationChargerInfo'
 
 import CurrentLocationSvg from '@icons/current-location.svg'
 
@@ -110,6 +111,7 @@ const markerIcons: { [index: string]: markerIcon } = {
 }
 
 export default function MapScreen() {
+  const netInfo = useNetInfo()
   // TODO handle loading / error
   const {
     data: dataMhd,
@@ -142,6 +144,12 @@ export default function MapScreen() {
     error: errorsSlovnaftbajk,
     refetch: refetchSlovnaftbajk,
   } = useSlovnaftbajkData()
+
+  const [isMhdErrorOpen, setIsMhdErrorOpen] = useState(false)
+  const [isTierErrorOpen, setIsTierErrorOpen] = useState(false)
+  const [isZseErrorOpen, setIsZseErrorOpen] = useState(false)
+  const [isRekolaErrorOpen, setIsRekolaErrorOpen] = useState(false)
+  const [isSlovnaftbajkErrorOpen, setIsSlovnaftbajkErrorOpen] = useState(false)
 
   const mapRef = useRef<MapView>(null)
 
@@ -190,7 +198,7 @@ export default function MapScreen() {
     if (isFocused) {
       refetch()
     }
-  }, [isFocused, refetch])
+  }, [isFocused])
 
   const moveMapToCurrentLocation = useCallback(
     async (
@@ -399,6 +407,15 @@ export default function MapScreen() {
     }
   }
 
+  useEffect(() => setIsMhdErrorOpen(!!errorsMhd), [errorsMhd])
+  useEffect(() => setIsTierErrorOpen(!!errorsTier), [errorsTier])
+  useEffect(() => setIsZseErrorOpen(!!errorsZseChargers), [errorsZseChargers])
+  useEffect(() => setIsRekolaErrorOpen(!!errorsRekola), [errorsRekola])
+  useEffect(
+    () => setIsSlovnaftbajkErrorOpen(!!errorsSlovnaftbajk),
+    [errorsSlovnaftbajk]
+  )
+
   return (
     <View style={styles.container}>
       <MapView
@@ -507,13 +524,14 @@ export default function MapScreen() {
             []
           )}
       </MapView>
-      {isLoadingMhd &&
-        isLoadingRekola &&
-        isLoadingSlovnaftbajk &&
-        isLoadingTier &&
-        isLoadingZseChargers && (
-          <LoadingView fullscreen iconWidth={80} iconHeight={80} />
-        )}
+      {(!netInfo.isConnected ||
+        isLoadingMhd ||
+        isLoadingRekola ||
+        isLoadingSlovnaftbajk ||
+        isLoadingTier ||
+        isLoadingZseChargers) && (
+        <LoadingView fullscreen iconWidth={80} iconHeight={80} />
+      )}
       {Platform.select({ ios: true, android: showCurrentLocationButton }) && (
         <View style={styles.currentLocation}>
           <TouchableOpacity
@@ -526,39 +544,54 @@ export default function MapScreen() {
         </View>
       )}
       <SearchBar />
-      {errorsMhd &&
+      {isMhdErrorOpen &&
         dataError(
           isLoadingMhd,
           errorsMhd,
-          refetchMhd,
+          () => {
+            refetchMhd()
+            setIsMhdErrorOpen(false)
+          },
           i18n.t('dataMhdStopsError')
         )}
-      {errorsRekola &&
+      {isRekolaErrorOpen &&
         dataError(
           isLoadingRekola,
           errorsRekola,
-          refetchRekola,
+          () => {
+            refetchRekola()
+            setIsRekolaErrorOpen(false)
+          },
           i18n.t('dataRekolaError')
         )}
-      {errorsSlovnaftbajk &&
+      {isSlovnaftbajkErrorOpen &&
         dataError(
           isLoadingSlovnaftbajk,
           errorsSlovnaftbajk,
-          refetchSlovnaftbajk,
+          () => {
+            refetchSlovnaftbajk()
+            setIsSlovnaftbajkErrorOpen(false)
+          },
           i18n.t('dataSlovnaftbajkError')
         )}
-      {errorsTier &&
+      {isTierErrorOpen &&
         dataError(
           isLoadingTier,
           errorsTier,
-          refetchTier,
+          () => {
+            refetchTier()
+            setIsTierErrorOpen(false)
+          },
           i18n.t('dataTierError')
         )}
-      {errorsZseChargers &&
+      {isZseErrorOpen &&
         dataError(
           isLoadingZseChargers,
           errorsZseChargers,
-          refetchZseChargers,
+          () => {
+            refetchZseChargers()
+            setIsZseErrorOpen(false)
+          },
           i18n.t('dataZseChargersError')
         )}
       <VehicleBar />

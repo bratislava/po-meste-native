@@ -32,6 +32,9 @@ export const s = StyleSheet.create({
   horizontalMargin: {
     marginHorizontal: 20,
   },
+  horizontalPadding: {
+    paddingHorizontal: 20,
+  },
   shadow: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },

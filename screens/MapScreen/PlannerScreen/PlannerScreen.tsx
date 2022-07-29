@@ -26,6 +26,7 @@ import { MapParamList } from '@types'
 import {
   aggregateBicycleLegs,
   getColor,
+  getHeaderBgColor,
   hexToRgba,
   modeColors,
   s,
@@ -35,6 +36,7 @@ import CurrentLocationSvg from '@icons/current-location.svg'
 import { TextItinerary } from './_partials/TextItinerary'
 
 import { GlobalStateContext } from '@state/GlobalStateProvider'
+import { customMapStyle } from '../customMapStyle'
 
 export default function PlannerScreen({
   route,
@@ -44,6 +46,7 @@ export default function PlannerScreen({
   const provider = route?.params?.provider
   const legs = route?.params?.legs
   const isScooter = route?.params?.isScooter
+  const travelMode = route?.params?.travelMode
   const bottomSheetSnapPoints = [
     BOTTOM_VEHICLE_BAR_HEIGHT_ALL + 30,
     '60%',
@@ -93,6 +96,7 @@ export default function PlannerScreen({
       <MapView
         ref={mapRef}
         style={styles.map}
+        customMapStyle={customMapStyle}
         provider={PROVIDER_GOOGLE}
         initialRegion={{
           latitude: 48.1512015,
@@ -155,11 +159,21 @@ export default function PlannerScreen({
         index={1}
         snapPoints={bottomSheetSnapPoints}
         onChange={setSheetIndex}
+        handleIndicatorStyle={{
+          backgroundColor: 'rgba(69, 69, 69, 0.3)',
+          width: 66,
+          height: 4,
+          marginTop: 4,
+        }}
+        backgroundStyle={{
+          backgroundColor: getHeaderBgColor(travelMode, provider),
+        }}
       >
         <TextItinerary
           legs={aggregateBicycleLegs(legs)}
           provider={provider}
           isScooter={isScooter}
+          travelMode={travelMode}
         />
       </BottomSheet>
     </View>

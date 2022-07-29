@@ -33,8 +33,10 @@ export default {
     },
     providerNames: {
       rekola: 'Rekola',
-      slovnaftbajk: 'Slovnaftbajk',
-      tier: 'TIER',
+      slovnaftbajk: 'Slovnaft BAjk',
+      tier: 'Tier',
+      blinkee: 'Blinkee',
+      bolt: 'Bolt',
     },
   },
   screens: {
@@ -65,6 +67,7 @@ export default {
     },
     PlannerScreen: {
       screenTitle: 'Plánovač',
+      mhdHeader: 'o {{minutes}} min z',
       minShort: 'Presun {{count}} min',
       distanceShort: '{{count}}m',
       openApp: 'Otvor aplikáciu {{provider}}',

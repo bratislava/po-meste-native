@@ -13,15 +13,15 @@ import { API_ERROR_TEXT } from './constants'
 import { colors } from './theme'
 import { LegProps } from './validation'
 
-import BusSvg from '@icons/bus.svg'
-import CyclingSvg from '@icons/cycling.svg'
-import RekoloSvg from '@icons/rekolo.svg'
-import ScooterSvg from '@icons/scooter.svg'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import CyclingSvg from '@icons/vehicles/cycling.svg'
+import ScooterSvg from '@icons/vehicles/scooter.svg'
 import SlovnaftbajkSvg from '@icons/slovnaftbajk.svg'
 import TierSvg from '@icons/tier.svg'
-import TramSvg from '@icons/tram.svg'
-import TrolleybusSvg from '@icons/trolleybus.svg'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import RekoloSvg from '@icons/rekolo.svg'
+import TramSvg from '@icons/vehicles/tram.svg'
+import TrolleybusSvg from '@icons/vehicles/trolleybus.svg'
+import BusSvg from '@icons/vehicles/bus.svg'
 
 export const presentPrice = (price: number /* in cents */) => {
   return i18n.t('common.presentPrice', { price: (price / 100).toFixed(2) })
@@ -242,4 +242,11 @@ export const getLatestDataset = async () => {
 
 export const setLatestDataset = async (newDataSetNumber: string) => {
   AsyncStorage.setItem('latestDataset', newDataSetNumber)
+export const getHeaderBgColor = (
+  travelMode: TravelModes,
+  provider?: MicromobilityProvider
+) => {
+  if (provider) return getColor(provider)
+  else if (travelMode === TravelModes.mhd) return colors.primary
+  else return colors.ownVehicleHeaderColor
 }

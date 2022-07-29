@@ -56,7 +56,7 @@ import StationMicromobilityInfo from './_partials/StationMicromobilityInfo'
 
 import CurrentLocationSvg from '@icons/current-location.svg'
 
-import { customMapStyle } from './customMapStyle'
+import { customMapStyle } from '../customMapStyle'
 
 import { colors } from '@utils'
 

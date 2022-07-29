@@ -13,10 +13,9 @@ import {
 
 import { colors, s } from '@utils'
 
-// import MhdSvg from '@icons/mhd.svg'
 // import { dummyDataPlaceHistory } from '../dummyData'
 import MarkerSvg from '@icons/map-pin-marker.svg'
-import MhdSvg from '@icons/mhd.svg'
+import MhdSvg from '@icons/vehicles/mhd.svg'
 
 interface SearchFromToScreen {
   sheetRef: MutableRefObject<BottomSheet | null>

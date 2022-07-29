@@ -46,7 +46,7 @@ import {
 const vehiclesDefault: VehicleData[] = [
   {
     mode: TravelModes.mhd,
-    icon: BusSvg,
+    icon: MhdSvg,
     estimatedTimeMin: undefined,
     estimatedTimeMax: undefined,
     priceMin: undefined,
@@ -93,9 +93,9 @@ import FromToSelector from './_partials/FromToSelector'
 import TripMiniature from './_partials/TripMiniature'
 import VehicleSelector from './_partials/VehicleSelector'
 
-import BusSvg from '@icons/bus.svg'
-import CyclingSvg from '@icons/cycling.svg'
-import ScooterSvg from '@icons/scooter.svg'
+import MhdSvg from '@icons/vehicles/mhd.svg'
+import CyclingSvg from '@icons/vehicles/cycling.svg'
+import ScooterSvg from '@icons/vehicles/scooter.svg'
 import WalkingSvg from '@icons/walking.svg'
 
 export default function FromToScreen({
@@ -107,9 +107,9 @@ export default function FromToScreen({
     () =>
       (fromProp?.latitude !== undefined &&
         fromProp?.longitude !== undefined && {
-          latitude: fromProp?.latitude,
-          longitude: fromProp?.longitude,
-        }) ||
+        latitude: fromProp?.latitude,
+        longitude: fromProp?.longitude,
+      }) ||
       undefined,
     [fromProp]
   )
@@ -118,9 +118,9 @@ export default function FromToScreen({
     () =>
       (toProp?.latitude !== undefined &&
         toProp?.longitude !== undefined && {
-          latitude: toProp?.latitude,
-          longitude: toProp?.longitude,
-        }) ||
+        latitude: toProp?.latitude,
+        longitude: toProp?.longitude,
+      }) ||
       undefined,
     [toProp]
   )
@@ -433,10 +433,10 @@ export default function FromToScreen({
       [
         dataMhd?.plan?.itineraries
           ? // first result for TRANSIT trip is always walking whole trip
-            // alternative is to reduce walking distance in request 'maxWalkDistance' http://dev.opentripplanner.org/apidoc/1.4.0/resource_PlannerResource.html
-            dataMhd?.plan?.itineraries.filter(
-              (_itenerary, index) => index !== 0
-            )
+          // alternative is to reduce walking distance in request 'maxWalkDistance' http://dev.opentripplanner.org/apidoc/1.4.0/resource_PlannerResource.html
+          dataMhd?.plan?.itineraries.filter(
+            (_itenerary, index) => index !== 0
+          )
           : [],
       ],
       TravelModes.mhd
@@ -473,10 +473,10 @@ export default function FromToScreen({
       return street && name
         ? `${street} ${name}`
         : street
-        ? street
-        : name
-        ? name
-        : ''
+          ? street
+          : name
+            ? name
+            : ''
     }
   }, [])
 
@@ -522,9 +522,9 @@ export default function FromToScreen({
     setCoordinates: React.Dispatch<
       React.SetStateAction<
         | {
-            latitude: number
-            longitude: number
-          }
+          latitude: number
+          longitude: number
+        }
         | undefined
       >
     >
@@ -657,6 +657,7 @@ export default function FromToScreen({
                       legs: tripChoice?.legs,
                       provider: provider,
                       isScooter: selectedVehicle === TravelModes.scooter,
+                      travelMode: selectedVehicle,
                     } as never
                   )
                 }
@@ -722,7 +723,7 @@ export default function FromToScreen({
           fromPlaceText={
             fromName ||
             (fromProp?.latitude !== undefined &&
-            fromProp?.longitude !== undefined
+              fromProp?.longitude !== undefined
               ? `${fromProp.latitude}, ${fromProp.longitude}`
               : undefined)
           }
@@ -817,10 +818,10 @@ export default function FromToScreen({
               dataRekola ||
               errorSlovnaftbajk ||
               errorRekola) && (
-              <Text style={styles.textSizeBig}>
-                {i18n.t('screens.FromToScreen.rentedBike')}
-              </Text>
-            )}
+                <Text style={styles.textSizeBig}>
+                  {i18n.t('screens.FromToScreen.rentedBike')}
+                </Text>
+              )}
             <View style={styles.providerContainer}>
               {getElements({
                 ommitFirst: false,

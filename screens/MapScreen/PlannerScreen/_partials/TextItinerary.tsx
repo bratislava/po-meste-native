@@ -1,38 +1,54 @@
-import React from 'react'
-import { View, StyleSheet, Text } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { DateTimeFormatter, Instant, LocalTime } from '@js-joda/core'
-import { Ionicons } from '@expo/vector-icons'
 import i18n from 'i18n-js'
 import _ from 'lodash'
+import { StyleSheet, Text, View } from 'react-native'
 
 // import WheelchairSvg from '@icons/wheelchair.svg'
-import WalkingSvg from '@icons/walking.svg'
 import EllipseSvg from '@icons/ellipse.svg'
-import CyclingSvg from '@icons/cycling.svg'
-import ScooterSvg from '@icons/scooter.svg'
-import TramSvg from '@icons/tram.svg'
-import BusSvg from '@icons/bus.svg'
+import BusSvg from '@icons/vehicles/bus.svg'
+import CyclingSvg from '@icons/vehicles/cycling.svg'
+import ScooterSvg from '@icons/vehicles/scooter.svg'
+import TramSvg from '@icons/vehicles/tram.svg'
+import TrolleybusSvg from '@icons/vehicles/trolleybus.svg'
+import WalkingSvg from '@icons/walking.svg'
 
+import { Button, DashedLine } from '@components'
+import { useMhdStopsData } from '@hooks'
+import { LegModes, MicromobilityProvider } from '@types'
+import React, { useEffect, useState } from 'react'
+
+// import WheelchairSvg from '@icons/wheelchair.svg'
+
+import RekolaHeaderSvg from '@icons/bottom-route-headers/rekola.svg'
+import SlovnaftbajkHeaderSvg from '@icons/bottom-route-headers/slovnaftbajk.svg'
+import TierHeaderSvg from '@icons/bottom-route-headers/tier.svg'
+
+import OwnBicycle from '@icons/bottom-route-headers/own-bicycle.svg'
+import OwnScooter from '@icons/bottom-route-headers/own-scooter.svg'
+import Walking from '@icons/bottom-route-headers/walking.svg'
+
+import { TravelModes } from '@types'
 import {
-  LegProps,
-  s,
   colors,
-  STYLES,
   getColor,
+  getHeaderBgColor,
   getIcon,
   getProviderName,
   getTextColor,
+  LegProps,
   openProviderApp,
+  s,
+  STYLES,
+  trolleybusLineNumbers,
 } from '@utils'
-import { LegModes, MicromobilityProvider } from '@types'
-import { useMhdStopsData } from '@hooks'
-import { DashedLine, Button, BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '@components'
 
 interface TextItineraryProps {
   legs: LegProps[]
   provider?: MicromobilityProvider
   isScooter?: boolean
+  travelMode: TravelModes
 }
 
 const ICON_WIDTH = 20
@@ -45,6 +61,7 @@ export const TextItinerary = ({
   legs,
   provider,
   isScooter,
+  travelMode,
 }: TextItineraryProps) => {
   // getData from /mhd/trip/{legs.tripId.substring(2)}
   const {
@@ -52,9 +69,62 @@ export const TextItinerary = ({
     isLoading: isLoadingMhd,
     errors: errorsMhd,
   } = useMhdStopsData()
+  const [timeNow, setTimeNow] = useState(LocalTime.now())
+  const [updateEveryMinuteInterval, setUpdateEveryMinuteInterval] = useState<
+    number | undefined
+  >(undefined)
+
+  useEffect(() => {
+    if (travelMode === TravelModes.mhd)
+      setUpdateEveryMinuteInterval(
+        window.setInterval(() => setTimeNow(LocalTime.now()), 60 * 1000)
+      )
+    return () => {
+      if (travelMode === TravelModes.mhd)
+        clearInterval(updateEveryMinuteInterval)
+    }
+  }, [])
 
   const ProviderIcon = provider && getIcon(provider, isScooter)
   const title = provider && getProviderName(provider)
+  const getHeaderIcon = (
+    provider: MicromobilityProvider | undefined,
+    travelMode: TravelModes
+  ) => {
+    switch (provider) {
+      case MicromobilityProvider.rekola:
+        return RekolaHeaderSvg
+      case MicromobilityProvider.slovnaftbajk:
+        return SlovnaftbajkHeaderSvg
+      case MicromobilityProvider.tier:
+        return TierHeaderSvg
+      default:
+        break
+    }
+    switch (travelMode) {
+      case TravelModes.bicycle:
+        return OwnBicycle
+      case TravelModes.scooter:
+        return OwnScooter
+      case TravelModes.walk:
+        return Walking
+      default:
+        break
+    }
+  }
+  const HeaderIcon = getHeaderIcon(provider, travelMode)
+  const getHeaderTextColor = (provider: MicromobilityProvider | undefined) => {
+    switch (provider) {
+      case MicromobilityProvider.rekola:
+        return '#FFFFFF'
+      case MicromobilityProvider.slovnaftbajk:
+        return '#454545'
+      case MicromobilityProvider.tier:
+        return '#454545'
+      default:
+        return '#FFFFFF'
+    }
+  }
 
   const getFirstRentedInstanceIndex = legs.findIndex(
     (leg) => leg.from.vertexType === BIKESHARE_PROPERTY
@@ -64,6 +134,8 @@ export const TextItinerary = ({
     legs,
     (leg) => leg.from.vertexType === BIKESHARE_PROPERTY
   )
+
+  const firstStop = legs.find((leg) => leg.from.vertexType === 'TRANSIT')
 
   const getDashedLine = () => {
     return <DashedLine spacing={4} dashLength={2} color={colors.darkText} />
@@ -154,13 +226,22 @@ export const TextItinerary = ({
               fill={`#${leg.routeColor}`}
             />
           )}
-          {leg.mode === LegModes.bus && (
-            <BusSvg
-              width={ICON_WIDTH}
-              height={20}
-              fill={`#${leg.routeColor}`}
-            />
-          )}
+          {leg.mode === LegModes.bus &&
+            (trolleybusLineNumbers.includes(
+              Number.parseInt(leg.routeShortName ?? '')
+            ) ? (
+              <TrolleybusSvg
+                width={ICON_WIDTH}
+                height={20}
+                fill={`#${leg.routeColor}`}
+              />
+            ) : (
+              <BusSvg
+                width={ICON_WIDTH}
+                height={20}
+                fill={`#${leg.routeColor}`}
+              />
+            ))}
         </View>
         <View style={styles.middle}>
           <View>
@@ -250,16 +331,67 @@ export const TextItinerary = ({
     })
   }
 
+  const headerTitle = (minutes = '13'): string => {
+    if (title) return title
+    switch (travelMode) {
+      case TravelModes.mhd:
+        return i18n.t('screens.PlannerScreen.mhdHeader', { minutes })
+      case TravelModes.bicycle:
+        return i18n.t('screens.FromToScreen.myBike')
+      case TravelModes.scooter:
+        return i18n.t('screens.FromToScreen.myScooter')
+      case TravelModes.walk:
+        return i18n.t('screens.FromToScreen.walk')
+      default:
+        return ''
+    }
+  }
+
   return (
     <BottomSheetScrollView style={styles.container}>
-      {(title || ProviderIcon) && (
-        <View style={[styles.card, s.horizontalMargin]}>
-          {ProviderIcon && <ProviderIcon width={30} height={30} />}
-          {title && (
-            <Text style={[styles.textMargin, styles.textBold]}>{title}</Text>
+      <View
+        style={[
+          styles.card,
+          s.horizontalPadding,
+          styles.cardHeader,
+          { backgroundColor: getHeaderBgColor(travelMode, provider) },
+        ]}
+      >
+        {HeaderIcon && <HeaderIcon width={30} height={30} />}
+        <Text
+          style={[
+            styles.textMargin,
+            styles.textBold,
+            { color: getHeaderTextColor(provider) },
+          ]}
+        >
+          {headerTitle(
+            firstStop?.startTime && //TODO Live data from getMhdStopStatusData(firstStop.id)
+              Math.floor(
+                (LocalTime.ofInstant(
+                  Instant.ofEpochMilli(parseInt(firstStop.startTime))
+                ).toSecondOfDay() -
+                  LocalTime.now().toSecondOfDay()) /
+                  60
+              ).toString()
           )}
-        </View>
-      )}
+        </Text>
+        {!title && travelMode === TravelModes.mhd && (
+          <Text
+            style={[
+              styles.textSizeBig,
+              { color: getHeaderTextColor(provider) },
+            ]}
+          >
+            {title ||
+              ` ${firstStop?.from.name}${
+                firstStop?.from.platformCode
+                  ? ' ' + firstStop?.from.platformCode
+                  : ''
+              }`}
+          </Text>
+        )}
+      </View>
       <View style={[styles.containerContent, styles.paddingVertical]}>
         {legs.map((leg, index) => {
           const startTime =
@@ -345,16 +477,13 @@ export const TextItinerary = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.white,
-    marginBottom: BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
+    backgroundColor: colors.lightLightGray,
   },
   paddingVertical: {
     paddingVertical: 20,
   },
   containerContent: {
     backgroundColor: colors.lightLightGray,
-    borderTopWidth: 2,
-    borderTopColor: colors.primary,
   },
   inline: {
     display: 'flex',
@@ -363,6 +492,11 @@ const styles = StyleSheet.create({
   },
   textMargin: {
     marginLeft: 10,
+  },
+  cardHeader: {
+    borderRadius: 0,
+    justifyContent: 'center',
+    paddingBottom: 14,
   },
   card: {
     paddingHorizontal: PADDING_HORIZONTAL,

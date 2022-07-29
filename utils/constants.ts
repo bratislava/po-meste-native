@@ -24,12 +24,16 @@ export const tierPrice = {
   translationOption: 'screens.MapScreen.micromobilityWithUnlockPriceFrom',
 }
 
-export const modeColors = {
+export const modeColors: { [key: string]: string } = {
   WALK: '#444',
   BICYCLE: '#0073e5',
   BUS: '#080',
   TRAM: '#800',
   DEFAULT: '#aaa',
 }
+
+export const trolleybusLineNumbers = [
+  33, 40, 42, 44, 45, 47, 48, 49, 60, 64, 71, 72,
+]
 
 export const API_ERROR_TEXT = 'ApiErrorText'

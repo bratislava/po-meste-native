@@ -59,7 +59,7 @@ import StationChargerInfo from './_partials/StationChargerInfo'
 
 import CurrentLocationSvg from '@icons/current-location.svg'
 
-import { customMapStyle } from './customMapStyle'
+import { customMapStyle } from '../customMapStyle'
 
 import { colors } from '@utils'
 

@@ -32,4 +32,8 @@ export const modeColors: { [key: string]: string } = {
   DEFAULT: '#aaa',
 }
 
+export const trolleybusLineNumbers = [
+  33, 40, 42, 44, 45, 47, 48, 49, 60, 64, 71, 72,
+]
+
 export const API_ERROR_TEXT = 'ApiErrorText'

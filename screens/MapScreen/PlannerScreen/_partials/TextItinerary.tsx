@@ -3,16 +3,23 @@ import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { DateTimeFormatter, Instant, LocalTime } from '@js-joda/core'
 import i18n from 'i18n-js'
 import _ from 'lodash'
-import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
 // import WheelchairSvg from '@icons/wheelchair.svg'
-import BusSvg from '@icons/bus.svg'
-import CyclingSvg from '@icons/cycling.svg'
 import EllipseSvg from '@icons/ellipse.svg'
-import ScooterSvg from '@icons/scooter.svg'
-import TramSvg from '@icons/tram.svg'
+import BusSvg from '@icons/vehicles/bus.svg'
+import CyclingSvg from '@icons/vehicles/cycling.svg'
+import ScooterSvg from '@icons/vehicles/scooter.svg'
+import TramSvg from '@icons/vehicles/tram.svg'
+import TrolleybusSvg from '@icons/vehicles/trolleybus.svg'
 import WalkingSvg from '@icons/walking.svg'
+
+import { Button, DashedLine } from '@components'
+import { useMhdStopsData } from '@hooks'
+import { LegModes, MicromobilityProvider } from '@types'
+import React, { useEffect, useState } from 'react'
+
+// import WheelchairSvg from '@icons/wheelchair.svg'
 
 import RekolaHeaderSvg from '@icons/bottom-route-headers/rekola.svg'
 import SlovnaftbajkHeaderSvg from '@icons/bottom-route-headers/slovnaftbajk.svg'
@@ -22,9 +29,7 @@ import OwnBicycle from '@icons/bottom-route-headers/own-bicycle.svg'
 import OwnScooter from '@icons/bottom-route-headers/own-scooter.svg'
 import Walking from '@icons/bottom-route-headers/walking.svg'
 
-import { Button, DashedLine } from '@components'
-import { useMhdStopsData } from '@hooks'
-import { LegModes, MicromobilityProvider, TravelModes } from '@types'
+import { TravelModes } from '@types'
 import {
   colors,
   getColor,
@@ -36,6 +41,7 @@ import {
   openProviderApp,
   s,
   STYLES,
+  trolleybusLineNumbers,
 } from '@utils'
 
 interface TextItineraryProps {
@@ -220,13 +226,22 @@ export const TextItinerary = ({
               fill={`#${leg.routeColor}`}
             />
           )}
-          {leg.mode === LegModes.bus && (
-            <BusSvg
-              width={ICON_WIDTH}
-              height={20}
-              fill={`#${leg.routeColor}`}
-            />
-          )}
+          {leg.mode === LegModes.bus &&
+            (trolleybusLineNumbers.includes(
+              Number.parseInt(leg.routeShortName ?? '')
+            ) ? (
+              <TrolleybusSvg
+                width={ICON_WIDTH}
+                height={20}
+                fill={`#${leg.routeColor}`}
+              />
+            ) : (
+              <BusSvg
+                width={ICON_WIDTH}
+                height={20}
+                fill={`#${leg.routeColor}`}
+              />
+            ))}
         </View>
         <View style={styles.middle}>
           <View>

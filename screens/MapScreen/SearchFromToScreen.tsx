@@ -13,9 +13,8 @@ import { Ionicons } from '@expo/vector-icons'
 
 import { colors, s } from '@utils'
 
-// import MhdSvg from '@icons/mhd.svg'
 // import { dummyDataPlaceHistory } from '../dummyData'
-import MhdSvg from '@icons/mhd.svg'
+import MhdSvg from '@icons/vehicles/mhd.svg'
 import MarkerSvg from '@icons/map-pin-marker.svg'
 
 interface SearchFromToScreen {

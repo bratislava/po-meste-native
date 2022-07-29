@@ -110,7 +110,7 @@ const VehicleFilterTouchable = ({
       <View>
         {isLoading && (
           <Progress.CircleSnail
-            color={colors.gray}
+            color={colors.tertiary}
             size={ICON_SIZE + 6}
             borderWidth={0}
             spinDuration={2000}

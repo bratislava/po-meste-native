@@ -6,6 +6,12 @@ import { getCachedStops, getLatestDataset, setCachedStops } from '@utils/utils'
 import { getHealth, getMhdStops } from '../utils/api'
 import { apiMhdStops } from '../utils/validation'
 
+/**
+ * A hook that provides **mhdStops** with caching, it works in the following way:
+ * - if there is no connection to the internet, the cached data is returned
+ * - checks the `/health` endpoint for `latestDataset` number and if it matches the cached one, returns the cached data
+ * - if this does not match, fetches the **mhdStops** from the server
+ */
 export default function useMhdData() {
   const netInfo = useNetInfo()
   const isConnected = netInfo.isConnected ?? false
@@ -33,35 +39,24 @@ export default function useMhdData() {
         isConnected &&
         !hasFetched &&
         ((healthData != undefined &&
-          latestDatasetData != undefined &&
+          latestDatasetData !== undefined &&
           healthData?.latestDataset !== latestDatasetData) ||
           healthError != null),
     }
   )
 
   const validatedMhdStops = useMemo(() => {
-    healthData &&
-      console.log(
-        '\x1b[92m%s\x1b[0m',
-        healthData?.latestDataset === latestDatasetData
-          ? 'Timestamp matches, NOT fetching'
-          : 'Timestamp differs, fetching'
-      )
     if (data == undefined) return cachedData
     try {
       setHasFetched(true)
       const mhdStops = apiMhdStops.validateSync(data)
-      setCachedStops(
-        'mhdStops',
-        mhdStops,
-        healthData && healthData.latestDataset
-      )
+      setCachedStops('mhdStops', mhdStops, healthData?.latestDataset)
       return mhdStops
     } catch (e: any) {
       setValidationErrors(e.errors)
       console.log(e)
     }
-  }, [data, cachedData, healthData])
+  }, [data, cachedData, healthData, latestDatasetData])
 
   return {
     data: validatedMhdStops,

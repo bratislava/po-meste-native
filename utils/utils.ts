@@ -9,19 +9,19 @@ import i18n from 'i18n-js'
 import _ from 'lodash'
 import AppLink from 'react-native-app-link'
 import { ValidationError } from 'yup'
-import { API_ERROR_TEXT } from './constants'
+import { API_ERROR_TEXT, LATEST_DATASET_INDEX } from './constants'
 import { colors } from './theme'
 import { LegProps } from './validation'
 
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import CyclingSvg from '@icons/vehicles/cycling.svg'
-import ScooterSvg from '@icons/vehicles/scooter.svg'
+import RekoloSvg from '@icons/rekolo.svg'
 import SlovnaftbajkSvg from '@icons/slovnaftbajk.svg'
 import TierSvg from '@icons/tier.svg'
-import RekoloSvg from '@icons/rekolo.svg'
+import BusSvg from '@icons/vehicles/bus.svg'
+import CyclingSvg from '@icons/vehicles/cycling.svg'
+import ScooterSvg from '@icons/vehicles/scooter.svg'
 import TramSvg from '@icons/vehicles/tram.svg'
 import TrolleybusSvg from '@icons/vehicles/trolleybus.svg'
-import BusSvg from '@icons/vehicles/bus.svg'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export const presentPrice = (price: number /* in cents */) => {
   return i18n.t('common.presentPrice', { price: (price / 100).toFixed(2) })
@@ -200,6 +200,7 @@ export const isValidationError = (error: any) =>
 export const isApiError = (error: any) =>
   error instanceof Error && error.message === API_ERROR_TEXT
 
+/** Not used as of now */
 export const getCachedStopsWithDeprecation = async (
   index: string,
   hoursUntilDeprecated = 24
@@ -232,16 +233,16 @@ export const setCachedStops = async (
 ) => {
   AsyncStorage.setItem(index, JSON.stringify(data))
   if (dataset) setLatestDataset(dataset)
-  //AsyncStorage.setItem(`${index}Timestamp`, new Date().toISOString())
 }
 
 export const getLatestDataset = async () => {
-  const latestDataSet = await AsyncStorage.getItem('latestDataset')
+  const latestDataSet = await AsyncStorage.getItem(LATEST_DATASET_INDEX)
   return latestDataSet
 }
 
 export const setLatestDataset = async (newDataSetNumber: string) => {
-  AsyncStorage.setItem('latestDataset', newDataSetNumber)
+  AsyncStorage.setItem(LATEST_DATASET_INDEX, newDataSetNumber)
+}
 export const getHeaderBgColor = (
   travelMode: TravelModes,
   provider?: MicromobilityProvider

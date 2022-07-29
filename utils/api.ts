@@ -37,9 +37,23 @@ const otpTierPlannerUrl = `https://tier.${host}/routers/default/plan`
 //   }
 // }
 
+const formatTimestamp = (date: Date) => {
+  const hours = date.getHours()
+  const minutes = date.getMinutes()
+  const seconds = date.getSeconds()
+  return `${hours < 10 ? '0' + hours : hours}:${
+    minutes < 10 ? '0' + minutes : minutes
+  }:${seconds < 10 ? '0' + seconds : seconds}`
+}
+
 // helper with a common fetch pattern for json endpoints & baked in host
 const fetchJsonFromApi = async (path: string, options?: RequestInit) => {
-  console.log('\x1b[36m%s\x1b[0m', `Fetching from '${path}'`)
+  // leaving this console.log here because it is very important to keep track of fetches
+  console.log(
+    '%s\x1b[95m%s\x1b[0m',
+    `[${formatTimestamp(new Date())}] `,
+    `Fetching from '${path}'`
+  )
   const response = await fetch(`${dataHostUrl}${path}`, options)
   if (response.ok) {
     return response.json()

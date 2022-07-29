@@ -198,3 +198,12 @@ export const isValidationError = (error: any) =>
 
 export const isApiError = (error: any) =>
   error instanceof Error && error.message === API_ERROR_TEXT
+
+export const getHeaderBgColor = (
+  travelMode: TravelModes,
+  provider?: MicromobilityProvider
+) => {
+  if (provider) return getColor(provider)
+  else if (travelMode === TravelModes.mhd) return colors.primary
+  else return colors.ownVehicleHeaderColor
+}

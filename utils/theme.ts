@@ -22,6 +22,7 @@ export const colors = {
   tierColor: '#77E4D7',
   zseColor: '#F21C0A',
   available: '#5DB56E',
+  ownVehicleHeaderColor: '#8D8D8D',
 }
 
 export const mhdDefaultColors = {

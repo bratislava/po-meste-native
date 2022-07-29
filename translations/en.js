@@ -31,8 +31,10 @@ export default {
     },
     providerNames: {
       rekola: 'Rekola',
-      slovnaftbajk: 'Slovnaftbajk',
-      tier: 'TIER',
+      slovnaftbajk: 'Slovnaft BAjk',
+      tier: 'Tier',
+      blinkee: 'Blinkee',
+      bolt: 'Bolt',
     },
   },
   screens: {
@@ -63,6 +65,7 @@ export default {
     },
     PlannerScreen: {
       screenTitle: 'Planner',
+      mhdHeader: 'in {{minutes}} min from',
       minShort: 'Transit {{count}} min',
       distanceShort: '{{count}}m',
       openApp: 'Open application {{provider}}',

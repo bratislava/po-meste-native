@@ -162,6 +162,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     borderRadius: ICON_SIZE / 2,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
   },
   iconLeft: {
     marginLeft: 20,

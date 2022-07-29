@@ -104,6 +104,7 @@ export default {
       departureText: 'Odchod',
       arrivalText: 'Príchod',
       currentPosition: 'Aktuálna poloha',
+      priceFrom: 'od {{price}}€',
     },
     SearchFromToScreen: {
       myAddresses: 'Moje adresy',

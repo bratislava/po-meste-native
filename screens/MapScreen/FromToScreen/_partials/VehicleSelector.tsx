@@ -1,14 +1,15 @@
 import React from 'react'
 import {
   ScrollView,
-  View,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  StyleSheet,
+  View,
 } from 'react-native'
 
 import { TravelModes, VehicleData } from '@types'
 import { colors } from '@utils'
+import { t } from 'i18n-js'
 
 type Props = {
   selectedVehicle: TravelModes
@@ -63,16 +64,23 @@ const VehicleSelector = ({
                   ? ` min`
                   : `? - ? min`}
               </Text>
-              <Text
-                style={[
-                  styles.vehiclePrice,
-                  selectedVehicle === vehicle.mode
-                    ? styles.vehiclePriceSelected
-                    : {},
-                ]}
-              >
-                {vehicle.priceMin}
-              </Text>
+              {vehicle.priceMin && (
+                <Text
+                  style={[
+                    styles.vehiclePrice,
+                    selectedVehicle === vehicle.mode
+                      ? styles.vehiclePriceSelected
+                      : {},
+                  ]}
+                >
+                  {t('screens.FromToScreen.priceFrom', {
+                    price: (vehicle.priceMin / 100)
+                      .toFixed(2)
+                      .toString()
+                      .replace('.', ','),
+                  })}
+                </Text>
+              )}
             </TouchableOpacity>
           )
         })}

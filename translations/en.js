@@ -102,6 +102,7 @@ export default {
       departureText: 'Departure',
       arrivalText: 'Arrival',
       currentPosition: 'Current location',
+      priceFrom: 'from {{price}}€',
     },
     SearchFromToScreen: {
       myAddresses: 'My addresses',

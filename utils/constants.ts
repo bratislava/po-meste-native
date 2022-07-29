@@ -1,5 +1,3 @@
-import i18n from 'i18n-js'
-
 export const STYLES = {
   borderRadius: 7,
 }
@@ -37,3 +35,5 @@ export const trolleybusLineNumbers = [
 ]
 
 export const API_ERROR_TEXT = 'ApiErrorText'
+
+export const LATEST_DATASET_INDEX = 'latestDataset'

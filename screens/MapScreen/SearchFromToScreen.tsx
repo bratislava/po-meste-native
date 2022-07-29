@@ -1,25 +1,25 @@
-import React, { MutableRefObject, useState, useEffect } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import i18n from 'i18n-js'
+import { Ionicons } from '@expo/vector-icons'
 import BottomSheet from '@gorhom/bottom-sheet'
+import Constants from 'expo-constants'
+import i18n from 'i18n-js'
+import React, { MutableRefObject, useEffect, useState } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import {
   GooglePlaceData,
   GooglePlaceDetail,
   GooglePlacesAutocomplete,
   GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete'
-import Constants from 'expo-constants'
-import { Ionicons } from '@expo/vector-icons'
 
 import { colors, s } from '@utils'
 
 // import { dummyDataPlaceHistory } from '../dummyData'
-import MhdSvg from '@icons/vehicles/mhd.svg'
 import MarkerSvg from '@icons/map-pin-marker.svg'
+import MhdSvg from '@icons/vehicles/mhd.svg'
 
 interface SearchFromToScreen {
   sheetRef: MutableRefObject<BottomSheet | null>
-  getMyLocation?: () => void
+  getMyLocation?: (reask?: boolean) => void
   onGooglePlaceChosen: (
     _data: GooglePlaceData,
     details: GooglePlaceDetail | null
@@ -175,7 +175,7 @@ export default function SearchFromToScreen({
             </View>
             <View style={styles.chooseFromMapRow}>
               {getMyLocation && (
-                <TouchableOpacity onPress={getMyLocation}>
+                <TouchableOpacity onPress={() => getMyLocation(true)}>
                   <View style={styles.chooseFromMap}>
                     <Ionicons
                       size={30}

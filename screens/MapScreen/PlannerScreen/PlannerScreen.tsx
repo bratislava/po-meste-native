@@ -1,35 +1,41 @@
-import React, { useRef, useMemo, useState, useCallback } from 'react'
+import BottomSheet from '@gorhom/bottom-sheet'
+import { StackScreenProps } from '@react-navigation/stack'
+import * as Location from 'expo-location'
+import googlePolyline from 'google-polyline'
+import React, {
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import {
   Platform,
   StyleSheet,
+  TouchableOpacity,
   useWindowDimensions,
   View,
-  TouchableOpacity,
 } from 'react-native'
-import { StackScreenProps } from '@react-navigation/stack'
 import MapView, { Polyline, PROVIDER_GOOGLE } from 'react-native-maps'
-import googlePolyline from 'google-polyline'
-import BottomSheet from '@gorhom/bottom-sheet'
-import * as Location from 'expo-location'
 
+import {
+  BOTTOM_TAB_NAVIGATOR_HEIGHT,
+  BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
+} from '@components'
 import { MapParamList } from '@types'
 import {
-  BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
-  BOTTOM_TAB_NAVIGATOR_HEIGHT,
-} from '@components'
-import {
-  modeColors,
-  getColor,
-  hexToRgba,
   aggregateBicycleLegs,
-  s,
-  colors,
+  getColor,
   getHeaderBgColor,
+  hexToRgba,
+  modeColors,
+  s,
 } from '@utils'
 
-import { TextItinerary } from './_partials/TextItinerary'
-import { useLocationWithPermision } from '@hooks/miscHooks'
 import CurrentLocationSvg from '@icons/current-location.svg'
+import { TextItinerary } from './_partials/TextItinerary'
+
+import { GlobalStateContext } from '@state/GlobalStateProvider'
 import { customMapStyle } from '../customMapStyle'
 
 export default function PlannerScreen({
@@ -47,7 +53,7 @@ export default function PlannerScreen({
     '95%',
   ]
   const { height } = useWindowDimensions()
-  const { getLocationWithPermission } = useLocationWithPermision()
+  const { getLocationWithPermission } = useContext(GlobalStateContext)
   // keep this in sync with the middle bottomSheetSnapPoint percentage
   const middleSnapPointMapPadding = 0.5 * (height - BOTTOM_TAB_NAVIGATOR_HEIGHT) // TODO add top bar to the equation instead of rounding down to 0.5
   const bottomMapPaddingForSheeptSnapPoints = [
@@ -74,7 +80,7 @@ export default function PlannerScreen({
   const moveMapToCurrentLocation = useCallback(
     async (
       permisionDeniedCallback: () => Promise<
-        Location.LocationObject | undefined
+        Location.LocationObject | undefined | null
       >
     ) => {
       const currentLocation = await permisionDeniedCallback()
@@ -117,8 +123,8 @@ export default function PlannerScreen({
               leg.rentedBike
                 ? getColor(provider) || '#aaa'
                 : leg.routeColor
-                  ? `#${leg.routeColor}`
-                  : modeColors[leg.mode || 'DEFAULT'],
+                ? `#${leg.routeColor}`
+                : modeColors[leg.mode || 'DEFAULT'],
               0.6
             )
             const marker = (

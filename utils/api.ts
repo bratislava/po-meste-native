@@ -1,12 +1,3 @@
-import Constants from 'expo-constants'
-import qs from 'qs'
-import {
-  apiMhdGrafikon,
-  apiOtpPlanner,
-  apiMhdStopStatus,
-  apiMhdTrip,
-} from './validation'
-import { MicromobilityProvider, TravelModesOtpApi } from '@types'
 import {
   DateTimeFormatter,
   LocalDate,
@@ -16,7 +7,16 @@ import {
 } from '@js-joda/core'
 import '@js-joda/timezone'
 import * as Sentry from '@sentry/react-native'
+import { MicromobilityProvider, TravelModesOtpApi } from '@types'
+import Constants from 'expo-constants'
+import qs from 'qs'
 import { API_ERROR_TEXT } from './constants'
+import {
+  apiMhdGrafikon,
+  apiMhdStopStatus,
+  apiMhdTrip,
+  apiOtpPlanner,
+} from './validation'
 
 const host = 'planner.bratislava.sk'
 const dataHostUrl = Constants.manifest?.extra?.apiHost || `https://live.${host}`
@@ -37,8 +37,23 @@ const otpTierPlannerUrl = `https://tier.${host}/routers/default/plan`
 //   }
 // }
 
+const formatTimestamp = (date: Date) => {
+  const hours = date.getHours()
+  const minutes = date.getMinutes()
+  const seconds = date.getSeconds()
+  return `${hours < 10 ? '0' + hours : hours}:${
+    minutes < 10 ? '0' + minutes : minutes
+  }:${seconds < 10 ? '0' + seconds : seconds}`
+}
+
 // helper with a common fetch pattern for json endpoints & baked in host
 const fetchJsonFromApi = async (path: string, options?: RequestInit) => {
+  // leaving this console.log here because it is very important to keep track of fetches
+  console.log(
+    '%s\x1b[95m%s\x1b[0m',
+    `[${formatTimestamp(new Date())}] `,
+    `Fetching from '${path}'`
+  )
   const response = await fetch(`${dataHostUrl}${path}`, options)
   if (response.ok) {
     return response.json()
@@ -58,7 +73,18 @@ const fetchJsonFromOtpApi = async (plannerAddress: string, path: string) => {
   }
 }
 
-export const getMhdStops = () => fetchJsonFromApi('/mhd/stops')
+//for testing purposes
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+export const getHealth = async () => {
+  const health = await fetchJsonFromApi('/health')
+  return health
+}
+
+export const getMhdStops = async () => {
+  console.log('\x1b[92m%s\x1b[0m', 'fetching mhdStop data')
+  return fetchJsonFromApi('/mhd/stops')
+}
 export const getMhdStopStatusData = async (id: string) =>
   apiMhdStopStatus.validateSync(await fetchJsonFromApi(`/mhd/stop/${id}`))
 
@@ -98,7 +124,7 @@ export const getSlovnaftbajkStationStatus = () =>
 export const getTierFreeBikeStatus = () =>
   fetchJsonFromApi('/tier/free_bike_status.json')
 
-export const getChargersStops = () => fetchJsonFromApi('/zse')
+export const getChargersStops = async () => fetchJsonFromApi('/zse')
 
 export const getTripPlanner = async (
   from: string,

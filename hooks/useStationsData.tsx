@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
 
+import { useNetInfo } from '@react-native-community/netinfo'
 import {
   apiRekolaStationInformation,
   apiRekolaStationStatus,
@@ -19,20 +20,26 @@ export default function useStationsData({
   stationStatusQueryKey,
   getStationStatus,
 }: StationDataProps) {
+  const netInfo = useNetInfo()
+  const isConnected = netInfo.isConnected ?? false
   const [validationErrors, setValidationErrors] = useState()
   const {
     data: dataStationInformation,
     isLoading: isLoadingStationInformation,
     error: errorStationInformation,
     refetch: refetchStationInformation,
-  } = useQuery(stationInformationQueryKey, getStationInformation)
+  } = useQuery(stationInformationQueryKey, getStationInformation, {
+    enabled: isConnected,
+  })
 
   const {
     data: dataStationStatus,
     isLoading: isLoadingStationStatus,
     error: errorStationStatus,
     refetch: refetchStationStatus,
-  } = useQuery(stationStatusQueryKey, getStationStatus)
+  } = useQuery(stationStatusQueryKey, getStationStatus, {
+    enabled: isConnected,
+  })
 
   const validatedData = useMemo(() => {
     try {
@@ -57,7 +64,7 @@ export default function useStationsData({
         })
         return merged
       }
-    } catch (e) {
+    } catch (e: any) {
       setValidationErrors(e.errors)
       console.log(e)
     }
@@ -68,8 +75,10 @@ export default function useStationsData({
     isLoading: isLoadingStationInformation || isLoadingStationStatus,
     error: errorStationInformation || errorStationStatus || validationErrors,
     refetch: () => {
-      refetchStationInformation()
-      refetchStationStatus()
+      if (isConnected) {
+        refetchStationInformation()
+        refetchStationStatus()
+      }
     },
   }
 }

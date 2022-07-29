@@ -1,10 +1,21 @@
 import React, { useContext, useState } from 'react'
-import { View, StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
-import { GlobalStateContext, VehicleProps } from '@state/GlobalStateProvider'
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components/navigation/TabBar'
-import { SvgProps } from 'react-native-svg'
+import { GlobalStateContext, VehicleProps } from '@state/GlobalStateProvider'
 import { TouchableHighlight } from 'react-native-gesture-handler'
+import { SvgProps } from 'react-native-svg'
+
+import {
+  useMhdStopsData,
+  useRekolaData,
+  useSlovnaftbajkData,
+  useTierData,
+  useZseChargersData,
+} from '@hooks'
+import { VehicleType } from '@types'
+import { colors } from '@utils/theme'
+import * as Progress from 'react-native-progress'
 
 const BOTTOM_VEHICLE_BAR_HEIGHT = 50
 const BOTTOM_VEHICLE_BAR_MARGIN_BOTTOM = 10
@@ -19,14 +30,27 @@ export const BOTTOM_VEHICLE_BAR_HEIGHT_ALL =
 const VehicleBar = () => {
   const vehiclesContext = useContext(GlobalStateContext)
 
+  const { isLoading: isLoadingMhd } = useMhdStopsData()
+  const { isLoading: isLoadingTier } = useTierData()
+  const { isLoading: isLoadingZseChargers } = useZseChargersData()
+  const { isLoading: isLoadingRekola } = useRekolaData()
+  const { isLoading: isLoadingSlovnaftbajk } = useSlovnaftbajkData()
   return (
     <View style={styles.vehicleBar}>
       {vehiclesContext.vehicleTypes?.map((vehicleType, index) => {
+        const { id } = vehicleType
+        const isLoading =
+          (id === VehicleType.mhd && isLoadingMhd) ||
+          (id === VehicleType.bicycle &&
+            (isLoadingRekola || isLoadingSlovnaftbajk)) ||
+          (id === VehicleType.chargers && isLoadingZseChargers) ||
+          (id === VehicleType.scooter && isLoadingTier)
         return (
           <VehicleFilterTouchable
             key={index}
             vehicleType={vehicleType}
             index={index}
+            isLoading={isLoading}
           />
         )
       })}
@@ -37,11 +61,13 @@ const VehicleBar = () => {
 interface VehicleFilterTouchableProps {
   vehicleType: VehicleProps
   index: number
+  isLoading: boolean
 }
 
 const VehicleFilterTouchable = ({
   vehicleType,
   index,
+  isLoading,
 }: VehicleFilterTouchableProps) => {
   const { id, icon, show } = vehicleType
   const vehiclesContext = useContext(GlobalStateContext)
@@ -75,9 +101,26 @@ const VehicleFilterTouchable = ({
     })
   }
 
-  const getVehicleIconStyled = (icon: () => React.FC<SvgProps>) => {
+  const getVehicleIconStyled = (
+    isLoading: boolean,
+    icon: () => React.FC<SvgProps>
+  ) => {
     const Icon = icon()
-    return <Icon width={ICON_SIZE} height={ICON_SIZE} />
+    return (
+      <View>
+        {isLoading && (
+          <Progress.CircleSnail
+            color={colors.tertiary}
+            size={ICON_SIZE + 6}
+            borderWidth={0}
+            spinDuration={2000}
+            thickness={3}
+            style={styles.loadingWheel}
+          />
+        )}
+        <Icon width={ICON_SIZE} height={ICON_SIZE} />
+      </View>
+    )
   }
 
   return (
@@ -95,7 +138,7 @@ const VehicleFilterTouchable = ({
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
     >
-      {getVehicleIconStyled(() => icon(isPressed ? true : show))}
+      {getVehicleIconStyled(isLoading, () => icon(isPressed ? true : show))}
     </TouchableHighlight>
   )
 }
@@ -125,6 +168,14 @@ const styles = StyleSheet.create({
   },
   iconRight: {
     marginRight: 20,
+  },
+  loadingWheel: {
+    position: 'absolute',
+    zIndex: 2,
+    top: -3,
+    left: -3,
+    width: ICON_SIZE + 6,
+    height: ICON_SIZE + 6,
   },
 })
 

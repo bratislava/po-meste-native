@@ -39,6 +39,8 @@ export const useLocationWithPermision = () => {
           //TODO Handle denied location permission
           setIsDenied(true)
           console.log('Denied location permission')
+        } else {
+          Sentry.captureException(e)
         }
         return null
       }

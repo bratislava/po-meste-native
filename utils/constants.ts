@@ -24,7 +24,7 @@ export const tierPrice = {
   translationOption: 'screens.MapScreen.micromobilityWithUnlockPriceFrom',
 }
 
-export const modeColors = {
+export const modeColors: { [key: string]: string } = {
   WALK: '#444',
   BICYCLE: '#0073e5',
   BUS: '#080',

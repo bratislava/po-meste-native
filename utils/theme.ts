@@ -3,9 +3,9 @@ export const colors = {
   secondary: '#F8D7D4',
   tertiary: '#923438',
 
-  green: 'green',
+  green: '#5DB56E',
   alert: '#FD4344',
-  error: '#d32223',
+  error: '#FA4646',
   gray: '#C3C3C3',
   lighterGray: '#b0b0b0', // 0.1 alpha
   mediumGray: '#C5C5C5',
@@ -22,6 +22,7 @@ export const colors = {
   tierColor: '#77E4D7',
   zseColor: '#F21C0A',
   available: '#5DB56E',
+  ownVehicleHeaderColor: '#8D8D8D',
 }
 
 export const mhdDefaultColors = {

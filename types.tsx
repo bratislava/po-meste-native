@@ -77,6 +77,7 @@ export type MapParamList = {
     legs: LegProps[]
     provider?: MicromobilityProvider
     isScooter?: boolean
+    travelMode: TravelModes
   }
   LineTimelineScreen: { tripId: string; stopId: string }
   LineTimetableScreen: { stopId: string; lineNumber: string }

@@ -656,6 +656,7 @@ export default function FromToScreen({
                       legs: tripChoice?.legs,
                       provider: provider,
                       isScooter: selectedVehicle === TravelModes.scooter,
+                      travelMode: selectedVehicle,
                     } as never
                   )
                 }

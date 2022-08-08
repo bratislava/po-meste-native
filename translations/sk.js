@@ -64,6 +64,14 @@ export default {
       parkingSpaces: '{{amount}} miesta',
       upcomingDepartures: 'Prichádzajúce spoje',
       timetables: 'Grafikony',
+      VehicleBar: {
+        mhd: 'MHD',
+        bikes: 'Bicykle',
+        scooters: 'Kolobežky',
+        chargers: 'Nabíjačky',
+        escooters: 'Skútre',
+        cars: 'Autá',
+      },
     },
     PlannerScreen: {
       screenTitle: 'Plánovač',

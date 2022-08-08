@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 
-import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components/navigation/TabBar'
 import { GlobalStateContext, VehicleProps } from '@state/GlobalStateProvider'
 import { TouchableHighlight } from 'react-native-gesture-handler'
 import { SvgProps } from 'react-native-svg'
@@ -15,12 +14,13 @@ import {
 } from '@hooks'
 import { VehicleType } from '@types'
 import { colors } from '@utils/theme'
+import { t } from 'i18n-js'
 import * as Progress from 'react-native-progress'
 
 const BOTTOM_VEHICLE_BAR_HEIGHT = 50
 const BOTTOM_VEHICLE_BAR_MARGIN_BOTTOM = 10
 const BOTTOM_TAB_NAVIGATOR_SPACING = 7.5
-const ICON_SIZE = 30
+const ICON_SIZE = 46
 
 export const BOTTOM_VEHICLE_BAR_HEIGHT_ALL =
   BOTTOM_VEHICLE_BAR_HEIGHT +
@@ -110,7 +110,7 @@ const VehicleFilterTouchable = ({
       <View>
         {isLoading && (
           <Progress.CircleSnail
-            color={colors.tertiary}
+            color={colors.secondary}
             size={ICON_SIZE + 6}
             borderWidth={0}
             spinDuration={2000}
@@ -118,28 +118,47 @@ const VehicleFilterTouchable = ({
             style={styles.loadingWheel}
           />
         )}
-        <Icon width={ICON_SIZE} height={ICON_SIZE} />
+        <Icon
+          width={ICON_SIZE}
+          height={ICON_SIZE}
+          style={{ width: ICON_SIZE, height: ICON_SIZE }}
+        />
       </View>
     )
   }
 
+  let label = ''
+  switch (vehicleType.id) {
+    case VehicleType.bicycle:
+      label = 'bikes'
+      break
+    case VehicleType.chargers:
+      label = 'chargers'
+      break
+    case VehicleType.scooter:
+      label = 'scooters'
+      break
+    case VehicleType.mhd:
+      label = 'mhd'
+      break
+  }
+
   return (
-    <TouchableHighlight
-      key={id}
-      underlayColor="#000000"
-      style={[
-        styles.icon,
-        index === 0 ? styles.iconLeft : {},
-        index === vehiclesContext.vehicleTypes.length - 1
-          ? styles.iconRight
-          : {},
-      ]}
-      onPress={() => onVehicleClick(id)}
-      onPressIn={() => setIsPressed(true)}
-      onPressOut={() => setIsPressed(false)}
-    >
-      {getVehicleIconStyled(isLoading, () => icon(isPressed ? true : show))}
-    </TouchableHighlight>
+    <View style={styles.vehicleFilterTouchable}>
+      <TouchableHighlight
+        key={id}
+        underlayColor="#000000"
+        style={styles.icon}
+        onPress={() => onVehicleClick(id)}
+        onPressIn={() => setIsPressed(true)}
+        onPressOut={() => setIsPressed(false)}
+      >
+        {getVehicleIconStyled(isLoading, () => icon(isPressed ? true : show))}
+      </TouchableHighlight>
+      <Text style={styles.label}>
+        {t(`screens.MapScreen.VehicleBar.${label}`)}
+      </Text>
+    </View>
   )
 }
 
@@ -148,26 +167,18 @@ const styles = StyleSheet.create({
     display: 'flex',
     flex: 1,
     flexDirection: 'row',
-    position: 'absolute',
-    bottom: BOTTOM_TAB_NAVIGATOR_HEIGHT + BOTTOM_TAB_NAVIGATOR_SPACING,
-    marginBottom: BOTTOM_VEHICLE_BAR_MARGIN_BOTTOM,
-    padding: 10,
-    width: '90%',
-    height: BOTTOM_VEHICLE_BAR_HEIGHT,
-    minHeight: BOTTOM_VEHICLE_BAR_HEIGHT,
+    flexWrap: 'wrap',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    width: '100%',
+    height: '100%',
     justifyContent: 'space-between',
     backgroundColor: 'white',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     borderRadius: ICON_SIZE / 2,
   },
   icon: {
     borderRadius: ICON_SIZE / 2,
-  },
-  iconLeft: {
-    marginLeft: 20,
-  },
-  iconRight: {
-    marginRight: 20,
   },
   loadingWheel: {
     position: 'absolute',
@@ -176,6 +187,17 @@ const styles = StyleSheet.create({
     left: -3,
     width: ICON_SIZE + 6,
     height: ICON_SIZE + 6,
+  },
+  vehicleFilterTouchable: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  label: {
+    fontSize: 10,
+    fontWeight: '700',
+    marginTop: 5,
   },
 })
 

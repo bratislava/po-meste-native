@@ -1,32 +1,33 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
-import { useQuery } from 'react-query'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
+import { useNavigation } from '@react-navigation/native'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
+import { useQuery } from 'react-query'
 
-import { LocalDateTime, Duration } from '@js-joda/core'
+import { Duration, LocalDateTime } from '@js-joda/core'
 
 import {
   BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
-  LoadingView,
-  LineNumber,
   ErrorView,
+  LineNumber,
+  LoadingView,
 } from '@components'
+import { GlobalStateContext } from '@state/GlobalStateProvider'
+import { TransitVehicleType } from '@types'
 import {
-  MhdStopProps,
+  colors,
   getMhdStopStatusData,
   getVehicle,
-  colors,
   mhdDefaultColors,
+  MhdStopProps,
   s,
 } from '@utils'
-import { TransitVehicleType } from '@types'
-import { GlobalStateContext } from '@state/GlobalStateProvider'
 
-import MhdStopSignSvg from '@icons/stop-sign.svg'
-import IsLiveSvg from '@icons/is-live.svg'
+import LineFilterTile from '@components/LineFilterTile'
 import ForwardMhdStopSvg from '@icons/forward-mhd-stop.svg'
+import IsLiveSvg from '@icons/is-live.svg'
+import MhdStopSignSvg from '@icons/stop-sign.svg'
 
 interface UpcomingDeparturesProps {
   station: MhdStopProps
@@ -65,7 +66,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
     color: string = mhdDefaultColors.grey
   ) => {
     const Icon = getVehicle(vehicleType)
-    return <Icon width={17} height={17} fill={color} />
+    return <Icon width={18} height={18} fill={color} />
   }
 
   useEffect(() => {
@@ -141,41 +142,14 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
         <ScrollView horizontal contentContainerStyle={styles.secondRow}>
           {data?.allLines?.map((departure, index) => {
             const isActive = filtersLineNumber.includes(departure.lineNumber)
-
             return (
-              <TouchableOpacity
+              <LineFilterTile
                 key={index}
-                style={[
-                  styles.linkFilter,
-                  {
-                    marginLeft: index ? 5 : 0,
-                    backgroundColor: `${
-                      isActive
-                        ? '#' + departure.lineColor
-                        : colors.lightLightGray
-                    }`,
-                    borderColor: isActive
-                      ? '#' + departure.lineColor
-                      : colors.gray,
-                  },
-                ]} //TODO add colors https://inovaciebratislava.atlassian.net/browse/PLAN-238
+                departure={departure}
+                index={index}
+                isActive={isActive}
                 onPress={() => applyFilter(departure.lineNumber)}
-              >
-                <View style={s.icon}>
-                  {getVehicleIconStyledFilter(
-                    departure.vehicleType,
-                    isActive ? 'white' : colors.gray
-                  )}
-                </View>
-                <Text
-                  style={[
-                    { color: isActive ? 'white' : colors.gray },
-                    s.boldText,
-                  ]}
-                >
-                  {departure.lineNumber}
-                </Text>
-              </TouchableOpacity>
+              />
             )
           })}
         </ScrollView>
@@ -286,14 +260,6 @@ const styles = StyleSheet.create({
   },
   contentWrapper: {
     paddingBottom: BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
-  },
-  linkFilter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 7,
-    paddingHorizontal: 12,
-    borderWidth: 2,
-    borderRadius: 10,
   },
   scrollingVehiclesData: {
     paddingVertical: 5,

@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
 export const s = StyleSheet.create({
   icon: {
-    marginRight: 10,
+    marginRight: 9,
   },
   lineNumber: {
     borderRadius: 5,

@@ -740,7 +740,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   markerLabelContainer: {
-    marginLeft: 5.5,
+    marginLeft: 5,
     marginTop: 18,
     backgroundColor: 'white',
     borderColor: colors.primary,

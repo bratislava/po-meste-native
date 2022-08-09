@@ -1,22 +1,22 @@
-import React, { useContext } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import { useQuery } from 'react-query'
-import { useNavigation } from '@react-navigation/core'
-import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
-import { LineNumber } from '@components/LineNumber'
 import ErrorView from '@components/ErrorView'
+import { LineNumber } from '@components/LineNumber'
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
+import { useNavigation } from '@react-navigation/core'
+import React, { useContext } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { useQuery } from 'react-query'
 
-import {
-  MhdStopProps,
-  getMhdStopStatusData,
-  s,
-  getVehicle,
-  colors,
-  mhdDefaultColors,
-} from '@utils'
 import { LoadingView } from '@components'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 import { TransitVehicleType } from '@types'
+import {
+  colors,
+  getMhdStopStatusData,
+  getVehicle,
+  mhdDefaultColors,
+  MhdStopProps,
+  s,
+} from '@utils'
 
 import MhdStopSignSvg from '@icons/stop-sign.svg'
 
@@ -102,6 +102,7 @@ const Timetables = ({ station }: TimetablesProps) => {
                 <LineNumber
                   number={departure.lineNumber}
                   color={departure.lineColor}
+                  vehicleType={departure.vehicleType}
                 />
                 <Text style={[s.blackText, styles.finalStation]}>
                   {departure.usualFinalStop}

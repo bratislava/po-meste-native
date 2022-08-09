@@ -654,7 +654,6 @@ export default function MapScreen() {
           VEHICLE_BAR_SHEET_HEIGHT_COLLAPSED,
           VEHICLE_BAR_SHEET_HEIGHT_EXPANDED,
         ]}
-        enablePanDownToClose={false}
         onChange={(index) => setVehicleSheetIndex(index)}
       >
         <VehicleBar />
@@ -662,7 +661,7 @@ export default function MapScreen() {
       <BottomSheet
         handleIndicatorStyle={styles.handleStyle}
         ref={bottomSheetRef}
-        style={{ zIndex: 3 }}
+        style={{ zIndex: 2 }}
         index={-1}
         snapPoints={bottomSheetSnapPoints}
         enablePanDownToClose
@@ -740,7 +739,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   markerLabelContainer: {
-    marginLeft: 5,
+    marginLeft: 5.5,
     marginTop: 18,
     backgroundColor: 'white',
     borderColor: colors.primary,

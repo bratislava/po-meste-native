@@ -156,25 +156,11 @@ export const getTripPlanner = async (
       wheelchair: 'false',
       debugItineraryFilter: 'false',
       locale: 'en',
+      allowedVehicleRentalNetworks: plannerApi?.toLowerCase(),
     },
     { addQueryPrefix: true }
   )
-  switch (plannerApi) {
-    case MicromobilityProvider.rekola:
-      return apiOtpPlanner.validateSync(
-        await fetchJsonFromOtpApi(otpRekolaPlannerUrl, data)
-      )
-    case MicromobilityProvider.slovnaftbajk:
-      return apiOtpPlanner.validateSync(
-        await fetchJsonFromOtpApi(otpSlovnaftbajkPlannerUrl, data)
-      )
-    case MicromobilityProvider.tier:
-      return apiOtpPlanner.validateSync(
-        await fetchJsonFromOtpApi(otpTierPlannerUrl, data)
-      )
-    default:
-      return apiOtpPlanner.validateSync(
-        await fetchJsonFromOtpApi(otpPlannerUrl, data)
-      )
-  }
+  return apiOtpPlanner.validateSync(
+    await fetchJsonFromOtpApi(otpPlannerUrl, data)
+  )
 }

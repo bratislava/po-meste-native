@@ -36,10 +36,11 @@ const Timetables = ({ station }: TimetablesProps) => {
   )
 
   const getVehicleIconStyled = (
-    vehicleType?: TransitVehicleType,
-    color: string = mhdDefaultColors.grey
+    color: string = mhdDefaultColors.grey,
+    lineNumber?: string,
+    vehicleType?: TransitVehicleType
   ) => {
-    const Icon = getVehicle(vehicleType)
+    const Icon = getVehicle(vehicleType, lineNumber)
     return <Icon width={30} height={30} fill={color} />
   }
 
@@ -93,10 +94,11 @@ const Timetables = ({ station }: TimetablesProps) => {
               <View style={styles.departureLeft}>
                 <View key={index} style={s.icon}>
                   {getVehicleIconStyled(
-                    departure.vehicleType, // TODO waits for https://inovaciebratislava.atlassian.net/browse/PLAN-274
                     departure?.lineColor
                       ? `#${departure?.lineColor}`
-                      : undefined
+                      : undefined,
+                    departure.lineNumber,
+                    departure.vehicleType // TODO waits for https://inovaciebratislava.atlassian.net/browse/PLAN-274
                   )}
                 </View>
                 <LineNumber

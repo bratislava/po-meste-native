@@ -20,10 +20,11 @@ const LineFilterTile = ({
   onPress,
 }: LineFilterTileProps) => {
   const getVehicleIconStyledFilter = (
-    vehicleType?: TransitVehicleType,
-    color: string = mhdDefaultColors.grey
+    color: string = mhdDefaultColors.grey,
+    lineNumber: string,
+    vehicleType?: TransitVehicleType
   ) => {
-    const Icon = getVehicle(vehicleType)
+    const Icon = getVehicle(vehicleType, lineNumber)
     return <Icon width={18} height={18} fill={color} />
   }
 
@@ -43,8 +44,9 @@ const LineFilterTile = ({
     >
       <View style={styles.icon}>
         {getVehicleIconStyledFilter(
-          departure.vehicleType,
-          isActive ? 'white' : colors.gray
+          isActive ? 'white' : colors.gray,
+          departure.lineNumber,
+          departure.vehicleType
         )}
       </View>
       <Text style={[{ color: isActive ? 'white' : colors.gray }, s.boldText]}>
@@ -59,8 +61,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 7,
-    paddingHorizontal: 6.5,
+    paddingVertical: 5,
+    paddingHorizontal: 4.5,
     minWidth: 60,
     borderWidth: 2,
     borderRadius: 10,

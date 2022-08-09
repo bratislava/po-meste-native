@@ -45,6 +45,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
   )
 
   const [filtersLineNumber, setFiltersLineNumber] = useState<string[]>([])
+  const [allLineNumbers, setAllLineNumbers] = useState<string[]>([])
 
   useEffect(() => {
     const interval = setInterval(() => refetch(), 10000)
@@ -54,26 +55,22 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
   }, [refetch])
 
   const getVehicleIconStyled = (
-    vehicleType?: TransitVehicleType,
-    color: string = mhdDefaultColors.grey
+    color: string = mhdDefaultColors.grey,
+    lineNumber: string,
+    vehicleType?: TransitVehicleType
   ) => {
-    const Icon = getVehicle(vehicleType)
+    const Icon = getVehicle(vehicleType, lineNumber)
     return <Icon height={27} width={27} fill={color} />
-  }
-
-  const getVehicleIconStyledFilter = (
-    vehicleType?: TransitVehicleType,
-    color: string = mhdDefaultColors.grey
-  ) => {
-    const Icon = getVehicle(vehicleType)
-    return <Icon width={18} height={18} fill={color} />
   }
 
   useEffect(() => {
     if (data?.allLines) {
-      setFiltersLineNumber(
-        data?.allLines?.map((singleLine) => singleLine.lineNumber)
-      )
+      const uniqueLineNumbers = [
+        ...new Set(data?.allLines?.map((line) => line.lineNumber)),
+      ]
+      console.log({ uniqueLineNumbers })
+      setAllLineNumbers(uniqueLineNumbers)
+      setFiltersLineNumber(uniqueLineNumbers)
     }
   }, [data])
 
@@ -82,10 +79,12 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
       const index = filtersLineNumber.indexOf(lineNumber)
       if (index > -1) {
         if (
-          data?.allLines &&
-          filtersLineNumber.length === data.allLines.length
+          allLineNumbers &&
+          filtersLineNumber.length === allLineNumbers.length
         ) {
           setFiltersLineNumber([lineNumber])
+        } else if (filtersLineNumber.length === 1 && allLineNumbers) {
+          setFiltersLineNumber(allLineNumbers)
         } else {
           setFiltersLineNumber((oldFilters) =>
             oldFilters.filter((value) => value !== lineNumber)
@@ -95,7 +94,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
         setFiltersLineNumber((oldFilters) => oldFilters.concat(lineNumber))
       }
     },
-    [data?.allLines, filtersLineNumber]
+    [allLineNumbers, filtersLineNumber]
   )
 
   if (!isLoading && error)
@@ -140,18 +139,26 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
           </View>
         </View>
         <ScrollView horizontal contentContainerStyle={styles.secondRow}>
-          {data?.allLines?.map((departure, index) => {
-            const isActive = filtersLineNumber.includes(departure.lineNumber)
-            return (
-              <LineFilterTile
-                key={index}
-                departure={departure}
-                index={index}
-                isActive={isActive}
-                onPress={() => applyFilter(departure.lineNumber)}
-              />
+          {/*filtering unique line numbers*/}
+          {data?.allLines
+            ?.filter(
+              (value, index, self) =>
+                self.findIndex(
+                  (departure) => departure.lineNumber === value.lineNumber
+                ) === index
             )
-          })}
+            .map((departure, index) => {
+              const isActive = filtersLineNumber.includes(departure.lineNumber)
+              return (
+                <LineFilterTile
+                  key={index}
+                  departure={departure}
+                  index={index}
+                  isActive={isActive}
+                  onPress={() => applyFilter(departure.lineNumber)}
+                />
+              )
+            })}
         </ScrollView>
       </View>
       <BottomSheetScrollView
@@ -199,10 +206,11 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
                 <View style={styles.departureLeft}>
                   <View key={index} style={s.icon}>
                     {getVehicleIconStyled(
-                      departure.vehicleType,
                       departure?.lineColor
                         ? `#${departure?.lineColor}`
-                        : undefined
+                        : undefined,
+                      departure.lineNumber,
+                      departure.vehicleType
                     )}
                   </View>
                   <LineNumber

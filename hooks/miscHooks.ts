@@ -1,3 +1,5 @@
+import { useNetInfo } from '@react-native-community/netinfo'
+import { getHealth } from '@utils/api'
 import * as Location from 'expo-location'
 import i18n from 'i18n-js'
 import { useCallback, useState } from 'react'
@@ -8,6 +10,7 @@ import {
   Linking,
   Platform,
 } from 'react-native'
+import { useQuery } from 'react-query'
 
 export const nativeAlert = (
   message?: string | false,
@@ -81,4 +84,17 @@ export const useLocationWithPermision = () => {
     [getLocation]
   )
   return { getLocationWithPermission }
+}
+
+export const useHealthData = () => {
+  const netInfo = useNetInfo()
+  const isConnected = netInfo.isConnected ?? false
+  const [hasFetched, setHasFetched] = useState(false)
+  const { data, error } = useQuery('getHealth', getHealth, {
+    enabled: isConnected,
+  })
+  return {
+    data,
+    error,
+  }
 }

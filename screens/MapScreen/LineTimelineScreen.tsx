@@ -53,7 +53,9 @@ export default function LineTimelineScreen({
   if (!isLoading && error)
     return (
       <ErrorView
-        errorMessage={i18n.t('dataLineTimelineScreenError')}
+        errorMessage={i18n.t(
+          'components.ErrorView.dataLineTimelineScreenError'
+        )}
         error={error}
         action={refetch}
       />

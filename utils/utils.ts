@@ -9,7 +9,11 @@ import i18n from 'i18n-js'
 import _ from 'lodash'
 import AppLink from 'react-native-app-link'
 import { ValidationError } from 'yup'
-import { API_ERROR_TEXT, LATEST_DATASET_INDEX } from './constants'
+import {
+  API_ERROR_TEXT,
+  LATEST_DATASET_INDEX,
+  trolleybusLineNumbers,
+} from './constants'
 import { colors } from './theme'
 import { LegProps } from './validation'
 
@@ -132,14 +136,20 @@ export const getTextColor = (provider: MicromobilityProvider) => {
   }
 }
 
-export const getVehicle = (vehicletype?: TransitVehicleType) => {
+export const getVehicle = (
+  vehicletype?: TransitVehicleType,
+  lineNumber?: string
+) => {
+  const isTrolleybus = lineNumber
+    ? trolleybusLineNumbers.includes(lineNumber)
+    : false
   switch (vehicletype) {
     case TransitVehicleType.trolleybus:
       return TrolleybusSvg
     case TransitVehicleType.tram:
       return TramSvg
     case TransitVehicleType.bus:
-      return BusSvg
+      return isTrolleybus ? TrolleybusSvg : BusSvg
     default:
       return BusSvg
   }

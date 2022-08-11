@@ -1,3 +1,4 @@
+import { tramNumbers } from '@utils/constants'
 import { mhdDefaultColors } from '@utils/theme'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
@@ -14,11 +15,18 @@ export const LineNumber = ({
   color = mhdDefaultColors.grey,
   vehicleType,
 }: LineNumberProps) => {
+  const isTramNumber =
+    typeof number === 'string'
+      ? tramNumbers.includes(Number.parseInt(number))
+      : tramNumbers.includes(number)
   return (
     <View
       style={[
         styles.container,
-        vehicleType === TransitVehicleType.tram ? styles.tram : null,
+        vehicleType === TransitVehicleType.tram ||
+        (!vehicleType && isTramNumber)
+          ? styles.tram
+          : null,
         {
           backgroundColor: color.length === 6 ? `#${color}` : color,
         },

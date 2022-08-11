@@ -1,18 +1,18 @@
+import i18n from 'i18n-js'
 import React from 'react'
-import { Text, View, StyleSheet, useWindowDimensions } from 'react-native'
+import { StyleSheet, Text, useWindowDimensions, View } from 'react-native'
 import {
-  TabView,
-  TabBar,
-  SceneRendererProps,
   NavigationState,
   Route,
+  SceneRendererProps,
+  TabBar,
+  TabView,
 } from 'react-native-tab-view'
-import i18n from 'i18n-js'
 
-import { MhdStopProps, colors } from '@utils'
+import { colors, MhdStopProps } from '@utils'
 
-import UpcomingDepartures from './_partials/UpcomingDepartures'
 import Timetables from './_partials/Timetables'
+import UpcomingDepartures from './_partials/UpcomingDepartures'
 
 interface StationMhdInfoProps {
   station: MhdStopProps
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     borderBottomColor: colors.primary,
-    borderBottomWidth: 2,
+    borderBottomWidth: 5,
   },
   tabBarIndicator: { display: 'none' },
   tabBarTab: {
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'stretch',
     padding: 0,
-    height: 36,
+    height: 34,
   },
   tabBarTabLabel: {
     backgroundColor: 'transparent',
@@ -112,8 +112,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
-    borderTopLeftRadius: 3,
-    borderTopRightRadius: 3,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   tabBarTabLabelFocused: {
     backgroundColor: colors.primary,
@@ -121,8 +121,8 @@ const styles = StyleSheet.create({
   tabBarTabLabelText: {
     textTransform: 'uppercase',
     color: colors.darkText,
-    position: 'absolute',
-    top: 12,
+    lineHeight: 16,
+    marginBottom: 6,
   },
   tabBarTabLabelTextFocused: {
     color: 'white',

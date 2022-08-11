@@ -21,9 +21,6 @@ import {
 const host = 'planner.bratislava.sk'
 const dataHostUrl = Constants.manifest?.extra?.apiHost || `https://live.${host}`
 const otpPlannerUrl = `https://api.${host}/otp/routers/default/plan` // TODO use otp.planner.bratislava.sk
-const otpRekolaPlannerUrl = `https://rekola.${host}/routers/default/plan`
-const otpSlovnaftbajkPlannerUrl = `https://slovnaftbajk.${host}/routers/default/plan`
-const otpTierPlannerUrl = `https://tier.${host}/routers/default/plan`
 
 // we should throw throwables only, so it's useful to extend Error class to contain useful info
 // export class ApiError extends Error {
@@ -156,25 +153,11 @@ export const getTripPlanner = async (
       wheelchair: 'false',
       debugItineraryFilter: 'false',
       locale: 'en',
+      allowedVehicleRentalNetworks: plannerApi?.toLowerCase(),
     },
     { addQueryPrefix: true }
   )
-  switch (plannerApi) {
-    case MicromobilityProvider.rekola:
-      return apiOtpPlanner.validateSync(
-        await fetchJsonFromOtpApi(otpRekolaPlannerUrl, data)
-      )
-    case MicromobilityProvider.slovnaftbajk:
-      return apiOtpPlanner.validateSync(
-        await fetchJsonFromOtpApi(otpSlovnaftbajkPlannerUrl, data)
-      )
-    case MicromobilityProvider.tier:
-      return apiOtpPlanner.validateSync(
-        await fetchJsonFromOtpApi(otpTierPlannerUrl, data)
-      )
-    default:
-      return apiOtpPlanner.validateSync(
-        await fetchJsonFromOtpApi(otpPlannerUrl, data)
-      )
-  }
+  return apiOtpPlanner.validateSync(
+    await fetchJsonFromOtpApi(otpPlannerUrl, data)
+  )
 }

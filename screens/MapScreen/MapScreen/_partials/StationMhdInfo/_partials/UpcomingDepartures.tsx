@@ -68,7 +68,6 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
       const uniqueLineNumbers = [
         ...new Set(data?.allLines?.map((line) => line.lineNumber)),
       ]
-      console.log({ uniqueLineNumbers })
       setAllLineNumbers(uniqueLineNumbers)
       setFiltersLineNumber(uniqueLineNumbers)
     }

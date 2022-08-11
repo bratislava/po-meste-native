@@ -37,6 +37,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
                 isFocused={isFocused}
                 IconComponent={(options.tabBarIcon || TicketSvg) as React.FC}
                 iconSize={index === 1 ? 42 : 30}
+                index={index}
               />
             </View>
           </TouchableWithoutFeedback>
@@ -53,20 +54,23 @@ const TabItem = ({
   isFocused,
   IconComponent,
   iconSize,
+  index,
 }: {
   label: string
   isFocused: boolean
   IconComponent: React.FC<{ fill: string; width: number; height: number }>
   iconSize: number
+  index: number
 }) => {
   return (
     <View style={styles.tabItemWrapper}>
-      <View
-        style={{
-          ...styles.tabItemShadow,
-          opacity: isFocused ? 1 : 0,
-        }}
-      />
+      {index === 1 && (
+        <View
+          style={{
+            ...styles.tabItemShadow,
+          }}
+        />
+      )}
       <View style={styles.tabItemBackground} />
       <View style={styles.tabItem}>
         <IconComponent

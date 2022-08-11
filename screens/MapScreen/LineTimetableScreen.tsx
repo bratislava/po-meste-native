@@ -1,24 +1,23 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Ionicons } from '@expo/vector-icons'
+import { DateTimeFormatter, Instant, LocalDate } from '@js-joda/core'
+import { StackScreenProps } from '@react-navigation/stack'
+import i18n from 'i18n-js'
 import _ from 'lodash'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ScrollView,
   StyleSheet,
   Text,
-  View,
   TouchableOpacity,
+  View,
 } from 'react-native'
-import i18n from 'i18n-js'
-import { StackScreenProps } from '@react-navigation/stack'
-import { useQuery } from 'react-query'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
-import { DateTimeFormatter, Instant, LocalDate } from '@js-joda/core'
-import { Ionicons } from '@expo/vector-icons'
+import { useQuery } from 'react-query'
 
-import { colors, mhdDefaultColors, getMhdGrafikon, getVehicle, s } from '@utils'
+import { ErrorView, LineNumber, LoadingView } from '@components'
 import { MapParamList, TimetableType } from '@types'
-import { ErrorView, LoadingView, LineNumber } from '@components'
+import { colors, getMhdGrafikon, getVehicle, mhdDefaultColors, s } from '@utils'
 
-import TicketSvg from '@icons/ticket.svg'
 import ArrowRight from '@icons/arrow-right.svg'
 
 export default function LineTimetableScreen({
@@ -127,7 +126,7 @@ export default function LineTimetableScreen({
   }
 
   const getVehicleIconStyledFilter = useCallback(() => {
-    const Icon = getVehicle(data?.vehicleType)
+    const Icon = getVehicle(data?.vehicleType, data?.lineNumber)
     return (
       <Icon
         width={24}

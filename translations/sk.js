@@ -62,8 +62,16 @@ export default {
       parkingPrice: 'cena parkovania: ',
       freeParking: 'voľné parkovanie: ',
       parkingSpaces: '{{amount}} miesta',
-      upcomingDepartures: 'Prichádzajúce spoje',
-      timetables: 'Grafikony',
+      upcomingDepartures: 'Najbližšie odchody',
+      timetables: 'Cestovné poriadky',
+      VehicleBar: {
+        mhd: 'MHD',
+        bikes: 'Bicykle',
+        scooters: 'Kolobežky',
+        chargers: 'Nabíjačky',
+        escooters: 'Skútre',
+        cars: 'Autá',
+      },
     },
     PlannerScreen: {
       screenTitle: 'Plánovač',

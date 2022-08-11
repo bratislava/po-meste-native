@@ -227,9 +227,7 @@ export const TextItinerary = ({
             />
           )}
           {leg.mode === LegModes.bus &&
-            (trolleybusLineNumbers.includes(
-              Number.parseInt(leg.routeShortName ?? '')
-            ) ? (
+            (trolleybusLineNumbers.includes(leg.routeShortName ?? '') ? (
               <TrolleybusSvg
                 width={ICON_WIDTH}
                 height={20}

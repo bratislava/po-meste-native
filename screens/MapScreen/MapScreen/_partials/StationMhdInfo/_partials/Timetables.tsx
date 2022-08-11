@@ -1,22 +1,22 @@
-import React, { useContext } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import { useQuery } from 'react-query'
-import { useNavigation } from '@react-navigation/core'
-import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
-import { LineNumber } from '@components/LineNumber'
 import ErrorView from '@components/ErrorView'
+import { LineNumber } from '@components/LineNumber'
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
+import { useNavigation } from '@react-navigation/core'
+import React, { useContext } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { useQuery } from 'react-query'
 
-import {
-  MhdStopProps,
-  getMhdStopStatusData,
-  s,
-  getVehicle,
-  colors,
-  mhdDefaultColors,
-} from '@utils'
 import { LoadingView } from '@components'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 import { TransitVehicleType } from '@types'
+import {
+  colors,
+  getMhdStopStatusData,
+  getVehicle,
+  mhdDefaultColors,
+  MhdStopProps,
+  s,
+} from '@utils'
 
 import MhdStopSignSvg from '@icons/stop-sign.svg'
 
@@ -36,10 +36,11 @@ const Timetables = ({ station }: TimetablesProps) => {
   )
 
   const getVehicleIconStyled = (
-    vehicleType?: TransitVehicleType,
-    color: string = mhdDefaultColors.grey
+    color: string = mhdDefaultColors.grey,
+    lineNumber?: string,
+    vehicleType?: TransitVehicleType
   ) => {
-    const Icon = getVehicle(vehicleType)
+    const Icon = getVehicle(vehicleType, lineNumber)
     return <Icon width={30} height={30} fill={color} />
   }
 
@@ -93,15 +94,17 @@ const Timetables = ({ station }: TimetablesProps) => {
               <View style={styles.departureLeft}>
                 <View key={index} style={s.icon}>
                   {getVehicleIconStyled(
-                    departure.vehicleType, // TODO waits for https://inovaciebratislava.atlassian.net/browse/PLAN-274
                     departure?.lineColor
                       ? `#${departure?.lineColor}`
-                      : undefined
+                      : undefined,
+                    departure.lineNumber,
+                    departure.vehicleType // TODO waits for https://inovaciebratislava.atlassian.net/browse/PLAN-274
                   )}
                 </View>
                 <LineNumber
                   number={departure.lineNumber}
                   color={departure.lineColor}
+                  vehicleType={departure.vehicleType}
                 />
                 <Text style={[s.blackText, styles.finalStation]}>
                   {departure.usualFinalStop}

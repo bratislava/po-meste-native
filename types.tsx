@@ -3,8 +3,8 @@
  * https://reactnavigation.org/docs/typescript/
  */
 
-import { ChargerStationProps, LegProps } from './utils/validation'
 import { SvgProps } from 'react-native-svg'
+import { LegProps } from './utils/validation'
 
 export type TicketName = 'ticket40min' | 'ticket70min' | 'ticket24hours'
 
@@ -158,4 +158,11 @@ export enum PreferredLanguage {
   en = 'en',
   sk = 'sk',
   auto = 'auto',
+}
+
+export type Departure = {
+  lineNumber: string
+  lineColor: string
+  usualFinalStop?: string
+  vehicleType?: TransitVehicleType
 }

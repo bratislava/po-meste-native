@@ -1,3 +1,7 @@
+import { DateTimeFormatter, LocalTime } from '@js-joda/core'
+import { useNavigation } from '@react-navigation/native'
+import { StackScreenProps } from '@react-navigation/stack'
+import i18n from 'i18n-js'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ScrollView,
@@ -6,16 +10,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import { StackScreenProps } from '@react-navigation/stack'
-import { useNavigation } from '@react-navigation/native'
-import { LocalTime, DateTimeFormatter } from '@js-joda/core'
 import { useQuery } from 'react-query'
-import i18n from 'i18n-js'
 
-import { MapParamList } from '@types'
+import { DashedLine, ErrorView, LineNumber, LoadingView } from '@components'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
-import { colors, mhdDefaultColors, getMhdTrip, s, getVehicle } from '@utils'
-import { LineNumber, LoadingView, DashedLine, ErrorView } from '@components'
+import { MapParamList } from '@types'
+import { colors, getMhdTrip, getVehicle, mhdDefaultColors, s } from '@utils'
 
 export default function LineTimelineScreen({
   route,
@@ -40,7 +40,7 @@ export default function LineTimelineScreen({
   }, [elementPosition, scrollViewRef])
 
   const getVehicleIconStyledFilter = useCallback(() => {
-    const Icon = getVehicle(data?.vehicleType)
+    const Icon = getVehicle(data?.vehicleType, data?.lineNumber)
     return (
       <Icon
         width={24}

@@ -965,7 +965,7 @@ const styles = StyleSheet.create({
   textSizeBig: {
     color: colors.darkText,
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: 'bold',
     textTransform: 'uppercase',
     marginVertical: 12,
   },

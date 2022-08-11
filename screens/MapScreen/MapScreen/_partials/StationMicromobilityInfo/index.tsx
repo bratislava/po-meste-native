@@ -1,20 +1,19 @@
-import React, { useCallback } from 'react'
-import { Text, View, StyleSheet } from 'react-native'
-import AppLink from 'react-native-app-link'
 import i18n from 'i18n-js'
+import React, { useCallback } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+import AppLink from 'react-native-app-link'
 
-import {
-  FreeBikeStatusProps,
-  StationMicromobilityProps,
-  colors,
-  s,
-  rekolaPrice,
-  slovnaftbajkPrice,
-  tierPrice,
-  presentPrice,
-} from '@utils'
 import { Button } from '@components'
 import { MicromobilityProvider } from '@types'
+import {
+  colors,
+  FreeBikeStatusProps,
+  rekolaPrice,
+  s,
+  slovnaftbajkPrice,
+  StationMicromobilityProps,
+  tierPrice,
+} from '@utils'
 
 import RekoloVehicleIconSvg from '@images/rekolo-vehicle-icon.svg'
 import SlovnaftbajkVehicleIconSvg from '@images/slovnaftbajk-vehicle-icon.svg'
@@ -173,7 +172,7 @@ const StationMicromobilityInfo = ({
                   provider === MicromobilityProvider.slovnaftbajk) && {
                   color: colors.darkText,
                 },
-                { fontWeight: '700' },
+                { fontWeight: 'bold' },
               ]}
               onPress={() => {
                 switch (provider) {

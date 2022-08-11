@@ -62,6 +62,14 @@ export default {
       parkingSpaces: '{{amount}} parking spaces',
       upcomingDepartures: 'Upcoming Departures',
       timetables: 'Timetables',
+      VehicleBar: {
+        mhd: 'MHD',
+        bikes: 'Bikes',
+        scooters: 'Scooters',
+        chargers: 'Chargers',
+        escooters: 'Scooters',
+        cars: 'Cars',
+      },
     },
     PlannerScreen: {
       screenTitle: 'Planner',

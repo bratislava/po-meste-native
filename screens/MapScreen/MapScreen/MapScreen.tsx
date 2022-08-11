@@ -15,6 +15,7 @@ import {
   ImageURISource,
   Platform,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
 } from 'react-native'
@@ -63,6 +64,9 @@ import { colors } from '@utils'
 const MIN_DELTA_FOR_XS_MARKER = 0.05
 const MIN_DELTA_FOR_SM_MARKER = 0.03
 const MIN_DELTA_FOR_MD_MARKER = 0.01
+
+const VEHICLE_BAR_SHEET_HEIGHT_COLLAPSED = BOTTOM_TAB_NAVIGATOR_HEIGHT + 35
+const VEHICLE_BAR_SHEET_HEIGHT_EXPANDED = BOTTOM_TAB_NAVIGATOR_HEIGHT + 120 // + 195 for 2 rows
 
 const SPACING = 7.5
 
@@ -173,7 +177,10 @@ export default function MapScreen() {
   const [showCurrentLocationButton, setShowCurrentLocationButton] =
     useState(true)
 
+  const [vehicleSheetIndex, setVehicleSheetIndex] = useState(1)
+
   const bottomSheetRef = useRef<BottomSheet>(null)
+  const vehicleSheetRef = useRef<BottomSheet>(null)
 
   const bottomSheetSnapPoints = useMemo(() => {
     if (selectedMicromobilityStation) {
@@ -181,7 +188,7 @@ export default function MapScreen() {
     } else {
       return ['50%', '95%']
     }
-  }, [selectedMicromobilityStation])
+  }, [selectedMicromobilityStation, selectedMhdStation, selectedChargerStation])
 
   const isFocused = useIsFocused()
 
@@ -228,7 +235,10 @@ export default function MapScreen() {
       selectedMicromobilityStation ||
       selectedChargerStation
     ) {
+      vehicleSheetRef.current?.snapToIndex(0)
       bottomSheetRef.current?.snapToIndex(0)
+    } else {
+      bottomSheetRef.current?.snapToIndex(-1)
     }
   }, [
     selectedMhdStation,
@@ -237,27 +247,61 @@ export default function MapScreen() {
     bottomSheetRef,
   ])
 
-  const handleSheetClose = () => {
-    setSelectedMhdStation(undefined)
-    setSelectedBikeStation(undefined)
-    setSelectedMicromobilityProvider(undefined)
-    setSelectedChargerStation(undefined)
+  const operateBottomSheet = ({
+    charger,
+    micromobilityStation,
+    micromobilityProvider,
+    mhd,
+  }: {
+    charger?: ChargerStationProps
+    micromobilityStation?: StationMicromobilityProps | FreeBikeStatusProps
+    micromobilityProvider?: MicromobilityProvider
+    mhd?: MhdStopProps
+  }) => {
+    setSelectedChargerStation(charger)
+    setSelectedBikeStation(micromobilityStation)
+    setSelectedMicromobilityProvider(micromobilityProvider)
+    setSelectedMhdStation(mhd)
   }
 
+  const handleSheetClose = () => {
+    operateBottomSheet({})
+  }
+
+  enum ZoomLevel {
+    xs,
+    sm,
+    md,
+    lg,
+  }
+
+  const getZoomLevel = () => {
+    const latDelta = region?.latitudeDelta
+    if (latDelta) {
+      return latDelta >= MIN_DELTA_FOR_XS_MARKER
+        ? ZoomLevel.xs
+        : latDelta >= MIN_DELTA_FOR_SM_MARKER
+        ? ZoomLevel.sm
+        : latDelta >= MIN_DELTA_FOR_MD_MARKER
+        ? ZoomLevel.md
+        : ZoomLevel.lg
+    }
+    return undefined
+  }
   const getIcon = useCallback(
     (name: IconType) => {
-      const latDelta = region?.latitudeDelta
       const icons = markerIcons[name]
-      if (latDelta) {
-        return latDelta >= MIN_DELTA_FOR_XS_MARKER
-          ? icons.xs
-          : latDelta >= MIN_DELTA_FOR_SM_MARKER
-          ? icons.sm
-          : latDelta >= MIN_DELTA_FOR_MD_MARKER
-          ? icons.md
-          : icons.lg
-      } else {
-        return undefined
+      switch (getZoomLevel()) {
+        case ZoomLevel.xs:
+          return icons.xs
+        case ZoomLevel.sm:
+          return icons.sm
+        case ZoomLevel.md:
+          return icons.md
+        case ZoomLevel.lg:
+          return icons.lg
+        default:
+          return undefined
       }
     },
     [region]
@@ -355,16 +399,15 @@ export default function MapScreen() {
                 key={station.station_id}
                 coordinate={{ latitude: station.lat, longitude: station.lon }}
                 tracksViewChanges={false}
-                onPress={() => {
-                  setSelectedMhdStation(undefined)
-                  setSelectedBikeStation(station)
-                  setSelectedMicromobilityProvider(
-                    bikeProvider === BikeProvider.rekola
-                      ? MicromobilityProvider.rekola
-                      : MicromobilityProvider.slovnaftbajk
-                  )
-                  setSelectedChargerStation(undefined)
-                }}
+                onPress={() =>
+                  operateBottomSheet({
+                    micromobilityStation: station,
+                    micromobilityProvider:
+                      bikeProvider === BikeProvider.rekola
+                        ? MicromobilityProvider.rekola
+                        : MicromobilityProvider.slovnaftbajk,
+                  })
+                }
                 icon={
                   bikeProvider === BikeProvider.rekola
                     ? getIcon(IconType.rekola)
@@ -412,6 +455,12 @@ export default function MapScreen() {
     [errorsSlovnaftbajk]
   )
 
+  const isVehicleBar = !(
+    selectedChargerStation ||
+    (selectedMicromobilityStation && selectedMicromobilityProvider) ||
+    selectedMhdStation
+  )
+
   return (
     <View style={styles.container}>
       <MapView
@@ -447,14 +496,15 @@ export default function MapScreen() {
                 longitude: parseFloat(stop.gpsLon),
               }}
               tracksViewChanges={false}
-              onPress={() => {
-                setSelectedBikeStation(undefined)
-                setSelectedChargerStation(undefined)
-                setSelectedMicromobilityProvider(undefined)
-                setSelectedMhdStation(stop)
-              }}
+              onPress={() => operateBottomSheet({ mhd: stop })}
               icon={getIcon(IconType.mhd)}
-            />
+            >
+              {stop.platform && getZoomLevel() === ZoomLevel.lg && (
+                <View style={styles.markerLabelContainer}>
+                  <Text style={styles.markerLabel}>{stop.platform}</Text>
+                </View>
+              )}
+            </Marker>
           ))}
         {vehiclesContext.vehicleTypes?.find(
           (vehicleType) => vehicleType.id === VehicleType.scooter
@@ -466,12 +516,12 @@ export default function MapScreen() {
                 key={vehicle.bike_id}
                 coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
                 tracksViewChanges={false}
-                onPress={() => {
-                  setSelectedMhdStation(undefined)
-                  setSelectedChargerStation(undefined)
-                  setSelectedBikeStation(vehicle)
-                  setSelectedMicromobilityProvider(MicromobilityProvider.tier)
-                }}
+                onPress={() =>
+                  operateBottomSheet({
+                    micromobilityStation: vehicle,
+                    micromobilityProvider: MicromobilityProvider.tier,
+                  })
+                }
                 icon={getIcon(IconType.tier)}
               />
             )
@@ -506,12 +556,7 @@ export default function MapScreen() {
                     }}
                     tracksViewChanges={false}
                     icon={getIcon(IconType.zse)}
-                    onPress={() => {
-                      setSelectedMhdStation(undefined)
-                      setSelectedBikeStation(undefined)
-                      setSelectedMicromobilityProvider(undefined)
-                      setSelectedChargerStation(charger)
-                    }}
+                    onPress={() => operateBottomSheet({ charger })}
                   />
                 )
                 return accumulator.concat(marker)
@@ -529,7 +574,14 @@ export default function MapScreen() {
         <LoadingView fullscreen iconWidth={80} iconHeight={80} />
       )}
       {Platform.select({ ios: true, android: showCurrentLocationButton }) && (
-        <View style={styles.currentLocation}>
+        <View
+          style={[
+            styles.currentLocation,
+            {
+              bottom: VEHICLE_BAR_SHEET_HEIGHT_EXPANDED + 15,
+            },
+          ]}
+        >
           <TouchableOpacity
             onPress={() =>
               moveMapToCurrentLocation(() =>
@@ -592,13 +644,28 @@ export default function MapScreen() {
           },
           i18n.t('dataZseChargersError')
         )}
-      <VehicleBar />
+
       <BottomSheet
+        ref={vehicleSheetRef}
+        style={{ zIndex: 1 }}
+        handleIndicatorStyle={{ ...styles.handleStyle, marginBottom: 0 }}
+        index={1}
+        snapPoints={[
+          VEHICLE_BAR_SHEET_HEIGHT_COLLAPSED,
+          VEHICLE_BAR_SHEET_HEIGHT_EXPANDED,
+        ]}
+        onChange={(index) => setVehicleSheetIndex(index)}
+      >
+        <VehicleBar />
+      </BottomSheet>
+      <BottomSheet
+        handleIndicatorStyle={styles.handleStyle}
         ref={bottomSheetRef}
+        style={{ zIndex: 2 }}
         index={-1}
         snapPoints={bottomSheetSnapPoints}
-        onClose={handleSheetClose}
         enablePanDownToClose
+        onClose={handleSheetClose}
         onChange={(index) => {
           if (index === -1) {
             setShowCurrentLocationButton(true)
@@ -621,15 +688,13 @@ export default function MapScreen() {
             station={selectedMicromobilityStation}
             provider={selectedMicromobilityProvider}
           />
-        ) : (
-          selectedMhdStation && <StationMhdInfo station={selectedMhdStation} />
-        )}
+        ) : selectedMhdStation ? (
+          <StationMhdInfo station={selectedMhdStation} />
+        ) : null}
       </BottomSheet>
     </View>
   )
 }
-
-const googleMapsGeneratedJSON: any = []
 
 const styles = StyleSheet.create({
   container: {
@@ -647,8 +712,6 @@ const styles = StyleSheet.create({
   },
   currentLocation: {
     position: 'absolute',
-    bottom:
-      BOTTOM_TAB_NAVIGATOR_HEIGHT + BOTTOM_VEHICLE_BAR_HEIGHT_ALL + SPACING,
     right: 20,
     padding: 10,
     backgroundColor: 'white',
@@ -667,5 +730,28 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     alignItems: 'center',
     borderRadius: 15,
+  },
+  handleStyle: {
+    backgroundColor: '#DEDEDE',
+    width: 66,
+    height: 4,
+    marginTop: 5,
+    marginBottom: 10,
+  },
+  markerLabelContainer: {
+    marginLeft: 5.5,
+    marginTop: 18,
+    backgroundColor: 'white',
+    borderColor: colors.primary,
+    borderWidth: 1,
+    borderRadius: 2,
+    paddingHorizontal: 3,
+    paddingTop: 1,
+  },
+  markerLabel: {
+    fontWeight: '700',
+    fontSize: 8,
+    lineHeight: 8,
+    textAlignVertical: 'bottom',
   },
 })

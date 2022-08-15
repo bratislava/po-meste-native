@@ -1,9 +1,10 @@
-import React from 'react'
-import { StyleSheet, View, Text, TouchableWithoutFeedback } from 'react-native'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
+import React from 'react'
+import { StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 
-import { s } from '@utils/globalStyles'
 import TicketSvg from '@icons/ticket-alt.svg'
+import { s } from '@utils/globalStyles'
+import { colors } from '@utils/theme'
 
 export const BOTTOM_TAB_NAVIGATOR_HEIGHT = 55
 
@@ -35,6 +36,8 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
                 label={label}
                 isFocused={isFocused}
                 IconComponent={(options.tabBarIcon || TicketSvg) as React.FC}
+                iconSize={index === 1 ? 42 : 30}
+                index={index}
               />
             </View>
           </TouchableWithoutFeedback>
@@ -50,23 +53,32 @@ const TabItem = ({
   label,
   isFocused,
   IconComponent,
+  iconSize,
+  index,
 }: {
   label: string
   isFocused: boolean
-  IconComponent: React.FC<{ fill: string }>
+  IconComponent: React.FC<{ fill: string; width: number; height: number }>
+  iconSize: number
+  index: number
 }) => {
   return (
     <View style={styles.tabItemWrapper}>
-      <View
-        style={{
-          ...styles.tabItemShadow,
-          opacity: isFocused ? 1 : 0,
-        }}
-      />
+      {index === 1 && (
+        <View
+          style={{
+            ...styles.tabItemShadow,
+          }}
+        />
+      )}
       <View style={styles.tabItemBackground} />
       <View style={styles.tabItem}>
-        <IconComponent fill={isFocused ? '#FD4344' : 'gray'} />
-        <Text>{label}</Text>
+        <IconComponent
+          width={iconSize}
+          height={iconSize}
+          fill={isFocused ? colors.primary : colors.mediumGray}
+        />
+        <Text style={styles.label}>{label}</Text>
       </View>
     </View>
   )
@@ -115,10 +127,15 @@ const styles = StyleSheet.create({
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingTop: 2,
+    paddingBottom: 16,
     width: 90,
     height: 80,
+  },
+  label: {
+    fontSize: 10,
+    color: colors.darkGray,
+    lineHeight: 15,
   },
 })

@@ -8,7 +8,8 @@ export const colors = {
   error: '#FA4646',
   gray: '#C3C3C3',
   lighterGray: '#b0b0b0', // 0.1 alpha
-  mediumGray: '#C5C5C5',
+  mediumGray: '#C4C4C4',
+  darkGray: '#8d8d8d',
   lightLightGray: '#F5F5F5', //TODO can we merge it from lightergray?
   lightGray: '#dedede',
   lightText: '#83919b',

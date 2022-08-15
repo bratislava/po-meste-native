@@ -179,7 +179,7 @@ export default function MapScreen() {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   })
-  const getLocationWithPermission = vehiclesContext.getLocationWithPermission
+  const { getLocationWithPermission, location } = vehiclesContext
   // useful on Android, where the elevation shadow causes incorrect ordering of elements
   const [showCurrentLocationButton, setShowCurrentLocationButton] =
     useState(true)
@@ -212,11 +212,19 @@ export default function MapScreen() {
 
   const moveMapToCurrentLocation = useCallback(
     async (
-      permisionDeniedCallback: () => Promise<
+      location?: Location.LocationObject,
+      permisionDeniedCallback?: () => Promise<
         Location.LocationObject | undefined | null
       >
     ) => {
-      const currentLocation = await permisionDeniedCallback()
+      let hasFetchedLocation = false,
+        currentLocation
+      if (location) {
+        currentLocation = location
+      } else if (permisionDeniedCallback) {
+        currentLocation = await permisionDeniedCallback()
+        hasFetchedLocation = true
+      }
       if (currentLocation) {
         mapRef.current?.animateCamera({
           center: currentLocation.coords,
@@ -225,16 +233,13 @@ export default function MapScreen() {
           // https://github.com/react-native-maps/react-native-maps/blob/master/docs/mapview.md#types part camera
           altitude: undefined,
         })
+      } //for when the user quickly walks and the location has to be refreshed
+      if (!hasFetchedLocation && permisionDeniedCallback) {
+        permisionDeniedCallback()
       }
     },
     []
   )
-
-  useEffect(() => {
-    setTimeout(() => {
-      moveMapToCurrentLocation(() => getLocationWithPermission(false))
-    }, 2000)
-  }, [getLocationWithPermission, moveMapToCurrentLocation])
 
   useEffect(() => {
     if (
@@ -462,12 +467,6 @@ export default function MapScreen() {
     [errorsSlovnaftbajk]
   )
 
-  const isVehicleBar = !(
-    selectedChargerStation ||
-    (selectedMicromobilityStation && selectedMicromobilityProvider) ||
-    selectedMhdStation
-  )
-
   return (
     <View style={styles.container}>
       <MapView
@@ -591,7 +590,7 @@ export default function MapScreen() {
         >
           <TouchableOpacity
             onPress={() =>
-              moveMapToCurrentLocation(() =>
+              moveMapToCurrentLocation(location, () =>
                 getLocationWithPermission(true, true)
               )
             }

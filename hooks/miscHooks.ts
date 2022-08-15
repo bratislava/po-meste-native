@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/react-native'
 import { getHealth } from '@utils/api'
 import * as Location from 'expo-location'
 import i18n from 'i18n-js'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Alert,
   AlertButton,
@@ -29,6 +29,10 @@ export const nativeAlert = (
 
 export const useLocationWithPermision = () => {
   const [isDenied, setIsDenied] = useState(false)
+  const [location, setLocation] = useState<Location.LocationObject>()
+  useEffect(() => {
+    getLocationWithPermission(false)
+  }, [])
   const getLocation = useCallback(
     async (reask = false) => {
       if (isDenied && !reask) return null
@@ -36,6 +40,7 @@ export const useLocationWithPermision = () => {
         const location = await Location.getCurrentPositionAsync({
           accuracy: Location.Accuracy.Highest,
         })
+        setLocation(location)
         return location
       } catch (e: any) {
         const { code } = e
@@ -84,7 +89,7 @@ export const useLocationWithPermision = () => {
     },
     [getLocation]
   )
-  return { getLocationWithPermission }
+  return { getLocationWithPermission, location }
 }
 
 export const useHealthData = () => {

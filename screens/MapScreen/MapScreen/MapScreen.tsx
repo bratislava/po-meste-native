@@ -150,12 +150,7 @@ export default function MapScreen() {
     refetch: refetchSlovnaftbajk,
   } = useSlovnaftbajkData()
   const { data: healthData, error: healthError } = useHealthData()
-  const providerStatus = healthData?.dependencyResponseStatus as {
-    rekola: number
-    tier: number
-    slovnaftbajk: number
-    zse: number
-  }
+  const providerStatus = healthData?.dependencyResponseStatus
 
   const [isMhdErrorOpen, setIsMhdErrorOpen] = useState(false)
   const [isTierErrorOpen, setIsTierErrorOpen] = useState(false)

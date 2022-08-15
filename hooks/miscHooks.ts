@@ -1,3 +1,6 @@
+import { useNetInfo } from '@react-native-community/netinfo'
+import * as Sentry from '@sentry/react-native'
+import { getHealth } from '@utils/api'
 import * as Location from 'expo-location'
 import i18n from 'i18n-js'
 import { useCallback, useState } from 'react'
@@ -8,6 +11,7 @@ import {
   Linking,
   Platform,
 } from 'react-native'
+import { useQuery } from 'react-query'
 
 export const nativeAlert = (
   message?: string | false,
@@ -81,4 +85,33 @@ export const useLocationWithPermision = () => {
     [getLocation]
   )
   return { getLocationWithPermission }
+}
+
+export const useHealthData = () => {
+  const netInfo = useNetInfo()
+  const isConnected = netInfo.isConnected ?? false
+  const { data, error } = useQuery('getHealth', getHealth, {
+    enabled: isConnected,
+  }) as {
+    data?: {
+      dependencyResponseStatus: {
+        rekola: number
+        tier: number
+        slovnaftbajk: number
+        zse: number
+      }
+    }
+    error?: any
+  }
+  if (error && isConnected)
+    Sentry.captureException(error, {
+      extra: {
+        exceptionType: 'health error',
+        rawData: JSON.stringify(error),
+      },
+    })
+  return {
+    data,
+    error,
+  }
 }

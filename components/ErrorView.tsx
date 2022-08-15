@@ -1,11 +1,12 @@
 import * as Sentry from '@sentry/react-native'
+import i18n from 'i18n-js'
 import React, { useEffect } from 'react'
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
-import i18n from 'i18n-js'
 
+import { useNetInfo } from '@react-native-community/netinfo'
+import { isApiError, isNetworkError, isValidationError } from '@utils'
 import { colors } from '@utils/theme'
 import Button from './Button'
-import { isApiError, isValidationError } from '@utils'
 
 interface ErrorViewProps {
   action?: () => unknown
@@ -36,6 +37,7 @@ const ErrorView = ({
   isFullscreen,
   styleWrapper,
 }: ErrorViewMerged) => {
+  const netInfo = useNetInfo()
   useEffect(() => {
     if (isValidationError(error)) {
       Sentry.captureException(error, {
@@ -80,10 +82,16 @@ const ErrorView = ({
         <Text style={styles.error}>
           {errorMessage || i18n.t('components.ErrorView.errorViewTitle')}
         </Text>
-        <Text style={styles.bodyText}>{i18n.t('errorViewBody')}</Text>
+        <Text style={styles.bodyText}>
+          {(isNetworkError(error) &&
+            !netInfo.isConnected &&
+            i18n.t('components.ErrorView.disconnectedError')) ||
+            error?.toString() ||
+            i18n.t('components.ErrorView.errorViewBody')}
+        </Text>
         {action && (
           <Button
-            title={i18n.t('errorViewActionText')}
+            title={i18n.t('components.ErrorView.errorViewActionText')}
             variant="secondary"
             onPress={() => action()} // on purpose
             style={styles.action}
@@ -91,7 +99,7 @@ const ErrorView = ({
         )}
         {reset && (
           <Button
-            title={i18n.t('errorViewResetText')}
+            title={i18n.t('components.ErrorView.errorViewResetText')}
             variant="primary"
             onPress={reset}
             style={styles.action}
@@ -99,7 +107,7 @@ const ErrorView = ({
         )}
         {cancel && (
           <Button
-            title={i18n.t('errorViewCancelText')}
+            title={i18n.t('components.ErrorView.errorViewCancelText')}
             variant="primary"
             onPress={cancel}
             style={styles.action}

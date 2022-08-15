@@ -210,6 +210,9 @@ export const isValidationError = (error: any) =>
 export const isApiError = (error: any) =>
   error instanceof Error && error.message === API_ERROR_TEXT
 
+export const isNetworkError = (error: any) =>
+  error instanceof Error && error.message === 'Network request failed'
+
 /** Not used as of now */
 export const getCachedStopsWithDeprecation = async (
   index: string,

@@ -205,7 +205,23 @@ export default {
       thankYouText: 'Vaša odozva nám pomáha zlepšovať appku :)',
     },
     ErrorView: {
-      validationError: 'Sorry kámo, chyba je na našej strane - validacia',
+      errorViewTitle: 'Žial, nastala chyba',
+      validationError: 'Sorry kámo, chyba je na našej strane - validácia',
+      errorViewActionText: 'Skúsiť znova',
+      errorViewCancelText: 'Zrušiť',
+      errorViewResetText: 'Resetovať',
+      dataLineTimelineScreenError: 'Hups, trasu sa nepodarilo načítať',
+      dataLineTimetableScreenError:
+        'Hups, cestovný poriadok sa nepodarilo načítať',
+      dataPlannerTripError: 'Hups, nastala chyba pri plánovaní tvojej cesty',
+      dataMhdStopsError: 'Hups, nepodarilo sa nám načítať MHD dáta',
+      dataRekolaError: 'Hups, nepodarilo sa nám načítať Rekola dáta',
+      dataSlovnaftbajkError:
+        'Hups, nepodarilo sa nám načítať SlovnaftBAjk dáta',
+      dataTierError: 'Hups, nepodarilo sa nám načítať TIER dáta',
+      dataZseChargersError: 'Hups, nepodarilo sa nám načítať ZSE dáta',
+      disconnectedError:
+        'Prosím, pripoj sa na internet, ak chceš používať túto funkcionalitu',
     },
   },
 }

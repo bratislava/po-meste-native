@@ -202,7 +202,21 @@ export default {
       thankYouText: 'Your feedback helps us improve the app :)',
     },
     ErrorView: {
+      errorViewTitle: 'Sadly an error has occured',
       validationError: 'Sorry man, fault is on our side - validation',
+      errorViewActionText: 'Try again',
+      errorViewCancelText: 'Cancel',
+      errorViewResetText: 'Reset',
+      dataLineTimelineScreenError: 'Opps, timeline could not be loaded',
+      dataLineTimetableScreenError: 'Opps, timetable could not be loaded',
+      dataPlannerTripError:
+        'Oops, there has been a problem while planning your trip',
+      dataMhdStopsError: 'Oops, MHD data could not be loaded',
+      dataRekolaError: 'Oops, Rekola data could not be loaded',
+      dataSlovnaftbajkError: 'Oops, SlovnaftBAjk data could not be loaded',
+      dataTierError: 'Oops, TIER data could not be loaded',
+      dataZseChargersError: 'Oops, ZSE data could not be loaded',
+      disconnectedError: 'Please connect to the internet to use this feature',
     },
   },
 }

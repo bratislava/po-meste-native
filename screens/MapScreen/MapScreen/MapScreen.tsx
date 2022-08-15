@@ -21,7 +21,12 @@ import {
 } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
 
-import { useRekolaData, useSlovnaftbajkData, useTierData } from '@hooks'
+import {
+  useHealthData,
+  useRekolaData,
+  useSlovnaftbajkData,
+  useTierData,
+} from '@hooks'
 
 import {
   BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
@@ -144,6 +149,8 @@ export default function MapScreen() {
     error: errorsSlovnaftbajk,
     refetch: refetchSlovnaftbajk,
   } = useSlovnaftbajkData()
+  const { data: healthData, error: healthError } = useHealthData()
+  const providerStatus = healthData?.dependencyResponseStatus
 
   const [isMhdErrorOpen, setIsMhdErrorOpen] = useState(false)
   const [isTierErrorOpen, setIsTierErrorOpen] = useState(false)
@@ -567,10 +574,10 @@ export default function MapScreen() {
       </MapView>
       {(!netInfo.isConnected ||
         isLoadingMhd ||
-        isLoadingRekola ||
-        isLoadingSlovnaftbajk ||
-        isLoadingTier ||
-        isLoadingZseChargers) && (
+        (isLoadingRekola && providerStatus?.rekola === 200) ||
+        (isLoadingSlovnaftbajk && providerStatus?.slovnaftbajk === 200) ||
+        (isLoadingTier && providerStatus?.tier === 200) ||
+        (isLoadingZseChargers && providerStatus?.zse === 200)) && (
         <LoadingView fullscreen iconWidth={80} iconHeight={80} />
       )}
       {Platform.select({ ios: true, android: showCurrentLocationButton }) && (
@@ -602,7 +609,7 @@ export default function MapScreen() {
             refetchMhd()
             setIsMhdErrorOpen(false)
           },
-          i18n.t('dataMhdStopsError')
+          i18n.t('components.ErrorView.dataMhdStopsError')
         )}
       {isRekolaErrorOpen &&
         dataError(
@@ -612,7 +619,7 @@ export default function MapScreen() {
             refetchRekola()
             setIsRekolaErrorOpen(false)
           },
-          i18n.t('dataRekolaError')
+          i18n.t('components.ErrorView.dataRekolaError')
         )}
       {isSlovnaftbajkErrorOpen &&
         dataError(
@@ -622,7 +629,7 @@ export default function MapScreen() {
             refetchSlovnaftbajk()
             setIsSlovnaftbajkErrorOpen(false)
           },
-          i18n.t('dataSlovnaftbajkError')
+          i18n.t('components.ErrorView.dataSlovnaftbajkError')
         )}
       {isTierErrorOpen &&
         dataError(
@@ -632,7 +639,7 @@ export default function MapScreen() {
             refetchTier()
             setIsTierErrorOpen(false)
           },
-          i18n.t('dataTierError')
+          i18n.t('components.ErrorView.dataTierError')
         )}
       {isZseErrorOpen &&
         dataError(
@@ -642,7 +649,7 @@ export default function MapScreen() {
             refetchZseChargers()
             setIsZseErrorOpen(false)
           },
-          i18n.t('dataZseChargersError')
+          i18n.t('components.ErrorView.dataZseChargersError')
         )}
 
       <BottomSheet

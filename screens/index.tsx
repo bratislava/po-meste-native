@@ -51,12 +51,18 @@ const BottomTabNavigator = () => {
       />
       <BottomTab.Screen
         name="Map"
-        component={MapScreen}
         options={{
           title: i18n.t('common.searching'),
           tabBarIcon: HomeSearchSvg,
         }}
-      />
+      >
+        {() => (
+          <>
+            <MapScreen />
+            <PortalHost name="MapScreen" />
+          </>
+        )}
+      </BottomTab.Screen>
       <BottomTab.Screen
         name="Settings"
         component={SettingsScreen}

@@ -8,6 +8,7 @@ import { colors } from '@utils'
 import { MapParamList } from '@types'
 
 import TabView from '@components/TabView'
+import { PortalHost } from '@gorhom/portal'
 import { Route, SceneRendererProps } from 'react-native-tab-view'
 import Planner from './_partials/Planner'
 

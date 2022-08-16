@@ -65,7 +65,7 @@ export default function SearchFromToScreen({
     <BottomSheet
       ref={sheetRef}
       index={initialSnapIndex}
-      snapPoints={['100%']}
+      snapPoints={['95%']}
       enablePanDownToClose
     >
       <View style={styles.content}>

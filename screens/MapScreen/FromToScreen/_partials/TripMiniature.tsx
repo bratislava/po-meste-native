@@ -47,6 +47,7 @@ const TripMiniature = ({
   const [firstStopDateTime, setFirstStopDateTime] = useState<
     LocalDateTime | undefined
   >(undefined)
+  const [isfirstStopLive, setIsFirstStopLive] = useState(false)
 
   // TODO is this necessary?
   useEffect(() => {
@@ -55,6 +56,7 @@ const TripMiniature = ({
         (leg) => leg.mode === LegModes.bus || leg.mode === LegModes.tram
       )
       if (firstStop) {
+        if (firstStop.realTime) setIsFirstStopLive(true)
         firstStop.from.departure &&
           setFirstStopDateTime(
             LocalDateTime.ofInstant(
@@ -140,9 +142,8 @@ const TripMiniature = ({
                   </Text>
                 )}
                 <Text numberOfLines={1}>
-                  {i18n.t('screens.FromToScreen.Planner.from', {
-                    place: startStationName,
-                  })}
+                  {i18n.t('screens.FromToScreen.Planner.from')}
+                  <Text style={styles.stationName}>{startStationName}</Text>
                 </Text>
               </View>
             )}
@@ -155,14 +156,17 @@ const TripMiniature = ({
               </View>
             )}
             <View style={styles.fromToTime}>
-              <Text>
+              <Text style={styles.fromToTimeText}>
                 {departureDateTime &&
                   departureDateTime.format(
                     DateTimeFormatter.ofPattern('HH:mm')
-                  )}{' '}
-                -
+                  )}
+              </Text>
+              <Text style={styles.fromToTimeText}>
                 {arriveDateTime &&
-                  arriveDateTime.format(DateTimeFormatter.ofPattern('HH:mm'))}
+                  ` - ${arriveDateTime.format(
+                    DateTimeFormatter.ofPattern('HH:mm')
+                  )}`}
               </Text>
             </View>
             <View style={styles.rightContainerBackground}></View>
@@ -204,12 +208,13 @@ const styles = StyleSheet.create({
   leftContainer: {
     flex: 1,
     paddingVertical: 10,
-    paddingLeft: 10,
+    paddingHorizontal: 10,
+    paddingRight: 10,
   },
   rightContainer: {
     position: 'relative',
     width: 100,
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'flex-end',
     padding: 10,
   },
@@ -219,10 +224,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -100,
     bottom: -100,
-    left: 30,
-    right: -10,
+    left: 20,
     backgroundColor: colors.lightGray,
-    transform: [{ rotate: '15deg' }, { scale: 1.5 }],
+    transform: [{ rotate: '15deg' }, { scale: 1.6 }],
   },
   legsContainer: {
     flexDirection: 'row',
@@ -239,19 +243,23 @@ const styles = StyleSheet.create({
   durationNumber: {
     fontWeight: 'bold',
     color: colors.darkText,
-    fontSize: 36,
+    fontSize: 24,
   },
   durationMin: {
     fontWeight: 'bold',
     color: colors.darkText,
-    marginBottom: 5,
+    marginLeft: 5,
+    marginBottom: 2,
   },
   fromToTime: {
     color: colors.darkText,
     flexDirection: 'row',
     position: 'relative',
     zIndex: 10,
-    marginBottom: 5,
+    flexWrap: 'nowrap',
+  },
+  fromToTimeText: {
+    ...s.textTiny,
   },
   atTimeContainer: {
     flexDirection: 'row',
@@ -265,6 +273,9 @@ const styles = StyleSheet.create({
   },
   elevation: {
     elevation: 1,
+  },
+  stationName: {
+    fontWeight: 'bold',
   },
 })
 

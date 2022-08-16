@@ -1,6 +1,11 @@
 import { Feather, Ionicons } from '@expo/vector-icons'
 import BottomSheet from '@gorhom/bottom-sheet'
-import { DateTimeFormatter, Instant, LocalDateTime } from '@js-joda/core'
+import {
+  DateTimeFormatter,
+  Duration,
+  Instant,
+  LocalDateTime,
+} from '@js-joda/core'
 import { useNavigation } from '@react-navigation/native'
 import * as Location from 'expo-location'
 import i18n from 'i18n-js'
@@ -12,7 +17,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import {
   GooglePlaceData,
@@ -29,6 +34,7 @@ import {
   getTripPlanner,
   IteneraryProps,
   OtpPlannerProps,
+  s,
 } from '@utils'
 
 import { ErrorView, Link, Modal, RadioButton } from '@components'
@@ -97,6 +103,8 @@ import MhdSvg from '@icons/vehicles/mhd.svg'
 import ScooterSvg from '@icons/vehicles/scooter.svg'
 import WalkingSvg from '@icons/walking.svg'
 
+import WheelchairSvg from '@icons/wheelchair.svg'
+
 interface PlannerProps {
   from: { name: string; latitude: number; longitude: number }
   to: { name: string; latitude: number; longitude: number }
@@ -159,6 +167,8 @@ export default function Planner(props: PlannerProps) {
 
   const [dateTime, setDateTime] = useState(LocalDateTime.now())
 
+  const [accessibleOnly, setAccessibleOnly] = useState(false)
+
   const [locationPermisionError, setLocationPermisionError] =
     useState<string>('')
   const [fromGeocode, setFromGeocode] = useState<
@@ -174,7 +184,14 @@ export default function Planner(props: PlannerProps) {
     error: errorMhd,
     refetch: refetchMhd,
   } = useQuery(
-    ['getOtpDataMhd', fromCoordinates, toCoordinates, dateTime, scheduledTime],
+    [
+      'getOtpDataMhd',
+      fromCoordinates,
+      toCoordinates,
+      dateTime,
+      scheduledTime,
+      accessibleOnly,
+    ],
     () =>
       fromCoordinates &&
       toCoordinates &&
@@ -183,7 +200,9 @@ export default function Planner(props: PlannerProps) {
         `${toCoordinates.latitude},${toCoordinates.longitude}`,
         dateTime,
         scheduledTime === ScheduleType.arrival,
-        TravelModesOtpApi.transit
+        TravelModesOtpApi.transit,
+        undefined,
+        accessibleOnly
       ),
     { enabled: fromCoordinates && toCoordinates ? true : false }
   )
@@ -716,6 +735,14 @@ export default function Planner(props: PlannerProps) {
     showDatePicker()
   }
 
+  const isDateTimeNow =
+    Duration.between(dateTime, LocalDateTime.now()).compareTo(
+      Duration.ofMinutes(1)
+    ) === -1
+  const dateTimeToPrint = isDateTimeNow
+    ? i18n.t('common.now')
+    : dateTime.format(DateTimeFormatter.ofPattern('dd.MM. HH:mm'))
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -747,31 +774,56 @@ export default function Planner(props: PlannerProps) {
           style={styles.schedulingContainer}
           onPress={showSchedulePicker}
         >
-          <View style={styles.row}>
-            <Feather
-              name="clock"
-              size={15}
-              style={{
-                alignSelf: 'center',
-                color: colors.primary,
-                marginRight: 4,
-              }}
-            />
-            <Text style={styles.schedulingText}>
-              {scheduledTime === ScheduleType.departure &&
-                i18n.t('screens.FromToScreen.Planner.departure', {
-                  time: dateTime.format(
-                    DateTimeFormatter.ofPattern('dd.MM. HH:mm')
-                  ),
-                })}
-              {scheduledTime === ScheduleType.arrival &&
-                i18n.t('screens.FromToScreen.Planner.arrival', {
-                  time: dateTime.format(
-                    DateTimeFormatter.ofPattern('dd.MM. HH:mm')
-                  ),
-                })}
-            </Text>
-            <Ionicons size={15} style={styles.ionicon} name="chevron-down" />
+          <View style={[styles.row, { justifyContent: 'space-between' }]}>
+            <View
+              style={[
+                styles.row,
+                { paddingRight: 10, justifyContent: 'flex-start', flex: 1 },
+              ]}
+            >
+              <Feather name="clock" size={20} style={styles.schedulingIcon} />
+              <Text style={styles.schedulingText}>
+                {scheduledTime === ScheduleType.departure &&
+                  i18n.t('screens.FromToScreen.Planner.departure', {
+                    time: dateTimeToPrint,
+                  })}
+                {scheduledTime === ScheduleType.arrival &&
+                  i18n.t('screens.FromToScreen.Planner.arrival', {
+                    time: dateTimeToPrint,
+                  })}
+              </Text>
+              <Ionicons size={15} style={styles.ionicon} name="chevron-down" />
+            </View>
+            <View
+              style={[
+                styles.row,
+                { paddingLeft: 40, justifyContent: 'flex-end', flex: 1 },
+              ]}
+            >
+              <View
+                style={[
+                  styles.row,
+                  { flex: 1, position: 'relative', left: 12 },
+                ]}
+              >
+                <WheelchairSvg
+                  fill={colors.white}
+                  width={20}
+                  height={20}
+                  style={styles.schedulingIcon}
+                />
+                <Text style={styles.schedulingText}>
+                  {i18n.t('screens.FromToScreen.Planner.accessibleVehicles')}
+                </Text>
+              </View>
+              <Switch
+                trackColor={{ false: '#E1E4E8', true: '#ADCD00' }}
+                thumbColor={colors.white}
+                ios_backgroundColor="#E1E4E8"
+                onValueChange={(value) => setAccessibleOnly(value)}
+                value={accessibleOnly}
+              />
+            </View>
           </View>
         </TouchableOpacity>
       </View>
@@ -908,7 +960,7 @@ export default function Planner(props: PlannerProps) {
             />
           )} */}
       </ScrollView>
-      <Portal hostName="SafeView">
+      <Portal hostName="MapScreen">
         <SearchFromToScreen
           sheetRef={fromBottomSheetRef}
           getMyLocation={getMyLocation}
@@ -980,23 +1032,31 @@ const styles = StyleSheet.create({
   },
   ionicon: {
     alignSelf: 'center',
-    color: colors.primary,
-    marginLeft: 9,
+    color: colors.white,
   },
   row: {
     display: 'flex',
     flexDirection: 'row',
   },
   schedulingContainer: {
-    marginTop: 10,
+    marginTop: 0,
+    paddingVertical: 23,
   },
   schedulingText: {
-    color: colors.primary,
+    color: colors.white,
+    marginHorizontal: 6,
+    ...s.textSmall,
+  },
+  schedulingIcon: {
+    color: colors.white,
+    alignSelf: 'center',
+    position: 'relative',
+    top: -1,
   },
   header: {
     backgroundColor: colors.primary,
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingTop: 10,
   },
   scrollView: {
     minWidth: '100%',

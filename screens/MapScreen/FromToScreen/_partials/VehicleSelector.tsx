@@ -1,14 +1,14 @@
 import React from 'react'
 import {
   ScrollView,
-  View,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  StyleSheet,
+  View,
 } from 'react-native'
 
 import { TravelModes, VehicleData } from '@types'
-import { colors } from '@utils'
+import { colors, s } from '@utils'
 
 type Props = {
   selectedVehicle: TravelModes
@@ -40,7 +40,9 @@ const VehicleSelector = ({
               onPress={() => onVehicleChange(vehicle.mode)}
             >
               <vehicle.icon
-                fill={selectedVehicle === vehicle.mode ? 'white' : colors.gray}
+                fill={
+                  selectedVehicle === vehicle.mode ? 'white' : colors.mediumGray
+                }
                 width={24}
                 height={20}
                 style={styles.vehicleIcon}
@@ -61,7 +63,7 @@ const VehicleSelector = ({
                 {vehicle.estimatedTimeMin !== undefined ||
                 vehicle.estimatedTimeMax !== undefined
                   ? ` min`
-                  : `? - ? min`}
+                  : `--`}
               </Text>
               <Text
                 style={[
@@ -88,14 +90,15 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   vehicleContainer: {
-    borderWidth: 1,
-    borderLeftColor: colors.gray,
-    borderRadius: 3,
-    borderColor: colors.gray,
+    padding: 7,
+    borderWidth: 2,
+    borderColor: colors.mediumGray,
     width: 85,
     height: 70,
+    display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    ...s.roundedBorder,
   },
   vehicleContainerLast: {
     marginRight: 10,
@@ -110,6 +113,7 @@ const styles = StyleSheet.create({
   vehicleEstimatedTime: {
     fontWeight: 'bold',
     color: colors.gray,
+    ...s.textTiny,
   },
   vehicleEstimatedTimeSelected: {
     color: 'white',

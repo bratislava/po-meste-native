@@ -19,6 +19,7 @@ export default {
     openSettings: 'Open settings',
     today: ' (Today)',
     tomorrow: ' (Tomorrow)',
+    now: 'now',
     stops: {
       zero: '{{count}} stops',
       one: '{{count}} stop',
@@ -107,7 +108,7 @@ export default {
         rentedBike: 'Rented bicycles',
         myScooter: 'My scooter',
         rentedScooter: 'Rented scooter',
-        from: 'from {{place}}',
+        from: 'from ',
         startingIn: 'in {{time}} min',
         beforeIn: 'before {{time}} min',
         departure: 'Departure: {{time}}',
@@ -115,6 +116,7 @@ export default {
         departureText: 'Departure',
         arrivalText: 'Arrival',
         currentPosition: 'Current location',
+        accessibleVehicles: 'Accessible vehicles',
       },
     },
     SearchFromToScreen: {

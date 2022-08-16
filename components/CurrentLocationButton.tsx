@@ -1,7 +1,9 @@
 import CurrentLocationSvg from '@icons/current-location.svg'
+import { GlobalStateContext } from '@state/GlobalStateProvider'
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
-import React from 'react'
+import { LocationObject } from 'expo-location'
+import React, { RefObject, useCallback, useContext } from 'react'
 import {
   StyleProp,
   StyleSheet,
@@ -9,19 +11,64 @@ import {
   View,
   ViewStyle,
 } from 'react-native'
+import MapView from 'react-native-maps'
 
 interface CurrentLocationButtonProps {
-  onPress: () => void
+  mapRef: RefObject<MapView>
   style: StyleProp<ViewStyle>
 }
 
+const moveMapToCurrentLocationAsync = async (
+  mapRef: RefObject<MapView>,
+  location?: LocationObject,
+  permisionDeniedCallback?: () => Promise<LocationObject | undefined | null>
+) => {
+  let hasFetchedLocation = false,
+    currentLocation
+  if (location) {
+    currentLocation = location
+  } else if (permisionDeniedCallback) {
+    currentLocation = await permisionDeniedCallback()
+    hasFetchedLocation = true
+  }
+  if (currentLocation) {
+    mapRef.current?.animateCamera({
+      center: currentLocation.coords,
+      zoom: 17,
+      // TODO altitude needs to be set for Apple maps
+      // https://github.com/react-native-maps/react-native-maps/blob/master/docs/mapview.md#types part camera
+      altitude: undefined,
+    })
+  } //for when the user quickly walks and the location has to be refreshed
+  if (!hasFetchedLocation && permisionDeniedCallback) {
+    permisionDeniedCallback()
+  }
+}
+
 const CurrentLocationButton = ({
-  onPress,
+  mapRef,
   style,
 }: CurrentLocationButtonProps) => {
+  const { getLocationWithPermission, location } = useContext(GlobalStateContext)
+
+  const moveMapToCurrentLocation = useCallback(
+    async (
+      location?: LocationObject,
+      permisionDeniedCallback?: () => Promise<LocationObject | undefined | null>
+    ) =>
+      moveMapToCurrentLocationAsync(mapRef, location, permisionDeniedCallback),
+    []
+  )
+
   return (
     <View style={[styles.currentLocation, style]}>
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity
+        onPress={() =>
+          moveMapToCurrentLocation(location, () =>
+            getLocationWithPermission(true, true)
+          )
+        }
+      >
         <CurrentLocationSvg fill={colors.primary} />
       </TouchableOpacity>
     </View>

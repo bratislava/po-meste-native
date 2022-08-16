@@ -1,14 +1,7 @@
 import BottomSheet from '@gorhom/bottom-sheet'
 import { StackScreenProps } from '@react-navigation/stack'
-import * as Location from 'expo-location'
 import googlePolyline from 'google-polyline'
-import React, {
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native'
 import MapView, { Polyline, PROVIDER_GOOGLE } from 'react-native-maps'
 
@@ -28,7 +21,6 @@ import {
 import { TextItinerary } from './_partials/TextItinerary'
 
 import CurrentLocationButton from '@components/CurrentLocationButton'
-import { GlobalStateContext } from '@state/GlobalStateProvider'
 import { customMapStyle } from '../customMapStyle'
 
 export default function PlannerScreen({
@@ -46,7 +38,6 @@ export default function PlannerScreen({
     '95%',
   ]
   const { height } = useWindowDimensions()
-  const { getLocationWithPermission } = useContext(GlobalStateContext)
   // keep this in sync with the middle bottomSheetSnapPoint percentage
   const middleSnapPointMapPadding = 0.5 * (height - BOTTOM_TAB_NAVIGATOR_HEIGHT) // TODO add top bar to the equation instead of rounding down to 0.5
   const bottomMapPaddingForSheeptSnapPoints = [
@@ -68,20 +59,6 @@ export default function PlannerScreen({
         return []
       }),
     [legs]
-  )
-
-  const moveMapToCurrentLocation = useCallback(
-    async (
-      permisionDeniedCallback: () => Promise<
-        Location.LocationObject | undefined | null
-      >
-    ) => {
-      const currentLocation = await permisionDeniedCallback()
-      if (currentLocation) {
-        mapRef.current?.animateCamera({ center: currentLocation.coords })
-      }
-    },
-    []
   )
 
   return (
@@ -138,12 +115,7 @@ export default function PlannerScreen({
         }, [])}
       </MapView>
       {Platform.select({ ios: true, android: true }) && (
-        <CurrentLocationButton
-          style={styles.currentLocation}
-          onPress={() =>
-            moveMapToCurrentLocation(() => getLocationWithPermission(true))
-          }
-        />
+        <CurrentLocationButton mapRef={mapRef} style={styles.currentLocation} />
       )}
       <BottomSheet
         index={1}

@@ -1,7 +1,6 @@
 import BottomSheet from '@gorhom/bottom-sheet'
 import { useNetInfo } from '@react-native-community/netinfo'
 import { useIsFocused } from '@react-navigation/core'
-import * as Location from 'expo-location'
 import i18n from 'i18n-js'
 import React, {
   useCallback,
@@ -42,7 +41,6 @@ import {
   FreeBikeStatusProps,
   LocalitiesProps,
   MhdStopProps,
-  s,
   StationMicromobilityProps,
 } from '@utils'
 
@@ -171,7 +169,6 @@ export default function MapScreen() {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   })
-  const { getLocationWithPermission, location } = vehiclesContext
   // useful on Android, where the elevation shadow causes incorrect ordering of elements
   const [showCurrentLocationButton, setShowCurrentLocationButton] =
     useState(true)
@@ -201,37 +198,6 @@ export default function MapScreen() {
       refetch()
     }
   }, [isFocused])
-
-  const moveMapToCurrentLocation = useCallback(
-    async (
-      location?: Location.LocationObject,
-      permisionDeniedCallback?: () => Promise<
-        Location.LocationObject | undefined | null
-      >
-    ) => {
-      let hasFetchedLocation = false,
-        currentLocation
-      if (location) {
-        currentLocation = location
-      } else if (permisionDeniedCallback) {
-        currentLocation = await permisionDeniedCallback()
-        hasFetchedLocation = true
-      }
-      if (currentLocation) {
-        mapRef.current?.animateCamera({
-          center: currentLocation.coords,
-          zoom: 17,
-          // TODO altitude needs to be set for Apple maps
-          // https://github.com/react-native-maps/react-native-maps/blob/master/docs/mapview.md#types part camera
-          altitude: undefined,
-        })
-      } //for when the user quickly walks and the location has to be refreshed
-      if (!hasFetchedLocation && permisionDeniedCallback) {
-        permisionDeniedCallback()
-      }
-    },
-    []
-  )
 
   useEffect(() => {
     if (
@@ -573,14 +539,10 @@ export default function MapScreen() {
       )}
       {Platform.select({ ios: true, android: showCurrentLocationButton }) && (
         <CurrentLocationButton
+          mapRef={mapRef}
           style={{
             bottom: VEHICLE_BAR_SHEET_HEIGHT_EXPANDED + 15,
           }}
-          onPress={() =>
-            moveMapToCurrentLocation(location, () =>
-              getLocationWithPermission(true, true)
-            )
-          }
         />
       )}
       <SearchBar />
@@ -699,15 +661,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: BOTTOM_TAB_NAVIGATOR_HEIGHT,
-  },
-  currentLocation: {
-    position: 'absolute',
-    right: 20,
-    padding: 10,
-    backgroundColor: 'white',
-    borderRadius: 30,
-    ...s.shadow,
-    elevation: 7,
   },
   errorBackground: {
     display: 'flex',

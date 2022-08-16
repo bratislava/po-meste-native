@@ -1,5 +1,5 @@
 import { Feather, Ionicons } from '@expo/vector-icons'
-import BottomSheet from '@gorhom/bottom-sheet'
+import BottomSheet, { TouchableOpacity } from '@gorhom/bottom-sheet'
 import {
   DateTimeFormatter,
   Duration,
@@ -17,7 +17,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Switch, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import {
   GooglePlaceData,
@@ -736,9 +736,9 @@ export default function Planner(props: PlannerProps) {
   }
 
   const isDateTimeNow =
-    Duration.between(dateTime, LocalDateTime.now()).compareTo(
-      Duration.ofMinutes(1)
-    ) === -1
+    Duration.between(dateTime, LocalDateTime.now())
+      .abs()
+      .compareTo(Duration.ofMinutes(1)) === -1
   const dateTimeToPrint = isDateTimeNow
     ? i18n.t('common.now')
     : dateTime.format(DateTimeFormatter.ofPattern('dd.MM. HH:mm'))
@@ -770,34 +770,46 @@ export default function Planner(props: PlannerProps) {
           )}
           onSwitchPlacesPress={onSwitchPlacesPress}
         />
-        <TouchableOpacity
-          style={styles.schedulingContainer}
-          onPress={showSchedulePicker}
-        >
+        <View style={styles.schedulingContainer}>
           <View style={[styles.row, { justifyContent: 'space-between' }]}>
             <View
-              style={[
-                styles.row,
-                { paddingRight: 10, justifyContent: 'flex-start', flex: 1 },
-              ]}
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignContent: 'center',
+              }}
             >
-              <Feather name="clock" size={20} style={styles.schedulingIcon} />
-              <Text style={styles.schedulingText}>
-                {scheduledTime === ScheduleType.departure &&
-                  i18n.t('screens.FromToScreen.Planner.departure', {
-                    time: dateTimeToPrint,
-                  })}
-                {scheduledTime === ScheduleType.arrival &&
-                  i18n.t('screens.FromToScreen.Planner.arrival', {
-                    time: dateTimeToPrint,
-                  })}
-              </Text>
-              <Ionicons size={15} style={styles.ionicon} name="chevron-down" />
+              <TouchableOpacity
+                onPress={showSchedulePicker}
+                style={[
+                  styles.row,
+                  {
+                    justifyContent: 'flex-start',
+                  },
+                ]}
+              >
+                <Feather name="clock" size={20} style={styles.schedulingIcon} />
+                <Text style={styles.schedulingText}>
+                  {scheduledTime === ScheduleType.departure &&
+                    i18n.t('screens.FromToScreen.Planner.departure', {
+                      time: dateTimeToPrint,
+                    })}
+                  {scheduledTime === ScheduleType.arrival &&
+                    i18n.t('screens.FromToScreen.Planner.arrival', {
+                      time: dateTimeToPrint,
+                    })}
+                </Text>
+                <Ionicons
+                  size={15}
+                  style={styles.ionicon}
+                  name="chevron-down"
+                />
+              </TouchableOpacity>
             </View>
             <View
               style={[
                 styles.row,
-                { paddingLeft: 40, justifyContent: 'flex-end', flex: 1 },
+                { paddingLeft: 20, justifyContent: 'flex-end', flex: 1 },
               ]}
             >
               <View
@@ -825,7 +837,7 @@ export default function Planner(props: PlannerProps) {
               />
             </View>
           </View>
-        </TouchableOpacity>
+        </View>
       </View>
       <View>
         <VehicleSelector

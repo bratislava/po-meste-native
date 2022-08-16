@@ -42,7 +42,7 @@ export default {
   },
   screens: {
     MapScreen: {
-      whereTo: 'Kamže kam?',
+      whereTo: 'Kamže, kam?',
       rekolaBikesTitle: 'Rekola bicykle',
       slovnaftbikesTitle: 'Slovnaft BAjk',
       tierTitle: 'TIER kolobežka',

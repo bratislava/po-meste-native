@@ -70,4 +70,11 @@ export const s = StyleSheet.create({
     lineHeight: 14,
     textAlignVertical: 'center',
   },
+  handleStyle: {
+    backgroundColor: '#DEDEDE',
+    width: 66,
+    height: 4,
+    marginTop: 5,
+    marginBottom: 10,
+  },
 })

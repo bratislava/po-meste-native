@@ -1,9 +1,14 @@
-import { Ionicons } from '@expo/vector-icons'
 import BottomSheet from '@gorhom/bottom-sheet'
 import Constants from 'expo-constants'
 import i18n from 'i18n-js'
 import React, { MutableRefObject, useEffect, useState } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 import {
   GooglePlaceData,
   GooglePlaceDetail,
@@ -11,11 +16,19 @@ import {
   GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete'
 
-import { colors, s } from '@utils'
+import LocationSvg from '@icons/current-location.svg'
+import MapSvg from '@icons/map.svg'
 
-// import { dummyDataPlaceHistory } from '../dummyData'
+import { colors, s, STYLES } from '@utils'
+
+import FavoriteTile from '@components/FavoriteTile'
+import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components/navigation/TabBar'
+import HeartSvg from '@icons/favorite.svg'
+import HistorySvg from '@icons/history-search.svg'
 import MarkerSvg from '@icons/map-pin-marker.svg'
-import MhdSvg from '@icons/vehicles/mhd.svg'
+import MhdStopSvg from '@icons/stop-sign.svg'
+import XSvg from '@icons/x.svg'
+import dummyDataPlaceHistory from './dummyDataPlaceHistory.json'
 
 interface SearchFromToScreen {
   sheetRef: MutableRefObject<BottomSheet | null>
@@ -44,11 +57,6 @@ export default function SearchFromToScreen({
   inputPlaceholder,
   initialSnapIndex,
 }: SearchFromToScreen) {
-  // const clearLocationTextInput = () => {
-  //   googleInputRef.current?.setAddressText('')
-  //   googleInputRef.current?.focus()
-  // }
-
   useEffect(() => {
     if (getMyLocation) {
       getMyLocation()
@@ -67,173 +75,143 @@ export default function SearchFromToScreen({
       index={initialSnapIndex}
       snapPoints={['95%']}
       enablePanDownToClose
+      handleIndicatorStyle={s.handleStyle}
     >
       <View style={styles.content}>
-        <View style={[s.horizontalMargin, styles.content]}>
-          <View style={styles.googleFrom}>
-            <GooglePlacesAutocomplete
-              // renderLeftButton={() => (
-              //   <Ionicons
-              //     onPress={clearLocationTextInput}
-              //     size={30}
-              //     style={{
-              //       alignSelf: 'center',
-              //       marginBottom: -3,
-              //       color: colors.lighterGray,
-              //     }}
-              //     name="close"
-              //   />
-              // )}
-              ref={googleInputRef}
-              styles={autoCompleteStyles}
-              enablePoweredByContainer={false}
-              fetchDetails
-              placeholder={inputPlaceholder}
-              onPress={onGooglePlaceChosen}
-              query={{
-                key: Constants.manifest?.extra?.googlePlacesApiKey,
-                language: 'sk',
-                location: '48.160170, 17.130256',
-                radius: '20788', //20,788 km
-                strictbounds: true,
-              }}
-              renderRow={(result: GooglePlaceData) => {
-                const fixedResult = result as FixedGooglePlaceData
-                const Icon =
-                  fixedResult.types[0] === 'transit_station'
-                    ? MhdSvg
-                    : MarkerSvg
-                return (
-                  <View style={styles.searchResultRow}>
-                    <Icon
-                      style={styles.searchResultRowIcon}
-                      fill={colors.lighterGray}
-                      width={16}
-                      height={16}
-                    />
-                    <Text>{result.structured_formatting.main_text}</Text>
-                  </View>
-                )
-              }}
-              textInputProps={{
-                selectTextOnFocus: true,
-                onBlur: () => {
-                  setGoogleAutocompleteSelection({ start: 0 })
-                  setTimeout(() => {
-                    setGoogleAutocompleteSelection(undefined)
-                  }, 10)
-                },
-                selection: googleAutocompleteSelection,
-              }}
-            />
-          </View>
-          {/* <View>
-            <Text style={styles.categoriesTitle}>{i18n.t('screens.SearchFromToScreen.myAddresses')}</Text>
-            <ScrollView
-              contentContainerStyle={styles.horizontalScrollView}
-              horizontal
-            >
-              {dummyDataPlaceHistory.map((historyItem, index) => (
-                <View key={index} style={styles.horizontalScrollItem}>
-                  <Ionicons
-                    size={30}
-                    style={{ marginBottom: -3, color: colors.primary }}
-                    name="heart-outline"
+        <View style={[s.horizontalMargin, styles.googleFrom]}>
+          <GooglePlacesAutocomplete
+            renderLeftButton={() => (
+              <XSvg
+                onPress={() => googleInputRef.current?.clear()}
+                width={20}
+                height={20}
+                style={{
+                  alignSelf: 'center',
+                }}
+                fill={colors.mediumGray}
+              />
+            )}
+            ref={googleInputRef}
+            styles={autoCompleteStyles}
+            enablePoweredByContainer={false}
+            fetchDetails
+            placeholder={inputPlaceholder}
+            onPress={onGooglePlaceChosen}
+            query={{
+              key: Constants.manifest?.extra?.googlePlacesApiKey,
+              language: 'sk',
+              location: '48.160170, 17.130256',
+              radius: '20788', //20,788 km
+              strictbounds: true,
+            }}
+            renderRow={(result: GooglePlaceData) => {
+              const fixedResult = result as FixedGooglePlaceData
+              const Icon =
+                fixedResult.types[0] === 'transit_station'
+                  ? MhdStopSvg
+                  : MarkerSvg
+              return (
+                <View style={styles.searchResultRow}>
+                  <Icon
+                    style={styles.searchResultRowIcon}
+                    fill={colors.lighterGray}
+                    width={16}
+                    height={16}
                   />
-                  <View style={styles.placeTexts}>
-                    <Text style={styles.placeName}>{historyItem.text}</Text>
-                    <Text style={styles.placeAddressMinor}>
-                      {historyItem.text}
+                  <Text>{result.structured_formatting.main_text}</Text>
+                </View>
+              )
+            }}
+            textInputProps={{
+              selectTextOnFocus: true,
+              onBlur: () => {
+                setGoogleAutocompleteSelection({ start: 0 })
+                setTimeout(() => {
+                  setGoogleAutocompleteSelection(undefined)
+                }, 10)
+              },
+              selection: googleAutocompleteSelection,
+            }}
+          />
+        </View>
+        <View style={s.horizontalMargin}>
+          <Text style={styles.categoriesTitle}>
+            {i18n.t('screens.SearchFromToScreen.myAddresses')}
+          </Text>
+          <ScrollView
+            contentContainerStyle={styles.horizontalScrollView}
+            horizontal
+          >
+            {dummyDataPlaceHistory.map((historyItem, index) => (
+              <FavoriteTile
+                key={index}
+                favoriteItem={historyItem}
+                icon={(props) => <HeartSvg {...props} />}
+                onPress={() => false}
+              />
+            ))}
+          </ScrollView>
+        </View>
+        <View style={[styles.categoryStops, s.horizontalMargin]}>
+          <Text style={styles.categoriesTitle}>
+            {i18n.t('screens.SearchFromToScreen.myStops')}
+          </Text>
+          <ScrollView
+            contentContainerStyle={styles.horizontalScrollView}
+            horizontal
+          >
+            {dummyDataPlaceHistory.map((historyItem, index) => (
+              <FavoriteTile
+                key={index}
+                favoriteItem={historyItem}
+                icon={(props) => <MhdStopSvg {...props} />}
+                onPress={() => false}
+              />
+            ))}
+          </ScrollView>
+        </View>
+        <View style={[styles.categoryStops, s.horizontalMargin]}>
+          <View style={styles.chooseFromMapRow}>
+            {getMyLocation && (
+              <TouchableOpacity onPress={() => getMyLocation(true)}>
+                <View style={styles.chooseFromMap}>
+                  <LocationSvg width={30} height={30} fill={colors.primary} />
+                  <View style={[styles.placeTexts, styles.chooseFromMapText]}>
+                    <Text style={styles.placeAddress}>
+                      {i18n.t('screens.SearchFromToScreen.currentPosition')}
                     </Text>
                   </View>
                 </View>
-              ))}
-            </ScrollView>
-          </View>
-          <View style={styles.categoryStops}>
-            <View style={styles.separatorParent}>
-              <View style={styles.separator}></View>
-            </View>
-            <Text style={styles.categoriesTitle}>{i18n.t('myStops')}</Text>
-            <ScrollView
-              contentContainerStyle={styles.horizontalScrollView}
-              horizontal
-            >
-              {dummyDataPlaceHistory.map((historyItem, index) => (
-                <View key={index} style={styles.horizontalScrollItem}>
-                  <MhdSvg width={30} height={20} />
-                  <View style={styles.placeTexts}>
-                    <Text style={styles.placeAddress}>{historyItem.text}</Text>
+              </TouchableOpacity>
+            )}
+            {setLocationFromMap && (
+              <TouchableOpacity onPress={setLocationFromMap}>
+                <View style={styles.chooseFromMap}>
+                  <MapSvg width={30} height={30} fill={colors.primary} />
+                  <View style={[styles.placeTexts, styles.chooseFromMapText]}>
+                    <Text style={styles.placeAddress}>
+                      {i18n.t('screens.SearchFromToScreen.choosePlaceFromMap')}
+                    </Text>
                   </View>
                 </View>
-              ))}
-            </ScrollView>
-          </View> */}
-          <View style={styles.categoryStops}>
-            <View style={styles.separatorParent}>
-              <View style={styles.separator}></View>
-            </View>
-            <View style={styles.chooseFromMapRow}>
-              {getMyLocation && (
-                <TouchableOpacity onPress={() => getMyLocation(true)}>
-                  <View style={styles.chooseFromMap}>
-                    <Ionicons
-                      size={30}
-                      style={{
-                        marginBottom: -3,
-                        color: colors.primary,
-                        width: 30,
-                      }}
-                      name="map-outline"
-                    />
-                    <View style={[styles.placeTexts, styles.chooseFromMapText]}>
-                      <Text style={styles.placeAddress}>
-                        {i18n.t('screens.SearchFromToScreen.currentPosition')}
-                      </Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              )}
-              {setLocationFromMap && (
-                <TouchableOpacity onPress={setLocationFromMap}>
-                  <View style={styles.chooseFromMap}>
-                    <Ionicons
-                      size={30}
-                      style={{
-                        marginBottom: -3,
-                        color: colors.primary,
-                        width: 30,
-                      }}
-                      name="map-outline"
-                    />
-                    <View style={[styles.placeTexts, styles.chooseFromMapText]}>
-                      <Text style={styles.placeAddress}>
-                        {i18n.t(
-                          'screens.SearchFromToScreen.choosePlaceFromMap'
-                        )}
-                      </Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              )}
-            </View>
+              </TouchableOpacity>
+            )}
           </View>
-          {/* <View style={styles.categoryStops}>
-            <View style={styles.separatorParent}>
-              <View style={styles.separator}></View>
-            </View>
-            <Text style={styles.categoriesTitle}>{i18n.t('history')}</Text>
-            <View style={styles.verticalScrollView}>
-              {dummyDataPlaceHistory.map((historyItem, index) => (
-                <View key={index} style={styles.verticalScrollItem}>
-                  <HistorySvg width={30} height={20} />
-                  <View style={styles.placeTexts}>
-                    <Text style={styles.placeAddress}>{historyItem.text}</Text>
-                  </View>
+        </View>
+        <View style={[styles.categoryStops, styles.history]}>
+          <Text style={styles.categoriesTitle}>
+            {i18n.t('screens.SearchFromToScreen.history')}
+          </Text>
+          <View style={styles.verticalScrollView}>
+            {dummyDataPlaceHistory.map((historyItem, index) => (
+              <View key={index} style={styles.verticalScrollItem}>
+                <HistorySvg width={30} height={20} fill={colors.black} />
+                <View style={styles.placeTexts}>
+                  <Text style={styles.placeAddress}>{historyItem.text}</Text>
                 </View>
-              ))}
-            </View>
-          </View> */}
+              </View>
+            ))}
+          </View>
         </View>
       </View>
     </BottomSheet>
@@ -241,32 +219,22 @@ export default function SearchFromToScreen({
 }
 
 const styles = StyleSheet.create({
-  // categoriesTitle: {
-  //   marginTop: 14,
-  //   marginBottom: 10,
-  // },
-  // horizontalScrollView: {
-  //   flexDirection: 'row',
-  //   borderWidth: 1,
-  // },
-  // verticalScrollView: {
-  //   paddingBottom: BOTTOM_TAB_NAVIGATOR_HEIGHT,
-  // },
-  // horizontalScrollItem: {
-  //   flexDirection: 'row',
-  //   alignItems: 'center',
-  //   height: 56,
-  //   marginRight: 10,
-  //   paddingHorizontal: 10,
-  //   borderColor: colors.lightGray,
-  //   borderWidth: 1,
-  //   borderRadius: 3,
-  // },
-  // verticalScrollItem: {
-  //   flexDirection: 'row',
-  //   alignItems: 'center',
-  //   height: 56,
-  // },
+  categoriesTitle: {
+    marginTop: 14,
+    marginBottom: 10,
+  },
+  horizontalScrollView: {
+    flexDirection: 'row',
+    borderWidth: 1,
+  },
+  verticalScrollView: {
+    paddingBottom: BOTTOM_TAB_NAVIGATOR_HEIGHT,
+  },
+  verticalScrollItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 56,
+  },
   chooseFromMapRow: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -276,7 +244,6 @@ const styles = StyleSheet.create({
   chooseFromMap: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderColor: colors.lightGray,
     paddingHorizontal: 5,
   },
   chooseFromMapText: {
@@ -286,29 +253,20 @@ const styles = StyleSheet.create({
   placeTexts: {
     marginLeft: 10,
   },
-  // placeName: {
-  //   color: colors.primary,
-  // },
-  // placeAddressMinor: {
-  //   color: colors.mediumGray,
-  // },
   categoryStops: {
     marginTop: 14,
   },
-  separatorParent: {
-    alignItems: 'center',
-  },
-  separator: {
-    alignItems: 'center',
-    width: '100%',
-    height: 1,
-    backgroundColor: colors.lightGray,
-  },
   placeAddress: {
     color: colors.blackLighter,
+    fontWeight: 'bold',
   },
   content: {
     backgroundColor: 'white',
+    marginTop: 10,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    height: '100%',
   },
   googleFrom: {
     flexDirection: 'row',
@@ -321,6 +279,13 @@ const styles = StyleSheet.create({
   },
   searchResultRowIcon: {
     marginRight: 5,
+  },
+  history: {
+    backgroundColor: colors.lightLightGray,
+    paddingHorizontal: 20,
+    flex: 1,
+    alignSelf: 'stretch',
+    borderTopEndRadius: STYLES.borderRadius,
   },
 })
 
@@ -336,8 +301,10 @@ const autoCompleteStyles = {
     height: 50,
   },
   textInputContainer: {
-    borderWidth: 1,
-    borderRadius: 7,
-    borderColor: colors.lightGray,
+    borderWidth: 2,
+    borderRadius: 30,
+    borderColor: colors.mediumGray,
+    paddingHorizontal: 15,
+    letterSpacing: 0.5,
   },
 }

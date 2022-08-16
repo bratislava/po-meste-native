@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import { STYLES } from './constants'
 export const s = StyleSheet.create({
   icon: {
     marginRight: 9,
@@ -55,5 +56,8 @@ export const s = StyleSheet.create({
   borderGreen: {
     borderWidth: 1,
     borderColor: 'green',
+  },
+  roundedBorder: {
+    borderRadius: STYLES.borderRadius,
   },
 })

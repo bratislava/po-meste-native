@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import i18n from 'i18n-js'
 import {
   DateTimeFormatter,
   Duration,
   Instant,
   LocalDateTime,
 } from '@js-joda/core'
+import i18n from 'i18n-js'
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
+import { LoadingView } from '@components'
+import { LegModes, MicromobilityProvider } from '@types'
 import {
   colors,
-  LegProps,
-  s,
   getColor,
   getIcon,
   getProviderName,
   getTextColor,
+  LegProps,
+  s,
 } from '@utils'
-import { LegModes, MicromobilityProvider } from '@types'
-import { LoadingView } from '@components'
 import Leg from './Leg'
 
 type Props = {
@@ -131,16 +131,16 @@ const TripMiniature = ({
                 {diffMinutes != undefined && (
                   <Text style={styles.atTime}>
                     {diffMinutes < 0
-                      ? i18n.t('screens.FromToScreen.beforeIn', {
+                      ? i18n.t('screens.FromToScreen.Planner.beforeIn', {
                           time: Math.abs(diffMinutes),
                         })
-                      : i18n.t('screens.FromToScreen.startingIn', {
+                      : i18n.t('screens.FromToScreen.Planner.startingIn', {
                           time: diffMinutes,
                         })}
                   </Text>
                 )}
                 <Text numberOfLines={1}>
-                  {i18n.t('screens.FromToScreen.from', {
+                  {i18n.t('screens.FromToScreen.Planner.from', {
                     place: startStationName,
                   })}
                 </Text>

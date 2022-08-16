@@ -9,13 +9,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import {
-  Platform,
-  StyleSheet,
-  TouchableOpacity,
-  useWindowDimensions,
-  View,
-} from 'react-native'
+import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native'
 import MapView, { Polyline, PROVIDER_GOOGLE } from 'react-native-maps'
 
 import {
@@ -29,12 +23,11 @@ import {
   getHeaderBgColor,
   hexToRgba,
   modeColors,
-  s,
 } from '@utils'
 
-import CurrentLocationSvg from '@icons/current-location.svg'
 import { TextItinerary } from './_partials/TextItinerary'
 
+import CurrentLocationButton from '@components/CurrentLocationButton'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 import { customMapStyle } from '../customMapStyle'
 
@@ -145,15 +138,12 @@ export default function PlannerScreen({
         }, [])}
       </MapView>
       {Platform.select({ ios: true, android: true }) && (
-        <View style={styles.currentLocation}>
-          <TouchableOpacity
-            onPress={() =>
-              moveMapToCurrentLocation(() => getLocationWithPermission(true))
-            }
-          >
-            <CurrentLocationSvg />
-          </TouchableOpacity>
-        </View>
+        <CurrentLocationButton
+          style={styles.currentLocation}
+          onPress={() =>
+            moveMapToCurrentLocation(() => getLocationWithPermission(true))
+          }
+        />
       )}
       <BottomSheet
         index={1}
@@ -198,10 +188,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 20,
-    padding: 10,
-    backgroundColor: 'white',
-    borderRadius: 30,
-    ...s.shadow,
-    elevation: 7,
   },
 })

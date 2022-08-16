@@ -11,14 +11,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import {
-  ImageURISource,
-  Platform,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { ImageURISource, Platform, StyleSheet, Text, View } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
 
 import {
@@ -60,10 +53,9 @@ import StationChargerInfo from './_partials/StationChargerInfo'
 import StationMhdInfo from './_partials/StationMhdInfo'
 import StationMicromobilityInfo from './_partials/StationMicromobilityInfo'
 
-import CurrentLocationSvg from '@icons/current-location.svg'
-
 import { customMapStyle } from '../customMapStyle'
 
+import CurrentLocationButton from '@components/CurrentLocationButton'
 import { colors } from '@utils'
 
 const MIN_DELTA_FOR_XS_MARKER = 0.05
@@ -580,24 +572,16 @@ export default function MapScreen() {
         <LoadingView fullscreen iconWidth={80} iconHeight={80} />
       )}
       {Platform.select({ ios: true, android: showCurrentLocationButton }) && (
-        <View
-          style={[
-            styles.currentLocation,
-            {
-              bottom: VEHICLE_BAR_SHEET_HEIGHT_EXPANDED + 15,
-            },
-          ]}
-        >
-          <TouchableOpacity
-            onPress={() =>
-              moveMapToCurrentLocation(location, () =>
-                getLocationWithPermission(true, true)
-              )
-            }
-          >
-            <CurrentLocationSvg fill={colors.primary} />
-          </TouchableOpacity>
-        </View>
+        <CurrentLocationButton
+          style={{
+            bottom: VEHICLE_BAR_SHEET_HEIGHT_EXPANDED + 15,
+          }}
+          onPress={() =>
+            moveMapToCurrentLocation(location, () =>
+              getLocationWithPermission(true, true)
+            )
+          }
+        />
       )}
       <SearchBar />
       {isMhdErrorOpen &&

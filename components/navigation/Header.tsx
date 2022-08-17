@@ -27,7 +27,7 @@ export const Header = ({
         styles.container,
         {
           paddingTop: insets.top,
-          height: insets.top + 64,
+          height: insets.top + 56,
           borderBottomWidth: borderShown ? 5 : 0,
         },
       ]}

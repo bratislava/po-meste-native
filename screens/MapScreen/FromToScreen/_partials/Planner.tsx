@@ -1053,7 +1053,7 @@ const styles = StyleSheet.create({
   },
   schedulingContainer: {
     marginTop: 0,
-    paddingVertical: 23,
+    paddingVertical: 12,
   },
   schedulingText: {
     color: colors.white,

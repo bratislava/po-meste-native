@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     height: 34,
   },
   tabBarTabLarge: {
-    height: 68,
+    height: 56,
   },
   tabBarTabLabel: {
     backgroundColor: 'transparent',

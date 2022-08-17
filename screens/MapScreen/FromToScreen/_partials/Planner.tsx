@@ -815,7 +815,7 @@ export default function Planner(props: PlannerProps) {
               <View
                 style={[
                   styles.row,
-                  { flex: 1, position: 'relative', left: 12 },
+                  { flex: 0, position: 'relative', left: 12 },
                 ]}
               >
                 <WheelchairSvg
@@ -834,6 +834,7 @@ export default function Planner(props: PlannerProps) {
                 ios_backgroundColor="#E1E4E8"
                 onValueChange={(value) => setAccessibleOnly(value)}
                 value={accessibleOnly}
+                style={{ flex: 0 }}
               />
             </View>
           </View>

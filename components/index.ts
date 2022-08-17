@@ -23,7 +23,6 @@ export {
 export { default as RadioButton } from './RadioButton'
 export { default as Row } from './Row'
 export { default as ScreenFooter } from './ScreenFooter'
-export { default as Switch } from './Switch'
 export { default as TabView } from './TabView'
 export {
   BOTTOM_VEHICLE_BAR_HEIGHT_ALL,

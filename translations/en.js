@@ -116,7 +116,7 @@ export default {
         departureText: 'Departure',
         arrivalText: 'Arrival',
         currentPosition: 'Current location',
-        accessibleVehicles: 'Accessible vehicles',
+        accessibleVehicles: 'Accessible\nvehicles',
       },
     },
     SearchFromToScreen: {

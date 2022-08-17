@@ -19,7 +19,7 @@ const renderTabBar = (
     <TabBar
       {...props}
       indicatorStyle={styles.tabBarIndicator}
-      style={styles.tabBar}
+      style={[styles.tabBar, variant === 'large' && { elevation: 0 }]}
       tabStyle={[
         styles.tabBarTab,
         variant === 'large' && styles.tabBarTabLarge,

@@ -118,7 +118,7 @@ export default {
         departureText: 'Odchod',
         arrivalText: 'Príchod',
         currentPosition: 'Aktuálna poloha',
-        accessibleVehicles: 'Nízkopodl. vozidlá',
+        accessibleVehicles: 'Nízkopodl.\nvozidlá',
       },
     },
     SearchFromToScreen: {

@@ -1,11 +1,12 @@
 import i18n from 'i18n-js'
 import React, { useCallback } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Image, Platform, StyleSheet, Text, View } from 'react-native'
 import AppLink from 'react-native-app-link'
 
 import { Button } from '@components'
 import { MicromobilityProvider } from '@types'
 import {
+  boltPrice,
   colors,
   FreeBikeStatusProps,
   rekolaPrice,
@@ -40,6 +41,13 @@ const StationMicromobilityInfo = ({
       case MicromobilityProvider.tier:
         icon = <TierVehicleIconSvg height={150} />
         break
+      case MicromobilityProvider.bolt:
+        icon = (
+          <Image
+            source={require('@images/bolt-vehicle-image.png')}
+            height={150}
+          />
+        )
     }
     return icon
   }, [provider])
@@ -55,6 +63,9 @@ const StationMicromobilityInfo = ({
         break
       case MicromobilityProvider.tier:
         color = colors.tierColor
+        break
+      case MicromobilityProvider.bolt:
+        color = colors.boltColor
         break
     }
     return color
@@ -81,6 +92,10 @@ const StationMicromobilityInfo = ({
       case MicromobilityProvider.tier:
         title = i18n.t('screens.MapScreen.tierTitle')
         providerPrice = tierPrice
+        break
+      case MicromobilityProvider.bolt:
+        title = i18n.t('screens.MapScreen.boltTitle')
+        providerPrice = boltPrice
         break
     }
     const translationOption = providerPrice.translationOption
@@ -163,6 +178,13 @@ const StationMicromobilityInfo = ({
                 })}
               </Text>
             )}
+            {station?.original?.current_range_meters !== undefined && ( // TODO remove from original
+              <Text>
+                {i18n.t('screens.MapScreen.currentRange', {
+                  kilometers: station?.original?.current_range_meters / 1000, // TODO remove from original
+                })}
+              </Text>
+            )}
           </View>
           <View>
             <Button
@@ -205,6 +227,20 @@ const StationMicromobilityInfo = ({
                     })
                       .then()
                       .catch()
+                    break
+                  case MicromobilityProvider.bolt:
+                    AppLink.maybeOpenURL(
+                      Platform.select({
+                        android: station.original.rental_uris.android,
+                        ios: station.original.rental_uris.ios,
+                      }) ?? '',
+                      {
+                        appName: 'bolt',
+                        appStoreId: 675033630,
+                        appStoreLocale: 'sk',
+                        playStoreId: 'ee.mtakso.client',
+                      }
+                    )
                     break
                 }
               }}

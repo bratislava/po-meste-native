@@ -19,7 +19,13 @@ export const tierPrice = {
   price: 19,
   duration: 1,
   unit: { translate: false, text: 'min' },
-  translationOption: 'screens.MapScreen.micromobilityWithUnlockPriceFrom',
+  translationOption: 'screens.MapScreen.micromobilityWithUnlockPrice',
+}
+export const boltPrice = {
+  price: 19,
+  duration: 1,
+  unit: { translate: false, text: 'min' },
+  translationOption: 'screens.MapScreen.micromobilityPrice',
 }
 
 export const modeColors: { [key: string]: string } = {

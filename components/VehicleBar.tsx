@@ -12,6 +12,7 @@ import {
   useTierData,
   useZseChargersData,
 } from '@hooks'
+import useBoltData from '@hooks/useBoltData'
 import { VehicleType } from '@types'
 import { colors } from '@utils/theme'
 import { t } from 'i18n-js'
@@ -35,6 +36,7 @@ const VehicleBar = () => {
   const { isLoading: isLoadingZseChargers } = useZseChargersData()
   const { isLoading: isLoadingRekola } = useRekolaData()
   const { isLoading: isLoadingSlovnaftbajk } = useSlovnaftbajkData()
+  const { isLoading: isLoadingBolt } = useBoltData()
   return (
     <View style={styles.vehicleBar}>
       {vehiclesContext.vehicleTypes?.map((vehicleType, index) => {
@@ -44,7 +46,8 @@ const VehicleBar = () => {
           (id === VehicleType.bicycle &&
             (isLoadingRekola || isLoadingSlovnaftbajk)) ||
           (id === VehicleType.chargers && isLoadingZseChargers) ||
-          (id === VehicleType.scooter && isLoadingTier)
+          (id === VehicleType.scooter && isLoadingTier) ||
+          isLoadingBolt
         return (
           <VehicleFilterTouchable
             key={index}

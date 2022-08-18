@@ -22,6 +22,7 @@ export const colors = {
   slovnaftColor: '#FFF215',
   tierColor: '#77E4D7',
   zseColor: '#F21C0A',
+  boltColor: '#34D186',
   available: '#5DB56E',
   ownVehicleHeaderColor: '#8D8D8D',
 }

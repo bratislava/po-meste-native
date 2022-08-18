@@ -99,6 +99,7 @@ export const useHealthData = () => {
         tier: number
         slovnaftbajk: number
         zse: number
+        bolt: number
       }
     }
     error?: any

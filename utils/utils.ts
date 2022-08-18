@@ -64,6 +64,8 @@ export const getProviderName = (provider: MicromobilityProvider) => {
       return i18n.t('common.providerNames.tier')
     case MicromobilityProvider.slovnaftbajk:
       return i18n.t('common.providerNames.slovnaftbajk')
+    case MicromobilityProvider.bolt:
+      return i18n.t('common.providerNames.bolt')
     default:
       return undefined
   }
@@ -79,6 +81,8 @@ export const getIcon = (
     case MicromobilityProvider.slovnaftbajk:
       return SlovnaftbajkSvg
     case MicromobilityProvider.tier:
+      return TierSvg
+    case MicromobilityProvider.bolt:
       return TierSvg
     default:
       return isScooter ? ScooterSvg : CyclingSvg
@@ -122,6 +126,8 @@ export const getColor = (provider?: MicromobilityProvider) => {
       return colors.slovnaftColor
     case MicromobilityProvider.tier:
       return colors.tierColor
+    case MicromobilityProvider.bolt:
+      return colors.boltColor
     default:
       break
   }
@@ -130,6 +136,8 @@ export const getColor = (provider?: MicromobilityProvider) => {
 export const getTextColor = (provider: MicromobilityProvider) => {
   switch (provider) {
     case MicromobilityProvider.rekola:
+      return colors.white
+    case MicromobilityProvider.bolt:
       return colors.white
     default:
       return colors.darkText

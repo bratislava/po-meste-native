@@ -1,10 +1,10 @@
-import * as yup from 'yup'
 import {
   ChargerStatus,
   ChargerTypes,
   LegModes,
   TransitVehicleType,
 } from '@types'
+import * as yup from 'yup'
 import { colorRegex, dateStringRegex, timeStringRegex } from './utils'
 
 export const mhdStop = yup
@@ -72,7 +72,82 @@ export const apiRekolaStationStatus = yup.object().shape({
   }),
 })
 
-export type FreeBikeStatusProps = yup.Asserts<typeof freeBikeStatusSchema>
+export type FreeBikeStatusProps = yup.Asserts<
+  typeof freeBikeStatusSchema | typeof freeBikeStatusBoltSchema
+>
+
+const tierOriginalSchema = yup.object().shape({
+  attributes: yup.object().shape({
+    batteryLevel: yup
+      .number()
+      .required('error-malformed-freeBikeStatusSchema-batteryLevel'), // 65,
+    code: yup.number().required('error-malformed-freeBikeStatusSchema-code'), // 238289,
+    hasHelmet: yup
+      .boolean()
+      .required('error-malformed-freeBikeStatusSchema-hasHelmet'), // false,
+    hasHelmetBox: yup
+      .boolean()
+      .required('error-malformed-freeBikeStatusSchema-hasHelmetBox'), // false,
+    iotVendor: yup
+      .string()
+      .required('error-malformed-freeBikeStatusSchema-iotVendor'), // 'okai',
+    isRentable: yup
+      .boolean()
+      .required('error-malformed-freeBikeStatusSchema-isRentable'), // true,
+    lastLocationUpdate: yup
+      .string()
+      .required('error-malformed-freeBikeStatusSchema-lastLocationUpdate'), // '2021-11-08T14:58:42Z', verificate if needed
+    lastStateChange: yup
+      .string()
+      .required('error-malformed-freeBikeStatusSchema-lastStateChange'), //'2021-11-02T00:38:40Z', verificate if needed
+    lat: yup.number().required('error-malformed-freeBikeStatusSchema-lat'), //48.157839,
+    licencePlate: yup
+      .string()
+      .required('error-malformed-freeBikeStatusSchema-licencePlate'), //'181WSF',
+    lng: yup.number().required('error-malformed-freeBikeStatusSchema-lng'), //17.130128,
+    maxSpeed: yup
+      .number()
+      .required('error-malformed-freeBikeStatusSchema-maxSpeed'), //25,
+    state: yup.string().required('error-malformed-freeBikeStatusSchema-state'), //'ACTIVE',
+    vehicleType: yup
+      .string()
+      .required('error-malformed-freeBikeStatusSchema-vehicleType'), //'escooter',
+    zoneId: yup
+      .string()
+      .required('error-malformed-freeBikeStatusSchema-zoneId'), //'BRATISLAVA',
+  }),
+})
+
+const boltOriginalSchema = yup.object().shape({
+  bike_id: yup
+    .string()
+    .required('error-malformed-freeBikeStatusSchema-bike_id'), // "91677338-23cf-403e-8ef0-316de7ca44fb",
+  lat: yup.number().required('error-malformed-freeBikeStatusSchema-lat'), //48.19020080566406,
+  lon: yup.number().required('error-malformed-freeBikeStatusSchema-lon'), //17.13735580444336,
+  current_range_meters: yup
+    .number()
+    .required('error-malformed-freeBikeStatusSchema-current_range_meters'), // 13320,
+  pricing_plan_id: yup
+    .string()
+    .required('error-malformed-freeBikeStatusSchema-pricing_plan_id'), // "108d3654-c184-56d3-9381-696fe53109b5",
+  vehicle_type_id: yup
+    .string()
+    .required('error-malformed-freeBikeStatusSchema-vehicle_type_id'), // "d62d87fa-458e-5778-b741-7b2433df73a7",
+  is_reserved: yup
+    .boolean()
+    .required('error-malformed-freeBikeStatusSchema-is_reserved'), // false,
+  is_disabled: yup
+    .boolean()
+    .required('error-malformed-freeBikeStatusSchema-is_disabled'), // false,
+  rental_uris: yup.object().shape({
+    android: yup
+      .string()
+      .required('error-malformed-freeBikeStatusSchema-rental_uris-android'), // "bolt://action/rentalsSelectVehicleByRotatedUuid?rotated_uuid=91677338-23cf-403e-8ef0-316de7ca44fb"
+    ios: yup
+      .string()
+      .required('error-malformed-freeBikeStatusSchema-rental_uris-ios'), // "bolt://action/rentalsSelectVehicleByRotatedUuid?rotated_uuid=91677338-23cf-403e-8ef0-316de7ca44fb"
+  }),
+})
 
 export const freeBikeStatusSchema = yup.object().shape({
   bike_id: yup.string().required('error-malformed-bike_id'),
@@ -82,54 +157,29 @@ export const freeBikeStatusSchema = yup.object().shape({
   is_disabled: yup.boolean().required('error-malformed-is_disabled'),
   last_reported: yup.string().required('error-malformed-last_reported'),
   // TODO erase when not needed
-  original: yup.object().shape({
-    attributes: yup.object().shape({
-      batteryLevel: yup
-        .number()
-        .required('error-malformed-freeBikeStatusSchema-batteryLevel'), // 65,
-      code: yup.number().required('error-malformed-freeBikeStatusSchema-code'), // 238289,
-      hasHelmet: yup
-        .boolean()
-        .required('error-malformed-freeBikeStatusSchema-hasHelmet'), // false,
-      hasHelmetBox: yup
-        .boolean()
-        .required('error-malformed-freeBikeStatusSchema-hasHelmetBox'), // false,
-      iotVendor: yup
-        .string()
-        .required('error-malformed-freeBikeStatusSchema-iotVendor'), // 'okai',
-      isRentable: yup
-        .boolean()
-        .required('error-malformed-freeBikeStatusSchema-isRentable'), // true,
-      lastLocationUpdate: yup
-        .string()
-        .required('error-malformed-freeBikeStatusSchema-lastLocationUpdate'), // '2021-11-08T14:58:42Z', verificate if needed
-      lastStateChange: yup
-        .string()
-        .required('error-malformed-freeBikeStatusSchema-lastStateChange'), //'2021-11-02T00:38:40Z', verificate if needed
-      lat: yup.number().required('error-malformed-freeBikeStatusSchema-lat'), //48.157839,
-      licencePlate: yup
-        .string()
-        .required('error-malformed-freeBikeStatusSchema-licencePlate'), //'181WSF',
-      lng: yup.number().required('error-malformed-freeBikeStatusSchema-lng'), //17.130128,
-      maxSpeed: yup
-        .number()
-        .required('error-malformed-freeBikeStatusSchema-maxSpeed'), //25,
-      state: yup
-        .string()
-        .required('error-malformed-freeBikeStatusSchema-state'), //'ACTIVE',
-      vehicleType: yup
-        .string()
-        .required('error-malformed-freeBikeStatusSchema-vehicleType'), //'escooter',
-      zoneId: yup
-        .string()
-        .required('error-malformed-freeBikeStatusSchema-zoneId'), //'BRATISLAVA',
-    }),
-  }),
+  original: tierOriginalSchema,
+})
+
+export const freeBikeStatusBoltSchema = yup.object().shape({
+  bike_id: yup.string().required('error-malformed-bike_id'),
+  lat: yup.number().required('error-malformed-lat'),
+  lon: yup.number().required('error-malformed-lon'),
+  is_reserved: yup.boolean().required('error-malformed-is_reserved'),
+  is_disabled: yup.boolean().required('error-malformed-is_disabled'),
+  last_reported: yup.string().required('error-malformed-last_reported'),
+  // TODO erase when not needed
+  original: boltOriginalSchema,
 })
 
 export const apiFreeBikeStatus = yup.object().shape({
   data: yup.object().shape({
     bikes: yup.array().ensure().of(freeBikeStatusSchema),
+  }),
+})
+
+export const apiFreeBikeStatusBolt = yup.object().shape({
+  data: yup.object().shape({
+    bikes: yup.array().ensure().of(freeBikeStatusBoltSchema),
   }),
 })
 

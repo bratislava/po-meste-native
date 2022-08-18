@@ -15,6 +15,8 @@ import {
   tierPrice,
 } from '@utils'
 
+import ChevronRightIconSVG from '@icons/chevron-right-small.svg'
+
 import RekoloVehicleIconSvg from '@images/rekolo-vehicle-icon.svg'
 import SlovnaftbajkVehicleIconSvg from '@images/slovnaftbajk-vehicle-icon.svg'
 import TierVehicleIconSvg from '@images/tier-vehicle-icon.svg'
@@ -117,6 +119,19 @@ const StationMicromobilityInfo = ({
   }, [provider])
 
   const providerTitlePrice = getTitlePrice()
+  const buttonTitle =
+    provider === MicromobilityProvider.rekola
+      ? 'Rekola'
+      : provider === MicromobilityProvider.slovnaftbajk
+      ? 'Bajk'
+      : provider === MicromobilityProvider.tier
+      ? 'Tier'
+      : ''
+  const textColor =
+    provider === MicromobilityProvider.tier ||
+    provider === MicromobilityProvider.slovnaftbajk
+      ? colors.darkText
+      : colors.white
   return (
     <View style={styles.container}>
       <View style={[styles.header, s.horizontalMargin]}>
@@ -166,14 +181,8 @@ const StationMicromobilityInfo = ({
           </View>
           <View>
             <Button
-              style={{ backgroundColor: getButtonColor() }}
-              titleStyle={[
-                (provider === MicromobilityProvider.tier ||
-                  provider === MicromobilityProvider.slovnaftbajk) && {
-                  color: colors.darkText,
-                },
-                { fontWeight: 'bold' },
-              ]}
+              contentStyle={{ backgroundColor: getButtonColor() }}
+              titleStyle={[{ color: textColor }, { fontWeight: 'bold' }]}
               onPress={() => {
                 switch (provider) {
                   case MicromobilityProvider.rekola:
@@ -208,7 +217,18 @@ const StationMicromobilityInfo = ({
                     break
                 }
               }}
-              title={i18n.t('screens.MapScreen.rent', { provider })}
+              size="small"
+              title={i18n.t('screens.MapScreen.rent', {
+                provider: buttonTitle,
+              })}
+              icon={
+                <ChevronRightIconSVG
+                  height={14}
+                  fill={textColor}
+                  style={{ marginLeft: 14 }}
+                />
+              }
+              iconRight
             />
           </View>
         </View>

@@ -1,12 +1,13 @@
-import React from 'react'
-import { Text, View, StyleSheet } from 'react-native'
-import i18n from 'i18n-js'
-import AppLink from 'react-native-app-link'
 import { Ionicons } from '@expo/vector-icons'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
+import i18n from 'i18n-js'
+import React from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+import AppLink from 'react-native-app-link'
 
-import { s, colors, ConnectorProps } from '@utils'
-import { Button, BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '@components'
+import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL, Button } from '@components'
+import ChevronRightIconSvg from '@icons/chevron-right-small.svg'
+import { colors, ConnectorProps, s } from '@utils'
 import ConnectorMiniature from './_partials/ConnectorMiniature'
 
 import ChargerSvg from '@images/charger.svg'
@@ -95,7 +96,8 @@ const StationChargerInfo = ({
             </View>
             <View>
               <Button
-                style={styles.rentButton}
+                contentStyle={styles.rentButton}
+                titleStyle={[{ color: colors.white }, { fontWeight: 'bold' }]}
                 onPress={() =>
                   AppLink.openInStore({
                     appName: 'zse-drive',
@@ -107,6 +109,15 @@ const StationChargerInfo = ({
                     .catch()
                 }
                 title={i18n.t('screens.MapScreen.startZseCharger')}
+                size="small"
+                icon={
+                  <ChevronRightIconSvg
+                    height={14}
+                    fill={colors.white}
+                    style={{ marginLeft: 14 }}
+                  />
+                }
+                iconRight
               />
             </View>
           </View>

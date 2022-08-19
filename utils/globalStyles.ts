@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native'
 import { STYLES } from './constants'
+import { colors } from './theme'
 export const s = StyleSheet.create({
   icon: {
     marginRight: 9,
@@ -71,7 +72,7 @@ export const s = StyleSheet.create({
     textAlignVertical: 'center',
   },
   handleStyle: {
-    backgroundColor: '#DEDEDE',
+    backgroundColor: colors.lightGray,
     width: 66,
     height: 4,
     marginTop: 5,

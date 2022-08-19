@@ -1,21 +1,8 @@
 import BottomSheet from '@gorhom/bottom-sheet'
 import { StackScreenProps } from '@react-navigation/stack'
-import * as Location from 'expo-location'
 import googlePolyline from 'google-polyline'
-import React, {
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
-import {
-  Platform,
-  StyleSheet,
-  TouchableOpacity,
-  useWindowDimensions,
-  View,
-} from 'react-native'
+import React, { useMemo, useRef, useState } from 'react'
+import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native'
 import MapView, { Polyline, PROVIDER_GOOGLE } from 'react-native-maps'
 
 import {
@@ -29,13 +16,11 @@ import {
   getHeaderBgColor,
   hexToRgba,
   modeColors,
-  s,
 } from '@utils'
 
-import CurrentLocationSvg from '@icons/current-location.svg'
 import { TextItinerary } from './_partials/TextItinerary'
 
-import { GlobalStateContext } from '@state/GlobalStateProvider'
+import CurrentLocationButton from '@components/CurrentLocationButton'
 import { customMapStyle } from '../customMapStyle'
 
 export default function PlannerScreen({
@@ -53,7 +38,6 @@ export default function PlannerScreen({
     '95%',
   ]
   const { height } = useWindowDimensions()
-  const { getLocationWithPermission } = useContext(GlobalStateContext)
   // keep this in sync with the middle bottomSheetSnapPoint percentage
   const middleSnapPointMapPadding = 0.5 * (height - BOTTOM_TAB_NAVIGATOR_HEIGHT) // TODO add top bar to the equation instead of rounding down to 0.5
   const bottomMapPaddingForSheeptSnapPoints = [
@@ -75,20 +59,6 @@ export default function PlannerScreen({
         return []
       }),
     [legs]
-  )
-
-  const moveMapToCurrentLocation = useCallback(
-    async (
-      permisionDeniedCallback: () => Promise<
-        Location.LocationObject | undefined | null
-      >
-    ) => {
-      const currentLocation = await permisionDeniedCallback()
-      if (currentLocation) {
-        mapRef.current?.animateCamera({ center: currentLocation.coords })
-      }
-    },
-    []
   )
 
   return (
@@ -145,15 +115,7 @@ export default function PlannerScreen({
         }, [])}
       </MapView>
       {Platform.select({ ios: true, android: true }) && (
-        <View style={styles.currentLocation}>
-          <TouchableOpacity
-            onPress={() =>
-              moveMapToCurrentLocation(() => getLocationWithPermission(true))
-            }
-          >
-            <CurrentLocationSvg />
-          </TouchableOpacity>
-        </View>
+        <CurrentLocationButton mapRef={mapRef} style={styles.currentLocation} />
       )}
       <BottomSheet
         index={1}
@@ -198,10 +160,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 20,
-    padding: 10,
-    backgroundColor: 'white',
-    borderRadius: 30,
-    ...s.shadow,
-    elevation: 7,
   },
 })

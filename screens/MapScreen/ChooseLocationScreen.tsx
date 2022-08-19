@@ -1,15 +1,16 @@
-import React, { useRef, useState } from 'react'
-import { StyleSheet, View, Text } from 'react-native'
-import MapView, { PROVIDER_GOOGLE, Region } from 'react-native-maps'
-import i18n from 'i18n-js'
 import { useNavigation } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
+import i18n from 'i18n-js'
+import React, { useRef, useState } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+import MapView, { PROVIDER_GOOGLE, Region } from 'react-native-maps'
 
 import { Button } from '@components'
-import { colors, s } from '@utils'
 import { MapParamList } from '@types'
+import { colors, s } from '@utils'
 
 import MarkerSvg from '@icons/map-pin-marker.svg'
+import { customMapStyle } from './customMapStyle'
 
 export default function ChooseLocation({
   route,
@@ -31,6 +32,7 @@ export default function ChooseLocation({
           provider={PROVIDER_GOOGLE}
           ref={ref}
           style={styles.map}
+          customMapStyle={customMapStyle}
           initialRegion={
             (route?.params?.latitude &&
               route?.params?.longitude && {

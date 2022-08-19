@@ -136,11 +136,17 @@ export default function LineTimetableScreen({
     )
   }, [data])
 
+  const isToday = (d: LocalDate) => d.equals(LocalDate.now())
+
   const shouldBeMinuteHighlighted = (
     indexHours: number,
     indexMinutes: number
   ) => {
-    return activeIndex[1] === indexHours && activeIndex[2] === indexMinutes
+    return (
+      activeIndex[1] === indexHours &&
+      activeIndex[2] === indexMinutes &&
+      isToday(date)
+    )
   }
 
   if (!isLoading && error)

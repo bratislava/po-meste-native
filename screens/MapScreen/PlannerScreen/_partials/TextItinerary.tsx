@@ -40,7 +40,6 @@ import {
   LegProps,
   openProviderApp,
   s,
-  STYLES,
   trolleybusLineNumbers,
 } from '@utils'
 
@@ -335,11 +334,11 @@ export const TextItinerary = ({
       case TravelModes.mhd:
         return i18n.t('screens.PlannerScreen.mhdHeader', { minutes })
       case TravelModes.bicycle:
-        return i18n.t('screens.FromToScreen.myBike')
+        return i18n.t('screens.FromToScreen.Planner.myBike')
       case TravelModes.scooter:
-        return i18n.t('screens.FromToScreen.myScooter')
+        return i18n.t('screens.FromToScreen.Planner.myScooter')
       case TravelModes.walk:
-        return i18n.t('screens.FromToScreen.walk')
+        return i18n.t('screens.FromToScreen.Planner.walk')
       default:
         return ''
     }
@@ -499,7 +498,7 @@ const styles = StyleSheet.create({
   card: {
     paddingHorizontal: PADDING_HORIZONTAL,
     paddingVertical: 3,
-    borderRadius: STYLES.borderRadius,
+    borderRadius: 7,
     display: 'flex',
     flexDirection: 'row',
   },

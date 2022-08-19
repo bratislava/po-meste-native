@@ -1,19 +1,19 @@
-import React from 'react'
-import { StatusBar } from 'expo-status-bar'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
-import * as Localization from 'expo-localization'
-import i18n from 'i18n-js'
-import { QueryClient, QueryClientProvider } from 'react-query'
-import * as Location from 'expo-location'
 import Constants from 'expo-constants'
-import * as Sentry from 'sentry-expo'
+import * as Localization from 'expo-localization'
+import * as Location from 'expo-location'
+import { StatusBar } from 'expo-status-bar'
+import i18n from 'i18n-js'
+import React from 'react'
 import { AppState, AppStateStatus, LogBox, Platform } from 'react-native'
-import { focusManager } from 'react-query'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { focusManager, QueryClient, QueryClientProvider } from 'react-query'
+import * as Sentry from 'sentry-expo'
 
 import { useCachedResources, useColorScheme } from '@hooks'
-import GlobalStateProvider from '@state/GlobalStateProvider'
 import Navigation from '@screens/index'
+import GlobalStateProvider from '@state/GlobalStateProvider'
 
+import { PortalProvider } from '@gorhom/portal'
 import * as translations from './translations'
 
 i18n.translations = translations
@@ -75,8 +75,10 @@ export default function App() {
       <GlobalStateProvider>
         <QueryClientProvider client={queryClient}>
           <SafeAreaProvider>
-            <Navigation colorScheme={colorScheme} />
-            <StatusBar />
+            <PortalProvider>
+              <Navigation colorScheme={colorScheme} />
+              <StatusBar />
+            </PortalProvider>
           </SafeAreaProvider>
         </QueryClientProvider>
       </GlobalStateProvider>

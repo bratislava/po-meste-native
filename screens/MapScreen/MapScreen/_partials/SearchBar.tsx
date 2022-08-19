@@ -1,8 +1,10 @@
+import SearchSvg from '@icons/search.svg'
 import { useNavigation } from '@react-navigation/native'
+import { colors } from '@utils/theme'
+import i18n from 'i18n-js'
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import i18n from 'i18n-js'
 
 const SearchBar = () => {
   const navigation = useNavigation()
@@ -16,6 +18,12 @@ const SearchBar = () => {
       }}
       onPress={() => navigation.navigate('FromToScreen')}
     >
+      <SearchSvg
+        width={20}
+        height={20}
+        fill={colors.primary}
+        style={styles.searchIcon}
+      />
       <Text style={styles.searchInput}>
         {i18n.t('screens.MapScreen.whereTo')}
       </Text>
@@ -35,15 +43,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: 'white',
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: 30,
   },
   searchInput: {
-    marginLeft: 20,
-    width: '80%',
+    marginLeft: 16,
+    width: '100%',
+    color: colors.mediumGray,
+    letterSpacing: 0.5,
   },
-  // searchButton: {
-  //   marginRight: 20,
-  // },
+  searchIcon: {
+    marginLeft: 16,
+  },
 })
 
 export default SearchBar

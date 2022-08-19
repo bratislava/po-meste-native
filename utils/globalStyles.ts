@@ -1,4 +1,6 @@
 import { StyleSheet } from 'react-native'
+import { STYLES } from './constants'
+import { colors } from './theme'
 export const s = StyleSheet.create({
   icon: {
     marginRight: 9,
@@ -55,5 +57,25 @@ export const s = StyleSheet.create({
   borderGreen: {
     borderWidth: 1,
     borderColor: 'green',
+  },
+  roundedBorder: {
+    borderRadius: STYLES.borderRadius,
+  },
+  textSmall: {
+    fontSize: 14,
+    lineHeight: 16,
+    textAlignVertical: 'center',
+  },
+  textTiny: {
+    fontSize: 12,
+    lineHeight: 14,
+    textAlignVertical: 'center',
+  },
+  handleStyle: {
+    backgroundColor: colors.lightGray,
+    width: 66,
+    height: 4,
+    marginTop: 5,
+    marginBottom: 10,
   },
 })

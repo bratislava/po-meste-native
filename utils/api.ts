@@ -129,7 +129,8 @@ export const getTripPlanner = async (
   dateTime: LocalDateTime,
   arriveBy: boolean,
   mode: TravelModesOtpApi = TravelModesOtpApi.transit,
-  plannerApi?: MicromobilityProvider
+  plannerApi?: MicromobilityProvider,
+  wheelchair = false
 ) => {
   const zonedTime = ZonedDateTime.of(dateTime, ZoneId.of('Europe/Bratislava'))
 
@@ -141,8 +142,8 @@ export const getTripPlanner = async (
       mode: mode,
       maxWalkDistance: '4828.032',
       arriveBy: arriveBy,
-      wheelchair: 'false',
-      debugItineraryFilter: 'false',
+      wheelchair: wheelchair,
+      debugItineraryFilter: wheelchair.toString(),
       locale: 'en',
       allowedVehicleRentalNetworks: plannerApi?.toLowerCase(),
     },

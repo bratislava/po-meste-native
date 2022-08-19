@@ -1,11 +1,11 @@
-import React from 'react'
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
-import { StackHeaderProps } from '@react-navigation/stack'
-import { useNavigation } from '@react-navigation/core'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { t } from 'i18n-js'
-import { colors } from '@utils/theme'
 import ChevronLeftSmall from '@icons/chevron-left-small.svg'
+import { useNavigation } from '@react-navigation/core'
+import { StackHeaderProps } from '@react-navigation/stack'
+import { colors } from '@utils/theme'
+import { t } from 'i18n-js'
+import React from 'react'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export interface HeaderProps extends StackHeaderProps {
   onBack?: () => void
@@ -27,7 +27,7 @@ export const Header = ({
         styles.container,
         {
           paddingTop: insets.top,
-          height: insets.top + 64,
+          height: insets.top + 56,
           borderBottomWidth: borderShown ? 5 : 0,
         },
       ]}
@@ -75,9 +75,11 @@ const styles = StyleSheet.create({
   },
   centerText: {
     textAlign: 'center',
-    textTransform: 'uppercase',
     fontWeight: 'bold',
     fontSize: 18,
+    lineHeight: 27,
+    color: colors.darkGray,
+    letterSpacing: 0.5,
   },
   rightContainer: {
     flexDirection: 'row',

@@ -1,11 +1,11 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
-import { colors, s } from '@utils'
 import { DashedLine } from '@components'
+import { colors, s } from '@utils'
 
-import SwitchSvg from '@icons/switch.svg'
 import CircleSvg from '@icons/circle.svg'
+import SwitchSvg from '@icons/switch.svg'
 import TriangleSvg from '@icons/triangle.svg'
 
 type Props = {
@@ -31,7 +31,7 @@ const FromToSelector = ({
     <View style={styles.container}>
       <View style={styles.arrowContainer}>
         <CircleSvg width={14} height={14} fill={colors.primary} />
-        <DashedLine spacing={4} dashLength={2} color={colors.gray} />
+        <DashedLine spacing={4} dashLength={3} color={colors.gray} />
         <TriangleSvg width={14} height={14} fill={colors.primary} />
       </View>
       <View style={styles.inputsContainer}>
@@ -58,7 +58,7 @@ const FromToSelector = ({
           style={styles.switchPlaces}
           onPress={onSwitchPlacesPress}
         >
-          <SwitchSvg fill={colors.primary} />
+          <SwitchSvg fill={colors.primary} width={22} height={22} />
         </TouchableOpacity>
       </View>
     </View>
@@ -67,16 +67,14 @@ const FromToSelector = ({
 
 const styles = StyleSheet.create({
   container: {
-    borderColor: colors.lightGray,
-    borderWidth: 1,
     backgroundColor: 'white',
-    borderRadius: 7,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 10,
+    ...s.roundedBorder,
   },
   arrowContainer: {
-    paddingVertical: 16,
+    paddingVertical: 18,
     alignItems: 'center',
   },
   inputsContainer: {
@@ -102,7 +100,7 @@ const styles = StyleSheet.create({
   line: {
     width: '100%',
     height: 1,
-    backgroundColor: colors.lightGray,
+    backgroundColor: colors.mediumGray,
   },
   inputTextPlaceholder: {
     color: colors.gray,

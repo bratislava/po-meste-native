@@ -600,7 +600,7 @@ export default function MapScreen() {
       <BottomSheet
         ref={vehicleSheetRef}
         style={{ zIndex: 1 }}
-        handleIndicatorStyle={{ ...styles.handleStyle, marginBottom: 0 }}
+        handleIndicatorStyle={{ ...s.handleStyle, marginBottom: 0 }}
         index={1}
         snapPoints={[
           VEHICLE_BAR_SHEET_HEIGHT_COLLAPSED,
@@ -611,7 +611,7 @@ export default function MapScreen() {
         <VehicleBar />
       </BottomSheet>
       <BottomSheet
-        handleIndicatorStyle={styles.handleStyle}
+        handleIndicatorStyle={s.handleStyle}
         ref={bottomSheetRef}
         style={{ zIndex: 2 }}
         index={-1}
@@ -673,13 +673,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     alignItems: 'center',
     borderRadius: 15,
-  },
-  handleStyle: {
-    backgroundColor: '#DEDEDE',
-    width: 66,
-    height: 4,
-    marginTop: 5,
-    marginBottom: 10,
   },
   markerLabelContainer: {
     marginLeft: 5.5,

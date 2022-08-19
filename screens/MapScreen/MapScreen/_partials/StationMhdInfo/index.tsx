@@ -1,16 +1,11 @@
 import i18n from 'i18n-js'
 import React from 'react'
-import { StyleSheet, Text, useWindowDimensions, View } from 'react-native'
-import {
-  NavigationState,
-  Route,
-  SceneRendererProps,
-  TabBar,
-  TabView,
-} from 'react-native-tab-view'
+import { StyleSheet, useWindowDimensions, View } from 'react-native'
+import { Route, SceneRendererProps } from 'react-native-tab-view'
 
-import { colors, MhdStopProps } from '@utils'
+import { MhdStopProps } from '@utils'
 
+import TabView from '@components/TabView'
 import Timetables from './_partials/Timetables'
 import UpcomingDepartures from './_partials/UpcomingDepartures'
 
@@ -22,34 +17,6 @@ enum Routes {
   upcomingDepartures = 'upcomingDepartures',
   timetables = 'timetables',
 }
-
-const renderTabBar = (
-  props: SceneRendererProps & { navigationState: NavigationState<Route> }
-) => (
-  <TabBar
-    {...props}
-    indicatorStyle={styles.tabBarIndicator}
-    style={styles.tabBar}
-    tabStyle={styles.tabBarTab}
-    renderLabel={({ route, focused }) => (
-      <View
-        style={[
-          styles.tabBarTabLabel,
-          focused ? styles.tabBarTabLabelFocused : {},
-        ]}
-      >
-        <Text
-          style={[
-            styles.tabBarTabLabelText,
-            focused ? styles.tabBarTabLabelTextFocused : {},
-          ]}
-        >
-          {route.title}
-        </Text>
-      </View>
-    )}
-  />
-)
 
 const StationMhdInfo = ({ station }: StationMhdInfoProps) => {
   const layout = useWindowDimensions()
@@ -82,7 +49,7 @@ const StationMhdInfo = ({ station }: StationMhdInfoProps) => {
         renderScene={renderScene}
         onIndexChange={setIndex}
         initialLayout={{ width: layout.width }}
-        renderTabBar={renderTabBar}
+        variant="small"
       />
     </View>
   )
@@ -92,40 +59,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     display: 'flex',
-  },
-  tabBar: {
-    borderBottomColor: colors.primary,
-    borderBottomWidth: 5,
-  },
-  tabBarIndicator: { display: 'none' },
-  tabBarTab: {
-    backgroundColor: 'white',
-    display: 'flex',
-    alignItems: 'stretch',
-    padding: 0,
-    height: 34,
-  },
-  tabBarTabLabel: {
-    backgroundColor: 'transparent',
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100%',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-  },
-  tabBarTabLabelFocused: {
-    backgroundColor: colors.primary,
-  },
-  tabBarTabLabelText: {
-    textTransform: 'uppercase',
-    color: colors.darkText,
-    lineHeight: 16,
-    marginBottom: 6,
-  },
-  tabBarTabLabelTextFocused: {
-    color: 'white',
   },
 })
 

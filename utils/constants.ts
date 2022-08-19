@@ -1,5 +1,5 @@
 export const STYLES = {
-  borderRadius: 7,
+  borderRadius: 10,
 }
 
 export const rekolaPrice = {

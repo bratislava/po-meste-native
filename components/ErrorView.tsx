@@ -53,6 +53,13 @@ const ErrorView = ({
           rawData: JSON.stringify(error),
         },
       })
+    } else if (isNetworkError(error) && !netInfo.isConnected) {
+      Sentry.captureException(error, {
+        extra: {
+          exceptionType: 'network error',
+          rawData: JSON.stringify(error),
+        },
+      })
     } else if (error) {
       Sentry.captureException(error, {
         extra: {

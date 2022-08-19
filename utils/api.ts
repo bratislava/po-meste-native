@@ -142,16 +142,7 @@ export const getTripPlanner = async (
   plannerApi?: MicromobilityProvider,
   wheelchair = false
 ) => {
-  const adjustedDateTime =
-    plannerApi === MicromobilityProvider.rekola ||
-    plannerApi == MicromobilityProvider.tier
-      ? dateTime.plusHours(20) // TODO erase when https://inovaciebratislava.atlassian.net/browse/PLAN-268 solved
-      : dateTime
-
-  const zonedTime = ZonedDateTime.of(
-    adjustedDateTime,
-    ZoneId.of('Europe/Bratislava')
-  )
+  const zonedTime = ZonedDateTime.of(dateTime, ZoneId.of('Europe/Bratislava'))
 
   const data = qs.stringify(
     {

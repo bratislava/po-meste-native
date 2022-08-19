@@ -1,5 +1,5 @@
 // TODO copied from different project, might need cleanup if we're to use it
-import React, { useState } from 'react'
+import React, { ReactElement, useState } from 'react'
 import {
   GestureResponderEvent,
   StyleProp,
@@ -61,8 +61,6 @@ const styles = StyleSheet.create({
   },
 })
 
-const disabledAlpha = '50' // 0.25
-
 const COLORS = {
   backgroundColor: {
     primary: colors.primary,
@@ -79,14 +77,6 @@ const COLORS = {
     outlined: colors.white,
     approve: colors.gray,
     danger: colors.gray,
-  },
-  underlayColor: {
-    primary: '#B3413A',
-    secondary: '#D3B7B4',
-    tertiary: '#581F22',
-    outlined: '#D3B7B4',
-    approve: '#4A9158',
-    danger: '#C83838',
   },
   iconColor: {
     primary: colors.white,
@@ -173,10 +163,13 @@ interface ButtonProps {
     | 'danger'
   size?: 'small' | 'medium' | 'large'
   style?: StyleProp<ViewStyle>
+  contentStyle?: StyleProp<ViewStyle>
   titleStyle?: StyleProp<TextStyle>
   disabled?: boolean
   loading?: boolean
   testID?: string
+  icon?: ReactElement
+  iconRight?: boolean
 }
 
 const Button = ({
@@ -188,9 +181,12 @@ const Button = ({
   size = 'medium',
   disabled,
   style,
+  contentStyle,
   titleStyle,
   loading,
   testID,
+  icon,
+  iconRight,
 }: ButtonProps) => {
   const showDisabledStyle = disabled && !loading
   const [isPressed, setIsPressed] = useState(false)
@@ -216,7 +212,7 @@ const Button = ({
       onPress={onPress}
       onShowUnderlay={() => setIsPressed(true)}
       onHideUnderlay={() => setIsPressed(false)}
-      underlayColor={COLORS.underlayColor[variant]}
+      underlayColor="#000"
       disabled={disabled || loading}
       style={[
         styles.touchable,
@@ -224,9 +220,6 @@ const Button = ({
         isGrouped && size === 'small' && styles.touchableGroupedSmall,
         isFullWidth && styles.touchableFullWidth,
         {
-          backgroundColor: showDisabledStyle
-            ? COLORS.disabledBackgroundColor[variant]
-            : COLORS.backgroundColor[variant],
           borderColor: showDisabledStyle
             ? COLORS.disabledBorderColor[variant]
             : isPressed
@@ -237,12 +230,25 @@ const Button = ({
       ]}
       testID={testID}
     >
-      <View style={[styles.container, styles[size]]}>
+      <View
+        style={[
+          styles.container,
+          styles[size],
+          {
+            backgroundColor: showDisabledStyle
+              ? COLORS.disabledBackgroundColor[variant]
+              : COLORS.backgroundColor[variant],
+          },
+          contentStyle,
+        ]}
+      >
+        {!iconRight && icon}
         {loading ? (
           renderText('Loading...')
         ) : (
           <>{!!title && renderText(title)}</>
         )}
+        {iconRight && icon}
       </View>
     </TouchableHighlight>
   )

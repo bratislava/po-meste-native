@@ -1,7 +1,6 @@
 import BottomSheet from '@gorhom/bottom-sheet'
 import { useNetInfo } from '@react-native-community/netinfo'
 import { useIsFocused } from '@react-navigation/core'
-import * as Location from 'expo-location'
 import i18n from 'i18n-js'
 import React, {
   useCallback,
@@ -11,14 +10,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import {
-  ImageURISource,
-  Platform,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { ImageURISource, Platform, StyleSheet, Text, View } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
 
 import {
@@ -60,10 +52,9 @@ import StationChargerInfo from './_partials/StationChargerInfo'
 import StationMhdInfo from './_partials/StationMhdInfo'
 import StationMicromobilityInfo from './_partials/StationMicromobilityInfo'
 
-import CurrentLocationSvg from '@icons/current-location.svg'
-
 import { customMapStyle } from '../customMapStyle'
 
+import CurrentLocationButton from '@components/CurrentLocationButton'
 import useBoltData from '@hooks/useBoltData'
 import { colors } from '@utils'
 
@@ -193,7 +184,6 @@ export default function MapScreen() {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   })
-  const getLocationWithPermission = vehiclesContext.getLocationWithPermission
   // useful on Android, where the elevation shadow causes incorrect ordering of elements
   const [showCurrentLocationButton, setShowCurrentLocationButton] =
     useState(true)
@@ -223,32 +213,6 @@ export default function MapScreen() {
       refetch()
     }
   }, [isFocused])
-
-  const moveMapToCurrentLocation = useCallback(
-    async (
-      permisionDeniedCallback: () => Promise<
-        Location.LocationObject | undefined | null
-      >
-    ) => {
-      const currentLocation = await permisionDeniedCallback()
-      if (currentLocation) {
-        mapRef.current?.animateCamera({
-          center: currentLocation.coords,
-          zoom: 17,
-          // TODO altitude needs to be set for Apple maps
-          // https://github.com/react-native-maps/react-native-maps/blob/master/docs/mapview.md#types part camera
-          altitude: undefined,
-        })
-      }
-    },
-    []
-  )
-
-  useEffect(() => {
-    setTimeout(() => {
-      moveMapToCurrentLocation(() => getLocationWithPermission(false))
-    }, 2000)
-  }, [getLocationWithPermission, moveMapToCurrentLocation])
 
   useEffect(() => {
     if (
@@ -626,24 +590,12 @@ export default function MapScreen() {
         <LoadingView fullscreen iconWidth={80} iconHeight={80} />
       )}
       {Platform.select({ ios: true, android: showCurrentLocationButton }) && (
-        <View
-          style={[
-            styles.currentLocation,
-            {
-              bottom: VEHICLE_BAR_SHEET_HEIGHT_EXPANDED + 15,
-            },
-          ]}
-        >
-          <TouchableOpacity
-            onPress={() =>
-              moveMapToCurrentLocation(() =>
-                getLocationWithPermission(true, true)
-              )
-            }
-          >
-            <CurrentLocationSvg fill={colors.primary} />
-          </TouchableOpacity>
-        </View>
+        <CurrentLocationButton
+          mapRef={mapRef}
+          style={{
+            bottom: VEHICLE_BAR_SHEET_HEIGHT_EXPANDED + 15,
+          }}
+        />
       )}
       <SearchBar />
       {isMhdErrorOpen &&
@@ -771,15 +723,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: BOTTOM_TAB_NAVIGATOR_HEIGHT,
-  },
-  currentLocation: {
-    position: 'absolute',
-    right: 20,
-    padding: 10,
-    backgroundColor: 'white',
-    borderRadius: 30,
-    ...s.shadow,
-    elevation: 7,
   },
   errorBackground: {
     display: 'flex',

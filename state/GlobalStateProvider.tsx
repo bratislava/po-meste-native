@@ -44,6 +44,7 @@ interface ContextProps {
     shouldAlert: boolean,
     reask?: boolean
   ) => Promise<LocationObject | null | undefined>
+  location: LocationObject | undefined
 }
 
 export interface VehicleProps {
@@ -75,7 +76,7 @@ export default function GlobalStateProvider({ children }: Props) {
     [setPreferredLanguage]
   )
 
-  const { getLocationWithPermission } = useLocationWithPermision()
+  const { getLocationWithPermission, location } = useLocationWithPermision()
 
   const [timeLineNumber, setTimeLineNumber] = useState<string>()
 
@@ -116,6 +117,7 @@ export default function GlobalStateProvider({ children }: Props) {
         isFeedbackSent,
         setFeedbackSent,
         getLocationWithPermission,
+        location,
       }}
     >
       {children}

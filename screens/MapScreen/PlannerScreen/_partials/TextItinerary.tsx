@@ -457,7 +457,7 @@ export const TextItinerary = ({
         {/* TODO do it like in https://github.com/bratislava/hybaj-native/pull/49 StationMicromobilityInfo.tsx */}
         {provider && (
           <Button
-            style={{
+            contentStyle={{
               backgroundColor: getColor(provider),
             }}
             titleStyle={{ color: getTextColor(provider) }}

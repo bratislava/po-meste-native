@@ -133,6 +133,7 @@ export enum MicromobilityProvider {
   rekola = 'Rekola',
   slovnaftbajk = 'Slovnaftbajk',
   tier = 'TIER',
+  bolt = 'Bolt',
 }
 
 export enum TransitVehicleType {
@@ -147,6 +148,7 @@ export enum IconType {
   slovnaftbajk = 'slovnaftbajk',
   rekola = 'rekola',
   zse = 'zse',
+  bolt = 'bolt',
 }
 
 export enum ScheduleType {

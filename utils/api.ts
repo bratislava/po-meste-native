@@ -8,7 +8,6 @@ import {
 import '@js-joda/timezone'
 import * as Sentry from '@sentry/react-native'
 import { MicromobilityProvider, TravelModesOtpApi } from '@types'
-import Constants from 'expo-constants'
 import qs from 'qs'
 import { API_ERROR_TEXT } from './constants'
 import {
@@ -19,7 +18,8 @@ import {
 } from './validation'
 
 const host = 'planner.bratislava.sk'
-const dataHostUrl = Constants.manifest?.extra?.apiHost || `https://live.${host}`
+const dataHostUrl =
+  `https://live.${host}` ?? 'https://live-api.planner.dev.bratislava.sk'
 const otpPlannerUrl = `https://api.${host}/otp/routers/default/plan` // TODO use otp.planner.bratislava.sk
 
 // we should throw throwables only, so it's useful to extend Error class to contain useful info
@@ -46,12 +46,16 @@ const formatTimestamp = (date: Date) => {
 // helper with a common fetch pattern for json endpoints & baked in host
 const fetchJsonFromApi = async (path: string, options?: RequestInit) => {
   // leaving this console.log here because it is very important to keep track of fetches
-  console.log(
-    '%s\x1b[95m%s\x1b[0m',
-    `[${formatTimestamp(new Date())}] `,
-    `Fetching from '${path}'`
-  )
   const response = await fetch(`${dataHostUrl}${path}`, options)
+  const responseLength = response.headers.get('content-length')
+  console.log(
+    '%s\x1b[95m%s\x1b[0m%s',
+    `[${formatTimestamp(new Date())}] `,
+    `Fetched from '${path}'`,
+    response.ok
+      ? responseLength && ` (size: ${+responseLength / 1000} kB)`
+      : ' (failed)'
+  )
   if (response.ok) {
     return response.json()
   } else {
@@ -120,6 +124,12 @@ export const getSlovnaftbajkStationStatus = () =>
 
 export const getTierFreeBikeStatus = () =>
   fetchJsonFromApi('/tier/free_bike_status.json')
+
+export const getBoltFreeBikeStatus = () =>
+  fetchJsonFromApi('/bolt/free_bike_status.json')
+
+// export const getBoltFreeBikeStatus = () =>
+//   new Promise((resolve) => resolve(BoltDemoData))
 
 export const getChargersStops = async () => fetchJsonFromApi('/zse')
 

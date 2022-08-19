@@ -47,16 +47,19 @@ export default {
       slovnaftbikesTitle: 'Slovnaft BAjk',
       tierTitle: 'TIER kolobežka',
       zseChargerTitle: 'Nabíjacia stanica/e',
+      boltTitle: 'Bolt kolobežka',
       price: 'Cena: ',
       dailyTicket: 'denný lístok',
+      micromobilityPrice: '{{price}}€/{{duration}}{{unit}}',
       micromobilityPriceFrom: 'od {{price}}€/{{duration}}{{unit}}',
-      micromobilityWithUnlockPriceFrom:
+      micromobilityWithUnlockPrice:
         '{{unlockPrice}}€ + {{price}}€/{{duration}}{{unit}}',
       rent: 'Prenajať {{provider}}',
       availableBikes: 'Voľné bicykle: {{amount}}',
       freeBikeSpaces: 'Voľné doky: {{amount}}',
       licencePlate: 'Číslo vozidla: {{id}}',
       batteryCharge: 'Batéria: {{amount}}%',
+      currentRange: 'Dojazd: {{kilometers}} km',
       startZseCharger: 'Začať nabíjanie',
       chargingPoints: 'Nabíjacie konektory',
       chargingPrice: 'cena nabíjania: ',
@@ -228,6 +231,7 @@ export default {
         'Hups, nepodarilo sa nám načítať SlovnaftBAjk dáta',
       dataTierError: 'Hups, nepodarilo sa nám načítať TIER dáta',
       dataZseChargersError: 'Hups, nepodarilo sa nám načítať ZSE dáta',
+      dataBoltError: 'Hups, nepodarilo sa nám načítať Bolt dáta',
       disconnectedError:
         'Prosím, pripoj sa na internet, ak chceš používať túto funkcionalitu',
     },

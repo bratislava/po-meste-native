@@ -55,6 +55,7 @@ import StationMicromobilityInfo from './_partials/StationMicromobilityInfo'
 import { customMapStyle } from '../customMapStyle'
 
 import CurrentLocationButton from '@components/CurrentLocationButton'
+import useBoltData from '@hooks/useBoltData'
 import { colors } from '@utils'
 
 const MIN_DELTA_FOR_XS_MARKER = 0.05
@@ -104,6 +105,12 @@ const markerIcons: { [index: string]: markerIcon } = {
     md: require('@icons/map/zse/md.png'),
     lg: require('@icons/map/zse/lg.png'),
   },
+  bolt: {
+    xs: require('@icons/map/bolt/xs.png'),
+    sm: require('@icons/map/bolt/sm.png'),
+    md: require('@icons/map/bolt/md.png'),
+    lg: require('@icons/map/bolt/lg.png'),
+  },
 }
 
 export default function MapScreen() {
@@ -140,6 +147,12 @@ export default function MapScreen() {
     error: errorsSlovnaftbajk,
     refetch: refetchSlovnaftbajk,
   } = useSlovnaftbajkData()
+  const {
+    data: dataBolt,
+    isLoading: isLoadingBolt,
+    errors: errorsBolt,
+    refetch: refetchBolt,
+  } = useBoltData()
   const { data: healthData, error: healthError } = useHealthData()
   const providerStatus = healthData?.dependencyResponseStatus
 
@@ -148,6 +161,7 @@ export default function MapScreen() {
   const [isZseErrorOpen, setIsZseErrorOpen] = useState(false)
   const [isRekolaErrorOpen, setIsRekolaErrorOpen] = useState(false)
   const [isSlovnaftbajkErrorOpen, setIsSlovnaftbajkErrorOpen] = useState(false)
+  const [isBoltErrorOpen, setIsBoltErrorOpen] = useState(false)
 
   const mapRef = useRef<MapView>(null)
 
@@ -218,23 +232,6 @@ export default function MapScreen() {
     bottomSheetRef,
   ])
 
-  const operateBottomSheet = ({
-    charger,
-    micromobilityStation,
-    micromobilityProvider,
-    mhd,
-  }: {
-    charger?: ChargerStationProps
-    micromobilityStation?: StationMicromobilityProps | FreeBikeStatusProps
-    micromobilityProvider?: MicromobilityProvider
-    mhd?: MhdStopProps
-  }) => {
-    setSelectedChargerStation(charger)
-    setSelectedBikeStation(micromobilityStation)
-    setSelectedMicromobilityProvider(micromobilityProvider)
-    setSelectedMhdStation(mhd)
-  }
-
   const handleSheetClose = () => {
     operateBottomSheet({})
   }
@@ -257,8 +254,30 @@ export default function MapScreen() {
         ? ZoomLevel.md
         : ZoomLevel.lg
     }
-    return undefined
+    return ZoomLevel.xs
   }
+
+  const zoomLevel = getZoomLevel()
+
+  const operateBottomSheet = ({
+    charger,
+    micromobilityStation,
+    micromobilityProvider,
+    mhd,
+  }: {
+    charger?: ChargerStationProps
+    micromobilityStation?: StationMicromobilityProps | FreeBikeStatusProps
+    micromobilityProvider?: MicromobilityProvider
+    mhd?: MhdStopProps
+  }) => {
+    if (zoomLevel > ZoomLevel.xs) {
+      setSelectedChargerStation(charger)
+      setSelectedBikeStation(micromobilityStation)
+      setSelectedMicromobilityProvider(micromobilityProvider)
+      setSelectedMhdStation(mhd)
+    }
+  }
+
   const getIcon = useCallback(
     (name: IconType) => {
       const icons = markerIcons[name]
@@ -324,7 +343,7 @@ export default function MapScreen() {
     [filterInView, region]
   )
 
-  const filterTierInView = useCallback(
+  const filterScootersInView = useCallback(
     (data: FreeBikeStatusProps[]) => {
       if (region) {
         const inRange = data.filter((stop) => {
@@ -426,6 +445,11 @@ export default function MapScreen() {
     [errorsSlovnaftbajk]
   )
 
+  const filterScooterAmount = (scooter: FreeBikeStatusProps, index: number) =>
+    zoomLevel === ZoomLevel.xs ? index % 3 === 0 : true
+  const filterMhdAmount = (mhdStop: MhdStopProps) =>
+    zoomLevel === ZoomLevel.xs ? mhdStop.platform === 'A' : true
+
   return (
     <View style={styles.container}>
       <MapView
@@ -453,44 +477,70 @@ export default function MapScreen() {
           (vehicleType) => vehicleType.id === VehicleType.mhd
         )?.show &&
           dataMhd?.stops &&
-          filterMhdInView(dataMhd.stops).map((stop) => (
-            <Marker
-              key={stop.id}
-              coordinate={{
-                latitude: parseFloat(stop.gpsLat),
-                longitude: parseFloat(stop.gpsLon),
-              }}
-              tracksViewChanges={false}
-              onPress={() => operateBottomSheet({ mhd: stop })}
-              icon={getIcon(IconType.mhd)}
-            >
-              {stop.platform && getZoomLevel() === ZoomLevel.lg && (
-                <View style={styles.markerLabelContainer}>
-                  <Text style={styles.markerLabel}>{stop.platform}</Text>
-                </View>
-              )}
-            </Marker>
-          ))}
+          filterMhdInView(dataMhd.stops)
+            .filter(filterMhdAmount)
+            .map((stop) => (
+              <Marker
+                key={stop.id}
+                coordinate={{
+                  latitude: parseFloat(stop.gpsLat),
+                  longitude: parseFloat(stop.gpsLon),
+                }}
+                tracksViewChanges={false}
+                onPress={() => operateBottomSheet({ mhd: stop })}
+                icon={getIcon(IconType.mhd)}
+              >
+                {stop.platform && zoomLevel === ZoomLevel.lg && (
+                  <View style={styles.markerLabelContainer}>
+                    <Text style={styles.markerLabel}>{stop.platform}</Text>
+                  </View>
+                )}
+              </Marker>
+            ))}
         {vehiclesContext.vehicleTypes?.find(
           (vehicleType) => vehicleType.id === VehicleType.scooter
         )?.show &&
           dataTier &&
-          filterTierInView(dataTier).map((vehicle) => {
-            return (
-              <Marker
-                key={vehicle.bike_id}
-                coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
-                tracksViewChanges={false}
-                onPress={() =>
-                  operateBottomSheet({
-                    micromobilityStation: vehicle,
-                    micromobilityProvider: MicromobilityProvider.tier,
-                  })
-                }
-                icon={getIcon(IconType.tier)}
-              />
-            )
-          })}
+          filterScootersInView(dataTier)
+            .filter(filterScooterAmount)
+            .map((vehicle) => {
+              return (
+                <Marker
+                  key={vehicle.bike_id}
+                  coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
+                  tracksViewChanges={false}
+                  onPress={() =>
+                    operateBottomSheet({
+                      micromobilityStation: vehicle,
+                      micromobilityProvider: MicromobilityProvider.tier,
+                    })
+                  }
+                  icon={getIcon(IconType.tier)}
+                />
+              )
+            })}
+        {vehiclesContext.vehicleTypes?.find(
+          (vehicleType) => vehicleType.id === VehicleType.scooter
+        )?.show &&
+          dataBolt &&
+          filterScootersInView(dataBolt)
+            .filter(filterScooterAmount)
+            .map((vehicle) => {
+              return (
+                <Marker
+                  key={vehicle.bike_id}
+                  coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
+                  tracksViewChanges={false}
+                  onPress={() =>
+                    operateBottomSheet({
+                      micromobilityStation: vehicle,
+                      micromobilityProvider: MicromobilityProvider.bolt,
+                    })
+                  }
+                  icon={getIcon(IconType.bolt)}
+                />
+              )
+            })}
 
         {vehiclesContext.vehicleTypes?.find(
           (vehicleType) => vehicleType.id === VehicleType.bicycle
@@ -535,7 +585,8 @@ export default function MapScreen() {
         (isLoadingRekola && providerStatus?.rekola === 200) ||
         (isLoadingSlovnaftbajk && providerStatus?.slovnaftbajk === 200) ||
         (isLoadingTier && providerStatus?.tier === 200) ||
-        (isLoadingZseChargers && providerStatus?.zse === 200)) && (
+        (isLoadingZseChargers && providerStatus?.zse === 200) ||
+        (isLoadingBolt && providerStatus?.bolt === 200)) && (
         <LoadingView fullscreen iconWidth={80} iconHeight={80} />
       )}
       {Platform.select({ ios: true, android: showCurrentLocationButton }) && (
@@ -596,6 +647,16 @@ export default function MapScreen() {
             setIsZseErrorOpen(false)
           },
           i18n.t('components.ErrorView.dataZseChargersError')
+        )}
+      {isBoltErrorOpen &&
+        dataError(
+          isLoadingBolt,
+          errorsBolt,
+          () => {
+            refetchBolt()
+            setIsBoltErrorOpen(false)
+          },
+          i18n.t('components.ErrorView.dataBoltError')
         )}
 
       <BottomSheet

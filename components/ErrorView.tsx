@@ -39,6 +39,9 @@ const ErrorView = ({
 }: ErrorViewMerged) => {
   const netInfo = useNetInfo()
   useEffect(() => {
+    if (__DEV__) {
+      return
+    }
     if (isValidationError(error)) {
       Sentry.captureException(error, {
         extra: {

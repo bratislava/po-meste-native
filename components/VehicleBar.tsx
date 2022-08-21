@@ -46,8 +46,7 @@ const VehicleBar = () => {
           (id === VehicleType.bicycle &&
             (isLoadingRekola || isLoadingSlovnaftbajk)) ||
           (id === VehicleType.chargers && isLoadingZseChargers) ||
-          (id === VehicleType.scooter && isLoadingTier) ||
-          isLoadingBolt
+          (id === VehicleType.scooter && (isLoadingTier || isLoadingBolt))
         return (
           <VehicleFilterTouchable
             key={index}
@@ -144,7 +143,15 @@ const VehicleFilterTouchable = ({
     case VehicleType.mhd:
       label = 'mhd'
       break
+    case VehicleType.motorScooters:
+      label = 'motorScooters'
+      break
+    case VehicleType.cars:
+      label = 'cars'
+      break
   }
+
+  const isSoon = !!vehicleType.soonIcon
 
   return (
     <View style={styles.vehicleFilterTouchable}>
@@ -155,8 +162,14 @@ const VehicleFilterTouchable = ({
         onPress={() => onVehicleClick(id)}
         onPressIn={() => setIsPressed(true)}
         onPressOut={() => setIsPressed(false)}
+        disabled={isSoon}
       >
-        {getVehicleIconStyled(isLoading, () => icon(isPressed ? true : show))}
+        {getVehicleIconStyled(
+          isLoading,
+          isSoon
+            ? () => vehicleType.soonIcon ?? icon(isPressed ? true : show)
+            : () => icon(isPressed ? true : show)
+        )}
       </TouchableHighlight>
       <Text style={styles.label}>
         {t(`screens.MapScreen.VehicleBar.${label}`)}
@@ -175,7 +188,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     width: '100%',
     height: '100%',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     backgroundColor: 'white',
     alignItems: 'flex-start',
     borderRadius: ICON_SIZE / 2,
@@ -196,6 +209,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    flexBasis: '25%',
+    marginBottom: 15,
   },
   label: {
     fontSize: 10,

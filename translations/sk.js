@@ -73,7 +73,7 @@ export default {
         bikes: 'Bicykle',
         scooters: 'Kolobežky',
         chargers: 'Nabíjačky',
-        escooters: 'Skútre',
+        motorScooters: 'Skútre',
         cars: 'Autá',
       },
     },

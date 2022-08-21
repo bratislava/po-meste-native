@@ -116,6 +116,8 @@ export enum VehicleType {
   bicycle = 'bicycle',
   scooter = 'scooter',
   chargers = 'chargers',
+  motorScooters = 'motorScooters',
+  cars = 'cars',
 }
 
 export enum TimetableType {

@@ -69,7 +69,7 @@ const CurrentLocationButton = ({
           )
         }
       >
-        <CurrentLocationSvg fill={colors.primary} />
+        <CurrentLocationSvg fill={colors.primary} width={30} height={30} />
       </TouchableOpacity>
     </View>
   )
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     right: 20,
     padding: 10,
     backgroundColor: 'white',
-    borderRadius: 30,
+    borderRadius: 25,
     ...s.shadow,
     elevation: 7,
   },

@@ -71,6 +71,11 @@ export const s = StyleSheet.create({
     lineHeight: 14,
     textAlignVertical: 'center',
   },
+  textLarge: {
+    fontSize: 20,
+    lineHeight: 24,
+    textAlignVertical: 'center',
+  },
   handleStyle: {
     backgroundColor: colors.lightGray,
     width: 66,

@@ -1,5 +1,4 @@
 import BottomSheet from '@gorhom/bottom-sheet'
-import Constants from 'expo-constants'
 import i18n from 'i18n-js'
 import React, { MutableRefObject, useEffect, useState } from 'react'
 import {
@@ -12,7 +11,6 @@ import {
 import {
   GooglePlaceData,
   GooglePlaceDetail,
-  GooglePlacesAutocomplete,
   GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete'
 
@@ -21,13 +19,14 @@ import MapSvg from '@icons/map.svg'
 
 import { colors, s, STYLES } from '@utils'
 
+import Autocomplete from '@components/Autocomplete'
+import FavoriteModal, { FavoriteModalProps } from '@components/FavoriteModal'
 import FavoriteTile from '@components/FavoriteTile'
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components/navigation/TabBar'
 import HeartSvg from '@icons/favorite.svg'
 import HistorySvg from '@icons/history-search.svg'
-import MarkerSvg from '@icons/map-pin-marker.svg'
+import PlusButtonSvg from '@icons/plus.svg'
 import MhdStopSvg from '@icons/stop-sign.svg'
-import XSvg from '@icons/x.svg'
 import dummyDataPlaceHistory from './dummyDataPlaceHistory.json'
 
 interface SearchFromToScreen {
@@ -41,11 +40,6 @@ interface SearchFromToScreen {
   setLocationFromMap: () => void
   inputPlaceholder: string
   initialSnapIndex: number
-}
-
-// for some reason, there is wrong typing on GooglePlaceData, so this is the fix :)
-interface FixedGooglePlaceData extends GooglePlaceData {
-  types: string[]
 }
 
 export default function SearchFromToScreen({
@@ -63,11 +57,17 @@ export default function SearchFromToScreen({
     }
   }, [getMyLocation])
 
+  const [modal, setModal] = useState<FavoriteModalProps | undefined>(undefined)
+
   useEffect(() => {
     googleInputRef.current?.focus()
   }, [googleInputRef])
-  const [googleAutocompleteSelection, setGoogleAutocompleteSelection] =
-    useState<{ start: number } | undefined>(undefined)
+
+  const renderAddButton = (onPress: () => void) => (
+    <TouchableOpacity style={styles.addButton} onPress={onPress}>
+      <PlusButtonSvg width={30} height={30} />
+    </TouchableOpacity>
+  )
 
   return (
     <BottomSheet
@@ -79,59 +79,11 @@ export default function SearchFromToScreen({
     >
       <View style={styles.content}>
         <View style={[s.horizontalMargin, styles.googleFrom]}>
-          <GooglePlacesAutocomplete
-            renderLeftButton={() => (
-              <XSvg
-                onPress={() => googleInputRef.current?.clear()}
-                width={20}
-                height={20}
-                style={{
-                  alignSelf: 'center',
-                }}
-                fill={colors.mediumGray}
-              />
-            )}
-            ref={googleInputRef}
-            styles={autoCompleteStyles}
-            enablePoweredByContainer={false}
-            fetchDetails
-            placeholder={inputPlaceholder}
-            onPress={onGooglePlaceChosen}
-            query={{
-              key: Constants.manifest?.extra?.googlePlacesApiKey,
-              language: 'sk',
-              location: '48.160170, 17.130256',
-              radius: '20788', //20,788 km
-              strictbounds: true,
-            }}
-            renderRow={(result: GooglePlaceData) => {
-              const fixedResult = result as FixedGooglePlaceData
-              const Icon =
-                fixedResult.types[0] === 'transit_station'
-                  ? MhdStopSvg
-                  : MarkerSvg
-              return (
-                <View style={styles.searchResultRow}>
-                  <Icon
-                    style={styles.searchResultRowIcon}
-                    fill={colors.lighterGray}
-                    width={16}
-                    height={16}
-                  />
-                  <Text>{result.structured_formatting.main_text}</Text>
-                </View>
-              )
-            }}
-            textInputProps={{
-              selectTextOnFocus: true,
-              onBlur: () => {
-                setGoogleAutocompleteSelection({ start: 0 })
-                setTimeout(() => {
-                  setGoogleAutocompleteSelection(undefined)
-                }, 10)
-              },
-              selection: googleAutocompleteSelection,
-            }}
+          <Autocomplete
+            onGooglePlaceChosen={onGooglePlaceChosen}
+            inputPlaceholder={inputPlaceholder}
+            googleInputRef={googleInputRef}
+            selectOnFocus
           />
         </View>
         <View style={s.horizontalMargin}>
@@ -142,15 +94,19 @@ export default function SearchFromToScreen({
             contentContainerStyle={styles.horizontalScrollView}
             horizontal
           >
-            {dummyDataPlaceHistory.map((historyItem, index) => (
+            {dummyDataPlaceHistory.map((favoriteItem, index) => (
               <FavoriteTile
                 key={index}
-                favoriteItem={historyItem}
+                favoriteItem={favoriteItem}
                 icon={(props) => <HeartSvg {...props} />}
                 onPress={() => false}
+                onMorePress={() =>
+                  setModal({ type: 'place', favorite: favoriteItem })
+                }
               />
             ))}
           </ScrollView>
+          {renderAddButton(() => setModal({ type: 'place' }))}
         </View>
         <View style={[styles.categoryStops, s.horizontalMargin]}>
           <Text style={styles.categoriesTitle}>
@@ -160,15 +116,19 @@ export default function SearchFromToScreen({
             contentContainerStyle={styles.horizontalScrollView}
             horizontal
           >
-            {dummyDataPlaceHistory.map((historyItem, index) => (
+            {dummyDataPlaceHistory.map((favoriteItem, index) => (
               <FavoriteTile
                 key={index}
-                favoriteItem={historyItem}
+                favoriteItem={favoriteItem}
                 icon={(props) => <MhdStopSvg {...props} />}
                 onPress={() => false}
+                onMorePress={() =>
+                  setModal({ type: 'stop', favorite: favoriteItem })
+                }
               />
             ))}
           </ScrollView>
+          {renderAddButton(() => setModal({ type: 'stop' }))}
         </View>
         <View style={[styles.categoryStops, s.horizontalMargin]}>
           <View style={styles.chooseFromMapRow}>
@@ -203,17 +163,25 @@ export default function SearchFromToScreen({
             {i18n.t('screens.SearchFromToScreen.history')}
           </Text>
           <View style={styles.verticalScrollView}>
-            {dummyDataPlaceHistory.map((historyItem, index) => (
+            {dummyDataPlaceHistory.map((favoriteItem, index) => (
               <View key={index} style={styles.verticalScrollItem}>
                 <HistorySvg width={30} height={20} fill={colors.black} />
                 <View style={styles.placeTexts}>
-                  <Text style={styles.placeAddress}>{historyItem.text}</Text>
+                  <Text style={styles.placeAddress}>{favoriteItem.name}</Text>
                 </View>
               </View>
             ))}
           </View>
         </View>
       </View>
+      {modal && (
+        <FavoriteModal
+          type={modal.type}
+          favorite={modal.favorite}
+          onConfirm={() => false}
+          onClose={() => setModal(undefined)}
+        />
+      )}
     </BottomSheet>
   )
 }
@@ -268,18 +236,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     height: '100%',
   },
-  googleFrom: {
-    flexDirection: 'row',
-    marginBottom: 7,
-    zIndex: 1,
-  },
-
-  searchResultRow: {
-    flexDirection: 'row',
-  },
-  searchResultRowIcon: {
-    marginRight: 5,
-  },
   history: {
     backgroundColor: colors.lightLightGray,
     paddingHorizontal: 20,
@@ -287,24 +243,15 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     borderTopEndRadius: STYLES.borderRadius,
   },
-})
-
-const autoCompleteStyles = {
-  container: {
+  addButton: {
+    position: 'absolute',
+    right: 15,
+    bottom: 15,
+    zIndex: 2,
+  },
+  googleFrom: {
+    flexDirection: 'row',
+    marginBottom: 7,
     zIndex: 1,
   },
-  listView: {
-    height: '100%',
-  },
-  textInput: {
-    marginBottom: 0,
-    height: 50,
-  },
-  textInputContainer: {
-    borderWidth: 2,
-    borderRadius: 30,
-    borderColor: colors.mediumGray,
-    paddingHorizontal: 15,
-    letterSpacing: 0.5,
-  },
-}
+})

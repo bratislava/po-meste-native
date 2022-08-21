@@ -3,6 +3,10 @@
  * https://reactnavigation.org/docs/typescript/
  */
 
+import {
+  GooglePlaceData,
+  GooglePlaceDetail,
+} from 'react-native-google-places-autocomplete'
 import { SvgProps } from 'react-native-svg'
 import { LegProps } from './utils/validation'
 
@@ -167,4 +171,12 @@ export type Departure = {
   lineColor: string
   usualFinalStop?: string
   vehicleType?: TransitVehicleType
+}
+
+export type Favorite = {
+  name: string
+  isHardSetName: boolean
+  icon?: React.FC<SvgProps>
+  placeData: GooglePlaceData
+  placeDetail: GooglePlaceDetail
 }

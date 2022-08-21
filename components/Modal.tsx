@@ -1,12 +1,12 @@
-import React from 'react'
-import {
-  StyleSheet,
-  View,
-  TouchableWithoutFeedback,
-  Modal as NativeModal,
-} from 'react-native'
 import Link from '@components/Link'
 import { t } from 'i18n-js'
+import React from 'react'
+import {
+  Modal as NativeModal,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native'
 
 export type ModalProps = {
   visible?: boolean
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   modalCard: {
     backgroundColor: '#fff',
     width: '100%',
-    borderRadius: 3,
+    borderRadius: 10,
     padding: 20,
     maxWidth: '80%',
     marginBottom: 20,

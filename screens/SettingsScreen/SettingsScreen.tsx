@@ -1,20 +1,20 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { View, StyleSheet, Text } from 'react-native'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
-import { ScrollView } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/core'
 import Constants from 'expo-constants'
-import { t } from 'i18n-js'
 import { openURL } from 'expo-linking'
+import { t } from 'i18n-js'
+import React, { useContext, useEffect, useState } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 import CheckBox from 'react-native-check-box'
+import { ScrollView } from 'react-native-gesture-handler'
 
-import { ItemListButton, Modal, Button } from '@components'
+import { Button, ItemListButton, Modal } from '@components'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
-import { colors } from '@utils'
 import { PreferredLanguage } from '@types'
+import { colors } from '@utils'
 
-import LanguageIcon from '@icons/language.svg'
 import AboutIcon from '@icons/information.svg'
+import LanguageIcon from '@icons/language.svg'
 import FAQIcon from '@icons/question.svg'
 
 export const SettingsScreen = () => {

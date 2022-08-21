@@ -1,4 +1,5 @@
 import MoreSvg from '@icons/more.svg'
+import { Favorite } from '@types'
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
 import React, { ReactElement } from 'react'
@@ -6,21 +7,27 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SvgProps } from 'react-native-svg'
 
 interface FavoriteTileProps {
-  favoriteItem: any
+  favoriteItem: Favorite
   onPress: () => void
+  onMorePress: () => void
   icon?: (props: SvgProps) => ReactElement
 }
 
-const FavoriteTile = ({ favoriteItem, onPress, icon }: FavoriteTileProps) => {
+const FavoriteTile = ({
+  favoriteItem,
+  onPress,
+  icon,
+  onMorePress,
+}: FavoriteTileProps) => {
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.horizontalScrollItem}>
         {icon && icon({ width: 20, height: 20, fill: colors.tertiary })}
         <View style={styles.placeTexts}>
-          <Text style={styles.placeName}>{favoriteItem.text}</Text>
-          <Text style={styles.placeAddressMinor}>{favoriteItem.text}</Text>
+          <Text style={styles.placeName}>{favoriteItem.name}</Text>
+          <Text style={styles.placeAddressMinor}>{favoriteItem.name}</Text>
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={onMorePress}>
           <MoreSvg
             width={20}
             height={20}

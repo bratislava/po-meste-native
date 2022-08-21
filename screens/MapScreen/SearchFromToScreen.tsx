@@ -17,16 +17,15 @@ import {
 import LocationSvg from '@icons/current-location.svg'
 import MapSvg from '@icons/map.svg'
 
-import { colors, s, STYLES } from '@utils'
+import { colors, isFavoritePlace, s, STYLES } from '@utils'
 
 import Autocomplete from '@components/Autocomplete'
 import FavoriteModal, { FavoriteModalProps } from '@components/FavoriteModal'
 import FavoriteTile from '@components/FavoriteTile'
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components/navigation/TabBar'
-import HeartSvg from '@icons/favorite.svg'
 import HistorySvg from '@icons/history-search.svg'
 import PlusButtonSvg from '@icons/plus.svg'
-import MhdStopSvg from '@icons/stop-sign.svg'
+import { FavoriteData, FavoritePlace } from '@types'
 import dummyDataPlaceHistory from './dummyDataPlaceHistory.json'
 
 interface SearchFromToScreen {
@@ -58,6 +57,9 @@ export default function SearchFromToScreen({
   }, [getMyLocation])
 
   const [modal, setModal] = useState<FavoriteModalProps | undefined>(undefined)
+  const [favoriteData, setFavoriteData] = useState<FavoriteData>(
+    dummyDataPlaceHistory as any
+  )
 
   useEffect(() => {
     googleInputRef.current?.focus()
@@ -68,6 +70,18 @@ export default function SearchFromToScreen({
       <PlusButtonSvg width={30} height={30} />
     </TouchableOpacity>
   )
+
+  const addOrUpdatePlace = (place: FavoritePlace) => {
+    let matchingPlace = favoriteData.favoritePlaces.find(
+      (value) => value.id === place.id
+    )
+    if (!matchingPlace) {
+      favoriteData.favoritePlaces.push(place)
+    } else {
+      matchingPlace = { ...matchingPlace, ...place }
+    }
+    setFavoriteData(favoriteData)
+  }
 
   return (
     <BottomSheet
@@ -91,22 +105,34 @@ export default function SearchFromToScreen({
             {i18n.t('screens.SearchFromToScreen.myAddresses')}
           </Text>
           <ScrollView
-            contentContainerStyle={styles.horizontalScrollView}
+            style={styles.horizontalScrollView}
+            contentContainerStyle={{ flexGrow: 1 }}
             horizontal
           >
-            {dummyDataPlaceHistory.map((favoriteItem, index) => (
+            {favoriteData.favoritePlaces.map((favoriteItem, index) => (
               <FavoriteTile
                 key={index}
                 favoriteItem={favoriteItem}
-                icon={(props) => <HeartSvg {...props} />}
-                onPress={() => false}
+                onPress={() => {
+                  if (favoriteItem.placeData && favoriteItem.placeDetail)
+                    onGooglePlaceChosen(
+                      favoriteItem.placeData,
+                      favoriteItem.placeDetail
+                    )
+                }}
                 onMorePress={() =>
-                  setModal({ type: 'place', favorite: favoriteItem })
+                  setModal({
+                    type: 'place',
+                    favorite: favoriteItem,
+                    onConfirm: addOrUpdatePlace,
+                  })
                 }
               />
             ))}
           </ScrollView>
-          {renderAddButton(() => setModal({ type: 'place' }))}
+          {renderAddButton(() =>
+            setModal({ type: 'place', onConfirm: addOrUpdatePlace })
+          )}
         </View>
         <View style={[styles.categoryStops, s.horizontalMargin]}>
           <Text style={styles.categoriesTitle}>
@@ -116,11 +142,10 @@ export default function SearchFromToScreen({
             contentContainerStyle={styles.horizontalScrollView}
             horizontal
           >
-            {dummyDataPlaceHistory.map((favoriteItem, index) => (
+            {favoriteData.favoriteStops.map((favoriteItem, index) => (
               <FavoriteTile
                 key={index}
                 favoriteItem={favoriteItem}
-                icon={(props) => <MhdStopSvg {...props} />}
                 onPress={() => false}
                 onMorePress={() =>
                   setModal({ type: 'stop', favorite: favoriteItem })
@@ -163,11 +188,15 @@ export default function SearchFromToScreen({
             {i18n.t('screens.SearchFromToScreen.history')}
           </Text>
           <View style={styles.verticalScrollView}>
-            {dummyDataPlaceHistory.map((favoriteItem, index) => (
+            {favoriteData.history.map((favoriteItem, index) => (
               <View key={index} style={styles.verticalScrollItem}>
                 <HistorySvg width={30} height={20} fill={colors.black} />
                 <View style={styles.placeTexts}>
-                  <Text style={styles.placeAddress}>{favoriteItem.name}</Text>
+                  <Text style={styles.placeAddress}>
+                    {isFavoritePlace(favoriteItem)
+                      ? favoriteItem.name
+                      : favoriteItem.placeData?.structured_formatting.main_text}
+                  </Text>
                 </View>
               </View>
             ))}
@@ -192,8 +221,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   horizontalScrollView: {
-    flexDirection: 'row',
-    borderWidth: 1,
+    minHeight: 62,
   },
   verticalScrollView: {
     paddingBottom: BOTTOM_TAB_NAVIGATOR_HEIGHT,

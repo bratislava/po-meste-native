@@ -175,10 +175,24 @@ export type Departure = {
   vehicleType?: TransitVehicleType
 }
 
-export type Favorite = {
+export type FavoritePlace = {
+  id: string
   name: string
-  isHardSetName: boolean
-  icon?: React.FC<SvgProps>
-  placeData: GooglePlaceData
-  placeDetail: GooglePlaceDetail
+  isHardSetName?: boolean
+  icon?: 'home' | 'work' | 'heart'
+  placeData?: GooglePlaceData
+  placeDetail?: GooglePlaceDetail
+}
+
+export type FavoriteStop = {
+  placeData?: GooglePlaceData
+  placeDetail?: GooglePlaceDetail
+}
+
+export type HistoryItem = FavoritePlace | FavoriteStop
+
+export type FavoriteData = {
+  favoritePlaces: FavoritePlace[]
+  favoriteStops: FavoriteStop[]
+  history: HistoryItem[]
 }

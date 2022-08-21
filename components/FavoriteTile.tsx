@@ -1,31 +1,51 @@
+import HeartSvg from '@icons/favorite.svg'
+import HomeSvg from '@icons/home.svg'
 import MoreSvg from '@icons/more.svg'
-import { Favorite } from '@types'
+import StopSignSvg from '@icons/stop-sign.svg'
+import WorkSvg from '@icons/work.svg'
+import { FavoritePlace, FavoriteStop } from '@types'
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
-import React, { ReactElement } from 'react'
+import { isFavoritePlace } from '@utils/utils'
+import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { SvgProps } from 'react-native-svg'
 
 interface FavoriteTileProps {
-  favoriteItem: Favorite
+  favoriteItem: FavoritePlace | FavoriteStop
   onPress: () => void
   onMorePress: () => void
-  icon?: (props: SvgProps) => ReactElement
 }
 
 const FavoriteTile = ({
   favoriteItem,
   onPress,
-  icon,
   onMorePress,
 }: FavoriteTileProps) => {
+  const isPlace = isFavoritePlace(favoriteItem)
+  const {
+    id = '',
+    name = undefined,
+    isHardSetName = false,
+    icon = undefined,
+  } = isPlace ? favoriteItem : {}
+  const Icon = isPlace
+    ? icon
+      ? icon === 'home'
+        ? HomeSvg
+        : icon === 'work'
+        ? WorkSvg
+        : HeartSvg
+      : HeartSvg
+    : StopSignSvg
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.horizontalScrollItem}>
-        {icon && icon({ width: 20, height: 20, fill: colors.tertiary })}
+        <Icon width={20} height={20} fill={colors.tertiary} />
         <View style={styles.placeTexts}>
-          <Text style={styles.placeName}>{favoriteItem.name}</Text>
-          <Text style={styles.placeAddressMinor}>{favoriteItem.name}</Text>
+          <Text style={styles.placeName}>{name}</Text>
+          <Text style={styles.placeAddressMinor}>
+            {favoriteItem.placeData?.structured_formatting.main_text ?? '??'}
+          </Text>
         </View>
         <TouchableOpacity onPress={onMorePress}>
           <MoreSvg

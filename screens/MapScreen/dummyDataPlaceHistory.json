@@ -1,18 +1,18 @@
-[
-  {
-    "hardSetName": true,
-    "icon": "House",
-    "name": "Domov",
-    "lat": 48,
-    "lon": 48,
-    "street": "Veternicova",
-    "houseNumber": "19"
-  },
-  {
-    "name": "Adam",
-    "lat": 48,
-    "lon": 48,
-    "street": "Veternicova",
-    "houseNumber": "19"
-  }
-]
+{
+  "favoritePlaces": [
+    {
+      "id": "home",
+      "hardSetName": true,
+      "icon": "home",
+      "name": "Domov"
+    },
+    {
+      "id": "work",
+      "hardSetName": true,
+      "icon": "work",
+      "name": "Práca"
+    }
+  ],
+  "favoriteStops": [],
+  "history": []
+}

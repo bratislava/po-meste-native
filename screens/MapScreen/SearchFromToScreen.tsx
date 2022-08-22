@@ -1,13 +1,8 @@
 import BottomSheet from '@gorhom/bottom-sheet'
 import i18n from 'i18n-js'
 import React, { MutableRefObject, useEffect, useState } from 'react'
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
 import {
   GooglePlaceData,
   GooglePlaceDetail,
@@ -66,9 +61,11 @@ export default function SearchFromToScreen({
   }, [googleInputRef])
 
   const renderAddButton = (onPress: () => void) => (
-    <TouchableOpacity style={styles.addButton} onPress={onPress}>
-      <PlusButtonSvg width={30} height={30} />
-    </TouchableOpacity>
+    <View style={styles.addButtonWrapper}>
+      <TouchableOpacity style={styles.addButton} onPress={onPress}>
+        <PlusButtonSvg width={30} height={30} />
+      </TouchableOpacity>
+    </View>
   )
 
   const addOrUpdatePlace = (place: FavoritePlace) => {
@@ -105,9 +102,9 @@ export default function SearchFromToScreen({
             {i18n.t('screens.SearchFromToScreen.myAddresses')}
           </Text>
           <ScrollView
-            style={styles.horizontalScrollView}
-            contentContainerStyle={{ flexGrow: 1 }}
+            contentContainerStyle={styles.horizontalScrollView}
             horizontal
+            showsHorizontalScrollIndicator={false}
           >
             {favoriteData.favoritePlaces.map((favoriteItem, index) => (
               <FavoriteTile
@@ -131,7 +128,10 @@ export default function SearchFromToScreen({
             ))}
           </ScrollView>
           {renderAddButton(() =>
-            setModal({ type: 'place', onConfirm: addOrUpdatePlace })
+            setModal({
+              type: 'place',
+              onConfirm: addOrUpdatePlace,
+            })
           )}
         </View>
         <View style={[styles.categoryStops, s.horizontalMargin]}>
@@ -207,7 +207,7 @@ export default function SearchFromToScreen({
         <FavoriteModal
           type={modal.type}
           favorite={modal.favorite}
-          onConfirm={() => false}
+          onConfirm={modal.onConfirm}
           onClose={() => setModal(undefined)}
         />
       )}
@@ -222,6 +222,10 @@ const styles = StyleSheet.create({
   },
   horizontalScrollView: {
     minHeight: 62,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingRight: 64,
   },
   verticalScrollView: {
     paddingBottom: BOTTOM_TAB_NAVIGATOR_HEIGHT,
@@ -271,11 +275,16 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     borderTopEndRadius: STYLES.borderRadius,
   },
-  addButton: {
+  addButton: {},
+  addButtonWrapper: {
     position: 'absolute',
-    right: 15,
-    bottom: 15,
     zIndex: 2,
+    bottom: 0,
+    right: 0,
+    backgroundColor: colors.white,
+    padding: 17,
+    borderTopLeftRadius: 32,
+    borderBottomLeftRadius: 32,
   },
   googleFrom: {
     flexDirection: 'row',

@@ -49,7 +49,7 @@ const FavoriteTile = ({
         </View>
         <TouchableOpacity onPress={onMorePress}>
           <MoreSvg
-            width={20}
+            width={40}
             height={20}
             fill={colors.tertiary}
             style={styles.more}

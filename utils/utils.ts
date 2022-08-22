@@ -275,4 +275,4 @@ export const getHeaderBgColor = (
 }
 
 export const isFavoritePlace = (obj: any): obj is FavoritePlace =>
-  obj.name && obj.id
+  obj ? obj.name && obj.id : false

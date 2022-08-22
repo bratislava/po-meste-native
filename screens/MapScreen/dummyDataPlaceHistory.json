@@ -2,13 +2,13 @@
   "favoritePlaces": [
     {
       "id": "home",
-      "hardSetName": true,
+      "isHardSetName": true,
       "icon": "home",
       "name": "Domov"
     },
     {
       "id": "work",
-      "hardSetName": true,
+      "isHardSetName": true,
       "icon": "work",
       "name": "Práca"
     }

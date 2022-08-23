@@ -40,12 +40,14 @@ import {
 import { ErrorView, Link, Modal, RadioButton } from '@components'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 import {
+  FavoriteData,
   MicromobilityProvider,
   ScheduleType,
   TravelModes,
   TravelModesOtpApi,
   VehicleData,
 } from '@types'
+import dummyDataPlaceHistory from '../../dummyDataPlaceHistory.json'
 
 const vehiclesDefault: VehicleData[] = [
   {
@@ -168,6 +170,10 @@ export default function Planner(props: PlannerProps) {
   const [dateTime, setDateTime] = useState(LocalDateTime.now())
 
   const [accessibleOnly, setAccessibleOnly] = useState(false)
+
+  const [favoriteData, setFavoriteData] = useState<FavoriteData>(
+    dummyDataPlaceHistory as any
+  )
 
   const [locationPermisionError, setLocationPermisionError] =
     useState<string>('')
@@ -984,6 +990,8 @@ export default function Planner(props: PlannerProps) {
             'screens.FromToScreen.Planner.fromPlaceholder'
           )}
           initialSnapIndex={-1}
+          favoriteData={favoriteData}
+          setFavoriteData={setFavoriteData}
         />
         <SearchFromToScreen
           sheetRef={toBottomSheetRef}
@@ -994,6 +1002,8 @@ export default function Planner(props: PlannerProps) {
             'screens.FromToScreen.Planner.toPlaceholder'
           )}
           initialSnapIndex={0}
+          favoriteData={favoriteData}
+          setFavoriteData={setFavoriteData}
         />
       </Portal>
       <Modal visible={visibleScheduleModal} onClose={hideSchedulePicker}>

@@ -189,10 +189,17 @@ export type FavoriteStop = {
   placeDetail?: GooglePlaceDetail
 }
 
+export type GooglePlace = {
+  data: GooglePlaceData
+  detail: GooglePlaceDetail | null
+}
+
 export type HistoryItem = FavoritePlace | FavoriteStop
+
+export type FavoriteItem = FavoritePlace | FavoriteStop
 
 export type FavoriteData = {
   favoritePlaces: FavoritePlace[]
   favoriteStops: FavoriteStop[]
-  history: HistoryItem[]
+  history: GooglePlace[]
 }

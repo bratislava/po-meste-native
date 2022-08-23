@@ -42,19 +42,32 @@ const FavoriteTile = ({
       <View style={styles.horizontalScrollItem}>
         <Icon width={20} height={20} fill={colors.tertiary} />
         <View style={styles.placeTexts}>
-          <Text style={styles.placeName}>{name}</Text>
-          <Text style={styles.placeAddressMinor}>
-            {favoriteItem.placeData?.structured_formatting.main_text ?? '??'}
-          </Text>
+          {name ? (
+            <>
+              <Text style={styles.placeName}>{name}</Text>
+              <Text style={styles.placeAddressMinor}>
+                {favoriteItem.placeData?.structured_formatting.main_text ??
+                  '??'}
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text style={styles.placeName}>
+                {favoriteItem.placeData?.structured_formatting.main_text}
+              </Text>
+            </>
+          )}
         </View>
-        <TouchableOpacity onPress={onMorePress}>
-          <MoreSvg
-            width={40}
-            height={20}
-            fill={colors.tertiary}
-            style={styles.more}
-          />
-        </TouchableOpacity>
+        <View style={styles.moreContainer}>
+          <TouchableOpacity onPress={onMorePress}>
+            <MoreSvg
+              width={20}
+              height={20}
+              fill={colors.tertiary}
+              style={styles.more}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
     </TouchableOpacity>
   )
@@ -67,12 +80,14 @@ const styles = StyleSheet.create({
     height: 60,
     marginRight: 10,
     paddingHorizontal: 13,
+    paddingRight: 3,
     backgroundColor: colors.secondary,
     ...s.roundedBorder,
   },
   placeTexts: {
     color: colors.tertiary,
     marginLeft: 10,
+    alignSelf: 'center',
   },
   placeName: {
     color: colors.tertiary,
@@ -84,8 +99,11 @@ const styles = StyleSheet.create({
     ...s.textTiny,
   },
   more: {
-    marginLeft: 27,
+    margin: 10,
     padding: 5,
+  },
+  moreContainer: {
+    marginLeft: 17,
   },
 })
 

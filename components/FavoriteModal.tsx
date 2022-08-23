@@ -1,13 +1,21 @@
+import EditSvg from '@icons/edit-pencil.svg'
 import HeartSvg from '@icons/favorite.svg'
 import HomeSvg from '@icons/home.svg'
 import StopSignSvg from '@icons/stop-sign.svg'
+import TrashcanSvg from '@icons/trashcan.svg'
 import WorkSvg from '@icons/work.svg'
 import { FavoritePlace, FavoriteStop } from '@types'
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
 import { isFavoritePlace } from '@utils/utils'
-import React, { useRef, useState } from 'react'
-import { StyleSheet, Text, TextInput, View } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 import {
   GooglePlaceData,
   GooglePlaceDetail,
@@ -33,12 +41,15 @@ const FavoriteModal = ({
   onClose,
   favorite,
 }: FavoriteModalProps) => {
+  const nameInputRef = useRef<TextInput>(null)
   const googleInputRef = useRef<GooglePlacesAutocompleteRef>(null)
   const [googlePlace, setGooglePlace] = useState<
-    { data: GooglePlaceData; details: GooglePlaceDetail | null } | undefined
+    { data: GooglePlaceData; details?: GooglePlaceDetail | null } | undefined
   >(undefined)
   const [favoriteName, setFavoriteName] = useState('')
-  const [isEditingName, setIsEditingName] = useState(isFavoritePlace(favorite))
+  const [isEditingName, setIsEditingName] = useState(
+    isFavoritePlace(favorite) && favorite.name ? false : true
+  )
   const [isEditingAddress, setIsEditingAddress] = useState(false)
 
   const isPlace = isFavoritePlace(favorite) || type === 'place'
@@ -53,9 +64,24 @@ const FavoriteModal = ({
       : HeartSvg
     : StopSignSvg
 
-  console.log({ favorite })
+  useEffect(() => {
+    if (isFavoritePlace(favorite)) {
+      setFavoriteName(favorite.name)
+    }
+    if (googleInputRef.current && favorite?.placeData) {
+      googleInputRef.current.setAddressText(favorite.placeData.description)
+      setGooglePlace({
+        data: favorite.placeData,
+        details: favorite.placeDetail,
+      })
+    }
+  }, [favorite])
 
-  const onSave = () => {
+  useEffect(() => {
+    if (isEditingName) nameInputRef.current?.focus()
+  }, [isEditingName])
+
+  const handleSave = () => {
     if (!onConfirm) {
       onClose()
       return
@@ -91,6 +117,11 @@ const FavoriteModal = ({
     onClose()
   }
 
+  const handleDelete = () => {
+    if (onDelete) onDelete(favorite)
+    onClose()
+  }
+
   return (
     <Modal onClose={onClose}>
       <View style={styles.modal}>
@@ -111,14 +142,28 @@ const FavoriteModal = ({
               {favorite.name}
             </Text>
           ) : (
-            <TextInput
-              style={styles.input}
-              placeholder="Názov"
-              onChangeText={(text) => setFavoriteName(text)}
-              defaultValue={
-                isFavoritePlace(favorite) ? favorite.name : undefined
-              }
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                ref={nameInputRef}
+                style={styles.input}
+                placeholder="Názov"
+                onChangeText={(text) => setFavoriteName(text)}
+                defaultValue={
+                  isFavoritePlace(favorite) ? favorite.name : undefined
+                }
+                editable={isEditingName}
+              />
+              {!isEditingName && (
+                <View style={styles.editButtonContainer}>
+                  <TouchableOpacity
+                    style={styles.editButton}
+                    onPress={() => setIsEditingName(true)}
+                  >
+                    <EditSvg width={24} height={24} />
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
           ))}
         <View style={styles.googleFrom}>
           <Autocomplete
@@ -127,28 +172,34 @@ const FavoriteModal = ({
             }
             inputPlaceholder="Adresa"
             googleInputRef={googleInputRef}
+            placeTypeFilter={type === 'stop' ? 'transit_station' : undefined}
           />
         </View>
         <View style={{ flexGrow: 1 }} />
-        {onConfirm && (
-          <Button
-            style={styles.button}
-            variant="approve"
-            title="Uložiť"
-            onPress={() => onSave()}
-          />
-        )}
-        {onDelete && (
-          <Button
-            style={styles.button}
-            variant="outlined"
-            title="Odstrániť"
-            onPress={() => {
-              onDelete(favorite)
-              onClose()
-            }}
-          />
-        )}
+        <View
+          style={[
+            styles.buttonsContainer,
+            { justifyContent: onDelete ? 'space-between' : 'center' },
+          ]}
+        >
+          {onDelete && (
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={() => handleDelete()}
+            >
+              <TrashcanSvg width={24} height={24} />
+            </TouchableOpacity>
+          )}
+          {onConfirm && (
+            <Button
+              style={styles.button}
+              variant="approve"
+              size="small"
+              title="Uložiť"
+              onPress={() => handleSave()}
+            />
+          )}
+        </View>
       </View>
     </Modal>
   )
@@ -163,23 +214,38 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'stretch',
   },
-  input: {
+  inputWrapper: {
+    display: 'flex',
     borderWidth: 2,
     borderColor: colors.mediumGray,
     height: 50,
     borderRadius: 30,
-    paddingHorizontal: 18,
-    letterSpacing: 0.5,
+    paddingLeft: 18,
+    alignItems: 'stretch',
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
     marginBottom: 15,
+  },
+  input: {
+    letterSpacing: 0.5,
+    flexGrow: 1,
+  },
+  editButtonContainer: {
+    justifyContent: 'center',
+  },
+  editButton: {
+    zIndex: 2,
+    padding: 10,
+    paddingRight: 18,
+    borderTopRightRadius: 30,
+    borderBottomRightRadius: 30,
   },
   googleFrom: {
     flexDirection: 'row',
     marginBottom: 7,
     zIndex: 1,
   },
-  button: {
-    marginTop: 15,
-  },
+  button: { flexGrow: 1, maxWidth: 185 },
   iconWrapper: {
     padding: 11,
     borderWidth: 4,
@@ -188,6 +254,18 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     marginBottom: 15,
+  },
+  buttonsContainer: {
+    marginTop: 15,
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  deleteButton: {
+    padding: 7,
+    borderWidth: 3,
+    borderColor: colors.primary,
+    borderRadius: 22,
+    marginRight: 30,
   },
 })
 

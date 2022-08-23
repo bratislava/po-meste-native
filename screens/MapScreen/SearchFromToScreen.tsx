@@ -1,6 +1,12 @@
 import BottomSheet from '@gorhom/bottom-sheet'
 import i18n from 'i18n-js'
-import React, { MutableRefObject, useEffect, useState } from 'react'
+import React, {
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import {
@@ -19,9 +25,11 @@ import FavoriteModal, { FavoriteModalProps } from '@components/FavoriteModal'
 import FavoriteTile from '@components/FavoriteTile'
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components/navigation/TabBar'
 import HistorySvg from '@icons/history-search.svg'
+import PlaceSvg from '@icons/map-pin-marker.svg'
 import PlusButtonSvg from '@icons/plus.svg'
-import { FavoriteData, FavoritePlace } from '@types'
-import dummyDataPlaceHistory from './dummyDataPlaceHistory.json'
+import StopSignSvg from '@icons/stop-sign.svg'
+import XSvg from '@icons/x.svg'
+import { FavoriteData, FavoriteItem, FavoriteStop, GooglePlace } from '@types'
 
 interface SearchFromToScreen {
   sheetRef: MutableRefObject<BottomSheet | null>
@@ -34,7 +42,11 @@ interface SearchFromToScreen {
   setLocationFromMap: () => void
   inputPlaceholder: string
   initialSnapIndex: number
+  favoriteData: FavoriteData
+  setFavoriteData: Dispatch<SetStateAction<FavoriteData>>
 }
+
+type ModalPropsOmitOnClose<T = FavoriteModalProps> = Omit<T, 'onClose'>
 
 export default function SearchFromToScreen({
   sheetRef,
@@ -44,6 +56,8 @@ export default function SearchFromToScreen({
   setLocationFromMap,
   inputPlaceholder,
   initialSnapIndex,
+  favoriteData,
+  setFavoriteData,
 }: SearchFromToScreen) {
   useEffect(() => {
     if (getMyLocation) {
@@ -51,9 +65,8 @@ export default function SearchFromToScreen({
     }
   }, [getMyLocation])
 
-  const [modal, setModal] = useState<FavoriteModalProps | undefined>(undefined)
-  const [favoriteData, setFavoriteData] = useState<FavoriteData>(
-    dummyDataPlaceHistory as any
+  const [modal, setModal] = useState<ModalPropsOmitOnClose | undefined>(
+    undefined
   )
 
   useEffect(() => {
@@ -68,7 +81,13 @@ export default function SearchFromToScreen({
     </View>
   )
 
-  const addOrUpdatePlace = (place: FavoritePlace) => {
+  const handleFavoritePress = (favoriteItem: FavoriteItem) => {
+    if (favoriteItem.placeData && favoriteItem.placeDetail)
+      onGooglePlaceChosen(favoriteItem.placeData, favoriteItem.placeDetail)
+  }
+
+  const addOrUpdatePlace = (place?: FavoriteItem) => {
+    if (!place || !isFavoritePlace(place)) return
     let matchingPlace = favoriteData.favoritePlaces.find(
       (value) => value.id === place.id
     )
@@ -77,7 +96,70 @@ export default function SearchFromToScreen({
     } else {
       matchingPlace = { ...matchingPlace, ...place }
     }
-    setFavoriteData(favoriteData)
+    setFavoriteData((oldData) => ({
+      ...oldData,
+      favoritePlaces: favoriteData.favoritePlaces,
+    }))
+  }
+
+  const addStop = (stop?: FavoriteStop) => {
+    if (stop) {
+      favoriteData.favoriteStops.push(stop)
+      setFavoriteData((oldData) => ({
+        ...oldData,
+        favoriteStops: favoriteData.favoriteStops,
+      }))
+    }
+  }
+
+  const deleteFavorite = (favorite?: FavoriteItem) => {
+    if (!favorite) return
+    if (isFavoritePlace(favorite)) {
+      if (favorite.isHardSetName) return
+      const updatedFavoritePlaces = favoriteData.favoritePlaces.filter(
+        (value) => value.id !== favorite.id
+      )
+      setFavoriteData((oldData) => ({
+        ...oldData,
+        favoritePlaces: updatedFavoritePlaces,
+      }))
+    } else {
+      const updatedFavoriteStops = favoriteData.favoriteStops.filter(
+        (value) => value.placeData?.id !== favorite.placeData?.id
+      )
+      setFavoriteData((oldData) => ({
+        ...oldData,
+        favoriteStops: updatedFavoriteStops,
+      }))
+    }
+  }
+
+  const addToHistory = (
+    data: GooglePlaceData,
+    detail: GooglePlaceDetail | null
+  ) => {
+    const newHistory = favoriteData.history.filter(
+      (item) => item.data.place_id !== data.place_id
+    )
+    const historyLenght = newHistory.unshift({
+      data,
+      detail: detail,
+    })
+    if (historyLenght > 15) newHistory.pop()
+    setFavoriteData((oldData) => ({
+      ...oldData,
+      history: newHistory,
+    }))
+  }
+
+  const deleteFromHistory = (place: GooglePlace) => {
+    const newHistory = favoriteData.history.filter(
+      (item) => item.data.place_id !== place.data.place_id
+    )
+    setFavoriteData((oldData) => ({
+      ...oldData,
+      history: newHistory,
+    }))
   }
 
   return (
@@ -95,6 +177,7 @@ export default function SearchFromToScreen({
             inputPlaceholder={inputPlaceholder}
             googleInputRef={googleInputRef}
             selectOnFocus
+            addToHistory={addToHistory}
           />
         </View>
         <View style={s.horizontalMargin}>
@@ -110,18 +193,15 @@ export default function SearchFromToScreen({
               <FavoriteTile
                 key={index}
                 favoriteItem={favoriteItem}
-                onPress={() => {
-                  if (favoriteItem.placeData && favoriteItem.placeDetail)
-                    onGooglePlaceChosen(
-                      favoriteItem.placeData,
-                      favoriteItem.placeDetail
-                    )
-                }}
+                onPress={() => handleFavoritePress(favoriteItem)}
                 onMorePress={() =>
                   setModal({
                     type: 'place',
                     favorite: favoriteItem,
                     onConfirm: addOrUpdatePlace,
+                    onDelete: !favoriteItem.isHardSetName
+                      ? deleteFavorite
+                      : undefined,
                   })
                 }
               />
@@ -141,19 +221,26 @@ export default function SearchFromToScreen({
           <ScrollView
             contentContainerStyle={styles.horizontalScrollView}
             horizontal
+            showsHorizontalScrollIndicator={false}
           >
             {favoriteData.favoriteStops.map((favoriteItem, index) => (
               <FavoriteTile
                 key={index}
                 favoriteItem={favoriteItem}
-                onPress={() => false}
+                onPress={() => handleFavoritePress(favoriteItem)}
                 onMorePress={() =>
-                  setModal({ type: 'stop', favorite: favoriteItem })
+                  setModal({
+                    type: 'stop',
+                    favorite: favoriteItem,
+                    onDelete: deleteFavorite,
+                  })
                 }
               />
             ))}
           </ScrollView>
-          {renderAddButton(() => setModal({ type: 'stop' }))}
+          {renderAddButton(() =>
+            setModal({ type: 'stop', onConfirm: addStop })
+          )}
         </View>
         <View style={[styles.categoryStops, s.horizontalMargin]}>
           <View style={styles.chooseFromMapRow}>
@@ -188,17 +275,32 @@ export default function SearchFromToScreen({
             {i18n.t('screens.SearchFromToScreen.history')}
           </Text>
           <View style={styles.verticalScrollView}>
-            {favoriteData.history.map((favoriteItem, index) => (
-              <View key={index} style={styles.verticalScrollItem}>
-                <HistorySvg width={30} height={20} fill={colors.black} />
-                <View style={styles.placeTexts}>
-                  <Text style={styles.placeAddress}>
-                    {isFavoritePlace(favoriteItem)
-                      ? favoriteItem.name
-                      : favoriteItem.placeData?.structured_formatting.main_text}
-                  </Text>
+            {favoriteData.history.map((place, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => onGooglePlaceChosen(place.data, place.detail)}
+              >
+                <View style={styles.verticalScrollItem}>
+                  <HistorySvg width={30} height={20} fill={colors.black} />
+                  {(place.detail?.types[0] as any) === 'transit_station' ? (
+                    <StopSignSvg width={30} height={20} fill={colors.black} />
+                  ) : (
+                    <PlaceSvg width={30} height={20} fill={colors.black} />
+                  )}
+                  <View style={styles.placeTexts}>
+                    <Text style={styles.placeAddress}>
+                      {place.data?.structured_formatting.main_text}
+                    </Text>
+                  </View>
+                  <View style={{ flexGrow: 1 }} />
+                  <TouchableOpacity
+                    style={styles.deleteHistoryButton}
+                    onPress={() => deleteFromHistory(place)}
+                  >
+                    <XSvg width={16} height={16} fill={colors.black} />
+                  </TouchableOpacity>
                 </View>
-              </View>
+              </TouchableOpacity>
             ))}
           </View>
         </View>
@@ -208,6 +310,7 @@ export default function SearchFromToScreen({
           type={modal.type}
           favorite={modal.favorite}
           onConfirm={modal.onConfirm}
+          onDelete={modal.onDelete}
           onClose={() => setModal(undefined)}
         />
       )}
@@ -225,7 +328,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingRight: 64,
+    paddingRight: 35,
   },
   verticalScrollView: {
     paddingBottom: BOTTOM_TAB_NAVIGATOR_HEIGHT,
@@ -258,7 +361,6 @@ const styles = StyleSheet.create({
   },
   placeAddress: {
     color: colors.blackLighter,
-    fontWeight: 'bold',
   },
   content: {
     backgroundColor: 'white',
@@ -280,7 +382,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 2,
     bottom: 0,
-    right: 0,
+    right: -20,
     backgroundColor: colors.white,
     padding: 17,
     borderTopLeftRadius: 32,
@@ -291,4 +393,5 @@ const styles = StyleSheet.create({
     marginBottom: 7,
     zIndex: 1,
   },
+  deleteHistoryButton: { padding: 8 },
 })

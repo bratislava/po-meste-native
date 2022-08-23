@@ -21,6 +21,10 @@ interface AutocompleteProps {
   inputPlaceholder: string
   placeTypeFilter?: string
   selectOnFocus?: boolean
+  addToHistory?: (
+    data: GooglePlaceData,
+    detail: GooglePlaceDetail | null
+  ) => void
 }
 
 // for some reason, there is wrong typing on GooglePlaceData, so this is the fix :)
@@ -34,6 +38,7 @@ const Autocomplete = ({
   onGooglePlaceChosen,
   placeTypeFilter,
   selectOnFocus = false,
+  addToHistory,
 }: AutocompleteProps) => {
   const [googleAutocompleteSelection, setGoogleAutocompleteSelection] =
     useState<{ start: number } | undefined>(undefined)
@@ -55,7 +60,10 @@ const Autocomplete = ({
       enablePoweredByContainer={false}
       fetchDetails
       placeholder={inputPlaceholder}
-      onPress={onGooglePlaceChosen}
+      onPress={(data, detail) => {
+        onGooglePlaceChosen(data, detail)
+        addToHistory && addToHistory(data, detail)
+      }}
       query={{
         key: Constants.manifest?.extra?.googlePlacesApiKey,
         language: 'sk',

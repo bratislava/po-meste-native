@@ -690,13 +690,6 @@ export default function MapScreen() {
             setShowCurrentLocationButton(false)
           }
         }}
-        // onChange={(index) => {
-        //   if (index === -1) {
-        //     setShowCurrentLocationButton(true)
-        //   } else {
-        //     setShowCurrentLocationButton(false)
-        //   }
-        // }}
       >
         {selectedChargerStation ? (
           <StationChargerInfo

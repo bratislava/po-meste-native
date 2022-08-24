@@ -1,4 +1,4 @@
-import BottomSheet from '@gorhom/bottom-sheet'
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import i18n from 'i18n-js'
 import React, {
   Dispatch,
@@ -36,7 +36,7 @@ interface SearchFromToScreen {
   getMyLocation?: (reask?: boolean) => void
   onGooglePlaceChosen: (
     _data: GooglePlaceData,
-    details: GooglePlaceDetail | null
+    detail: GooglePlaceDetail | null
   ) => void
   googleInputRef: React.MutableRefObject<GooglePlacesAutocompleteRef | null>
   setLocationFromMap: () => void
@@ -82,8 +82,8 @@ export default function SearchFromToScreen({
   )
 
   const handleFavoritePress = (favoriteItem: FavoriteItem) => {
-    if (favoriteItem.placeData && favoriteItem.placeDetail)
-      onGooglePlaceChosen(favoriteItem.placeData, favoriteItem.placeDetail)
+    if (favoriteItem.place?.data && favoriteItem.place.detail)
+      onGooglePlaceChosen(favoriteItem.place.data, favoriteItem.place.detail)
   }
 
   const addOrUpdatePlace = (place?: FavoriteItem) => {
@@ -92,6 +92,9 @@ export default function SearchFromToScreen({
       (value) => value.id === place.id
     )
     if (!matchingPlace) {
+      //2 huge attributes which we do not need to store
+      delete (place.place?.detail as any).photos
+      delete (place.place?.detail as any).reviews
       favoriteData.favoritePlaces.push(place)
     } else {
       matchingPlace = { ...matchingPlace, ...place }
@@ -103,7 +106,16 @@ export default function SearchFromToScreen({
   }
 
   const addStop = (stop?: FavoriteStop) => {
+    if (
+      favoriteData.favoriteStops.find(
+        (favoriteStop) =>
+          favoriteStop.place?.data.place_id === stop?.place?.data.place_id
+      )
+    )
+      return
     if (stop) {
+      delete (stop.place?.detail as any).photos
+      delete (stop.place?.detail as any).reviews
       favoriteData.favoriteStops.push(stop)
       setFavoriteData((oldData) => ({
         ...oldData,
@@ -125,7 +137,8 @@ export default function SearchFromToScreen({
       }))
     } else {
       const updatedFavoriteStops = favoriteData.favoriteStops.filter(
-        (value) => value.placeData?.id !== favorite.placeData?.id
+        (value) =>
+          value.place?.data?.place_id !== favorite.place?.data?.place_id
       )
       setFavoriteData((oldData) => ({
         ...oldData,
@@ -171,7 +184,7 @@ export default function SearchFromToScreen({
       handleIndicatorStyle={s.handleStyle}
     >
       <View style={styles.content}>
-        <View style={[s.horizontalMargin, styles.googleFrom]}>
+        <View style={[s.horizontalMargin, styles.googleForm]}>
           <Autocomplete
             onGooglePlaceChosen={onGooglePlaceChosen}
             inputPlaceholder={inputPlaceholder}
@@ -274,35 +287,41 @@ export default function SearchFromToScreen({
           <Text style={styles.categoriesTitle}>
             {i18n.t('screens.SearchFromToScreen.history')}
           </Text>
-          <View style={styles.verticalScrollView}>
+          <BottomSheetScrollView style={styles.verticalScrollView}>
             {favoriteData.history.map((place, index) => (
               <TouchableOpacity
                 key={index}
                 onPress={() => onGooglePlaceChosen(place.data, place.detail)}
               >
                 <View style={styles.verticalScrollItem}>
-                  <HistorySvg width={30} height={20} fill={colors.black} />
-                  {(place.detail?.types[0] as any) === 'transit_station' ? (
-                    <StopSignSvg width={30} height={20} fill={colors.black} />
-                  ) : (
-                    <PlaceSvg width={30} height={20} fill={colors.black} />
-                  )}
-                  <View style={styles.placeTexts}>
-                    <Text style={styles.placeAddress}>
-                      {place.data?.structured_formatting.main_text}
-                    </Text>
+                  <View style={styles.leftSideItemWrapper}>
+                    <HistorySvg width={30} height={20} fill={colors.black} />
+                    {(place.detail?.types[0] as any) === 'transit_station' ? (
+                      <StopSignSvg width={30} height={20} fill={colors.black} />
+                    ) : (
+                      <PlaceSvg width={30} height={20} fill={colors.black} />
+                    )}
+                    <View style={styles.placeTexts}>
+                      <Text
+                        style={[styles.placeAddress, { marginRight: 15 }]}
+                        numberOfLines={1}
+                      >
+                        {place.data?.structured_formatting.main_text}
+                      </Text>
+                    </View>
                   </View>
-                  <View style={{ flexGrow: 1 }} />
-                  <TouchableOpacity
-                    style={styles.deleteHistoryButton}
-                    onPress={() => deleteFromHistory(place)}
-                  >
-                    <XSvg width={16} height={16} fill={colors.black} />
-                  </TouchableOpacity>
+                  <View style={styles.rightSideItemWrapper}>
+                    <TouchableOpacity
+                      onPress={() => deleteFromHistory(place)}
+                      style={styles.deleteHistoryButton}
+                    >
+                      <XSvg width={16} height={16} fill={colors.black} />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </TouchableOpacity>
             ))}
-          </View>
+          </BottomSheetScrollView>
         </View>
       </View>
       {modal && (
@@ -331,12 +350,22 @@ const styles = StyleSheet.create({
     paddingRight: 35,
   },
   verticalScrollView: {
-    paddingBottom: BOTTOM_TAB_NAVIGATOR_HEIGHT,
+    marginBottom: BOTTOM_TAB_NAVIGATOR_HEIGHT + 5,
   },
   verticalScrollItem: {
     flexDirection: 'row',
     alignItems: 'center',
     height: 56,
+    justifyContent: 'space-between',
+  },
+  leftSideItemWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    overflow: 'hidden',
+  },
+  rightSideItemWrapper: {
+    flex: 0,
   },
   chooseFromMapRow: {
     flexDirection: 'row',
@@ -388,7 +417,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 32,
     borderBottomLeftRadius: 32,
   },
-  googleFrom: {
+  googleForm: {
     flexDirection: 'row',
     marginBottom: 7,
     zIndex: 1,

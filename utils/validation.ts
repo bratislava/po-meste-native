@@ -471,3 +471,124 @@ export const apiMhdGrafikon = yup.object().shape({
         .required('error-malformed-apiMhdGrafikon-time')
     ),
 })
+
+const googlePlaceData = yup.object().shape({
+  description: yup.string().required(),
+  id: yup.string().notRequired(),
+  matched_substrings: yup
+    .array()
+    .ensure()
+    .of(
+      yup.object().shape({
+        length: yup.number().required(),
+        offset: yup.number().required(),
+      })
+    )
+    .required(),
+  place_id: yup.string().required(),
+  reference: yup.string().required(),
+  structured_formatting: yup
+    .object()
+    .shape({
+      main_text: yup.string().required(),
+      main_text_matched_substrings: yup
+        .array()
+        .ensure()
+        .of(yup.array().ensure().of(yup.object()))
+        .required(),
+      secondary_text: yup.string(),
+      secondary_text_matched_substrings: yup
+        .array()
+        .ensure()
+        .of(yup.array().ensure().of(yup.object())),
+      terms: yup
+        .array()
+        .ensure()
+        .of(
+          yup.object().shape({
+            offset: yup.number().required(),
+            value: yup.string().required(),
+          })
+        )
+        .required(),
+      types: yup.array().ensure().of(yup.string()).required(),
+    })
+    .required(),
+})
+
+const googlePlaceDetail = yup.object().shape({
+  geometry: yup
+    .object()
+    .shape({
+      location: yup
+        .object()
+        .shape({
+          lat: yup.number().required(),
+          lng: yup.number().required(),
+        })
+        .required(),
+      viewport: yup
+        .object()
+        .shape({
+          northeast: yup
+            .object()
+            .shape({
+              lat: yup.number().required(),
+              lng: yup.number().required(),
+            })
+            .required(),
+          southwest: yup
+            .object()
+            .shape({
+              lat: yup.number().required(),
+              lng: yup.number().required(),
+            })
+            .required(),
+        })
+        .required(),
+    })
+    .required(),
+  types: yup.array().ensure().of(yup.string()),
+})
+
+const googlePlace = yup.object().shape({
+  data: googlePlaceData.required(),
+  detail: yup.object().when('$exist', {
+    is: (exist: boolean) => exist,
+    then: googlePlaceDetail.nullable().defined(),
+    otherwise: yup.object(),
+  }),
+})
+
+const favoriteStop = yup.object().shape({ place: googlePlace })
+
+const favoritePlace = yup.object().shape({
+  id: yup.string().required('error-malformed-id'),
+  name: yup.string().required('error-malformed-name'),
+  isHardSetName: yup.boolean().notRequired(),
+  icon: yup.string().oneOf(['home', 'work', 'heart']).notRequired(),
+  place: yup.object<yup.Asserts<typeof googlePlace>>().when('$exist', {
+    is: (exist: boolean) => exist,
+    then: googlePlace.required(),
+    otherwise: yup.object(),
+  }),
+})
+
+// because of the complexity of the schema and mostly because some attributes are required only when
+// their parent attributes are defined, it was very hard and I did not manage to correctly infere
+// typesript types from this schema
+export const favoriteDataSchema = yup.object().shape({
+  favoritePlaces: yup
+    .array()
+    .defined()
+    .ensure()
+    .of(favoritePlace)
+    .required('error-malformed-favoritePlaces'),
+  favoriteStops: yup
+    .array()
+    .required()
+    .ensure()
+    .of(favoriteStop)
+    .required('error-malformed-favoriteStops'),
+  history: yup.array().ensure().of(googlePlace).required(),
+})

@@ -30,6 +30,7 @@ import { useQuery } from 'react-query'
 import {
   aggregateBicycleLegs,
   colors,
+  favoriteDataSchema,
   getProviderName,
   getTripPlanner,
   IteneraryProps,
@@ -38,6 +39,7 @@ import {
 } from '@utils'
 
 import { ErrorView, Link, Modal, RadioButton } from '@components'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 import {
   FavoriteData,
@@ -47,7 +49,7 @@ import {
   TravelModesOtpApi,
   VehicleData,
 } from '@types'
-import dummyDataPlaceHistory from '../../dummyDataPlaceHistory.json'
+import defaultFavoriteData from '../../defaultFavoriteData.json'
 
 const vehiclesDefault: VehicleData[] = [
   {
@@ -171,9 +173,33 @@ export default function Planner(props: PlannerProps) {
 
   const [accessibleOnly, setAccessibleOnly] = useState(false)
 
+  //#region "Favorites"
   const [favoriteData, setFavoriteData] = useState<FavoriteData>(
-    dummyDataPlaceHistory as any
+    defaultFavoriteData as any
   )
+  const loadFavoriteData = async (onLoad: (data: FavoriteData) => void) => {
+    const favoriteDataString = await AsyncStorage.getItem('favoriteData')
+    if (!favoriteDataString) return
+    try {
+      const validatedFavoriteData = favoriteDataSchema.validateSync(
+        JSON.parse(favoriteDataString)
+      ) as never as FavoriteData
+      onLoad(validatedFavoriteData)
+    } catch (e: any) {
+      console.log(e.message)
+    }
+  }
+  const saveFavoriteData = (data: FavoriteData) => {
+    if (favoriteData) {
+      AsyncStorage.setItem('favoriteData', JSON.stringify(data))
+    }
+  }
+
+  useEffect(() => {
+    loadFavoriteData(setFavoriteData)
+  }, [])
+  useEffect(() => saveFavoriteData(favoriteData), [favoriteData])
+  //#endregion "Favorites"
 
   const [locationPermisionError, setLocationPermisionError] =
     useState<string>('')

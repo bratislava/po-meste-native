@@ -1,0 +1,59 @@
+{
+  "favoritePlaces": [
+    {
+      "id": "home",
+      "isHardSetName": true,
+      "icon": "home",
+      "name": "Domov"
+    },
+    {
+      "id": "work",
+      "isHardSetName": true,
+      "icon": "work",
+      "name": "Práca"
+    }
+  ],
+  "favoriteStops": [
+    {
+      "place": {
+        "data": {
+          "description": "Centrum, Bratislava, Slovensko",
+          "matched_substrings": [
+            {
+              "length": 7,
+              "offset": 0
+            }
+          ],
+          "place_id": "ChIJCYj7cUSJbEcRO7M-QECUknY",
+          "reference": "ChIJCYj7cUSJbEcRO7M-QECUknY",
+          "structured_formatting": {
+            "main_text": "Centrum",
+            "main_text_matched_substrings": [
+              {
+                "length": 7,
+                "offset": 0
+              }
+            ],
+            "secondary_text": "Bratislava, Slovensko"
+          },
+          "terms": [
+            {
+              "offset": 0,
+              "value": "Centrum"
+            },
+            {
+              "offset": 9,
+              "value": "Bratislava"
+            },
+            {
+              "offset": 21,
+              "value": "Slovensko"
+            }
+          ],
+          "types": ["transit_station", "point_of_interest", "establishment"]
+        }
+      }
+    }
+  ],
+  "history": []
+}

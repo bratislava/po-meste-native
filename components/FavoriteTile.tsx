@@ -46,14 +46,14 @@ const FavoriteTile = ({
             <>
               <Text style={styles.placeName}>{name}</Text>
               <Text style={styles.placeAddressMinor}>
-                {favoriteItem.placeData?.structured_formatting.main_text ??
+                {favoriteItem.place?.data?.structured_formatting.main_text ??
                   '??'}
               </Text>
             </>
           ) : (
             <>
               <Text style={styles.placeName}>
-                {favoriteItem.placeData?.structured_formatting.main_text}
+                {favoriteItem.place?.data?.structured_formatting.main_text}
               </Text>
             </>
           )}

@@ -44,7 +44,7 @@ const FavoriteModal = ({
   const nameInputRef = useRef<TextInput>(null)
   const googleInputRef = useRef<GooglePlacesAutocompleteRef>(null)
   const [googlePlace, setGooglePlace] = useState<
-    { data: GooglePlaceData; details?: GooglePlaceDetail | null } | undefined
+    { data: GooglePlaceData; detail: GooglePlaceDetail | null } | undefined
   >(undefined)
   const [favoriteName, setFavoriteName] = useState('')
   const [isEditingName, setIsEditingName] = useState(
@@ -68,11 +68,11 @@ const FavoriteModal = ({
     if (isFavoritePlace(favorite)) {
       setFavoriteName(favorite.name)
     }
-    if (googleInputRef.current && favorite?.placeData) {
-      googleInputRef.current.setAddressText(favorite.placeData.description)
+    if (googleInputRef.current && favorite?.place?.data) {
+      googleInputRef.current.setAddressText(favorite.place.data.description)
       setGooglePlace({
-        data: favorite.placeData,
-        details: favorite.placeDetail,
+        data: favorite.place.data,
+        detail: favorite.place.detail,
       })
     }
   }, [favorite])
@@ -88,29 +88,27 @@ const FavoriteModal = ({
     }
     if (isPlace) {
       if (isFavoritePlace(favorite)) {
-        favorite.placeData = googlePlace?.data
-        favorite.placeDetail = googlePlace?.details ?? undefined
+        if (googlePlace) {
+          favorite.place = googlePlace
+        }
         favorite.isHardSetName ? false : (favorite.name = favoriteName)
         onConfirm(favorite)
       } else {
         const newFavoritPlace: FavoritePlace = {
           id: uuid.v4().toString(),
           name: favoriteName,
-          placeData: googlePlace?.data,
-          placeDetail: googlePlace?.details ?? undefined,
+          place: googlePlace,
         }
         onConfirm(newFavoritPlace)
       }
     } else {
       if (favorite) {
-        favorite.placeData = googlePlace?.data
-        favorite.placeDetail = googlePlace?.details ?? undefined
+        if (googlePlace) {
+          favorite.place = googlePlace
+        }
         onConfirm(favorite)
       } else {
-        const newFavoritStop: FavoriteStop = {
-          placeData: googlePlace?.data,
-          placeDetail: googlePlace?.details ?? undefined,
-        }
+        const newFavoritStop: FavoriteStop = { place: googlePlace }
         onConfirm(newFavoritStop)
       }
     }
@@ -167,10 +165,10 @@ const FavoriteModal = ({
           ))}
         <View style={styles.googleFrom}>
           <Autocomplete
-            onGooglePlaceChosen={(data, details) =>
-              setGooglePlace({ data, details })
+            onGooglePlaceChosen={(data, detail) =>
+              setGooglePlace({ data, detail })
             }
-            inputPlaceholder="Adresa"
+            inputPlaceholder={type === 'place' ? 'Adresa' : 'Zastávka'}
             googleInputRef={googleInputRef}
             placeTypeFilter={type === 'stop' ? 'transit_station' : undefined}
           />

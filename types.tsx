@@ -180,21 +180,17 @@ export type FavoritePlace = {
   name: string
   isHardSetName?: boolean
   icon?: 'home' | 'work' | 'heart'
-  placeData?: GooglePlaceData
-  placeDetail?: GooglePlaceDetail
+  place?: GooglePlace
 }
 
 export type FavoriteStop = {
-  placeData?: GooglePlaceData
-  placeDetail?: GooglePlaceDetail
+  place?: GooglePlace
 }
 
 export type GooglePlace = {
   data: GooglePlaceData
   detail: GooglePlaceDetail | null
 }
-
-export type HistoryItem = FavoritePlace | FavoriteStop
 
 export type FavoriteItem = FavoritePlace | FavoriteStop
 

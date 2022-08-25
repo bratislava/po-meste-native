@@ -8,6 +8,7 @@ import { FavoritePlace, FavoriteStop } from '@types'
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
 import { isFavoritePlace } from '@utils/utils'
+import i18n from 'i18n-js'
 import React, { useEffect, useRef, useState } from 'react'
 import {
   StyleSheet,
@@ -137,14 +138,20 @@ const FavoriteModal = ({
                 { alignSelf: 'center', marginBottom: 15 },
               ]}
             >
-              {favorite.name}
+              {favorite.id === 'home'
+                ? i18n.t('screens.SearchFromToScreen.FavoriteModal.home')
+                : favorite.id === 'work'
+                ? i18n.t('screens.SearchFromToScreen.FavoriteModal.work')
+                : favorite.name}
             </Text>
           ) : (
             <View style={styles.inputWrapper}>
               <TextInput
                 ref={nameInputRef}
                 style={styles.input}
-                placeholder="Názov"
+                placeholder={i18n.t(
+                  'screens.SearchFromToScreen.FavoriteModal.namePlaceholder'
+                )}
                 onChangeText={(text) => setFavoriteName(text)}
                 defaultValue={
                   isFavoritePlace(favorite) ? favorite.name : undefined
@@ -168,7 +175,15 @@ const FavoriteModal = ({
             onGooglePlaceChosen={(data, detail) =>
               setGooglePlace({ data, detail })
             }
-            inputPlaceholder={type === 'place' ? 'Adresa' : 'Zastávka'}
+            inputPlaceholder={
+              type === 'place'
+                ? i18n.t(
+                    'screens.SearchFromToScreen.FavoriteModal.addressPlaceholder'
+                  )
+                : i18n.t(
+                    'screens.SearchFromToScreen.FavoriteModal.stopPlaceholder'
+                  )
+            }
             googleInputRef={googleInputRef}
             placeTypeFilter={type === 'stop' ? 'transit_station' : undefined}
           />
@@ -193,7 +208,7 @@ const FavoriteModal = ({
               style={styles.button}
               variant="approve"
               size="small"
-              title="Uložiť"
+              title={i18n.t('common.save')}
               onPress={() => handleSave()}
             />
           )}

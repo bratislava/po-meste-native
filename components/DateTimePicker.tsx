@@ -19,8 +19,9 @@ const hours = range(0, 24, 1).map((value) => (value < 10 ? '0' : '') + value)
 const days = range(0, 15, 1).map((value) => {
   const date = LocalDateTime.now()
   if (value < 7) return date.minusDays(7 - value).format(formatter)
-  if (value > 7) return date.plusDays(value - 7).format(formatter)
-  return 'dnes'
+  if (value === 7) return i18n.t('common.today')
+  if (value === 8) return i18n.t('common.tomorrow')
+  else return date.plusDays(value - 7).format(formatter)
 })
 
 const ScrollPicker = React.forwardRef<ScrollHandle, ScrollPickerNativeProps>(
@@ -61,7 +62,6 @@ const DateTimePicker = ({
   onScheduleTypeChange,
 }: DateTimePickerProps) => {
   const [now, setNow] = useState(LocalDateTime.now())
-  const [refreshingInterval, setRefreshingInterval] = useState<NodeJS.Timer>()
   const [selectedHour, setSelectedHour] = useState<number>(now.hour())
   const [selectedMinute, setSelectedMinute] = useState<number>(now.minute())
   const [selectedDateIndex, setSelectedDateIndex] = useState<number>(7)

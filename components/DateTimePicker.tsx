@@ -71,17 +71,17 @@ const DateTimePicker = ({
   const minutePickerRef = useRef<ScrollHandle>(null)
 
   useEffect(() => {
-    setRefreshingInterval(
-      setInterval(() => setNow(LocalDateTime.now()), 15 * 1000)
-    )
-    return () => {
-      if (refreshingInterval) clearInterval(refreshingInterval)
-    }
-  }, [])
-
-  useEffect(() => {
     if (scheduleType !== 'now') onScheduleTypeChange(scheduleType)
   }, [scheduleType, onScheduleTypeChange])
+
+  useEffect(() => {
+    setSelectedHour(now.hour())
+    hourPickerRef.current?.scrollTo(now.hour())
+    setSelectedMinute(now.minute())
+    minutePickerRef.current?.scrollTo(now.minute())
+    setSelectedDateIndex(7)
+    datePickerRef.current?.scrollTo(7)
+  }, [now])
 
   const handleConfirm = () => {
     let adjustedDate = now
@@ -99,20 +99,12 @@ const DateTimePicker = ({
     onConfirm(selectedDatetime)
   }
 
-  const resetToNow = () => {
-    setSelectedHour(now.hour())
-    hourPickerRef.current?.scrollTo(now.hour())
-    setSelectedMinute(now.minute())
-    minutePickerRef.current?.scrollTo(now.minute())
-    setSelectedDateIndex(7)
-    datePickerRef.current?.scrollTo(7)
-  }
-
   const handleNow = () => {
+    const localNow = LocalDateTime.now()
     setScheduleType('now')
-    resetToNow()
+    setNow(localNow)
     onScheduleTypeChange(ScheduleType.departure)
-    onConfirm(convert(now).toDate())
+    onConfirm(convert(localNow).toDate())
   }
 
   return (

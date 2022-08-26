@@ -16,13 +16,6 @@ import Button from './Button'
 const formatter = DateTimeFormatter.ofPattern('d.M')
 const minutes = range(0, 60, 1).map((value) => (value < 10 ? '0' : '') + value)
 const hours = range(0, 24, 1).map((value) => (value < 10 ? '0' : '') + value)
-const days = range(0, 15, 1).map((value) => {
-  const date = LocalDateTime.now()
-  if (value < 7) return date.minusDays(7 - value).format(formatter)
-  if (value === 7) return i18n.t('common.today')
-  if (value === 8) return i18n.t('common.tomorrow')
-  else return date.plusDays(value - 7).format(formatter)
-})
 
 const ScrollPicker = React.forwardRef<ScrollHandle, ScrollPickerNativeProps>(
   (scrollPickerProps: ScrollPickerNativeProps, ref) => {
@@ -69,6 +62,14 @@ const DateTimePicker = ({
   const datePickerRef = useRef<ScrollHandle>(null)
   const hourPickerRef = useRef<ScrollHandle>(null)
   const minutePickerRef = useRef<ScrollHandle>(null)
+
+  const days = range(0, 15, 1).map((value) => {
+    const date = LocalDateTime.now()
+    if (value < 7) return date.minusDays(7 - value).format(formatter)
+    if (value === 7) return i18n.t('common.today')
+    if (value === 8) return i18n.t('common.tomorrow')
+    else return date.plusDays(value - 7).format(formatter)
+  })
 
   useEffect(() => {
     if (scheduleType !== 'now') onScheduleTypeChange(scheduleType)

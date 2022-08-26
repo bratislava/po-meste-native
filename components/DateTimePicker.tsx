@@ -84,6 +84,7 @@ const DateTimePicker = ({
   }, [now])
 
   const handleConfirm = () => {
+    if (scheduleType === 'now') setScheduleType(ScheduleType.departure)
     let adjustedDate = now
     if (selectedDateIndex < 7)
       adjustedDate = now.minusDays(7 - selectedDateIndex)

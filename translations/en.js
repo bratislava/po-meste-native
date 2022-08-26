@@ -19,6 +19,7 @@ export default {
     openSettings: 'Open settings',
     today: ' (Today)',
     tomorrow: ' (Tomorrow)',
+    set: 'Set',
     now: 'now',
     stops: {
       zero: '{{count}} stops',
@@ -102,6 +103,8 @@ export default {
       linesAndStopsTitle: 'Lines and stops',
       plannerSubtitle: 'planning your journey',
       linesAndStopsSubtitle: 'timetables and routes',
+      departureAt: 'departure at',
+      arrivalAt: 'arrival at',
       Planner: {
         fromPlaceholder: 'From...',
         toPlaceholder: 'To...',

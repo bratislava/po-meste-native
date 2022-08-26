@@ -6,6 +6,7 @@ import { convert, DateTimeFormatter, LocalDateTime } from '@js-joda/core'
 import { ScheduleType } from '@types'
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
+import i18n from 'i18n-js'
 import { range } from 'lodash'
 import React, { useEffect, useRef, useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
@@ -125,7 +126,7 @@ const DateTimePicker = ({
                 : styles.schedulePickerButton
             }
           >
-            Teraz
+            {i18n.t('common.now')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -141,7 +142,7 @@ const DateTimePicker = ({
                 : styles.schedulePickerButton
             }
           >
-            Odchod o
+            {i18n.t('screens.FromToScreen.departureAt')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -157,7 +158,7 @@ const DateTimePicker = ({
                 : styles.schedulePickerButton
             }
           >
-            Príchod o
+            {i18n.t('screens.FromToScreen.arrivalAt')}
           </Text>
         </TouchableOpacity>
       </View>
@@ -189,11 +190,14 @@ const DateTimePicker = ({
           onValueChange={(value) => setSelectedMinute(+value)}
         />
       </View>
-      <Button
-        title="Nastaviť"
-        onPress={handleConfirm}
-        style={{ marginTop: 28 }}
-      />
+      <View
+        style={{
+          marginTop: 28,
+          paddingHorizontal: 57,
+        }}
+      >
+        <Button title={i18n.t('common.set')} onPress={handleConfirm} />
+      </View>
     </View>
   )
 }

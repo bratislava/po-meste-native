@@ -19,6 +19,7 @@ export default {
     openSettings: 'Otvoriť nastavenia',
     today: ' (Dnes)',
     tomorrow: ' (Zajtra)',
+    set: 'Nastaviť',
     now: 'teraz',
     stops: {
       zero: '{{count}} zastávok',
@@ -104,6 +105,8 @@ export default {
       linesAndStopsTitle: 'Linky a zastávky',
       plannerSubtitle: 'plánovanie tvojej cesty',
       linesAndStopsSubtitle: 'grafikony a trasy MHD',
+      departureAt: 'odchod o',
+      arrivalAt: 'príchod o',
       Planner: {
         fromPlaceholder: 'Odkiaľ idete?',
         toPlaceholder: 'Kamže, kam?',

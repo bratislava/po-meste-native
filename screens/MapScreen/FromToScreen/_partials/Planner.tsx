@@ -39,6 +39,7 @@ import {
 } from '@utils'
 
 import { ErrorView, Link, Modal, RadioButton } from '@components'
+import DateTimePicker from '@components/DateTimePicker'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 import {
@@ -156,6 +157,7 @@ export default function Planner(props: PlannerProps) {
   const toRef = useRef<GooglePlacesAutocompleteRef | null>(null)
   const fromBottomSheetRef = useRef<BottomSheet>(null)
   const toBottomSheetRef = useRef<BottomSheet>(null)
+  const datetimeSheetRef = useRef<BottomSheet>(null)
 
   const [vehicles, setVehicles] = useState<VehicleData[]>(vehiclesDefault)
 
@@ -738,11 +740,11 @@ export default function Planner(props: PlannerProps) {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false)
 
   const showDatePicker = () => {
-    setDatePickerVisibility(true)
+    datetimeSheetRef.current?.snapToIndex(0)
   }
 
   const hideDatePicker = () => {
-    setDatePickerVisibility(false)
+    datetimeSheetRef.current?.close()
   }
 
   const handleConfirm = (date: Date) => {
@@ -754,17 +756,15 @@ export default function Planner(props: PlannerProps) {
   }
 
   const hideSchedulePicker = () => {
-    setVisibleScheduleModal(false)
+    datetimeSheetRef.current?.close()
   }
 
   const showSchedulePicker = () => {
-    setVisibleScheduleModal(true)
+    datetimeSheetRef.current?.snapToIndex(0)
   }
 
   const handleOptionChange = (scheduleTime: ScheduleType) => {
     setScheduledTime(scheduleTime)
-    setVisibleScheduleModal(false)
-    showDatePicker()
   }
 
   const isDateTimeNow =
@@ -1053,6 +1053,18 @@ export default function Planner(props: PlannerProps) {
           title={i18n.t('common.cancel')}
         />
       </Modal>
+      <BottomSheet
+        handleIndicatorStyle={s.handleStyle}
+        snapPoints={[400]}
+        index={-1}
+        enablePanDownToClose
+        ref={datetimeSheetRef}
+      >
+        <DateTimePicker
+          onConfirm={handleConfirm}
+          onScheduleTypeChange={handleOptionChange}
+        />
+      </BottomSheet>
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode="datetime"

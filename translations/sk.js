@@ -21,6 +21,7 @@ export default {
     tomorrow: ' Zajtra',
     set: 'Nastaviť',
     now: 'teraz',
+    save: 'Uložiť',
     stops: {
       zero: '{{count}} zastávok',
       one: '{{count}} zastávka',
@@ -133,6 +134,13 @@ export default {
       history: 'História',
       choosePlaceFromMap: 'Vybrať na mape',
       currentPosition: 'Aktuálna poloha',
+      FavoriteModal: {
+        addressPlaceholder: 'Adresa',
+        stopPlaceholder: 'Zastávka',
+        namePlaceholder: 'Názov',
+        home: 'Domov',
+        work: 'Práca',
+      },
     },
     SMSScreen: {
       screenTitle: 'SMS lístky',

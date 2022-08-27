@@ -7,6 +7,7 @@ import { FavoritePlace, FavoriteStop } from '@types'
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
 import { isFavoritePlace } from '@utils/utils'
+import i18n from 'i18n-js'
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
@@ -44,7 +45,13 @@ const FavoriteTile = ({
         <View style={styles.placeTexts}>
           {name ? (
             <>
-              <Text style={styles.placeName}>{name}</Text>
+              <Text style={styles.placeName}>
+                {id === 'home'
+                  ? i18n.t('screens.SearchFromToScreen.FavoriteModal.home')
+                  : id === 'work'
+                  ? i18n.t('screens.SearchFromToScreen.FavoriteModal.work')
+                  : name}
+              </Text>
               <Text style={styles.placeAddressMinor}>
                 {favoriteItem.place?.data?.structured_formatting.main_text ??
                   '??'}

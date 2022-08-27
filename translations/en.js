@@ -21,6 +21,7 @@ export default {
     tomorrow: ' Tomorrow',
     set: 'Set',
     now: 'now',
+    save: 'Save',
     stops: {
       zero: '{{count}} stops',
       one: '{{count}} stop',
@@ -131,6 +132,13 @@ export default {
       history: 'History',
       choosePlaceFromMap: 'Choose from map',
       currentPosition: 'Current position',
+      FavoriteModal: {
+        addressPlaceholder: 'Address',
+        stopPlaceholder: 'Stop',
+        namePlaceholder: 'Name',
+        home: 'Home',
+        work: 'Work',
+      },
     },
     SMSScreen: {
       screenTitle: 'SMS tickets',

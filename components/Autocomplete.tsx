@@ -28,7 +28,7 @@ interface AutocompleteProps {
 }
 
 // for some reason, there is wrong typing on GooglePlaceData, so this is the fix :)
-interface FixedGooglePlaceData extends GooglePlaceData {
+export interface FixedGooglePlaceData extends GooglePlaceData {
   types: string[]
 }
 
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const autoCompleteStyles = {
+export const autoCompleteStyles = {
   container: {
     zIndex: 1,
   },

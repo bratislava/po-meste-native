@@ -29,7 +29,7 @@ import {
 
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 
-import { useMhdStopsData, useZseChargersData } from '@hooks'
+import { useZseChargersData } from '@hooks'
 import {
   BikeProvider,
   IconType,
@@ -115,14 +115,14 @@ const markerIcons: { [index: string]: markerIcon } = {
 
 export default function MapScreen() {
   const netInfo = useNetInfo()
+  const vehiclesContext = useContext(GlobalStateContext)
   // TODO handle loading / error
   const {
     data: dataMhd,
     isLoading: isLoadingMhd,
     errors: errorsMhd,
     refetch: refetchMhd,
-  } = useMhdStopsData()
-
+  } = vehiclesContext.mhdStopsData
   const {
     data: dataTier,
     isLoading: isLoadingTier,
@@ -164,8 +164,6 @@ export default function MapScreen() {
   const [isBoltErrorOpen, setIsBoltErrorOpen] = useState(false)
 
   const mapRef = useRef<MapView>(null)
-
-  const vehiclesContext = useContext(GlobalStateContext)
 
   const [selectedMicromobilityStation, setSelectedBikeStation] = useState<
     StationMicromobilityProps | FreeBikeStatusProps | undefined

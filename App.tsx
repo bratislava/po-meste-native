@@ -72,16 +72,16 @@ export default function App() {
     return null
   } else {
     return (
-      <GlobalStateProvider>
-        <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <GlobalStateProvider>
           <SafeAreaProvider>
             <PortalProvider>
               <Navigation colorScheme={colorScheme} />
               <StatusBar />
             </PortalProvider>
           </SafeAreaProvider>
-        </QueryClientProvider>
-      </GlobalStateProvider>
+        </GlobalStateProvider>
+      </QueryClientProvider>
     )
   }
 }

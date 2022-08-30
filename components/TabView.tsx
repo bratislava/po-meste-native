@@ -10,6 +10,8 @@ import {
   TabViewProps as ReactTabViewProps,
 } from 'react-native-tab-view'
 
+export const TAB_BAR_LARGE_HEIGHT = 56
+
 const renderTabBar = (
   props: SceneRendererProps & { navigationState: NavigationState<Route> },
   variant: 'small' | 'large'
@@ -102,7 +104,7 @@ const styles = StyleSheet.create({
     height: 34,
   },
   tabBarTabLarge: {
-    height: 56,
+    height: TAB_BAR_LARGE_HEIGHT,
   },
   tabBarTabLabel: {
     backgroundColor: 'transparent',

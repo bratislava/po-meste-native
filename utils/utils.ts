@@ -5,6 +5,7 @@ import {
   TransitVehicleType,
   TravelModes,
   TravelModesOtpApi,
+  ZoomLevel,
 } from '@types'
 import i18n from 'i18n-js'
 import _ from 'lodash'
@@ -27,6 +28,7 @@ import ScooterSvg from '@icons/vehicles/scooter.svg'
 import TramSvg from '@icons/vehicles/tram.svg'
 import TrolleybusSvg from '@icons/vehicles/trolleybus.svg'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Region } from 'react-native-maps'
 
 export const presentPrice = (price: number /* in cents */) => {
   return i18n.t('common.presentPrice', { price: (price / 100).toFixed(2) })
@@ -276,3 +278,21 @@ export const getHeaderBgColor = (
 
 export const isFavoritePlace = (obj: any): obj is FavoritePlace =>
   obj ? !!obj.id : false
+
+const MIN_DELTA_FOR_XS_MARKER = 0.05
+const MIN_DELTA_FOR_SM_MARKER = 0.03
+const MIN_DELTA_FOR_MD_MARKER = 0.01
+
+export const getZoomLevel = (region: Region | null) => {
+  const latDelta = region?.latitudeDelta
+  if (latDelta) {
+    return latDelta >= MIN_DELTA_FOR_XS_MARKER
+      ? ZoomLevel.xs
+      : latDelta >= MIN_DELTA_FOR_SM_MARKER
+      ? ZoomLevel.sm
+      : latDelta >= MIN_DELTA_FOR_MD_MARKER
+      ? ZoomLevel.md
+      : ZoomLevel.lg
+  }
+  return ZoomLevel.xs
+}

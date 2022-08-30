@@ -12,6 +12,8 @@ export interface HeaderProps extends StackHeaderProps {
   borderShown?: boolean
 }
 
+export const NAVIGATION_HEADER_HEIGHT = 56
+
 export const Header = ({
   options,
   route,
@@ -27,7 +29,7 @@ export const Header = ({
         styles.container,
         {
           paddingTop: insets.top,
-          height: insets.top + 56,
+          height: insets.top + NAVIGATION_HEADER_HEIGHT,
           borderBottomWidth: borderShown ? 5 : 0,
         },
       ]}

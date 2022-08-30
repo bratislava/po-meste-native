@@ -35,10 +35,12 @@ import {
   IconType,
   MicromobilityProvider,
   VehicleType,
+  ZoomLevel,
 } from '@types'
 import {
   ChargerStationProps,
   FreeBikeStatusProps,
+  getZoomLevel,
   LocalitiesProps,
   MhdStopProps,
   s,
@@ -57,10 +59,6 @@ import { customMapStyle } from '../customMapStyle'
 import CurrentLocationButton from '@components/CurrentLocationButton'
 import useBoltData from '@hooks/useBoltData'
 import { colors } from '@utils'
-
-const MIN_DELTA_FOR_XS_MARKER = 0.05
-const MIN_DELTA_FOR_SM_MARKER = 0.03
-const MIN_DELTA_FOR_MD_MARKER = 0.01
 
 const VEHICLE_BAR_SHEET_HEIGHT_COLLAPSED = BOTTOM_TAB_NAVIGATOR_HEIGHT + 70
 const VEHICLE_BAR_SHEET_HEIGHT_EXPANDED = BOTTOM_TAB_NAVIGATOR_HEIGHT + 195 // + 195 for 2 rows
@@ -234,28 +232,7 @@ export default function MapScreen() {
     operateBottomSheet({})
   }
 
-  enum ZoomLevel {
-    xs,
-    sm,
-    md,
-    lg,
-  }
-
-  const getZoomLevel = () => {
-    const latDelta = region?.latitudeDelta
-    if (latDelta) {
-      return latDelta >= MIN_DELTA_FOR_XS_MARKER
-        ? ZoomLevel.xs
-        : latDelta >= MIN_DELTA_FOR_SM_MARKER
-        ? ZoomLevel.sm
-        : latDelta >= MIN_DELTA_FOR_MD_MARKER
-        ? ZoomLevel.md
-        : ZoomLevel.lg
-    }
-    return ZoomLevel.xs
-  }
-
-  const zoomLevel = getZoomLevel()
+  const zoomLevel = getZoomLevel(region)
 
   const operateBottomSheet = ({
     charger,
@@ -279,7 +256,7 @@ export default function MapScreen() {
   const getIcon = useCallback(
     (name: IconType) => {
       const icons = markerIcons[name]
-      switch (getZoomLevel()) {
+      switch (getZoomLevel(region)) {
         case ZoomLevel.xs:
           return icons.xs
         case ZoomLevel.sm:
@@ -489,8 +466,8 @@ export default function MapScreen() {
                 icon={getIcon(IconType.mhd)}
               >
                 {stop.platform && zoomLevel === ZoomLevel.lg && (
-                  <View style={styles.markerLabelContainer}>
-                    <Text style={styles.markerLabel}>{stop.platform}</Text>
+                  <View style={markerLabelStyles.container}>
+                    <Text style={markerLabelStyles.label}>{stop.platform}</Text>
                   </View>
                 )}
               </Marker>
@@ -737,7 +714,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 15,
   },
-  markerLabelContainer: {
+})
+
+export const markerLabelStyles = StyleSheet.create({
+  container: {
     marginLeft: 5.5,
     marginTop: 18,
     backgroundColor: 'white',
@@ -747,7 +727,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 3,
     paddingTop: 1,
   },
-  markerLabel: {
+  label: {
     fontWeight: '700',
     fontSize: 8,
     lineHeight: 8,

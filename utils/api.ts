@@ -19,9 +19,7 @@ import {
 
 const host = 'planner.bratislava.sk'
 const dataHostUrl = 'https://live.planner.dev.bratislava.sk'
-const mhdDataHostUrl =
-  'https://live.planner.dev.bratislava.sk' ??
-  'https://live.planner.bratislava.sk'
+const mhdDataHostUrl = 'https://live.planner.bratislava.sk'
 const otpPlannerUrl = `https://api.planner.bratislava.sk/otp/routers/default/plan` // TODO use otp.planner.bratislava.sk
 
 // we should throw throwables only, so it's useful to extend Error class to contain useful info

@@ -111,7 +111,7 @@ const SearchMhd = () => {
   }, [setStopPlatforms, chosenStop, globalContext.mhdStopsData.data?.stops])
 
   useEffect(() => {
-    if (!stopPlatforms || stopPlatforms.length === 0 || !!chosenPlatform) return
+    if (!stopPlatforms || stopPlatforms.length === 0) return
     let [lonSum, latSum] = [0, 0]
     stopPlatforms.forEach((stop) => {
       lonSum += Number.parseFloat(stop.gpsLon)
@@ -125,11 +125,11 @@ const SearchMhd = () => {
       zoom: 16,
       altitude: 100,
     })
-  }, [stopPlatforms, chosenPlatform])
+  }, [stopPlatforms])
 
   useEffect(() => {
     console.log('ChosenPlatform useEffect')
-    if (region && chosenPlatform)
+    if (region && chosenPlatform) {
       mapRef.current?.animateCamera({
         center: {
           latitude: region?.latitude - region?.latitudeDelta,
@@ -138,6 +138,7 @@ const SearchMhd = () => {
         zoom: 16,
         altitude: 100,
       })
+    }
   }, [chosenPlatform])
 
   const renderPlatforms = useCallback(() => {
@@ -154,6 +155,20 @@ const SearchMhd = () => {
 
   const handleBottomSheetClose = () => {
     setChosenPlatform(undefined)
+    if (!stopPlatforms || stopPlatforms.length === 0) return
+    let [lonSum, latSum] = [0, 0]
+    stopPlatforms.forEach((stop) => {
+      lonSum += Number.parseFloat(stop.gpsLon)
+      latSum += Number.parseFloat(stop.gpsLat)
+    })
+    mapRef.current?.setCamera({
+      center: {
+        latitude: latSum / stopPlatforms.length,
+        longitude: lonSum / stopPlatforms.length,
+      },
+      zoom: 16,
+      altitude: 100,
+    })
   }
 
   return (

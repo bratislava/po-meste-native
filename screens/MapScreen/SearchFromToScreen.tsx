@@ -21,7 +21,7 @@ import { colors, FAVORITE_DATA_INDEX, isFavoritePlace, s, STYLES } from '@utils'
 
 import Autocomplete from '@components/Autocomplete'
 import FavoriteModal, { FavoriteModalProps } from '@components/FavoriteModal'
-import FavoriteTile from '@components/FavoriteTile'
+import FavoriteTile, { AddStopFavoriteTile } from '@components/FavoriteTile'
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components/navigation/TabBar'
 import HistorySvg from '@icons/history-search.svg'
 import PlaceSvg from '@icons/map-pin-marker.svg'
@@ -262,20 +262,27 @@ export default function SearchFromToScreen({
             horizontal
             showsHorizontalScrollIndicator={false}
           >
-            {favoriteData.favoriteStops.map((favoriteItem, index) => (
-              <FavoriteTile
-                key={index}
-                favoriteItem={favoriteItem}
-                onPress={() => handleFavoritePress(favoriteItem)}
-                onMorePress={() =>
-                  setModal({
-                    type: 'stop',
-                    favorite: favoriteItem,
-                    onDelete: deleteFavorite,
-                  })
-                }
+            {favoriteData.favoriteStops.length > 0 ? (
+              favoriteData.favoriteStops.map((favoriteItem, index) => (
+                <FavoriteTile
+                  key={index}
+                  favoriteItem={favoriteItem}
+                  onPress={() => handleFavoritePress(favoriteItem)}
+                  onMorePress={() =>
+                    setModal({
+                      type: 'stop',
+                      favorite: favoriteItem,
+                      onDelete: deleteFavorite,
+                    })
+                  }
+                />
+              ))
+            ) : (
+              <AddStopFavoriteTile
+                title={i18n.t('screens.SearchFromToScreen.addStop')}
+                onPress={() => setModal({ type: 'stop', onConfirm: addStop })}
               />
-            ))}
+            )}
           </ScrollView>
           {renderAddButton(() =>
             setModal({ type: 'stop', onConfirm: addStop })

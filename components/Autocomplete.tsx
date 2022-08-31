@@ -83,7 +83,7 @@ const Autocomplete = ({
               width={16}
               height={16}
             />
-            <Text>{correctedResult.structured_formatting.main_text}</Text>
+            <Text>{`${correctedResult.description}`}</Text>
           </View>
         )
       }}

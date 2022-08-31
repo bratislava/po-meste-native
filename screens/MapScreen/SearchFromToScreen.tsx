@@ -10,7 +10,6 @@ import React, {
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import {
-  GooglePlaceData,
   GooglePlaceDetail,
   GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete'
@@ -29,13 +28,21 @@ import PlaceSvg from '@icons/map-pin-marker.svg'
 import PlusButtonSvg from '@icons/plus.svg'
 import StopSignSvg from '@icons/stop-sign.svg'
 import XSvg from '@icons/x.svg'
-import { FavoriteData, FavoriteItem, FavoriteStop, GooglePlace } from '@types'
+import {
+  FavoriteData,
+  FavoriteItem,
+  FavoriteStop,
+  GooglePlace,
+  GooglePlaceDataCorrected,
+} from '@types'
+import produce from 'immer'
+import { cloneDeep } from 'lodash'
 
 interface SearchFromToScreen {
   sheetRef: MutableRefObject<BottomSheet | null>
   getMyLocation?: (reask?: boolean) => void
   onGooglePlaceChosen: (
-    _data: GooglePlaceData,
+    _data: GooglePlaceDataCorrected,
     detail: GooglePlaceDetail | null
   ) => void
   googleInputRef: React.MutableRefObject<GooglePlacesAutocompleteRef | null>
@@ -86,23 +93,22 @@ export default function SearchFromToScreen({
       onGooglePlaceChosen(favoriteItem.place.data, favoriteItem.place.detail)
   }
 
-  const addOrUpdatePlace = (place?: FavoriteItem) => {
-    if (!place || !isFavoritePlace(place)) return
-    let matchingPlace = favoriteData.favoritePlaces.find(
-      (value) => value.id === place.id
-    )
-    if (!matchingPlace) {
-      //2 huge attributes which we do not need to store
-      delete (place.place?.detail as any).photos
-      delete (place.place?.detail as any).reviews
-      favoriteData.favoritePlaces.push(place)
-    } else {
-      matchingPlace = { ...matchingPlace, ...place }
-    }
-    setFavoriteData((oldData) => ({
-      ...oldData,
-      favoritePlaces: favoriteData.favoritePlaces,
-    }))
+  const addOrUpdatePlace = (favoritePlace?: FavoriteItem) => {
+    if (!favoritePlace || !isFavoritePlace(favoritePlace)) return
+    const newFavoriteData = produce(favoriteData, (draftFavoriteData) => {
+      let matchingPlace = draftFavoriteData.favoritePlaces.find(
+        (value) => value.id === favoritePlace.id
+      )
+      if (!matchingPlace) {
+        //2 huge attributes which we do not need to store
+        delete (favoritePlace.place?.detail as any).photos
+        delete (favoritePlace.place?.detail as any).reviews
+        draftFavoriteData.favoritePlaces.push(favoritePlace)
+      } else {
+        matchingPlace = { ...matchingPlace, ...favoritePlace }
+      }
+    })
+    setFavoriteData(newFavoriteData)
   }
 
   const addStop = (stop?: FavoriteStop) => {
@@ -114,13 +120,12 @@ export default function SearchFromToScreen({
     )
       return
     if (stop) {
-      delete (stop.place?.detail as any).photos
-      delete (stop.place?.detail as any).reviews
-      favoriteData.favoriteStops.push(stop)
-      setFavoriteData((oldData) => ({
-        ...oldData,
-        favoriteStops: favoriteData.favoriteStops,
-      }))
+      const newFavoriteData = produce(favoriteData, (draftFavoriteData) => {
+        delete (stop.place?.detail as any).photos
+        delete (stop.place?.detail as any).reviews
+        draftFavoriteData.favoriteStops.push(stop)
+      })
+      setFavoriteData(newFavoriteData)
     }
   }
 
@@ -148,11 +153,13 @@ export default function SearchFromToScreen({
   }
 
   const addToHistory = (
-    data: GooglePlaceData,
+    data: GooglePlaceDataCorrected,
     detail: GooglePlaceDetail | null
   ) => {
-    const newHistory = favoriteData.history.filter(
-      (item) => item.data.place_id !== data.place_id
+    const newHistory = cloneDeep(
+      favoriteData.history.filter(
+        (item) => item.data.place_id !== data.place_id
+      )
     )
     const historyLenght = newHistory.unshift({
       data,

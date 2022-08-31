@@ -20,7 +20,6 @@ import React, {
 import { StyleSheet, Switch, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import {
-  GooglePlaceData,
   GooglePlaceDetail,
   GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete'
@@ -42,12 +41,13 @@ import { ErrorView, Link, Modal, RadioButton } from '@components'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 import {
-  FavoriteData,
+  GooglePlaceDataCorrected,
   MicromobilityProvider,
   ScheduleType,
   TravelModes,
   TravelModesOtpApi,
   VehicleData,
+  FavoriteData,
 } from '@types'
 import defaultFavoriteData from '../../defaultFavoriteData.json'
 
@@ -591,7 +591,10 @@ export default function Planner(props: PlannerProps) {
   }
 
   const onGooglePlaceFromChosen = useCallback(
-    (data: GooglePlaceData, details: GooglePlaceDetail | null = null) => {
+    (
+      data: GooglePlaceDataCorrected,
+      details: GooglePlaceDetail | null = null
+    ) => {
       setFromName(data.description)
       onGooglePlaceChosen(details, setFromCoordinates)
       fromBottomSheetRef?.current?.close()
@@ -600,7 +603,10 @@ export default function Planner(props: PlannerProps) {
   )
 
   const onGooglePlaceToChosen = useCallback(
-    (data: GooglePlaceData, details: GooglePlaceDetail | null = null) => {
+    (
+      data: GooglePlaceDataCorrected,
+      details: GooglePlaceDetail | null = null
+    ) => {
       setToName(data.description)
       onGooglePlaceChosen(details, setToCoordinates)
       toBottomSheetRef?.current?.close()

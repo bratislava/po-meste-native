@@ -190,6 +190,9 @@ export type FavoriteStop = {
   place?: GooglePlace
 }
 
+/** - fixed `structured_formatting.secondary_text` and `structured_formatting.secondary_text_matched_substrings`
+ * to not be required and changed their type to `unknown[][]` to better reflect TypeSript conventions
+ *  - fixed `types`, they now show the whole list */
 export type GooglePlaceDataCorrected = {
   description: string
   id: string

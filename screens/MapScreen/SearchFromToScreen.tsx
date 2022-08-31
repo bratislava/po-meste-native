@@ -17,7 +17,7 @@ import {
 import LocationSvg from '@icons/current-location.svg'
 import MapSvg from '@icons/map.svg'
 
-import { colors, isFavoritePlace, s, STYLES } from '@utils'
+import { colors, FAVORITE_DATA_INDEX, isFavoritePlace, s, STYLES } from '@utils'
 
 import Autocomplete from '@components/Autocomplete'
 import FavoriteModal, { FavoriteModalProps } from '@components/FavoriteModal'
@@ -28,6 +28,7 @@ import PlaceSvg from '@icons/map-pin-marker.svg'
 import PlusButtonSvg from '@icons/plus.svg'
 import StopSignSvg from '@icons/stop-sign.svg'
 import XSvg from '@icons/x.svg'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import {
   FavoriteData,
   FavoriteItem,
@@ -80,6 +81,17 @@ export default function SearchFromToScreen({
     googleInputRef.current?.focus()
   }, [googleInputRef])
 
+  const saveFavoriteData = (data: FavoriteData) => {
+    if (favoriteData) {
+      AsyncStorage.setItem(FAVORITE_DATA_INDEX, JSON.stringify(data))
+    }
+  }
+
+  const updateFavoriteData = (data: FavoriteData) => {
+    setFavoriteData(data)
+    saveFavoriteData(data)
+  }
+
   const renderAddButton = (onPress: () => void) => (
     <View style={styles.addButtonWrapper}>
       <TouchableOpacity style={styles.addButton} onPress={onPress}>
@@ -96,19 +108,22 @@ export default function SearchFromToScreen({
   const addOrUpdatePlace = (favoritePlace?: FavoriteItem) => {
     if (!favoritePlace || !isFavoritePlace(favoritePlace)) return
     const newFavoriteData = produce(favoriteData, (draftFavoriteData) => {
-      let matchingPlace = draftFavoriteData.favoritePlaces.find(
+      const matchingPlaceIndex = draftFavoriteData.favoritePlaces.findIndex(
         (value) => value.id === favoritePlace.id
       )
-      if (!matchingPlace) {
+      if (matchingPlaceIndex === -1) {
         //2 huge attributes which we do not need to store
         delete (favoritePlace.place?.detail as any).photos
         delete (favoritePlace.place?.detail as any).reviews
         draftFavoriteData.favoritePlaces.push(favoritePlace)
       } else {
-        matchingPlace = { ...matchingPlace, ...favoritePlace }
+        draftFavoriteData.favoritePlaces[matchingPlaceIndex] = {
+          ...draftFavoriteData.favoritePlaces[matchingPlaceIndex],
+          ...favoritePlace,
+        }
       }
     })
-    setFavoriteData(newFavoriteData)
+    updateFavoriteData(newFavoriteData)
   }
 
   const addStop = (stop?: FavoriteStop) => {
@@ -125,7 +140,7 @@ export default function SearchFromToScreen({
         delete (stop.place?.detail as any).reviews
         draftFavoriteData.favoriteStops.push(stop)
       })
-      setFavoriteData(newFavoriteData)
+      updateFavoriteData(newFavoriteData)
     }
   }
 
@@ -136,19 +151,21 @@ export default function SearchFromToScreen({
       const updatedFavoritePlaces = favoriteData.favoritePlaces.filter(
         (value) => value.id !== favorite.id
       )
-      setFavoriteData((oldData) => ({
-        ...oldData,
+      const newFavoriteData: FavoriteData = {
+        ...favoriteData,
         favoritePlaces: updatedFavoritePlaces,
-      }))
+      }
+      updateFavoriteData(newFavoriteData)
     } else {
       const updatedFavoriteStops = favoriteData.favoriteStops.filter(
         (value) =>
           value.place?.data?.place_id !== favorite.place?.data?.place_id
       )
-      setFavoriteData((oldData) => ({
-        ...oldData,
+      const newFavoriteData: FavoriteData = {
+        ...favoriteData,
         favoriteStops: updatedFavoriteStops,
-      }))
+      }
+      updateFavoriteData(newFavoriteData)
     }
   }
 
@@ -166,20 +183,22 @@ export default function SearchFromToScreen({
       detail: detail,
     })
     if (historyLenght > 15) newHistory.pop()
-    setFavoriteData((oldData) => ({
-      ...oldData,
+    const newFavoriteData: FavoriteData = {
+      ...favoriteData,
       history: newHistory,
-    }))
+    }
+    updateFavoriteData(newFavoriteData)
   }
 
   const deleteFromHistory = (place: GooglePlace) => {
     const newHistory = favoriteData.history.filter(
       (item) => item.data.place_id !== place.data.place_id
     )
-    setFavoriteData((oldData) => ({
-      ...oldData,
+    const newFavoriteData: FavoriteData = {
+      ...favoriteData,
       history: newHistory,
-    }))
+    }
+    updateFavoriteData(newFavoriteData)
   }
 
   return (

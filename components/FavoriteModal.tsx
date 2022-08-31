@@ -9,7 +9,6 @@ import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
 import { isFavoritePlace } from '@utils/utils'
 import i18n from 'i18n-js'
-import { cloneDeep } from 'lodash'
 import React, { useEffect, useRef, useState } from 'react'
 import {
   StyleSheet,
@@ -90,7 +89,7 @@ const FavoriteModal = ({
     }
     if (isPlace) {
       if (isFavoritePlace(favorite)) {
-        const updatedFavoritePlace: FavoritePlace = cloneDeep(favorite)
+        const updatedFavoritePlace: FavoritePlace = { ...favorite }
         if (googlePlace) {
           updatedFavoritePlace.place = googlePlace
         }
@@ -108,7 +107,7 @@ const FavoriteModal = ({
       }
     } else {
       if (favorite) {
-        const updatedFavoriteStop: FavoriteStop = cloneDeep(favorite)
+        const updatedFavoriteStop: FavoriteStop = { ...favorite }
         if (googlePlace) {
           updatedFavoriteStop.place = googlePlace
         }

@@ -37,7 +37,6 @@ import {
   GooglePlaceDataCorrected,
 } from '@types'
 import produce from 'immer'
-import { cloneDeep } from 'lodash'
 
 interface SearchFromToScreen {
   sheetRef: MutableRefObject<BottomSheet | null>
@@ -112,10 +111,11 @@ export default function SearchFromToScreen({
         (value) => value.id === favoritePlace.id
       )
       if (matchingPlaceIndex === -1) {
+        const newFavoritePlace = { ...favoritePlace }
         //2 huge attributes which we do not need to store
-        delete (favoritePlace.place?.detail as any).photos
-        delete (favoritePlace.place?.detail as any).reviews
-        draftFavoriteData.favoritePlaces.push(favoritePlace)
+        delete (newFavoritePlace.place?.detail as any).photos
+        delete (newFavoritePlace.place?.detail as any).reviews
+        draftFavoriteData.favoritePlaces.push(newFavoritePlace)
       } else {
         draftFavoriteData.favoritePlaces[matchingPlaceIndex] = {
           ...draftFavoriteData.favoritePlaces[matchingPlaceIndex],
@@ -135,12 +135,14 @@ export default function SearchFromToScreen({
     )
       return
     if (stop) {
-      const newFavoriteData = produce(favoriteData, (draftFavoriteData) => {
-        delete (stop.place?.detail as any).photos
-        delete (stop.place?.detail as any).reviews
-        draftFavoriteData.favoriteStops.push(stop)
+      const newStop = produce(stop, (draft) => {
+        delete (draft.place?.detail as any).photos
+        delete (draft.place?.detail as any).reviews
       })
-      updateFavoriteData(newFavoriteData)
+      setFavoriteData({
+        ...favoriteData,
+        favoriteStops: favoriteData.favoriteStops.concat(newStop),
+      })
     }
   }
 
@@ -173,14 +175,12 @@ export default function SearchFromToScreen({
     data: GooglePlaceDataCorrected,
     detail: GooglePlaceDetail | null
   ) => {
-    const newHistory = cloneDeep(
-      favoriteData.history.filter(
-        (item) => item.data.place_id !== data.place_id
-      )
+    const newHistory = favoriteData.history.filter(
+      (item) => item.data.place_id !== data.place_id
     )
     const historyLenght = newHistory.unshift({
       data,
-      detail: detail,
+      detail: { ...detail, photos: undefined, reviews: undefined } as any,
     })
     if (historyLenght > 15) newHistory.pop()
     const newFavoriteData: FavoriteData = {

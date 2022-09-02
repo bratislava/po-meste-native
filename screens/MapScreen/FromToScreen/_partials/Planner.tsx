@@ -20,7 +20,6 @@ import React, {
 import { StyleSheet, Switch, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import {
-  GooglePlaceData,
   GooglePlaceDetail,
   GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete'
@@ -30,6 +29,7 @@ import {
   aggregateBicycleLegs,
   colors,
   favoriteDataSchema,
+  FAVORITE_DATA_INDEX,
   getProviderName,
   getTripPlanner,
   IteneraryProps,
@@ -43,6 +43,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 import {
   FavoriteData,
+  GooglePlaceDataCorrected,
   MicromobilityProvider,
   ScheduleType,
   TravelModes,
@@ -176,8 +177,13 @@ export default function Planner(props: PlannerProps) {
   const [favoriteData, setFavoriteData] = useState<FavoriteData>(
     defaultFavoriteData as any
   )
+  const saveFavoriteData = (data: FavoriteData) => {
+    if (favoriteData) {
+      AsyncStorage.setItem(FAVORITE_DATA_INDEX, JSON.stringify(data))
+    }
+  }
   const loadFavoriteData = async (onLoad: (data: FavoriteData) => void) => {
-    const favoriteDataString = await AsyncStorage.getItem('favoriteData')
+    const favoriteDataString = await AsyncStorage.getItem(FAVORITE_DATA_INDEX)
     if (!favoriteDataString) return
     try {
       const validatedFavoriteData = favoriteDataSchema.validateSync(
@@ -186,18 +192,13 @@ export default function Planner(props: PlannerProps) {
       onLoad(validatedFavoriteData)
     } catch (e: any) {
       console.log(e.message)
+      // overwrites favoriteData with the default data
+      saveFavoriteData(favoriteData)
     }
   }
-  const saveFavoriteData = (data: FavoriteData) => {
-    if (favoriteData) {
-      AsyncStorage.setItem('favoriteData', JSON.stringify(data))
-    }
-  }
-
   useEffect(() => {
     loadFavoriteData(setFavoriteData)
   }, [])
-  useEffect(() => saveFavoriteData(favoriteData), [favoriteData])
   //#endregion "Favorites"
 
   const [locationPermisionError, setLocationPermisionError] =
@@ -590,7 +591,10 @@ export default function Planner(props: PlannerProps) {
   }
 
   const onGooglePlaceFromChosen = useCallback(
-    (data: GooglePlaceData, details: GooglePlaceDetail | null = null) => {
+    (
+      data: GooglePlaceDataCorrected,
+      details: GooglePlaceDetail | null = null
+    ) => {
       setFromName(data.description)
       onGooglePlaceChosen(details, setFromCoordinates)
       fromBottomSheetRef?.current?.close()
@@ -599,7 +603,10 @@ export default function Planner(props: PlannerProps) {
   )
 
   const onGooglePlaceToChosen = useCallback(
-    (data: GooglePlaceData, details: GooglePlaceDetail | null = null) => {
+    (
+      data: GooglePlaceDataCorrected,
+      details: GooglePlaceDetail | null = null
+    ) => {
       setToName(data.description)
       onGooglePlaceChosen(details, setToCoordinates)
       toBottomSheetRef?.current?.close()

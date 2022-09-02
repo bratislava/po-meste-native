@@ -4,7 +4,7 @@ import HomeSvg from '@icons/home.svg'
 import StopSignSvg from '@icons/stop-sign.svg'
 import TrashcanSvg from '@icons/trashcan.svg'
 import WorkSvg from '@icons/work.svg'
-import { FavoritePlace, FavoriteStop } from '@types'
+import { FavoritePlace, FavoriteStop, GooglePlaceDataCorrected } from '@types'
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
 import { isFavoritePlace } from '@utils/utils'
@@ -18,7 +18,6 @@ import {
   View,
 } from 'react-native'
 import {
-  GooglePlaceData,
   GooglePlaceDetail,
   GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete'
@@ -45,7 +44,8 @@ const FavoriteModal = ({
   const nameInputRef = useRef<TextInput>(null)
   const googleInputRef = useRef<GooglePlacesAutocompleteRef>(null)
   const [googlePlace, setGooglePlace] = useState<
-    { data: GooglePlaceData; detail: GooglePlaceDetail | null } | undefined
+    | { data: GooglePlaceDataCorrected; detail: GooglePlaceDetail | null }
+    | undefined
   >(undefined)
   const [favoriteName, setFavoriteName] = useState('')
   const [isEditingName, setIsEditingName] = useState(
@@ -54,12 +54,12 @@ const FavoriteModal = ({
   const [isEditingAddress, setIsEditingAddress] = useState(false)
 
   const isPlace = isFavoritePlace(favorite) || type === 'place'
-  const icon = isFavoritePlace(favorite) ? favorite.icon : undefined
+  const iconData = isFavoritePlace(favorite) ? favorite.icon : undefined
   const Icon = isPlace
-    ? icon
-      ? icon === 'home'
+    ? iconData
+      ? iconData === 'home'
         ? HomeSvg
-        : icon === 'work'
+        : iconData === 'work'
         ? WorkSvg
         : HeartSvg
       : HeartSvg
@@ -89,28 +89,32 @@ const FavoriteModal = ({
     }
     if (isPlace) {
       if (isFavoritePlace(favorite)) {
+        const updatedFavoritePlace: FavoritePlace = { ...favorite }
         if (googlePlace) {
-          favorite.place = googlePlace
+          updatedFavoritePlace.place = googlePlace
         }
-        favorite.isHardSetName ? false : (favorite.name = favoriteName)
-        onConfirm(favorite)
+        if (!updatedFavoritePlace.isHardSetName) {
+          updatedFavoritePlace.name = favoriteName
+        }
+        onConfirm(updatedFavoritePlace)
       } else {
-        const newFavoritPlace: FavoritePlace = {
+        const newFavoritePlace: FavoritePlace = {
           id: uuid.v4().toString(),
           name: favoriteName,
           place: googlePlace,
         }
-        onConfirm(newFavoritPlace)
+        onConfirm(newFavoritePlace)
       }
     } else {
       if (favorite) {
+        const updatedFavoriteStop: FavoriteStop = { ...favorite }
         if (googlePlace) {
-          favorite.place = googlePlace
+          updatedFavoriteStop.place = googlePlace
         }
-        onConfirm(favorite)
+        onConfirm(updatedFavoriteStop)
       } else {
-        const newFavoritStop: FavoriteStop = { place: googlePlace }
-        onConfirm(newFavoritStop)
+        const newFavoriteStop: FavoriteStop = { place: googlePlace }
+        onConfirm(newFavoriteStop)
       }
     }
     onClose()

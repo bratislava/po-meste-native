@@ -56,3 +56,5 @@ export const tramNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 export const API_ERROR_TEXT = 'ApiErrorText'
 
 export const LATEST_DATASET_INDEX = 'latestDataset'
+
+export const FAVORITE_DATA_INDEX = 'favoriteData'

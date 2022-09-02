@@ -132,6 +132,7 @@ export default {
       history: 'History',
       choosePlaceFromMap: 'Choose from map',
       currentPosition: 'Current position',
+      addStop: 'Add stop',
       FavoriteModal: {
         addressPlaceholder: 'Address',
         stopPlaceholder: 'Stop',

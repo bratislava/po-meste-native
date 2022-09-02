@@ -17,6 +17,30 @@ interface FavoriteTileProps {
   onMorePress: () => void
 }
 
+interface AddStopFavoriteTileProps {
+  title: string
+  onPress: () => void
+}
+
+export const AddStopFavoriteTile = ({
+  title,
+  onPress,
+}: AddStopFavoriteTileProps) => {
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <View style={styles.horizontalScrollItem}>
+        <StopSignSvg width={20} height={20} fill={colors.tertiary} />
+        <View style={styles.placeTexts}>
+          <Text style={[styles.placeName, { fontWeight: 'normal' }]}>
+            {title}
+          </Text>
+        </View>
+        <View style={styles.moreContainer}></View>
+      </View>
+    </TouchableOpacity>
+  )
+}
+
 const FavoriteTile = ({
   favoriteItem,
   onPress,

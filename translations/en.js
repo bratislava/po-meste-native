@@ -71,7 +71,7 @@ export default {
         bikes: 'Bikes',
         scooters: 'Scooters',
         chargers: 'Chargers',
-        escooters: 'Scooters',
+        motorScooters: 'Scooters',
         cars: 'Cars',
       },
     },

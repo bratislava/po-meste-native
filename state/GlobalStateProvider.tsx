@@ -19,10 +19,16 @@ import { PreferredLanguage, VehicleType } from '@types'
 import { useLocationWithPermision } from '@hooks/miscHooks'
 import BicyclesChosen from '@icons/map-filters/bicycles-filter-chosen.svg'
 import BicyclesUnchosen from '@icons/map-filters/bicycles-filter-unchosen.svg'
+import CarsChosen from '@icons/map-filters/cars-filter-chosen.svg'
+import CarsSoon from '@icons/map-filters/cars-filter-soon.svg'
+import CarsUnchosen from '@icons/map-filters/cars-filter-unchosen.svg'
 import ChargersChosen from '@icons/map-filters/chargers-filter-chosen.svg'
 import ChargersUnchosen from '@icons/map-filters/chargers-filter-unchosen.svg'
 import MhdChosenSvg from '@icons/map-filters/mhd-filter-chosen.svg'
-import MhdUnchosenSvg from '@icons/map-filters/mhd-filter-unchosen.svg' // TODO add proper icon
+import MhdUnchosenSvg from '@icons/map-filters/mhd-filter-unchosen.svg'
+import MotorScooterChosen from '@icons/map-filters/motor-scooters-filter-chosen.svg'
+import MotorScooterSoon from '@icons/map-filters/motor-scooters-filter-soon.svg'
+import MotorScooterUnchosen from '@icons/map-filters/motor-scooters-filter-unchosen.svg'
 import ScooterChosen from '@icons/map-filters/scooters-filter-chosen.svg'
 import ScooterUnchosen from '@icons/map-filters/scooters-filter-unchosen.svg'
 import { LocationObject } from 'expo-location'
@@ -51,6 +57,7 @@ export interface VehicleProps {
   id: string
   show: boolean
   icon: (show: boolean) => React.FC<SvgProps>
+  soonIcon?: React.FC<SvgProps>
 }
 
 export const GlobalStateContext = createContext({} as ContextProps)
@@ -100,6 +107,18 @@ export default function GlobalStateProvider({ children }: Props) {
       id: VehicleType.chargers,
       show: true,
       icon: (show) => (show ? ChargersChosen : ChargersUnchosen),
+    },
+    {
+      id: VehicleType.motorScooters,
+      show: true,
+      icon: (show) => (show ? MotorScooterChosen : MotorScooterUnchosen),
+      soonIcon: MotorScooterSoon,
+    },
+    {
+      id: VehicleType.cars,
+      show: true,
+      icon: (show) => (show ? CarsChosen : CarsUnchosen),
+      soonIcon: CarsSoon,
     },
   ])
 

@@ -10,7 +10,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { ImageURISource, Platform, StyleSheet, Text, View } from 'react-native'
+import { ImageURISource, StyleSheet, Text, View } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
 
 import {
@@ -62,8 +62,8 @@ const MIN_DELTA_FOR_XS_MARKER = 0.05
 const MIN_DELTA_FOR_SM_MARKER = 0.03
 const MIN_DELTA_FOR_MD_MARKER = 0.01
 
-const VEHICLE_BAR_SHEET_HEIGHT_COLLAPSED = BOTTOM_TAB_NAVIGATOR_HEIGHT + 35
-const VEHICLE_BAR_SHEET_HEIGHT_EXPANDED = BOTTOM_TAB_NAVIGATOR_HEIGHT + 120 // + 195 for 2 rows
+const VEHICLE_BAR_SHEET_HEIGHT_COLLAPSED = BOTTOM_TAB_NAVIGATOR_HEIGHT + 70
+const VEHICLE_BAR_SHEET_HEIGHT_EXPANDED = BOTTOM_TAB_NAVIGATOR_HEIGHT + 195 // + 195 for 2 rows
 
 const SPACING = 7.5
 
@@ -589,14 +589,6 @@ export default function MapScreen() {
         (isLoadingBolt && providerStatus?.bolt === 200)) && (
         <LoadingView fullscreen iconWidth={80} iconHeight={80} />
       )}
-      {Platform.select({ ios: true, android: showCurrentLocationButton }) && (
-        <CurrentLocationButton
-          mapRef={mapRef}
-          style={{
-            bottom: VEHICLE_BAR_SHEET_HEIGHT_EXPANDED + 15,
-          }}
-        />
-      )}
       <SearchBar />
       {isMhdErrorOpen &&
         dataError(
@@ -659,9 +651,20 @@ export default function MapScreen() {
           i18n.t('components.ErrorView.dataBoltError')
         )}
 
+      {showCurrentLocationButton && (
+        <CurrentLocationButton
+          mapRef={mapRef}
+          style={{
+            bottom:
+              (vehicleSheetIndex === 0
+                ? VEHICLE_BAR_SHEET_HEIGHT_COLLAPSED
+                : VEHICLE_BAR_SHEET_HEIGHT_EXPANDED) + 15,
+          }}
+        />
+      )}
       <BottomSheet
         ref={vehicleSheetRef}
-        style={{ zIndex: 1 }}
+        style={{ zIndex: 2 }}
         handleIndicatorStyle={{ ...s.handleStyle, marginBottom: 0 }}
         index={1}
         snapPoints={[
@@ -675,13 +678,13 @@ export default function MapScreen() {
       <BottomSheet
         handleIndicatorStyle={s.handleStyle}
         ref={bottomSheetRef}
-        style={{ zIndex: 2 }}
+        style={{ zIndex: 1 }}
         index={-1}
         snapPoints={bottomSheetSnapPoints}
         enablePanDownToClose
         onClose={handleSheetClose}
-        onChange={(index) => {
-          if (index === -1) {
+        onAnimate={(fromIndex, toIndex) => {
+          if (toIndex === -1) {
             setShowCurrentLocationButton(true)
           } else {
             setShowCurrentLocationButton(false)

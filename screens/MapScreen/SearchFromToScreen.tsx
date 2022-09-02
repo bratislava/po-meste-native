@@ -114,8 +114,10 @@ export default function SearchFromToScreen({
       if (matchingPlaceIndex === -1) {
         //2 huge attributes which we do not need to store
         const newFavoritePlace = produce(favoritePlace, (draft) => {
-          delete (draft.place?.detail as any).photos
-          delete (draft.place?.detail as any).reviews
+          if (draft.place?.detail) {
+            delete (draft.place.detail as any).photos
+            delete (draft.place.detail as any).reviews
+          }
         })
         draftFavoriteData.favoritePlaces.push(newFavoritePlace)
       } else {
@@ -138,8 +140,10 @@ export default function SearchFromToScreen({
       return
     if (stop) {
       const newStop = produce(stop, (draft) => {
-        delete (draft.place?.detail as any).photos
-        delete (draft.place?.detail as any).reviews
+        if (draft.place?.detail) {
+          delete (draft.place.detail as any).photos
+          delete (draft.place.detail as any).reviews
+        }
       })
       setFavoriteData({
         ...favoriteData,

@@ -56,7 +56,7 @@ const Autocomplete = ({
       enablePoweredByContainer={false}
       fetchDetails
       placeholder={inputPlaceholder}
-      // "react-native-google-places-autocomplete" version: 2.4.1, wrong typing of GooglePlacesData
+      // "react-native-google-places-autocomplete" version: 2.4.1, wrong typing of GooglePlaceData
       onPress={(data, detail) => {
         onGooglePlaceChosen(data as unknown as GooglePlaceDataCorrected, detail)
         addToHistory &&
@@ -71,7 +71,7 @@ const Autocomplete = ({
         type: placeTypeFilter,
       }}
       renderRow={(result: GooglePlaceData) => {
-        // "react-native-google-places-autocomplete" version: 2.4.1, wrong typing of GooglePlacesData
+        // "react-native-google-places-autocomplete" version: 2.4.1, wrong typing of GooglePlaceData
         const correctedResult = result as unknown as GooglePlaceDataCorrected
         const Icon =
           correctedResult.types[0] === 'transit_station'

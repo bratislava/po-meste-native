@@ -111,10 +111,11 @@ export default function SearchFromToScreen({
         (value) => value.id === favoritePlace.id
       )
       if (matchingPlaceIndex === -1) {
-        const newFavoritePlace = { ...favoritePlace }
         //2 huge attributes which we do not need to store
-        delete (newFavoritePlace.place?.detail as any).photos
-        delete (newFavoritePlace.place?.detail as any).reviews
+        const newFavoritePlace = produce(favoritePlace, (draft) => {
+          delete (draft.place?.detail as any).photos
+          delete (draft.place?.detail as any).reviews
+        })
         draftFavoriteData.favoritePlaces.push(newFavoritePlace)
       } else {
         draftFavoriteData.favoritePlaces[matchingPlaceIndex] = {

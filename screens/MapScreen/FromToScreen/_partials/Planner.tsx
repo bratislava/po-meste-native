@@ -23,7 +23,6 @@ import {
   GooglePlaceDetail,
   GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete'
-import DateTimePickerModal from 'react-native-modal-datetime-picker'
 import { useQuery } from 'react-query'
 
 import {
@@ -38,7 +37,8 @@ import {
   s,
 } from '@utils'
 
-import { ErrorView, Link, Modal, RadioButton } from '@components'
+import { ErrorView } from '@components'
+import DateTimePicker from '@components/DateTimePicker'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 import {
@@ -157,6 +157,7 @@ export default function Planner(props: PlannerProps) {
   const toRef = useRef<GooglePlacesAutocompleteRef | null>(null)
   const fromBottomSheetRef = useRef<BottomSheet>(null)
   const toBottomSheetRef = useRef<BottomSheet>(null)
+  const datetimeSheetRef = useRef<BottomSheet>(null)
 
   const [vehicles, setVehicles] = useState<VehicleData[]>(vehiclesDefault)
 
@@ -168,8 +169,6 @@ export default function Planner(props: PlannerProps) {
     ScheduleType.departure
   )
 
-  const [visibleScheduleModal, setVisibleScheduleModal] = useState(false)
-
   const [dateTime, setDateTime] = useState(LocalDateTime.now())
 
   const [accessibleOnly, setAccessibleOnly] = useState(false)
@@ -178,11 +177,6 @@ export default function Planner(props: PlannerProps) {
   const [favoriteData, setFavoriteData] = useState<FavoriteData>(
     defaultFavoriteData as any
   )
-  const saveFavoriteData = (data: FavoriteData) => {
-    if (favoriteData) {
-      AsyncStorage.setItem(FAVORITE_DATA_INDEX, JSON.stringify(data))
-    }
-  }
   const loadFavoriteData = async (onLoad: (data: FavoriteData) => void) => {
     const favoriteDataString = await AsyncStorage.getItem(FAVORITE_DATA_INDEX)
     if (!favoriteDataString) return
@@ -197,6 +191,12 @@ export default function Planner(props: PlannerProps) {
       saveFavoriteData(favoriteData)
     }
   }
+  const saveFavoriteData = (data: FavoriteData) => {
+    if (favoriteData) {
+      AsyncStorage.setItem('favoriteData', JSON.stringify(data))
+    }
+  }
+
   useEffect(() => {
     loadFavoriteData(setFavoriteData)
   }, [])
@@ -742,14 +742,8 @@ export default function Planner(props: PlannerProps) {
     )
   }
 
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false)
-
-  const showDatePicker = () => {
-    setDatePickerVisibility(true)
-  }
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false)
+  const hideSchedulePicker = () => {
+    datetimeSheetRef.current?.close()
   }
 
   const handleConfirm = (date: Date) => {
@@ -757,21 +751,15 @@ export default function Planner(props: PlannerProps) {
     const localDateTime = LocalDateTime.ofInstant(utcTimestamp)
 
     setDateTime(localDateTime)
-    hideDatePicker()
-  }
-
-  const hideSchedulePicker = () => {
-    setVisibleScheduleModal(false)
+    hideSchedulePicker()
   }
 
   const showSchedulePicker = () => {
-    setVisibleScheduleModal(true)
+    datetimeSheetRef.current?.snapToIndex(0)
   }
 
   const handleOptionChange = (scheduleTime: ScheduleType) => {
     setScheduledTime(scheduleTime)
-    setVisibleScheduleModal(false)
-    showDatePicker()
   }
 
   const isDateTimeNow =
@@ -1039,34 +1027,18 @@ export default function Planner(props: PlannerProps) {
           setFavoriteData={setFavoriteData}
         />
       </Portal>
-      <Modal visible={visibleScheduleModal} onClose={hideSchedulePicker}>
-        <RadioButton
-          options={[
-            {
-              value: ScheduleType.departure,
-              label: i18n.t('screens.FromToScreen.Planner.departureText'),
-            },
-            {
-              value: ScheduleType.arrival,
-              label: i18n.t('screens.FromToScreen.Planner.arrivalText'),
-            },
-          ]}
-          value={scheduledTime}
-          onChangeValue={handleOptionChange}
+      <BottomSheet
+        handleIndicatorStyle={s.handleStyle}
+        snapPoints={[400]}
+        index={-1}
+        enablePanDownToClose
+        ref={datetimeSheetRef}
+      >
+        <DateTimePicker
+          onConfirm={handleConfirm}
+          onScheduleTypeChange={handleOptionChange}
         />
-        <Link
-          style={styles.modalDismiss}
-          onPress={hideSchedulePicker}
-          title={i18n.t('common.cancel')}
-        />
-      </Modal>
-      <DateTimePickerModal
-        isVisible={isDatePickerVisible}
-        mode="datetime"
-        display="spinner"
-        onConfirm={handleConfirm}
-        onCancel={hideDatePicker}
-      />
+      </BottomSheet>
     </View>
   )
 }
@@ -1122,9 +1094,5 @@ const styles = StyleSheet.create({
   },
   providerContainer: {
     marginBottom: 10,
-  },
-  modalDismiss: {
-    textAlign: 'center',
-    width: '100%',
   },
 })

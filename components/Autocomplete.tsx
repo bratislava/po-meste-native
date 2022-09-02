@@ -1,6 +1,7 @@
 import MarkerSvg from '@icons/map-pin-marker.svg'
 import MhdStopSvg from '@icons/stop-sign.svg'
 import XSvg from '@icons/x.svg'
+import { GooglePlaceDataCorrected } from '@types'
 import { colors } from '@utils/theme'
 import Constants from 'expo-constants'
 import React, { useState } from 'react'
@@ -14,7 +15,7 @@ import {
 
 interface AutocompleteProps {
   onGooglePlaceChosen: (
-    _data: GooglePlaceData,
+    _data: GooglePlaceDataCorrected,
     details: GooglePlaceDetail | null
   ) => void
   googleInputRef: React.MutableRefObject<GooglePlacesAutocompleteRef | null>
@@ -22,14 +23,9 @@ interface AutocompleteProps {
   placeTypeFilter?: string
   selectOnFocus?: boolean
   addToHistory?: (
-    data: GooglePlaceData,
+    data: GooglePlaceDataCorrected,
     detail: GooglePlaceDetail | null
   ) => void
-}
-
-// for some reason, there is wrong typing on GooglePlaceData, so this is the fix :)
-export interface FixedGooglePlaceData extends GooglePlaceData {
-  types: string[]
 }
 
 const Autocomplete = ({
@@ -60,9 +56,11 @@ const Autocomplete = ({
       enablePoweredByContainer={false}
       fetchDetails
       placeholder={inputPlaceholder}
+      // "react-native-google-places-autocomplete" version: 2.4.1, wrong typing of GooglePlaceData
       onPress={(data, detail) => {
-        onGooglePlaceChosen(data, detail)
-        addToHistory && addToHistory(data, detail)
+        onGooglePlaceChosen(data as unknown as GooglePlaceDataCorrected, detail)
+        addToHistory &&
+          addToHistory(data as unknown as GooglePlaceDataCorrected, detail)
       }}
       query={{
         key: Constants.manifest?.extra?.googlePlacesApiKey,
@@ -73,9 +71,12 @@ const Autocomplete = ({
         type: placeTypeFilter,
       }}
       renderRow={(result: GooglePlaceData) => {
-        const fixedResult = result as FixedGooglePlaceData
+        // "react-native-google-places-autocomplete" version: 2.4.1, wrong typing of GooglePlaceData
+        const correctedResult = result as unknown as GooglePlaceDataCorrected
         const Icon =
-          fixedResult.types[0] === 'transit_station' ? MhdStopSvg : MarkerSvg
+          correctedResult.types[0] === 'transit_station'
+            ? MhdStopSvg
+            : MarkerSvg
         return (
           <View style={styles.searchResultRow}>
             <Icon
@@ -84,7 +85,7 @@ const Autocomplete = ({
               width={16}
               height={16}
             />
-            <Text>{result.structured_formatting.main_text}</Text>
+            <Text>{`${correctedResult.description}`}</Text>
           </View>
         )
       }}

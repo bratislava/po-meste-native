@@ -17,9 +17,8 @@ export default {
     permissionLocation: 'Povolenie sprístupniť polohu bolo zamietnuté',
     cancelLocationPermission: 'Zrušiť',
     openSettings: 'Otvoriť nastavenia',
-    today: ' Dnes',
-    tomorrow: ' Zajtra',
-    set: 'Nastaviť',
+    today: ' (Dnes)',
+    tomorrow: ' (Zajtra)',
     now: 'teraz',
     save: 'Uložiť',
     stops: {
@@ -106,8 +105,6 @@ export default {
       linesAndStopsTitle: 'Linky a zastávky',
       plannerSubtitle: 'plánovanie tvojej cesty',
       linesAndStopsSubtitle: 'grafikony a trasy MHD',
-      departureAt: 'odchod o',
-      arrivalAt: 'príchod o',
       Planner: {
         fromPlaceholder: 'Odkiaľ idete?',
         toPlaceholder: 'Kamže, kam?',
@@ -134,6 +131,7 @@ export default {
       history: 'História',
       choosePlaceFromMap: 'Vybrať na mape',
       currentPosition: 'Aktuálna poloha',
+      addStop: 'Pridať zastávku',
       FavoriteModal: {
         addressPlaceholder: 'Adresa',
         stopPlaceholder: 'Zastávka',

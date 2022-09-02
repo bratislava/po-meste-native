@@ -1,5 +1,6 @@
 import {
   FavoritePlace,
+  FavoriteStop,
   LegModes,
   MicromobilityProvider,
   TransitVehicleType,
@@ -276,9 +277,6 @@ export const getHeaderBgColor = (
   else return colors.ownVehicleHeaderColor
 }
 
-export const isFavoritePlace = (obj: any): obj is FavoritePlace =>
-  obj ? !!obj.id : false
-
 const MIN_DELTA_FOR_XS_MARKER = 0.05
 const MIN_DELTA_FOR_SM_MARKER = 0.03
 const MIN_DELTA_FOR_MD_MARKER = 0.01
@@ -296,3 +294,7 @@ export const getZoomLevel = (region: Region | null) => {
   }
   return ZoomLevel.xs
 }
+
+export const isFavoritePlace = (
+  obj: FavoritePlace | FavoriteStop | null | undefined
+): obj is FavoritePlace => (obj ? 'id' in obj : false)

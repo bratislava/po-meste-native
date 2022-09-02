@@ -10,7 +10,6 @@ import React, {
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import {
-  GooglePlaceData,
   GooglePlaceDetail,
   GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete'
@@ -18,24 +17,33 @@ import {
 import LocationSvg from '@icons/current-location.svg'
 import MapSvg from '@icons/map.svg'
 
-import { colors, isFavoritePlace, s, STYLES } from '@utils'
+import { colors, FAVORITE_DATA_INDEX, isFavoritePlace, s, STYLES } from '@utils'
 
 import Autocomplete from '@components/Autocomplete'
 import FavoriteModal, { FavoriteModalProps } from '@components/FavoriteModal'
-import FavoriteTile from '@components/FavoriteTile'
+import FavoriteTile, { AddStopFavoriteTile } from '@components/FavoriteTile'
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components/navigation/TabBar'
 import HistorySvg from '@icons/history-search.svg'
 import PlaceSvg from '@icons/map-pin-marker.svg'
 import PlusButtonSvg from '@icons/plus.svg'
 import StopSignSvg from '@icons/stop-sign.svg'
 import XSvg from '@icons/x.svg'
-import { FavoriteData, FavoriteItem, FavoriteStop, GooglePlace } from '@types'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import {
+  FavoriteData,
+  FavoriteItem,
+  FavoriteStop,
+  GooglePlace,
+  GooglePlaceDataCorrected,
+} from '@types'
+import produce from 'immer'
+import { omit } from 'lodash'
 
 interface SearchFromToScreen {
   sheetRef: MutableRefObject<BottomSheet | null>
   getMyLocation?: (reask?: boolean) => void
   onGooglePlaceChosen: (
-    _data: GooglePlaceData,
+    _data: GooglePlaceDataCorrected,
     detail: GooglePlaceDetail | null
   ) => void
   googleInputRef: React.MutableRefObject<GooglePlacesAutocompleteRef | null>
@@ -73,6 +81,17 @@ export default function SearchFromToScreen({
     googleInputRef.current?.focus()
   }, [googleInputRef])
 
+  const saveFavoriteData = (data: FavoriteData) => {
+    if (favoriteData) {
+      AsyncStorage.setItem(FAVORITE_DATA_INDEX, JSON.stringify(data))
+    }
+  }
+
+  const updateFavoriteData = (data: FavoriteData) => {
+    setFavoriteData(data)
+    saveFavoriteData(data)
+  }
+
   const renderAddButton = (onPress: () => void) => (
     <View style={styles.addButtonWrapper}>
       <TouchableOpacity style={styles.addButton} onPress={onPress}>
@@ -86,23 +105,29 @@ export default function SearchFromToScreen({
       onGooglePlaceChosen(favoriteItem.place.data, favoriteItem.place.detail)
   }
 
-  const addOrUpdatePlace = (place?: FavoriteItem) => {
-    if (!place || !isFavoritePlace(place)) return
-    let matchingPlace = favoriteData.favoritePlaces.find(
-      (value) => value.id === place.id
-    )
-    if (!matchingPlace) {
-      //2 huge attributes which we do not need to store
-      delete (place.place?.detail as any).photos
-      delete (place.place?.detail as any).reviews
-      favoriteData.favoritePlaces.push(place)
-    } else {
-      matchingPlace = { ...matchingPlace, ...place }
-    }
-    setFavoriteData((oldData) => ({
-      ...oldData,
-      favoritePlaces: favoriteData.favoritePlaces,
-    }))
+  const addOrUpdatePlace = (favoritePlace?: FavoriteItem) => {
+    if (!favoritePlace || !isFavoritePlace(favoritePlace)) return
+    const newFavoriteData = produce(favoriteData, (draftFavoriteData) => {
+      const matchingPlaceIndex = draftFavoriteData.favoritePlaces.findIndex(
+        (value) => value.id === favoritePlace.id
+      )
+      if (matchingPlaceIndex === -1) {
+        //2 huge attributes which we do not need to store
+        const newFavoritePlace = produce(favoritePlace, (draft) => {
+          if (draft.place?.detail) {
+            delete (draft.place.detail as any).photos
+            delete (draft.place.detail as any).reviews
+          }
+        })
+        draftFavoriteData.favoritePlaces.push(newFavoritePlace)
+      } else {
+        draftFavoriteData.favoritePlaces[matchingPlaceIndex] = {
+          ...draftFavoriteData.favoritePlaces[matchingPlaceIndex],
+          ...favoritePlace,
+        }
+      }
+    })
+    updateFavoriteData(newFavoriteData)
   }
 
   const addStop = (stop?: FavoriteStop) => {
@@ -114,13 +139,16 @@ export default function SearchFromToScreen({
     )
       return
     if (stop) {
-      delete (stop.place?.detail as any).photos
-      delete (stop.place?.detail as any).reviews
-      favoriteData.favoriteStops.push(stop)
-      setFavoriteData((oldData) => ({
-        ...oldData,
-        favoriteStops: favoriteData.favoriteStops,
-      }))
+      const newStop = produce(stop, (draft) => {
+        if (draft.place?.detail) {
+          delete (draft.place.detail as any).photos
+          delete (draft.place.detail as any).reviews
+        }
+      })
+      setFavoriteData({
+        ...favoriteData,
+        favoriteStops: favoriteData.favoriteStops.concat(newStop),
+      })
     }
   }
 
@@ -131,24 +159,26 @@ export default function SearchFromToScreen({
       const updatedFavoritePlaces = favoriteData.favoritePlaces.filter(
         (value) => value.id !== favorite.id
       )
-      setFavoriteData((oldData) => ({
-        ...oldData,
+      const newFavoriteData: FavoriteData = {
+        ...favoriteData,
         favoritePlaces: updatedFavoritePlaces,
-      }))
+      }
+      updateFavoriteData(newFavoriteData)
     } else {
       const updatedFavoriteStops = favoriteData.favoriteStops.filter(
         (value) =>
           value.place?.data?.place_id !== favorite.place?.data?.place_id
       )
-      setFavoriteData((oldData) => ({
-        ...oldData,
+      const newFavoriteData: FavoriteData = {
+        ...favoriteData,
         favoriteStops: updatedFavoriteStops,
-      }))
+      }
+      updateFavoriteData(newFavoriteData)
     }
   }
 
   const addToHistory = (
-    data: GooglePlaceData,
+    data: GooglePlaceDataCorrected,
     detail: GooglePlaceDetail | null
   ) => {
     const newHistory = favoriteData.history.filter(
@@ -156,23 +186,25 @@ export default function SearchFromToScreen({
     )
     const historyLenght = newHistory.unshift({
       data,
-      detail: detail,
+      detail: omit(detail, ['photos', 'reviews']) as any,
     })
     if (historyLenght > 15) newHistory.pop()
-    setFavoriteData((oldData) => ({
-      ...oldData,
+    const newFavoriteData: FavoriteData = {
+      ...favoriteData,
       history: newHistory,
-    }))
+    }
+    updateFavoriteData(newFavoriteData)
   }
 
   const deleteFromHistory = (place: GooglePlace) => {
     const newHistory = favoriteData.history.filter(
       (item) => item.data.place_id !== place.data.place_id
     )
-    setFavoriteData((oldData) => ({
-      ...oldData,
+    const newFavoriteData: FavoriteData = {
+      ...favoriteData,
       history: newHistory,
-    }))
+    }
+    updateFavoriteData(newFavoriteData)
   }
 
   return (
@@ -236,20 +268,27 @@ export default function SearchFromToScreen({
             horizontal
             showsHorizontalScrollIndicator={false}
           >
-            {favoriteData.favoriteStops.map((favoriteItem, index) => (
-              <FavoriteTile
-                key={index}
-                favoriteItem={favoriteItem}
-                onPress={() => handleFavoritePress(favoriteItem)}
-                onMorePress={() =>
-                  setModal({
-                    type: 'stop',
-                    favorite: favoriteItem,
-                    onDelete: deleteFavorite,
-                  })
-                }
+            {favoriteData.favoriteStops.length > 0 ? (
+              favoriteData.favoriteStops.map((favoriteItem, index) => (
+                <FavoriteTile
+                  key={index}
+                  favoriteItem={favoriteItem}
+                  onPress={() => handleFavoritePress(favoriteItem)}
+                  onMorePress={() =>
+                    setModal({
+                      type: 'stop',
+                      favorite: favoriteItem,
+                      onDelete: deleteFavorite,
+                    })
+                  }
+                />
+              ))
+            ) : (
+              <AddStopFavoriteTile
+                title={i18n.t('screens.SearchFromToScreen.addStop')}
+                onPress={() => setModal({ type: 'stop', onConfirm: addStop })}
               />
-            ))}
+            )}
           </ScrollView>
           {renderAddButton(() =>
             setModal({ type: 'stop', onConfirm: addStop })

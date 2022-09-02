@@ -17,9 +17,8 @@ export default {
     permissionLocation: 'Permission to access location was denied',
     cancelLocationPermission: 'Cancel',
     openSettings: 'Open settings',
-    today: ' Today',
-    tomorrow: ' Tomorrow',
-    set: 'Set',
+    today: ' (Today)',
+    tomorrow: ' (Tomorrow)',
     now: 'now',
     save: 'Save',
     stops: {
@@ -104,8 +103,6 @@ export default {
       linesAndStopsTitle: 'Lines and stops',
       plannerSubtitle: 'planning your journey',
       linesAndStopsSubtitle: 'timetables and routes',
-      departureAt: 'departure at',
-      arrivalAt: 'arrival at',
       Planner: {
         fromPlaceholder: 'From...',
         toPlaceholder: 'To...',
@@ -132,6 +129,7 @@ export default {
       history: 'History',
       choosePlaceFromMap: 'Choose from map',
       currentPosition: 'Current position',
+      addStop: 'Add stop',
       FavoriteModal: {
         addressPlaceholder: 'Address',
         stopPlaceholder: 'Stop',

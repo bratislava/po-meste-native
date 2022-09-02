@@ -4,8 +4,11 @@
  */
 
 import {
-  GooglePlaceData,
   GooglePlaceDetail,
+  MatchedSubString,
+  PlaceType,
+  SearchType,
+  Term,
 } from 'react-native-google-places-autocomplete'
 import { SvgProps } from 'react-native-svg'
 import { LegProps } from './utils/validation'
@@ -187,8 +190,27 @@ export type FavoriteStop = {
   place?: GooglePlace
 }
 
+/** - fixed `structured_formatting.secondary_text` and `structured_formatting.secondary_text_matched_substrings`
+ * to not be required and changed their type to `unknown[][]` to better reflect TypeSript conventions
+ *  - fixed `types`, they now show the whole list */
+export type GooglePlaceDataCorrected = {
+  description: string
+  id: string
+  matched_substrings: MatchedSubString[]
+  place_id: string
+  reference: string
+  structured_formatting: {
+    main_text: string
+    main_text_matched_substrings: unknown[][]
+    secondary_text?: string
+    secondary_text_matched_substrings?: unknown[][]
+    terms: Term[]
+  }
+  types: (PlaceType | SearchType)[]
+}
+
 export type GooglePlace = {
-  data: GooglePlaceData
+  data: GooglePlaceDataCorrected
   detail: GooglePlaceDetail | null
 }
 
@@ -198,11 +220,4 @@ export type FavoriteData = {
   favoritePlaces: FavoritePlace[]
   favoriteStops: FavoriteStop[]
   history: GooglePlace[]
-}
-
-export enum ZoomLevel {
-  xs,
-  sm,
-  md,
-  lg,
 }

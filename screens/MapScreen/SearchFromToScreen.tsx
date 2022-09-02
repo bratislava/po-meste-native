@@ -1,52 +1,60 @@
-import BottomSheet from '@gorhom/bottom-sheet'
-import Constants from 'expo-constants'
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import i18n from 'i18n-js'
-import React, { MutableRefObject, useEffect, useState } from 'react'
+import React, {
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
 import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
-import {
-  GooglePlaceData,
   GooglePlaceDetail,
-  GooglePlacesAutocomplete,
   GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete'
 
 import LocationSvg from '@icons/current-location.svg'
 import MapSvg from '@icons/map.svg'
 
-import { colors, s, STYLES } from '@utils'
+import { colors, FAVORITE_DATA_INDEX, isFavoritePlace, s, STYLES } from '@utils'
 
-import FavoriteTile from '@components/FavoriteTile'
+import Autocomplete from '@components/Autocomplete'
+import FavoriteModal, { FavoriteModalProps } from '@components/FavoriteModal'
+import FavoriteTile, { AddStopFavoriteTile } from '@components/FavoriteTile'
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components/navigation/TabBar'
-import HeartSvg from '@icons/favorite.svg'
 import HistorySvg from '@icons/history-search.svg'
-import MarkerSvg from '@icons/map-pin-marker.svg'
-import MhdStopSvg from '@icons/stop-sign.svg'
+import PlaceSvg from '@icons/map-pin-marker.svg'
+import PlusButtonSvg from '@icons/plus.svg'
+import StopSignSvg from '@icons/stop-sign.svg'
 import XSvg from '@icons/x.svg'
-import dummyDataPlaceHistory from './dummyDataPlaceHistory.json'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import {
+  FavoriteData,
+  FavoriteItem,
+  FavoriteStop,
+  GooglePlace,
+  GooglePlaceDataCorrected,
+} from '@types'
+import produce from 'immer'
+import { omit } from 'lodash'
 
 interface SearchFromToScreen {
   sheetRef: MutableRefObject<BottomSheet | null>
   getMyLocation?: (reask?: boolean) => void
   onGooglePlaceChosen: (
-    _data: GooglePlaceData,
-    details: GooglePlaceDetail | null
+    _data: GooglePlaceDataCorrected,
+    detail: GooglePlaceDetail | null
   ) => void
   googleInputRef: React.MutableRefObject<GooglePlacesAutocompleteRef | null>
   setLocationFromMap: () => void
   inputPlaceholder: string
   initialSnapIndex: number
+  favoriteData: FavoriteData
+  setFavoriteData: Dispatch<SetStateAction<FavoriteData>>
 }
 
-// for some reason, there is wrong typing on GooglePlaceData, so this is the fix :)
-interface FixedGooglePlaceData extends GooglePlaceData {
-  types: string[]
-}
+type ModalPropsOmitOnClose<T = FavoriteModalProps> = Omit<T, 'onClose'>
 
 export default function SearchFromToScreen({
   sheetRef,
@@ -56,6 +64,8 @@ export default function SearchFromToScreen({
   setLocationFromMap,
   inputPlaceholder,
   initialSnapIndex,
+  favoriteData,
+  setFavoriteData,
 }: SearchFromToScreen) {
   useEffect(() => {
     if (getMyLocation) {
@@ -63,11 +73,139 @@ export default function SearchFromToScreen({
     }
   }, [getMyLocation])
 
+  const [modal, setModal] = useState<ModalPropsOmitOnClose | undefined>(
+    undefined
+  )
+
   useEffect(() => {
     googleInputRef.current?.focus()
   }, [googleInputRef])
-  const [googleAutocompleteSelection, setGoogleAutocompleteSelection] =
-    useState<{ start: number } | undefined>(undefined)
+
+  const saveFavoriteData = (data: FavoriteData) => {
+    if (favoriteData) {
+      AsyncStorage.setItem(FAVORITE_DATA_INDEX, JSON.stringify(data))
+    }
+  }
+
+  const updateFavoriteData = (data: FavoriteData) => {
+    setFavoriteData(data)
+    saveFavoriteData(data)
+  }
+
+  const renderAddButton = (onPress: () => void) => (
+    <View style={styles.addButtonWrapper}>
+      <TouchableOpacity style={styles.addButton} onPress={onPress}>
+        <PlusButtonSvg width={30} height={30} />
+      </TouchableOpacity>
+    </View>
+  )
+
+  const handleFavoritePress = (favoriteItem: FavoriteItem) => {
+    if (favoriteItem.place?.data && favoriteItem.place.detail)
+      onGooglePlaceChosen(favoriteItem.place.data, favoriteItem.place.detail)
+  }
+
+  const addOrUpdatePlace = (favoritePlace?: FavoriteItem) => {
+    if (!favoritePlace || !isFavoritePlace(favoritePlace)) return
+    const newFavoriteData = produce(favoriteData, (draftFavoriteData) => {
+      const matchingPlaceIndex = draftFavoriteData.favoritePlaces.findIndex(
+        (value) => value.id === favoritePlace.id
+      )
+      if (matchingPlaceIndex === -1) {
+        //2 huge attributes which we do not need to store
+        const newFavoritePlace = produce(favoritePlace, (draft) => {
+          if (draft.place?.detail) {
+            delete (draft.place.detail as any).photos
+            delete (draft.place.detail as any).reviews
+          }
+        })
+        draftFavoriteData.favoritePlaces.push(newFavoritePlace)
+      } else {
+        draftFavoriteData.favoritePlaces[matchingPlaceIndex] = {
+          ...draftFavoriteData.favoritePlaces[matchingPlaceIndex],
+          ...favoritePlace,
+        }
+      }
+    })
+    updateFavoriteData(newFavoriteData)
+  }
+
+  const addStop = (stop?: FavoriteStop) => {
+    if (
+      favoriteData.favoriteStops.find(
+        (favoriteStop) =>
+          favoriteStop.place?.data.place_id === stop?.place?.data.place_id
+      )
+    )
+      return
+    if (stop) {
+      const newStop = produce(stop, (draft) => {
+        if (draft.place?.detail) {
+          delete (draft.place.detail as any).photos
+          delete (draft.place.detail as any).reviews
+        }
+      })
+      setFavoriteData({
+        ...favoriteData,
+        favoriteStops: favoriteData.favoriteStops.concat(newStop),
+      })
+    }
+  }
+
+  const deleteFavorite = (favorite?: FavoriteItem) => {
+    if (!favorite) return
+    if (isFavoritePlace(favorite)) {
+      if (favorite.isHardSetName) return
+      const updatedFavoritePlaces = favoriteData.favoritePlaces.filter(
+        (value) => value.id !== favorite.id
+      )
+      const newFavoriteData: FavoriteData = {
+        ...favoriteData,
+        favoritePlaces: updatedFavoritePlaces,
+      }
+      updateFavoriteData(newFavoriteData)
+    } else {
+      const updatedFavoriteStops = favoriteData.favoriteStops.filter(
+        (value) =>
+          value.place?.data?.place_id !== favorite.place?.data?.place_id
+      )
+      const newFavoriteData: FavoriteData = {
+        ...favoriteData,
+        favoriteStops: updatedFavoriteStops,
+      }
+      updateFavoriteData(newFavoriteData)
+    }
+  }
+
+  const addToHistory = (
+    data: GooglePlaceDataCorrected,
+    detail: GooglePlaceDetail | null
+  ) => {
+    const newHistory = favoriteData.history.filter(
+      (item) => item.data.place_id !== data.place_id
+    )
+    const historyLenght = newHistory.unshift({
+      data,
+      detail: omit(detail, ['photos', 'reviews']) as any,
+    })
+    if (historyLenght > 15) newHistory.pop()
+    const newFavoriteData: FavoriteData = {
+      ...favoriteData,
+      history: newHistory,
+    }
+    updateFavoriteData(newFavoriteData)
+  }
+
+  const deleteFromHistory = (place: GooglePlace) => {
+    const newHistory = favoriteData.history.filter(
+      (item) => item.data.place_id !== place.data.place_id
+    )
+    const newFavoriteData: FavoriteData = {
+      ...favoriteData,
+      history: newHistory,
+    }
+    updateFavoriteData(newFavoriteData)
+  }
 
   return (
     <BottomSheet
@@ -78,60 +216,13 @@ export default function SearchFromToScreen({
       handleIndicatorStyle={s.handleStyle}
     >
       <View style={styles.content}>
-        <View style={[s.horizontalMargin, styles.googleFrom]}>
-          <GooglePlacesAutocomplete
-            renderLeftButton={() => (
-              <XSvg
-                onPress={() => googleInputRef.current?.clear()}
-                width={20}
-                height={20}
-                style={{
-                  alignSelf: 'center',
-                }}
-                fill={colors.mediumGray}
-              />
-            )}
-            ref={googleInputRef}
-            styles={autoCompleteStyles}
-            enablePoweredByContainer={false}
-            fetchDetails
-            placeholder={inputPlaceholder}
-            onPress={onGooglePlaceChosen}
-            query={{
-              key: Constants.manifest?.extra?.googlePlacesApiKey,
-              language: 'sk',
-              location: '48.160170, 17.130256',
-              radius: '20788', //20,788 km
-              strictbounds: true,
-            }}
-            renderRow={(result: GooglePlaceData) => {
-              const fixedResult = result as FixedGooglePlaceData
-              const Icon =
-                fixedResult.types[0] === 'transit_station'
-                  ? MhdStopSvg
-                  : MarkerSvg
-              return (
-                <View style={styles.searchResultRow}>
-                  <Icon
-                    style={styles.searchResultRowIcon}
-                    fill={colors.lighterGray}
-                    width={16}
-                    height={16}
-                  />
-                  <Text>{result.structured_formatting.main_text}</Text>
-                </View>
-              )
-            }}
-            textInputProps={{
-              selectTextOnFocus: true,
-              onBlur: () => {
-                setGoogleAutocompleteSelection({ start: 0 })
-                setTimeout(() => {
-                  setGoogleAutocompleteSelection(undefined)
-                }, 10)
-              },
-              selection: googleAutocompleteSelection,
-            }}
+        <View style={[s.horizontalMargin, styles.googleForm]}>
+          <Autocomplete
+            onGooglePlaceChosen={onGooglePlaceChosen}
+            inputPlaceholder={inputPlaceholder}
+            googleInputRef={googleInputRef}
+            selectOnFocus
+            addToHistory={addToHistory}
           />
         </View>
         <View style={s.horizontalMargin}>
@@ -141,16 +232,32 @@ export default function SearchFromToScreen({
           <ScrollView
             contentContainerStyle={styles.horizontalScrollView}
             horizontal
+            showsHorizontalScrollIndicator={false}
           >
-            {dummyDataPlaceHistory.map((historyItem, index) => (
+            {favoriteData.favoritePlaces.map((favoriteItem, index) => (
               <FavoriteTile
                 key={index}
-                favoriteItem={historyItem}
-                icon={(props) => <HeartSvg {...props} />}
-                onPress={() => false}
+                favoriteItem={favoriteItem}
+                onPress={() => handleFavoritePress(favoriteItem)}
+                onMorePress={() =>
+                  setModal({
+                    type: 'place',
+                    favorite: favoriteItem,
+                    onConfirm: addOrUpdatePlace,
+                    onDelete: !favoriteItem.isHardSetName
+                      ? deleteFavorite
+                      : undefined,
+                  })
+                }
               />
             ))}
           </ScrollView>
+          {renderAddButton(() =>
+            setModal({
+              type: 'place',
+              onConfirm: addOrUpdatePlace,
+            })
+          )}
         </View>
         <View style={[styles.categoryStops, s.horizontalMargin]}>
           <Text style={styles.categoriesTitle}>
@@ -159,16 +266,33 @@ export default function SearchFromToScreen({
           <ScrollView
             contentContainerStyle={styles.horizontalScrollView}
             horizontal
+            showsHorizontalScrollIndicator={false}
           >
-            {dummyDataPlaceHistory.map((historyItem, index) => (
-              <FavoriteTile
-                key={index}
-                favoriteItem={historyItem}
-                icon={(props) => <MhdStopSvg {...props} />}
-                onPress={() => false}
+            {favoriteData.favoriteStops.length > 0 ? (
+              favoriteData.favoriteStops.map((favoriteItem, index) => (
+                <FavoriteTile
+                  key={index}
+                  favoriteItem={favoriteItem}
+                  onPress={() => handleFavoritePress(favoriteItem)}
+                  onMorePress={() =>
+                    setModal({
+                      type: 'stop',
+                      favorite: favoriteItem,
+                      onDelete: deleteFavorite,
+                    })
+                  }
+                />
+              ))
+            ) : (
+              <AddStopFavoriteTile
+                title={i18n.t('screens.SearchFromToScreen.addStop')}
+                onPress={() => setModal({ type: 'stop', onConfirm: addStop })}
               />
-            ))}
+            )}
           </ScrollView>
+          {renderAddButton(() =>
+            setModal({ type: 'stop', onConfirm: addStop })
+          )}
         </View>
         <View style={[styles.categoryStops, s.horizontalMargin]}>
           <View style={styles.chooseFromMapRow}>
@@ -202,18 +326,52 @@ export default function SearchFromToScreen({
           <Text style={styles.categoriesTitle}>
             {i18n.t('screens.SearchFromToScreen.history')}
           </Text>
-          <View style={styles.verticalScrollView}>
-            {dummyDataPlaceHistory.map((historyItem, index) => (
-              <View key={index} style={styles.verticalScrollItem}>
-                <HistorySvg width={30} height={20} fill={colors.black} />
-                <View style={styles.placeTexts}>
-                  <Text style={styles.placeAddress}>{historyItem.text}</Text>
+          <BottomSheetScrollView style={styles.verticalScrollView}>
+            {favoriteData.history.map((place, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => onGooglePlaceChosen(place.data, place.detail)}
+              >
+                <View style={styles.verticalScrollItem}>
+                  <View style={styles.leftSideItemWrapper}>
+                    <HistorySvg width={30} height={20} fill={colors.black} />
+                    {(place.detail?.types[0] as any) === 'transit_station' ? (
+                      <StopSignSvg width={30} height={20} fill={colors.black} />
+                    ) : (
+                      <PlaceSvg width={30} height={20} fill={colors.black} />
+                    )}
+                    <View style={styles.placeTexts}>
+                      <Text
+                        style={[styles.placeAddress, { marginRight: 15 }]}
+                        numberOfLines={1}
+                      >
+                        {place.data?.structured_formatting.main_text}
+                      </Text>
+                    </View>
+                  </View>
+                  <View style={styles.rightSideItemWrapper}>
+                    <TouchableOpacity
+                      onPress={() => deleteFromHistory(place)}
+                      style={styles.deleteHistoryButton}
+                    >
+                      <XSvg width={16} height={16} fill={colors.black} />
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
+              </TouchableOpacity>
             ))}
-          </View>
+          </BottomSheetScrollView>
         </View>
       </View>
+      {modal && (
+        <FavoriteModal
+          type={modal.type}
+          favorite={modal.favorite}
+          onConfirm={modal.onConfirm}
+          onDelete={modal.onDelete}
+          onClose={() => setModal(undefined)}
+        />
+      )}
     </BottomSheet>
   )
 }
@@ -224,16 +382,29 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   horizontalScrollView: {
+    minHeight: 62,
+    display: 'flex',
     flexDirection: 'row',
-    borderWidth: 1,
+    alignItems: 'center',
+    paddingRight: 35,
   },
   verticalScrollView: {
-    paddingBottom: BOTTOM_TAB_NAVIGATOR_HEIGHT,
+    marginBottom: BOTTOM_TAB_NAVIGATOR_HEIGHT + 5,
   },
   verticalScrollItem: {
     flexDirection: 'row',
     alignItems: 'center',
     height: 56,
+    justifyContent: 'space-between',
+  },
+  leftSideItemWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    overflow: 'hidden',
+  },
+  rightSideItemWrapper: {
+    flex: 0,
   },
   chooseFromMapRow: {
     flexDirection: 'row',
@@ -258,7 +429,6 @@ const styles = StyleSheet.create({
   },
   placeAddress: {
     color: colors.blackLighter,
-    fontWeight: 'bold',
   },
   content: {
     backgroundColor: 'white',
@@ -268,18 +438,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     height: '100%',
   },
-  googleFrom: {
-    flexDirection: 'row',
-    marginBottom: 7,
-    zIndex: 1,
-  },
-
-  searchResultRow: {
-    flexDirection: 'row',
-  },
-  searchResultRowIcon: {
-    marginRight: 5,
-  },
   history: {
     backgroundColor: colors.lightLightGray,
     paddingHorizontal: 20,
@@ -287,24 +445,21 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     borderTopEndRadius: STYLES.borderRadius,
   },
-})
-
-const autoCompleteStyles = {
-  container: {
+  addButton: {},
+  addButtonWrapper: {
+    position: 'absolute',
+    zIndex: 2,
+    bottom: 0,
+    right: -20,
+    backgroundColor: colors.white,
+    padding: 17,
+    borderTopLeftRadius: 32,
+    borderBottomLeftRadius: 32,
+  },
+  googleForm: {
+    flexDirection: 'row',
+    marginBottom: 7,
     zIndex: 1,
   },
-  listView: {
-    height: '100%',
-  },
-  textInput: {
-    marginBottom: 0,
-    height: 50,
-  },
-  textInputContainer: {
-    borderWidth: 2,
-    borderRadius: 30,
-    borderColor: colors.mediumGray,
-    paddingHorizontal: 15,
-    letterSpacing: 0.5,
-  },
-}
+  deleteHistoryButton: { padding: 8 },
+})

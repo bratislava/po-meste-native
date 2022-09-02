@@ -20,7 +20,6 @@ import React, {
 import { StyleSheet, Switch, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import {
-  GooglePlaceData,
   GooglePlaceDetail,
   GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete'
@@ -30,6 +29,8 @@ import { useQuery } from 'react-query'
 import {
   aggregateBicycleLegs,
   colors,
+  favoriteDataSchema,
+  FAVORITE_DATA_INDEX,
   getProviderName,
   getTripPlanner,
   IteneraryProps,
@@ -38,14 +39,18 @@ import {
 } from '@utils'
 
 import { ErrorView, Link, Modal, RadioButton } from '@components'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 import {
+  FavoriteData,
+  GooglePlaceDataCorrected,
   MicromobilityProvider,
   ScheduleType,
   TravelModes,
   TravelModesOtpApi,
   VehicleData,
 } from '@types'
+import defaultFavoriteData from '../../defaultFavoriteData.json'
 
 const vehiclesDefault: VehicleData[] = [
   {
@@ -168,6 +173,34 @@ export default function Planner(props: PlannerProps) {
   const [dateTime, setDateTime] = useState(LocalDateTime.now())
 
   const [accessibleOnly, setAccessibleOnly] = useState(false)
+
+  //#region "Favorites"
+  const [favoriteData, setFavoriteData] = useState<FavoriteData>(
+    defaultFavoriteData as any
+  )
+  const saveFavoriteData = (data: FavoriteData) => {
+    if (favoriteData) {
+      AsyncStorage.setItem(FAVORITE_DATA_INDEX, JSON.stringify(data))
+    }
+  }
+  const loadFavoriteData = async (onLoad: (data: FavoriteData) => void) => {
+    const favoriteDataString = await AsyncStorage.getItem(FAVORITE_DATA_INDEX)
+    if (!favoriteDataString) return
+    try {
+      const validatedFavoriteData = favoriteDataSchema.validateSync(
+        JSON.parse(favoriteDataString)
+      ) as never as FavoriteData
+      onLoad(validatedFavoriteData)
+    } catch (e: any) {
+      console.log(e.message)
+      // overwrites favoriteData with the default data
+      saveFavoriteData(favoriteData)
+    }
+  }
+  useEffect(() => {
+    loadFavoriteData(setFavoriteData)
+  }, [])
+  //#endregion "Favorites"
 
   const [locationPermisionError, setLocationPermisionError] =
     useState<string>('')
@@ -559,7 +592,10 @@ export default function Planner(props: PlannerProps) {
   }
 
   const onGooglePlaceFromChosen = useCallback(
-    (data: GooglePlaceData, details: GooglePlaceDetail | null = null) => {
+    (
+      data: GooglePlaceDataCorrected,
+      details: GooglePlaceDetail | null = null
+    ) => {
       setFromName(data.description)
       onGooglePlaceChosen(details, setFromCoordinates)
       fromBottomSheetRef?.current?.close()
@@ -568,7 +604,10 @@ export default function Planner(props: PlannerProps) {
   )
 
   const onGooglePlaceToChosen = useCallback(
-    (data: GooglePlaceData, details: GooglePlaceDetail | null = null) => {
+    (
+      data: GooglePlaceDataCorrected,
+      details: GooglePlaceDetail | null = null
+    ) => {
       setToName(data.description)
       onGooglePlaceChosen(details, setToCoordinates)
       toBottomSheetRef?.current?.close()
@@ -984,6 +1023,8 @@ export default function Planner(props: PlannerProps) {
             'screens.FromToScreen.Planner.fromPlaceholder'
           )}
           initialSnapIndex={-1}
+          favoriteData={favoriteData}
+          setFavoriteData={setFavoriteData}
         />
         <SearchFromToScreen
           sheetRef={toBottomSheetRef}
@@ -994,6 +1035,8 @@ export default function Planner(props: PlannerProps) {
             'screens.FromToScreen.Planner.toPlaceholder'
           )}
           initialSnapIndex={0}
+          favoriteData={favoriteData}
+          setFavoriteData={setFavoriteData}
         />
       </Portal>
       <Modal visible={visibleScheduleModal} onClose={hideSchedulePicker}>

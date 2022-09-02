@@ -1,33 +1,104 @@
+import HeartSvg from '@icons/favorite.svg'
+import HomeSvg from '@icons/home.svg'
 import MoreSvg from '@icons/more.svg'
+import StopSignSvg from '@icons/stop-sign.svg'
+import WorkSvg from '@icons/work.svg'
+import { FavoritePlace, FavoriteStop } from '@types'
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
-import React, { ReactElement } from 'react'
+import { isFavoritePlace } from '@utils/utils'
+import i18n from 'i18n-js'
+import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { SvgProps } from 'react-native-svg'
 
 interface FavoriteTileProps {
-  favoriteItem: any
+  favoriteItem: FavoritePlace | FavoriteStop
   onPress: () => void
-  icon?: (props: SvgProps) => ReactElement
+  onMorePress: () => void
 }
 
-const FavoriteTile = ({ favoriteItem, onPress, icon }: FavoriteTileProps) => {
+interface AddStopFavoriteTileProps {
+  title: string
+  onPress: () => void
+}
+
+export const AddStopFavoriteTile = ({
+  title,
+  onPress,
+}: AddStopFavoriteTileProps) => {
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.horizontalScrollItem}>
-        {icon && icon({ width: 20, height: 20, fill: colors.tertiary })}
+        <StopSignSvg width={20} height={20} fill={colors.tertiary} />
         <View style={styles.placeTexts}>
-          <Text style={styles.placeName}>{favoriteItem.text}</Text>
-          <Text style={styles.placeAddressMinor}>{favoriteItem.text}</Text>
+          <Text style={[styles.placeName, { fontWeight: 'normal' }]}>
+            {title}
+          </Text>
         </View>
-        <TouchableOpacity>
-          <MoreSvg
-            width={20}
-            height={20}
-            fill={colors.tertiary}
-            style={styles.more}
-          />
-        </TouchableOpacity>
+        <View style={styles.moreContainer}></View>
+      </View>
+    </TouchableOpacity>
+  )
+}
+
+const FavoriteTile = ({
+  favoriteItem,
+  onPress,
+  onMorePress,
+}: FavoriteTileProps) => {
+  const isPlace = isFavoritePlace(favoriteItem)
+  const {
+    id = '',
+    name = undefined,
+    isHardSetName = false,
+    icon = undefined,
+  } = isPlace ? favoriteItem : {}
+  const Icon = isPlace
+    ? icon
+      ? icon === 'home'
+        ? HomeSvg
+        : icon === 'work'
+        ? WorkSvg
+        : HeartSvg
+      : HeartSvg
+    : StopSignSvg
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <View style={styles.horizontalScrollItem}>
+        <Icon width={20} height={20} fill={colors.tertiary} />
+        <View style={styles.placeTexts}>
+          {name ? (
+            <>
+              <Text style={styles.placeName}>
+                {id === 'home'
+                  ? i18n.t('screens.SearchFromToScreen.FavoriteModal.home')
+                  : id === 'work'
+                  ? i18n.t('screens.SearchFromToScreen.FavoriteModal.work')
+                  : name}
+              </Text>
+              <Text style={styles.placeAddressMinor}>
+                {favoriteItem.place?.data?.structured_formatting.main_text ??
+                  '??'}
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text style={styles.placeName}>
+                {favoriteItem.place?.data?.structured_formatting.main_text}
+              </Text>
+            </>
+          )}
+        </View>
+        <View style={styles.moreContainer}>
+          <TouchableOpacity onPress={onMorePress}>
+            <MoreSvg
+              width={20}
+              height={20}
+              fill={colors.tertiary}
+              style={styles.more}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
     </TouchableOpacity>
   )
@@ -40,12 +111,14 @@ const styles = StyleSheet.create({
     height: 60,
     marginRight: 10,
     paddingHorizontal: 13,
+    paddingRight: 3,
     backgroundColor: colors.secondary,
     ...s.roundedBorder,
   },
   placeTexts: {
     color: colors.tertiary,
     marginLeft: 10,
+    alignSelf: 'center',
   },
   placeName: {
     color: colors.tertiary,
@@ -57,8 +130,11 @@ const styles = StyleSheet.create({
     ...s.textTiny,
   },
   more: {
-    marginLeft: 27,
+    margin: 10,
     padding: 5,
+  },
+  moreContainer: {
+    marginLeft: 17,
   },
 })
 

@@ -1,4 +1,6 @@
 import {
+  FavoritePlace,
+  FavoriteStop,
   LegModes,
   MicromobilityProvider,
   TransitVehicleType,
@@ -272,3 +274,7 @@ export const getHeaderBgColor = (
   else if (travelMode === TravelModes.mhd) return colors.primary
   else return colors.ownVehicleHeaderColor
 }
+
+export const isFavoritePlace = (
+  obj: FavoritePlace | FavoriteStop | null | undefined
+): obj is FavoritePlace => (obj ? 'id' in obj : false)

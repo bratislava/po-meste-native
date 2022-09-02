@@ -18,8 +18,9 @@ import {
 } from './validation'
 
 const host = 'planner.bratislava.sk'
-const dataHostUrl = 'https://live-api.planner.dev.bratislava.sk'
-const otpPlannerUrl = `https://api.${host}/otp/routers/default/plan` // TODO use otp.planner.bratislava.sk
+const dataHostUrl = 'https://live.planner.dev.bratislava.sk'
+const mhdDataHostUrl = 'https://live.planner.bratislava.sk'
+const otpPlannerUrl = `https://api.planner.bratislava.sk/otp/routers/default/plan` // TODO use otp.planner.bratislava.sk
 
 // we should throw throwables only, so it's useful to extend Error class to contain useful info
 // export class ApiError extends Error {
@@ -45,7 +46,10 @@ const formatTimestamp = (date: Date) => {
 // helper with a common fetch pattern for json endpoints & baked in host
 const fetchJsonFromApi = async (path: string, options?: RequestInit) => {
   // leaving this console.log here because it is very important to keep track of fetches
-  const response = await fetch(`${dataHostUrl}${path}`, options)
+  const response = await fetch(
+    `${path.startsWith('/mhd') ? mhdDataHostUrl : dataHostUrl}${path}`,
+    options
+  )
   const responseLength = response.headers.get('content-length')
   console.log(
     '%s\x1b[95m%s\x1b[0m%s',
@@ -141,6 +145,9 @@ export const getTripPlanner = async (
   plannerApi?: MicromobilityProvider,
   wheelchair = false
 ) => {
+  if (plannerApi === MicromobilityProvider.tier) {
+    dateTime = dateTime.plusHours(24)
+  }
   const zonedTime = ZonedDateTime.of(dateTime, ZoneId.of('Europe/Bratislava'))
 
   const data = qs.stringify(

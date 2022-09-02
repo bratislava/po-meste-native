@@ -124,6 +124,9 @@ export default {
         currentPosition: 'Aktuálna poloha',
         accessibleVehicles: 'Nízkopodl.\nvozidlá',
       },
+      SearchMhd: {
+        stopName: 'Meno zastávky',
+      },
     },
     SearchFromToScreen: {
       myAddresses: 'Moje adresy',

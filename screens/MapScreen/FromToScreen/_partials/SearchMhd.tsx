@@ -12,6 +12,7 @@ import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
 import { getZoomLevel } from '@utils/utils'
 import { MhdStopProps } from '@utils/validation'
+import i18n from 'i18n-js'
 import React, {
   useCallback,
   useContext,
@@ -255,7 +256,7 @@ const SearchMhd = () => {
             }}
             useFilter={false} // set false to prevent rerender twice
             textInputProps={{
-              placeholder: 'Napíšte aspoň 2 písmená',
+              placeholder: i18n.t('screens.FromToScreen.SearchMhd.stopName'),
               autoCorrect: false,
               autoCapitalize: 'none',
               style: autocompleteStyles.textInput,

@@ -122,6 +122,9 @@ export default {
         currentPosition: 'Current location',
         accessibleVehicles: 'Accessible\nvehicles',
       },
+      SearchMhd: {
+        stopName: 'Stop name',
+      },
     },
     SearchFromToScreen: {
       myAddresses: 'My addresses',

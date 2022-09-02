@@ -37,6 +37,7 @@ import {
   GooglePlaceDataCorrected,
 } from '@types'
 import produce from 'immer'
+import { omit } from 'lodash'
 
 interface SearchFromToScreen {
   sheetRef: MutableRefObject<BottomSheet | null>
@@ -181,7 +182,7 @@ export default function SearchFromToScreen({
     )
     const historyLenght = newHistory.unshift({
       data,
-      detail: { ...detail, photos: undefined, reviews: undefined } as any,
+      detail: omit(detail, ['photos', 'reviews']) as any,
     })
     if (historyLenght > 15) newHistory.pop()
     const newFavoriteData: FavoriteData = {

@@ -1,7 +1,3 @@
-import ScrollPickerNative, {
-  ScrollHandle,
-  ScrollPickerProps as ScrollPickerNativeProps,
-} from '@components/ScrollViewPicker'
 import { convert, DateTimeFormatter, LocalDateTime } from '@js-joda/core'
 import { ScheduleType } from '@types'
 import { s } from '@utils/globalStyles'
@@ -11,6 +7,10 @@ import { range } from 'lodash'
 import React, { useEffect, useRef, useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
+import ScrollPickerNative, {
+  ScrollHandle,
+  ScrollPickerProps as ScrollPickerNativeProps,
+} from '../vendor/react-native-wheel-scrollview-picker/ScrollViewPicker'
 import Button from './Button'
 
 const formatter = DateTimeFormatter.ofPattern('d.M')

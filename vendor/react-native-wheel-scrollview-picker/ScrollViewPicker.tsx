@@ -62,6 +62,12 @@ export type ScrollPickerProps = {
   scrollViewComponent?: any
 }
 
+/** A ScrollPicker component from the `react-native-wheel-scrollview-picker` package
+ *
+ * It had to be coppied because:
+ * - its styling was very restrictive and more freedom was needed
+ * - it was missing a `scrollTo` method, which was needed
+ */
 const ScrollPicker = React.forwardRef<ScrollHandle, ScrollPickerProps>(
   (
     {

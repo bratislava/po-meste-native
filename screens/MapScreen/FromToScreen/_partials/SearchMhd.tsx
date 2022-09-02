@@ -110,25 +110,34 @@ const SearchMhd = () => {
     setStopPlatforms(chosenStopPlatforms)
   }, [setStopPlatforms, chosenStop, globalContext.mhdStopsData.data?.stops])
 
-  useEffect(() => {
-    if (!stopPlatforms || stopPlatforms.length === 0) return
+  const getCetralStopCamera = (stopPlatforms: MhdStopProps[]) => {
     let [lonSum, latSum] = [0, 0]
+    let [latMin, latMax] = [Infinity, 0]
     stopPlatforms.forEach((stop) => {
+      const lat = Number.parseFloat(stop.gpsLat)
       lonSum += Number.parseFloat(stop.gpsLon)
-      latSum += Number.parseFloat(stop.gpsLat)
+      latSum += lat
+      latMin = lat < latMin ? lat : latMin
+      latMax = lat > latMax ? lat : latMax
     })
-    mapRef.current?.animateCamera({
+    return {
       center: {
         latitude: latSum / stopPlatforms.length,
         longitude: lonSum / stopPlatforms.length,
       },
-      zoom: 16,
+      // some stop platforms have a large lat difference and they then do not fit in the screen (e.g. Pionierska)
+      // only doing this for lat since the map is wide enough to fit any occuring lon difference
+      zoom: latMax - latMin < 0.0018 ? 16 : 15.5,
       altitude: 100,
-    })
+    }
+  }
+
+  useEffect(() => {
+    if (!stopPlatforms || stopPlatforms.length === 0) return
+    mapRef.current?.animateCamera(getCetralStopCamera(stopPlatforms))
   }, [stopPlatforms])
 
   useEffect(() => {
-    console.log('ChosenPlatform useEffect')
     if (region && chosenPlatform) {
       mapRef.current?.animateCamera({
         center: {
@@ -156,19 +165,7 @@ const SearchMhd = () => {
   const handleBottomSheetClose = () => {
     setChosenPlatform(undefined)
     if (!stopPlatforms || stopPlatforms.length === 0) return
-    let [lonSum, latSum] = [0, 0]
-    stopPlatforms.forEach((stop) => {
-      lonSum += Number.parseFloat(stop.gpsLon)
-      latSum += Number.parseFloat(stop.gpsLat)
-    })
-    mapRef.current?.setCamera({
-      center: {
-        latitude: latSum / stopPlatforms.length,
-        longitude: lonSum / stopPlatforms.length,
-      },
-      zoom: 16,
-      altitude: 100,
-    })
+    mapRef.current?.setCamera(getCetralStopCamera(stopPlatforms))
   }
 
   return (
@@ -242,12 +239,12 @@ const SearchMhd = () => {
                   uniqueStops.filter((stop) =>
                     stop.title
                       .normalize('NFD')
-                      .replace(/\p{Diacritic}/gu, '')
+                      .replace(/[\u0300-\u036f]/g, '')
                       .toLowerCase()
                       .includes(
                         text
                           .normalize('NFD')
-                          .replace(/\p{Diacritic}/gu, '')
+                          .replace(/[\u0300-\u036f]/g, '')
                           .toLowerCase()
                       )
                   )

@@ -17,8 +17,9 @@ export default {
     permissionLocation: 'Permission to access location was denied',
     cancelLocationPermission: 'Cancel',
     openSettings: 'Open settings',
-    today: ' (Today)',
-    tomorrow: ' (Tomorrow)',
+    today: ' Today',
+    tomorrow: ' Tomorrow',
+    set: 'Set',
     now: 'now',
     save: 'Save',
     stops: {
@@ -103,6 +104,8 @@ export default {
       linesAndStopsTitle: 'Lines and stops',
       plannerSubtitle: 'planning your journey',
       linesAndStopsSubtitle: 'timetables and routes',
+      departureAt: 'departure at',
+      arrivalAt: 'arrival at',
       Planner: {
         fromPlaceholder: 'From...',
         toPlaceholder: 'To...',

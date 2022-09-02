@@ -191,9 +191,9 @@ export default function LineTimetableScreen({
             <Text style={styles.schedulingText}>
               {date.format(DateTimeFormatter.ofPattern('dd.MM.'))}
               {LocalDate.now().toString() === date.toString() &&
-                i18n.t('common.today')}
+                `(${i18n.t('common.today')})`}
               {LocalDate.now().toString() === date.minusDays(1).toString() &&
-                i18n.t('common.tomorrow')}
+                `(${i18n.t('common.tomorrow')})`}
               <Ionicons
                 size={15}
                 style={{

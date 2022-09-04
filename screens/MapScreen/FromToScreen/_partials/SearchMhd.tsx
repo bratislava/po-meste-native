@@ -1,5 +1,8 @@
 import LoadingView from '@components/LoadingView'
-import BottomSheet from '@gorhom/bottom-sheet'
+import { NAVIGATION_HEADER_HEIGHT } from '@components/navigation/Header'
+import { TAB_BAR_LARGE_HEIGHT } from '@components/TabView'
+import BottomSheet, { TouchableOpacity } from '@gorhom/bottom-sheet'
+import ArrowRightSvg from '@icons/arrow-right.svg'
 import SearchSvg from '@icons/search.svg'
 import MhdStopSvg from '@icons/stop-sign.svg'
 import { customMapStyle } from '@screens/MapScreen/customMapStyle'
@@ -20,7 +23,13 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { Platform, StyleSheet, Text, View } from 'react-native'
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native'
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown'
 import { ScrollView } from 'react-native-gesture-handler'
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
@@ -60,6 +69,7 @@ const SearchMhd = () => {
     title: stopName,
   }))
   const mapRef = useRef<MapView>(null)
+  const bottomSheetRef = useRef<BottomSheet>(null)
   const [chosenStop, setChosenStop] = useState<UniqueStop>()
   const [suggestions, setSuggestions] = useState<UniqueStop[]>([])
   const [stopPlatforms, setStopPlatforms] = useState<MhdStopProps[]>([])
@@ -70,6 +80,8 @@ const SearchMhd = () => {
     longitudeDelta: 0.0421,
   })
   const [chosenPlatform, setChosenPlatform] = useState<MhdStopProps>()
+  const [mapHeight, setMapHeight] = useState<string | number>(MAP_HEIGHT)
+  const dimensions = useWindowDimensions()
 
   const stopStatuses = useQuery(
     [
@@ -111,45 +123,9 @@ const SearchMhd = () => {
     setStopPlatforms(chosenStopPlatforms)
   }, [setStopPlatforms, chosenStop, globalContext.mhdStopsData.data?.stops])
 
-  const getCetralStopCamera = (stopPlatforms: MhdStopProps[]) => {
-    let [lonSum, latSum] = [0, 0]
-    let [latMin, latMax] = [Infinity, 0]
-    stopPlatforms.forEach((stop) => {
-      const lat = Number.parseFloat(stop.gpsLat)
-      lonSum += Number.parseFloat(stop.gpsLon)
-      latSum += lat
-      latMin = lat < latMin ? lat : latMin
-      latMax = lat > latMax ? lat : latMax
-    })
-    return {
-      center: {
-        latitude: latSum / stopPlatforms.length,
-        longitude: lonSum / stopPlatforms.length,
-      },
-      // some stop platforms have a large lat difference and they then do not fit in the screen (e.g. Pionierska)
-      // only doing this for lat since the map is wide enough to fit any occuring lon difference
-      zoom: latMax - latMin < 0.0018 ? 16 : 15.5,
-      altitude: 100,
-    }
-  }
-
   useEffect(() => {
-    if (!stopPlatforms || stopPlatforms.length === 0) return
-    mapRef.current?.animateCamera(getCetralStopCamera(stopPlatforms))
-  }, [stopPlatforms])
-
-  useEffect(() => {
-    if (region && chosenPlatform) {
-      mapRef.current?.animateCamera({
-        center: {
-          latitude: region?.latitude - region?.latitudeDelta,
-          longitude: region?.longitude,
-        },
-        zoom: 16,
-        altitude: 100,
-      })
-    }
-  }, [chosenPlatform])
+    fitToCoordinates()
+  }, [mapHeight, stopPlatforms])
 
   const renderPlatforms = useCallback(() => {
     if (!stopPlatforms || stopPlatforms.length === 0) return null
@@ -158,16 +134,65 @@ const SearchMhd = () => {
         key={stop.id}
         stop={stop}
         stopStatus={stopStatuses?.data ? stopStatuses.data[index] : undefined}
-        onPress={() => setChosenPlatform(stop)}
+        onPress={() => {
+          setChosenPlatform(stop)
+          setMapHeight('100%')
+        }}
       />
     ))
   }, [stopPlatforms, stopStatuses])
 
+  const fitToCoordinates = () => {
+    mapRef.current?.fitToCoordinates(
+      stopPlatforms.map((stop) => ({
+        latitude: Number.parseFloat(stop.gpsLat),
+        longitude: Number.parseFloat(stop.gpsLon),
+      })),
+      {
+        edgePadding: {
+          top: 10,
+          bottom: 10,
+          right: 10,
+          left: 10,
+        },
+        animated: true,
+      }
+    )
+  }
+
   const handleBottomSheetClose = () => {
     setChosenPlatform(undefined)
-    if (!stopPlatforms || stopPlatforms.length === 0) return
-    mapRef.current?.setCamera(getCetralStopCamera(stopPlatforms))
+    setMapHeight(MAP_HEIGHT)
   }
+
+  const handleMarkerPress = (stop: MhdStopProps) => {
+    setChosenPlatform(stop)
+  }
+
+  const handleBackButtonPress = () => {
+    setChosenPlatform(undefined)
+    setMapHeight(MAP_HEIGHT)
+    bottomSheetRef.current?.close()
+  }
+
+  const mapPadding =
+    mapHeight === '100%'
+      ? {
+          bottom:
+            dimensions.height / 2 -
+            TAB_BAR_LARGE_HEIGHT -
+            NAVIGATION_HEADER_HEIGHT +
+            30,
+          top: 60,
+          right: 20,
+          left: 20,
+        }
+      : {
+          bottom: 0,
+          top: 50,
+          right: 0,
+          left: 0,
+        }
 
   return (
     <View style={styles.container}>
@@ -178,7 +203,7 @@ const SearchMhd = () => {
         <MapView
           ref={mapRef}
           provider={PROVIDER_GOOGLE}
-          style={{ height: chosenPlatform ? '100%' : MAP_HEIGHT }}
+          style={{ height: mapHeight }}
           customMapStyle={customMapStyle}
           initialRegion={{
             latitude: 48.1512015,
@@ -188,12 +213,7 @@ const SearchMhd = () => {
           }}
           onRegionChangeComplete={(region) => setRegion(region)}
           showsMyLocationButton={false}
-          mapPadding={{
-            bottom: 0,
-            top: 50,
-            right: 0,
-            left: 0,
-          }}
+          mapPadding={mapPadding}
         >
           {stopPlatforms &&
             stopPlatforms.map((stop) => (
@@ -204,11 +224,14 @@ const SearchMhd = () => {
                   longitude: parseFloat(stop.gpsLon),
                 }}
                 tracksViewChanges={false}
-                //onPress={() => operateBottomSheet({ mhd: stop })}
                 icon={getIcon(
                   chosenPlatform ? stop.id === chosenPlatform?.id : true
                 )}
                 style={{ zIndex: stop.id === chosenPlatform?.id ? 2 : 1 }}
+                onPress={(event) => {
+                  event.stopPropagation()
+                  handleMarkerPress(stop)
+                }}
               >
                 {stop.platform && getZoomLevel(region) === ZoomLevel.lg && (
                   <View style={markerLabelStyles.container}>
@@ -323,9 +346,25 @@ const SearchMhd = () => {
           index={0}
           enablePanDownToClose
           onClose={() => handleBottomSheetClose()}
+          ref={bottomSheetRef}
         >
           <StationMhdInfo station={chosenPlatform} />
         </BottomSheet>
+      )}
+      {chosenPlatform && (
+        <View style={styles.backButtonContainer}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={handleBackButtonPress}
+          >
+            <ArrowRightSvg
+              width={20}
+              height={20}
+              fill={colors.primary}
+              style={{ transform: [{ rotate: '180deg' }] }}
+            />
+          </TouchableOpacity>
+        </View>
       )}
     </View>
   )
@@ -352,6 +391,21 @@ const styles = StyleSheet.create({
     zIndex: 2,
     top: 38,
     left: 40,
+  },
+  backButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 25,
+    backgroundColor: colors.white,
+    width: 50,
+    height: 50,
+    elevation: 7,
+    ...s.shadow,
+  },
+  backButtonContainer: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
   },
 })
 

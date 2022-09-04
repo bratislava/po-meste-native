@@ -177,6 +177,11 @@ export default function Planner(props: PlannerProps) {
   const [favoriteData, setFavoriteData] = useState<FavoriteData>(
     defaultFavoriteData as any
   )
+  const saveFavoriteData = (data: FavoriteData) => {
+    if (favoriteData) {
+      AsyncStorage.setItem(FAVORITE_DATA_INDEX, JSON.stringify(data))
+    }
+  }
   const loadFavoriteData = async (onLoad: (data: FavoriteData) => void) => {
     const favoriteDataString = await AsyncStorage.getItem(FAVORITE_DATA_INDEX)
     if (!favoriteDataString) return
@@ -189,11 +194,6 @@ export default function Planner(props: PlannerProps) {
       console.log(e.message)
       // overwrites favoriteData with the default data
       saveFavoriteData(favoriteData)
-    }
-  }
-  const saveFavoriteData = (data: FavoriteData) => {
-    if (favoriteData) {
-      AsyncStorage.setItem(FAVORITE_DATA_INDEX, JSON.stringify(data))
     }
   }
 

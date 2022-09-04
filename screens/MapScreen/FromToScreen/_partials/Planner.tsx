@@ -193,7 +193,7 @@ export default function Planner(props: PlannerProps) {
   }
   const saveFavoriteData = (data: FavoriteData) => {
     if (favoriteData) {
-      AsyncStorage.setItem('favoriteData', JSON.stringify(data))
+      AsyncStorage.setItem(FAVORITE_DATA_INDEX, JSON.stringify(data))
     }
   }
 

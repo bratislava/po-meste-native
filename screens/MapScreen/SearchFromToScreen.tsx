@@ -107,49 +107,51 @@ export default function SearchFromToScreen({
 
   const addOrUpdatePlace = (favoritePlace?: FavoriteItem) => {
     if (!favoritePlace || !isFavoritePlace(favoritePlace)) return
+    //2 huge attributes which we do not need to store
+    const cleanedFavoritePlace = produce(favoritePlace, (draft) => {
+      if (draft.place?.detail) {
+        delete (draft.place.detail as any).photos
+        delete (draft.place.detail as any).reviews
+      }
+    })
     const newFavoriteData = produce(favoriteData, (draftFavoriteData) => {
       const matchingPlaceIndex = draftFavoriteData.favoritePlaces.findIndex(
         (value) => value.id === favoritePlace.id
       )
       if (matchingPlaceIndex === -1) {
-        //2 huge attributes which we do not need to store
-        const newFavoritePlace = produce(favoritePlace, (draft) => {
-          if (draft.place?.detail) {
-            delete (draft.place.detail as any).photos
-            delete (draft.place.detail as any).reviews
-          }
-        })
-        draftFavoriteData.favoritePlaces.push(newFavoritePlace)
+        draftFavoriteData.favoritePlaces.push(cleanedFavoritePlace)
       } else {
         draftFavoriteData.favoritePlaces[matchingPlaceIndex] = {
           ...draftFavoriteData.favoritePlaces[matchingPlaceIndex],
-          ...favoritePlace,
+          ...cleanedFavoritePlace,
         }
       }
     })
     updateFavoriteData(newFavoriteData)
   }
 
-  const addStop = (stop?: FavoriteStop) => {
-    if (
-      favoriteData.favoriteStops.find(
-        (favoriteStop) =>
-          favoriteStop.place?.data.place_id === stop?.place?.data.place_id
-      )
-    )
-      return
-    if (stop) {
-      const newStop = produce(stop, (draft) => {
-        if (draft.place?.detail) {
-          delete (draft.place.detail as any).photos
-          delete (draft.place.detail as any).reviews
+  const addOrUpdateStop = (stop?: FavoriteStop, oldStop?: FavoriteStop) => {
+    if (!stop) return
+    const cleanedStop = produce(stop, (draft) => {
+      if (draft.place?.detail) {
+        delete (draft.place.detail as any).photos
+        delete (draft.place.detail as any).reviews
+      }
+    })
+    const newFavoriteData = produce(favoriteData, (draftFavoriteData) => {
+      if (oldStop) {
+        const oldStopIndex = draftFavoriteData.favoriteStops.findIndex(
+          (favoriteStop) =>
+            favoriteStop.place?.data.place_id === oldStop.place?.data.place_id
+        )
+        if (oldStopIndex >= 0) {
+          draftFavoriteData.favoriteStops[oldStopIndex] = cleanedStop
         }
-      })
-      setFavoriteData({
-        ...favoriteData,
-        favoriteStops: favoriteData.favoriteStops.concat(newStop),
-      })
-    }
+      } else {
+        draftFavoriteData.favoriteStops.push(cleanedStop)
+      }
+    })
+    updateFavoriteData(newFavoriteData)
   }
 
   const deleteFavorite = (favorite?: FavoriteItem) => {
@@ -279,6 +281,7 @@ export default function SearchFromToScreen({
                       type: 'stop',
                       favorite: favoriteItem,
                       onDelete: deleteFavorite,
+                      onConfirm: addOrUpdateStop,
                     })
                   }
                 />
@@ -286,13 +289,16 @@ export default function SearchFromToScreen({
             ) : (
               <AddStopFavoriteTile
                 title={i18n.t('screens.SearchFromToScreen.addStop')}
-                onPress={() => setModal({ type: 'stop', onConfirm: addStop })}
+                onPress={() =>
+                  setModal({ type: 'stop', onConfirm: addOrUpdateStop })
+                }
               />
             )}
           </ScrollView>
-          {renderAddButton(() =>
-            setModal({ type: 'stop', onConfirm: addStop })
-          )}
+          {favoriteData.favoriteStops.length > 0 &&
+            renderAddButton(() =>
+              setModal({ type: 'stop', onConfirm: addOrUpdateStop })
+            )}
         </View>
         <View style={[styles.categoryStops, s.horizontalMargin]}>
           <View style={styles.chooseFromMapRow}>

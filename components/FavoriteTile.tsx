@@ -1,6 +1,7 @@
 import HeartSvg from '@icons/favorite.svg'
 import HomeSvg from '@icons/home.svg'
 import MoreSvg from '@icons/more.svg'
+import PlusButtonSvg from '@icons/plus.svg'
 import StopSignSvg from '@icons/stop-sign.svg'
 import WorkSvg from '@icons/work.svg'
 import { FavoritePlace, FavoriteStop } from '@types'
@@ -31,11 +32,11 @@ export const AddStopFavoriteTile = ({
       <View style={styles.horizontalScrollItem}>
         <StopSignSvg width={20} height={20} fill={colors.tertiary} />
         <View style={styles.placeTexts}>
-          <Text style={[styles.placeName, { fontWeight: 'normal' }]}>
-            {title}
-          </Text>
+          <Text style={styles.placeName}>{title}</Text>
         </View>
-        <View style={styles.moreContainer}></View>
+        <View style={[styles.moreContainer, { marginRight: 10 }]}>
+          <PlusButtonSvg width={30} height={30} />
+        </View>
       </View>
     </TouchableOpacity>
   )

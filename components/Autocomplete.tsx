@@ -2,14 +2,17 @@ import MarkerSvg from '@icons/map-pin-marker.svg'
 import MhdStopSvg from '@icons/stop-sign.svg'
 import XSvg from '@icons/x.svg'
 import { GooglePlaceDataCorrected } from '@types'
-import { colors } from '@utils/theme'
+import { s } from '@utils/globalStyles'
+import { colors, inputSelectionColor } from '@utils/theme'
 import Constants from 'expo-constants'
 import React, { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TextInputProps, View } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 import {
   GooglePlaceData,
   GooglePlaceDetail,
   GooglePlacesAutocomplete,
+  GooglePlacesAutocompleteProps,
   GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete'
 
@@ -28,6 +31,14 @@ interface AutocompleteProps {
   ) => void
 }
 
+const mergeStyles = (a: any, b: any) => {
+  const mergedStyles: any = {}
+  Object.keys(a).forEach((key) => {
+    mergedStyles[key] = { ...a[key], ...b[key] }
+  })
+  return mergedStyles
+}
+
 const Autocomplete = ({
   googleInputRef,
   inputPlaceholder,
@@ -35,24 +46,31 @@ const Autocomplete = ({
   placeTypeFilter,
   selectOnFocus = false,
   addToHistory,
-}: AutocompleteProps) => {
+  ...rest
+}: AutocompleteProps &
+  Omit<GooglePlacesAutocompleteProps, 'query' | 'placeholder'>) => {
   const [googleAutocompleteSelection, setGoogleAutocompleteSelection] =
-    useState<{ start: number } | undefined>(undefined)
+    useState<{ start: number; end?: number } | undefined>(undefined)
+  const mergedStyles = rest.styles
+    ? mergeStyles(autoCompleteStyles, rest.styles)
+    : autoCompleteStyles
+  const textInputProps = rest.textInputProps as TextInputProps
   return (
     <GooglePlacesAutocomplete
       renderLeftButton={() => (
-        <XSvg
-          onPress={() => googleInputRef.current?.setAddressText('')}
-          width={20}
-          height={20}
+        <TouchableOpacity
           style={{
-            alignSelf: 'center',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginRight: 16,
+            height: 46,
           }}
-          fill={colors.mediumGray}
-        />
+          onPress={() => googleInputRef.current?.setAddressText('')}
+        >
+          <XSvg width={20} height={20} fill={colors.mediumGray} />
+        </TouchableOpacity>
       )}
       ref={googleInputRef}
-      styles={autoCompleteStyles}
       enablePoweredByContainer={false}
       fetchDetails
       placeholder={inputPlaceholder}
@@ -69,6 +87,7 @@ const Autocomplete = ({
         radius: '20788', //20,788 km
         strictbounds: true,
         type: placeTypeFilter,
+        components: 'country:sk',
       }}
       renderRow={(result: GooglePlaceData) => {
         // "react-native-google-places-autocomplete" version: 2.4.1, wrong typing of GooglePlaceData
@@ -89,16 +108,22 @@ const Autocomplete = ({
           </View>
         )
       }}
+      {...rest}
       textInputProps={{
         selectTextOnFocus: selectOnFocus,
-        onBlur: () => {
+        selectionColor: inputSelectionColor,
+        ...rest.textInputProps,
+        onBlur: (e) => {
           setGoogleAutocompleteSelection({ start: 0 })
           setTimeout(() => {
             setGoogleAutocompleteSelection(undefined)
           }, 10)
+          textInputProps?.onBlur && textInputProps.onBlur(e)
         },
         selection: googleAutocompleteSelection,
       }}
+      suppressDefaultStyles
+      styles={mergedStyles}
     />
   )
 }
@@ -115,20 +140,41 @@ const styles = StyleSheet.create({
 const autoCompleteStyles = {
   container: {
     zIndex: 1,
+    flex: 1,
   },
   listView: {
     height: '100%',
   },
   textInput: {
-    marginBottom: 0,
-    height: 50,
+    flexGrow: 1,
+    flexBasis: 'auto',
+    maxWidth: '90%',
+    ...s.textSmall,
   },
   textInputContainer: {
     borderWidth: 2,
     borderRadius: 30,
     borderColor: colors.mediumGray,
-    paddingHorizontal: 18,
+    paddingHorizontal: 16,
     letterSpacing: 0.5,
+    height: 50,
+    flexDirection: 'row',
+    overflow: 'hidden',
+  },
+  row: {
+    backgroundColor: '#FFFFFF',
+    padding: 13,
+    height: 44,
+    flexDirection: 'row',
+  },
+  separator: {
+    height: 0.5,
+    backgroundColor: '#c8c7cc',
+  },
+  loader: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    height: 20,
   },
 }
 

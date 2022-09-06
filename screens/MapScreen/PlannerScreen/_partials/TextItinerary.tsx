@@ -1,21 +1,17 @@
 import { Ionicons } from '@expo/vector-icons'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
-import { DateTimeFormatter, Instant, LocalTime } from '@js-joda/core'
+import { Instant, LocalTime } from '@js-joda/core'
 import i18n from 'i18n-js'
 import _ from 'lodash'
 import { StyleSheet, Text, View } from 'react-native'
 
 // import WheelchairSvg from '@icons/wheelchair.svg'
 import EllipseSvg from '@icons/ellipse.svg'
-import BusSvg from '@icons/vehicles/bus.svg'
 import CyclingSvg from '@icons/vehicles/cycling.svg'
 import ScooterSvg from '@icons/vehicles/scooter.svg'
-import TramSvg from '@icons/vehicles/tram.svg'
-import TrolleybusSvg from '@icons/vehicles/trolleybus.svg'
 import WalkingSvg from '@icons/walking.svg'
 
 import { Button, DashedLine } from '@components'
-import { useMhdStopsData } from '@hooks'
 import { LegModes, MicromobilityProvider } from '@types'
 import React, { useEffect, useState } from 'react'
 
@@ -40,8 +36,8 @@ import {
   LegProps,
   openProviderApp,
   s,
-  trolleybusLineNumbers,
 } from '@utils'
+import MhdTransitCard from './_partials/MhdTransitCard'
 
 interface TextItineraryProps {
   legs: LegProps[]
@@ -50,9 +46,9 @@ interface TextItineraryProps {
   travelMode: TravelModes
 }
 
-const ICON_WIDTH = 20
+export const ITINERARY_ICON_WIDTH = 20
 const DASHED_HEIGHT = 20
-const PADDING_HORIZONTAL = 10
+export const ITINERARY_PADDING_HORIZONTAL = 10
 
 const BIKESHARE_PROPERTY = 'BIKESHARE'
 
@@ -62,12 +58,6 @@ export const TextItinerary = ({
   isScooter,
   travelMode,
 }: TextItineraryProps) => {
-  // getData from /mhd/trip/{legs.tripId.substring(2)}
-  const {
-    data: dataMhdStops,
-    isLoading: isLoadingMhd,
-    errors: errorsMhd,
-  } = useMhdStopsData()
   const [timeNow, setTimeNow] = useState(LocalTime.now())
   const [updateEveryMinuteInterval, setUpdateEveryMinuteInterval] = useState<
     number | undefined
@@ -145,7 +135,9 @@ export const TextItinerary = ({
       <View style={[styles.card, s.horizontalMargin]}>
         <View style={styles.left}>
           <View style={styles.inline}>
-            {ProviderIcon && <ProviderIcon width={ICON_WIDTH} height={20} />}
+            {ProviderIcon && (
+              <ProviderIcon width={ITINERARY_ICON_WIDTH} height={20} />
+            )}
             <Text style={[styles.textBold, styles.textMargin]}>{text}</Text>
           </View>
           <View style={styles.dashedLine}>{getDashedLine()}</View>
@@ -159,7 +151,11 @@ export const TextItinerary = ({
       <View style={[styles.card, s.horizontalMargin]}>
         <View style={styles.left}>
           <View style={styles.inline}>
-            <WalkingSvg width={ICON_WIDTH} height={20} fill={colors.darkText} />
+            <WalkingSvg
+              width={ITINERARY_ICON_WIDTH}
+              height={20}
+              fill={colors.darkText}
+            />
             <View style={styles.textMargin}>
               {leg.duration !== undefined && (
                 <Text>
@@ -203,129 +199,15 @@ export const TextItinerary = ({
     )
   }
 
-  const renderTransitOnOther = (
-    leg: LegProps,
-    startTime: '' | LocalTime | undefined,
-    endTime: 0 | LocalTime | undefined
-  ) => {
-    return (
-      <View
-        style={[
-          styles.card,
-          s.horizontalMargin,
-          styles.whiteCard,
-          styles.cardVerticalMargin,
-        ]}
-      >
-        <View style={styles.left}>
-          {leg.mode === LegModes.tram && (
-            <TramSvg
-              width={ICON_WIDTH}
-              height={20}
-              fill={`#${leg.routeColor}`}
-            />
-          )}
-          {leg.mode === LegModes.bus &&
-            (trolleybusLineNumbers.includes(leg.routeShortName ?? '') ? (
-              <TrolleybusSvg
-                width={ICON_WIDTH}
-                height={20}
-                fill={`#${leg.routeColor}`}
-              />
-            ) : (
-              <BusSvg
-                width={ICON_WIDTH}
-                height={20}
-                fill={`#${leg.routeColor}`}
-              />
-            ))}
-        </View>
-        <View style={styles.middle}>
-          <View>
-            <View
-              style={[
-                s.lineNumber,
-                { backgroundColor: `#${leg.routeColor}` },
-                styles.lineNumberMarginRight,
-              ]}
-            >
-              <Text style={{ color: `#${leg.routeTextColor}` }}>
-                {leg.routeShortName}
-              </Text>
-            </View>
-            {/* <WheelchairSvg width={30} height={20} /> // TODO add when trip data is available*/}
-          </View>
-          <View style={styles.stopsContainer}>
-            <View>
-              <Text style={[styles.textBold, styles.textSizeBig]}>
-                {leg.from.name}
-                {trimStopId(leg.from.stopId)}
-              </Text>
-              <View style={styles.heading}>
-                <Ionicons
-                  size={15}
-                  style={{
-                    alignSelf: 'center',
-                    marginBottom: -3,
-                  }}
-                  name="arrow-forward"
-                />
-                <Text>{leg.headsign}</Text>
-              </View>
-              <View style={styles.mhdTripAdditionalInfoWrapper}>
-                <Text style={styles.greyText}>
-                  {leg?.to?.stopIndex &&
-                    leg?.from?.stopIndex &&
-                    i18n.t('common.stops', {
-                      count: leg.to.stopIndex - leg.from.stopIndex,
-                    })}
-                </Text>
-                <Text style={styles.greyText}>
-                  {`${
-                    leg?.duration &&
-                    ', ' +
-                      i18n.t('common.minutes', {
-                        count: Math.floor(leg?.duration / 60),
-                      })
-                  }`}
-                </Text>
-                {/* TODO add multiple bus stops between api request when api for trip is available => /mhd/trip/{legs[].tripId}*/}
-              </View>
-            </View>
-            {/* TODO add platform when it's available https://inovaciebratislava.atlassian.net/browse/PLAN-256 */}
-            <Text style={[styles.textBold, styles.textSizeBig]}>
-              {leg.to.name}
-              {trimStopId(leg.to.stopId)}
-            </Text>
-          </View>
-        </View>
-        <View style={styles.right}>
-          <Text>
-            {startTime &&
-              startTime.format(DateTimeFormatter.ofPattern('HH:mm'))}
-          </Text>
-          <Text>
-            {endTime && endTime.format(DateTimeFormatter.ofPattern('HH:mm'))}
-          </Text>
-        </View>
-      </View>
-    )
+  const renderTransitOnOther = (leg: LegProps) => {
+    return <MhdTransitCard leg={leg} />
   }
 
   const getMobilityIcon = (isScooter?: boolean) => {
     const Icon = isScooter ? ScooterSvg : CyclingSvg
-    return <Icon width={ICON_WIDTH} height={20} fill={colors.darkText} />
-  }
-
-  const trimStopId = (stopId: string | undefined) => {
-    return dataMhdStops?.stops?.map((mhdStop) => {
-      // mhdStop.id: 32500002
-      // leg.to.stopId: 1:000000032500002
-      const trimedStopId = _.trimStart(_.trimStart(stopId, '1:'), '0')
-      return trimedStopId === mhdStop.id && mhdStop.platform
-        ? ` ${mhdStop.platform}`
-        : ''
-    })
+    return (
+      <Icon width={ITINERARY_ICON_WIDTH} height={20} fill={colors.darkText} />
+    )
   }
 
   const headerTitle = (minutes = '13'): string => {
@@ -391,12 +273,6 @@ export const TextItinerary = ({
       </View>
       <View style={[styles.containerContent, styles.paddingVertical]}>
         {legs.map((leg, index) => {
-          const startTime =
-            leg.startTime &&
-            LocalTime.ofInstant(Instant.ofEpochMilli(parseInt(leg.startTime)))
-          const endTime =
-            leg.endTime &&
-            LocalTime.ofInstant(Instant.ofEpochMilli(leg.endTime))
           return (
             <View key={index}>
               {index === 0 && (
@@ -405,7 +281,7 @@ export const TextItinerary = ({
                     <View style={styles.row}>
                       <View style={styles.icon}>
                         <EllipseSvg
-                          width={ICON_WIDTH}
+                          width={ITINERARY_ICON_WIDTH}
                           height={20}
                           fill={colors.darkText}
                         />
@@ -428,7 +304,7 @@ export const TextItinerary = ({
                 renderTransitOnMicromobility(leg)}
               {leg.mode !== LegModes.bicycle &&
                 leg.mode !== LegModes.walk &&
-                renderTransitOnOther(leg, startTime, endTime)}
+                renderTransitOnOther(leg)}
               {index === legs.length - 1 && (
                 <View style={[styles.card, s.horizontalMargin]}>
                   <View style={styles.left}>
@@ -496,30 +372,19 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
   },
   card: {
-    paddingHorizontal: PADDING_HORIZONTAL,
+    paddingHorizontal: ITINERARY_PADDING_HORIZONTAL,
     paddingVertical: 3,
     borderRadius: 7,
     display: 'flex',
     flexDirection: 'row',
   },
-  cardVerticalMargin: {
-    marginVertical: 5,
-  },
-  whiteCard: {
-    backgroundColor: 'white',
-    paddingVertical: 20,
-    elevation: 3,
-  },
-  lineNumberMarginRight: {
-    marginRight: 10,
-  },
   icon: {
-    width: ICON_WIDTH,
+    width: ITINERARY_ICON_WIDTH,
   },
 
   dashedLine: {
     height: DASHED_HEIGHT,
-    width: ICON_WIDTH,
+    width: ITINERARY_ICON_WIDTH,
     alignItems: 'center',
   },
   row: {
@@ -527,37 +392,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   left: {},
-  middle: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'row',
-  },
   textBold: {
     fontWeight: 'bold',
     fontSize: 16,
   },
   textSizeBig: {
     fontSize: 16,
-  },
-  greyText: {
-    color: colors.lightText,
-  },
-  heading: {
-    display: 'flex',
-    flexDirection: 'row',
-  },
-  mhdTripAdditionalInfoWrapper: {
-    display: 'flex',
-    flexDirection: 'row',
-    marginVertical: 5,
-  },
-  stopsContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-  right: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
   },
 })

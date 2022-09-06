@@ -6,21 +6,28 @@ import React, {
   useState,
 } from 'react'
 import {
+  Animated,
   StyleSheet,
   Text,
-  View,
-  Animated,
   TouchableOpacity,
+  View,
+  ViewStyle,
 } from 'react-native'
 
 import ChevronRightSmall from '@icons/chevron-right-small.svg'
 import { colors } from '@utils/theme'
 
+export type AccordionStyles = {
+  [key in keyof typeof defaultStyles]?: ViewStyle
+}
+
 interface AccorionItemProps {
   isOpen?: boolean
   onPress?: () => void
-  title: string
+  title: ReactNode | string
   body: ReactNode | string
+  overrideStyles?: AccordionStyles
+  arrowIcon?: (isOpen: boolean) => JSX.Element
 }
 
 const AccordionItem = ({
@@ -28,6 +35,8 @@ const AccordionItem = ({
   onPress,
   title,
   body,
+  overrideStyles,
+  arrowIcon,
 }: AccorionItemProps) => {
   const [maxHeight, setMaxHeight] = useState(0)
 
@@ -55,12 +64,30 @@ const AccordionItem = ({
     } else playCloseAnimation()
   }, [isOpen, playOpenAnimation, playCloseAnimation])
 
+  const styles = overrideStyles ?? defaultStyles
+
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>{title}</Text>
+        {typeof title === 'string' ? (
+          <Text style={styles.title}>{title}</Text>
+        ) : (
+          title
+        )}
         <View style={styles.arrowContainer}>
-          <ChevronRightSmall width={16} height={16} fill={colors.tertiary} />
+          {arrowIcon ? (
+            arrowIcon(isOpen)
+          ) : (
+            <ChevronRightSmall
+              width={16}
+              height={16}
+              fill={colors.tertiary}
+              style={[
+                { transform: [{ rotate: isOpen ? '270deg' : '90deg' }] },
+                styles.arrow,
+              ]}
+            />
+          )}
         </View>
       </View>
       <Animated.View style={{ height: animation }}>
@@ -73,7 +100,7 @@ const AccordionItem = ({
           {typeof body === 'string' ? (
             <Text style={styles.bodyContainerText}>{body}</Text>
           ) : (
-            { body }
+            body
           )}
         </View>
       </Animated.View>
@@ -81,7 +108,8 @@ const AccordionItem = ({
   )
 }
 
-const styles = StyleSheet.create({
+/* eslint-disable react-native/no-unused-styles */
+const defaultStyles = StyleSheet.create({
   container: {
     backgroundColor: colors.secondary,
     borderRadius: 8,
@@ -99,6 +127,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   arrowContainer: {},
+  arrow: { backgroundColor: colors.tertiary },
   bodyContainer: {
     marginTop: 20,
     position: 'absolute',

@@ -1,15 +1,17 @@
 import React, { ReactNode, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import AccordionItem from './AccordionItem'
+import AccordionItem, { AccordionStyles } from './AccordionItem'
 
 interface AccorionProps {
   items: {
-    title: string
+    title: ReactNode | string
     body: ReactNode | string
   }[]
+  overrideStyles?: AccordionStyles
+  arrowIcon?: (isOpen: boolean) => JSX.Element
 }
 
-const Accordion = ({ items }: AccorionProps) => {
+const Accordion = ({ items, overrideStyles, arrowIcon }: AccorionProps) => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
 
   const onItemPress = (index: number) => {
@@ -29,6 +31,8 @@ const Accordion = ({ items }: AccorionProps) => {
           isOpen={activeIndex === index}
           title={title}
           body={body}
+          overrideStyles={overrideStyles}
+          arrowIcon={arrowIcon}
         />
       ))}
     </View>

@@ -418,6 +418,8 @@ export const apiMhdStopStatus = yup.object().shape({
     ),
 })
 
+export type MhdStopStatusProps = yup.Asserts<typeof apiMhdStopStatus>
+
 export const apiMhdTrip = yup.object().shape({
   lineNumber: yup.string(),
   // .required('error-malformed-apiMhdTrip-lineNumber'),

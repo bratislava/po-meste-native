@@ -49,7 +49,11 @@ export default function useMhdData() {
     if (data == undefined) return cachedData
     try {
       setHasFetched(true)
-      const mhdStops = apiMhdStops.validateSync(data)
+      const mhdStops = {
+        stops: apiMhdStops
+          .validateSync(data)
+          .stops?.filter((stop) => !!stop.platform),
+      }
       setCachedStops('mhdStops', mhdStops, healthData?.latestDataset)
       return mhdStops
     } catch (e: any) {

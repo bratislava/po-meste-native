@@ -17,6 +17,7 @@ import i18n from 'i18n-js'
 import { PreferredLanguage, VehicleType } from '@types'
 
 import { useLocationWithPermision } from '@hooks/miscHooks'
+import useMhdData from '@hooks/useMhdStopsData'
 import BicyclesChosen from '@icons/map-filters/bicycles-filter-chosen.svg'
 import BicyclesUnchosen from '@icons/map-filters/bicycles-filter-unchosen.svg'
 import CarsChosen from '@icons/map-filters/cars-filter-chosen.svg'
@@ -32,6 +33,7 @@ import MotorScooterUnchosen from '@icons/map-filters/motor-scooters-filter-uncho
 import ScooterChosen from '@icons/map-filters/scooters-filter-chosen.svg'
 import ScooterUnchosen from '@icons/map-filters/scooters-filter-unchosen.svg'
 import { LocationObject } from 'expo-location'
+import { QueryObserverResult } from 'react-query'
 
 interface Props {
   children: React.ReactNode
@@ -51,6 +53,12 @@ interface ContextProps {
     reask?: boolean
   ) => Promise<LocationObject | null | undefined>
   location: LocationObject | undefined
+  mhdStopsData: {
+    data: any
+    isLoading: boolean
+    errors: unknown
+    refetch: () => Promise<QueryObserverResult<any, unknown>> | null
+  }
 }
 
 export interface VehicleProps {
@@ -124,6 +132,8 @@ export default function GlobalStateProvider({ children }: Props) {
 
   const [isFeedbackSent, setFeedbackSent] = useState(false)
 
+  const mhdStopsData = useMhdData()
+
   return (
     <GlobalStateContext.Provider
       value={{
@@ -137,6 +147,7 @@ export default function GlobalStateProvider({ children }: Props) {
         setFeedbackSent,
         getLocationWithPermission,
         location,
+        mhdStopsData,
       }}
     >
       {children}

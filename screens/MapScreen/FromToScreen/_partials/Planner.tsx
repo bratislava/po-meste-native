@@ -196,6 +196,7 @@ export default function Planner(props: PlannerProps) {
       saveFavoriteData(favoriteData)
     }
   }
+
   useEffect(() => {
     loadFavoriteData(setFavoriteData)
   }, [])

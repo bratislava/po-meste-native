@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const autoCompleteStyles = {
+export const autoCompleteStyles = {
   container: {
     zIndex: 1,
   },

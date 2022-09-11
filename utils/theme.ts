@@ -27,6 +27,8 @@ export const colors = {
   ownVehicleHeaderColor: '#8D8D8D',
 }
 
+export const inputSelectionColor = colors.primary
+
 export const mhdDefaultColors = {
   grey: '#9E9E9E',
 }

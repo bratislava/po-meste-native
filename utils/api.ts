@@ -18,7 +18,7 @@ import {
 } from './validation'
 
 const host = 'planner.bratislava.sk'
-const dataHostUrl = 'https://live.planner.dev.bratislava.sk'
+const dataHostUrl = 'https://live.planner.bratislava.sk'
 const mhdDataHostUrl = 'https://live.planner.bratislava.sk'
 const otpPlannerUrl = `https://api.planner.bratislava.sk/otp/routers/default/plan` // TODO use otp.planner.bratislava.sk
 

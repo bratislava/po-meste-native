@@ -221,3 +221,10 @@ export type FavoriteData = {
   favoriteStops: FavoriteStop[]
   history: GooglePlace[]
 }
+
+export enum ZoomLevel {
+  xs,
+  sm,
+  md,
+  lg,
+}

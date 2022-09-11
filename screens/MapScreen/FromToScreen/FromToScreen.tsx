@@ -10,6 +10,7 @@ import { MapParamList } from '@types'
 import TabView from '@components/TabView'
 import { Route, SceneRendererProps } from 'react-native-tab-view'
 import Planner from './_partials/Planner'
+import SearchMhd from './_partials/SearchMhd'
 
 enum Routes {
   planner = 'planner',
@@ -50,7 +51,7 @@ export default function FromToScreen({
           <Planner from={mainRoute?.params?.from} to={mainRoute?.params?.to} />
         )
       case Routes.linesAndStops:
-        return null
+        return <SearchMhd />
     }
   }
 

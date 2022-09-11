@@ -1,7 +1,9 @@
 import Accordion from '@components/Accordion'
 import Line from '@components/Line'
+import LineNumber from '@components/LineNumber'
 import { Ionicons } from '@expo/vector-icons'
 import ChevronRightSmall from '@icons/chevron-right-small.svg'
+import MapPinSvg from '@icons/map-pin-marker.svg'
 import BusSvg from '@icons/vehicles/bus.svg'
 import TramSvg from '@icons/vehicles/tram.svg'
 import TrolleybusSvg from '@icons/vehicles/trolleybus.svg'
@@ -44,7 +46,6 @@ const MhdTransitCard = ({ leg }: MhdTransitCardProps) => {
           borderRadius: 8,
           width: '100%',
           paddingVertical: 15,
-          marginBottom: 20,
           overflow: 'hidden',
           alignItems: 'stretch',
         },
@@ -53,9 +54,12 @@ const MhdTransitCard = ({ leg }: MhdTransitCardProps) => {
           justifyContent: 'space-between',
           flex: 1,
         },
-        arrowContainer: {},
+        arrowContainer: {
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
         bodyContainer: {
-          marginTop: 20,
+          marginTop: 10,
           position: 'absolute',
         },
         bodyContainerText: {
@@ -74,21 +78,23 @@ const MhdTransitCard = ({ leg }: MhdTransitCardProps) => {
         {
           title: (
             <View style={styles.mhdTripAdditionalInfoWrapper}>
-              <Text style={styles.greyText}>
+              <Text style={{ color: colors.darkGray, fontWeight: 'bold' }}>
                 {(leg?.from?.stopIndex || leg?.from?.stopIndex === 0) &&
                   (leg?.to?.stopIndex || leg?.to?.stopIndex === 0) &&
-                  i18n.t('common.stops', {
-                    count: leg?.to?.stopIndex - leg?.from?.stopIndex,
-                  })}
+                  `${
+                    leg.to.stopIndex - leg.from.stopIndex < 10 ? '0' : ''
+                  }${i18n.t('common.stops', {
+                    count: leg.to.stopIndex - leg.from.stopIndex,
+                  })}`}
               </Text>
-              <Text style={styles.greyText}>
-                {`${
-                  leg?.duration &&
-                  ', ' +
-                    i18n.t('common.minutes', {
+              <Text style={{ color: colors.darkGray, fontWeight: 'bold' }}>
+                {leg?.duration &&
+                  `, ${leg.duration / 60 < 10 ? '0' : ''}${i18n.t(
+                    'common.minutes',
+                    {
                       count: Math.floor(leg?.duration / 60),
-                    })
-                }`}
+                    }
+                  )}`}
               </Text>
             </View>
           ),
@@ -97,7 +103,15 @@ const MhdTransitCard = ({ leg }: MhdTransitCardProps) => {
               {trip.data.timeline
                 ?.slice(leg.from.stopIndex, leg.to.stopIndex ?? 0 + 1)
                 .map((stop) => (
-                  <Text key={stop.stopId}>{stop.stopName}</Text>
+                  <View key={stop.stopId}>
+                    <Text
+                      style={{
+                        color: colors.darkGray,
+                        fontSize: 14,
+                        lineHeight: 25,
+                      }}
+                    >{`${stop.time.slice(0, -3)} ${stop.stopName}`}</Text>
+                  </View>
                 ))}
             </View>
           ),
@@ -119,7 +133,7 @@ const MhdTransitCard = ({ leg }: MhdTransitCardProps) => {
         {leg.mode === LegModes.tram && (
           <TramSvg
             width={ITINERARY_ICON_WIDTH}
-            height={20}
+            height={32}
             fill={`#${leg.routeColor}`}
           />
         )}
@@ -127,33 +141,24 @@ const MhdTransitCard = ({ leg }: MhdTransitCardProps) => {
           (trolleybusLineNumbers.includes(leg.routeShortName ?? '') ? (
             <TrolleybusSvg
               width={ITINERARY_ICON_WIDTH}
-              height={20}
+              height={32}
               fill={`#${leg.routeColor}`}
             />
           ) : (
             <BusSvg
               width={ITINERARY_ICON_WIDTH}
-              height={20}
+              height={32}
               fill={`#${leg.routeColor}`}
             />
           ))}
         <View style={styles.line}>
           <Line color={`#${leg.routeColor}`} />
         </View>
+        <MapPinSvg width={20} height={20} fill={`#${leg.routeColor}`} />
       </View>
       <View style={styles.middle}>
-        <View>
-          <View
-            style={[
-              s.lineNumber,
-              { backgroundColor: `#${leg.routeColor}` },
-              styles.lineNumberMarginRight,
-            ]}
-          >
-            <Text style={{ color: `#${leg.routeTextColor}` }}>
-              {leg.routeShortName}
-            </Text>
-          </View>
+        <View style={{ marginHorizontal: 8 }}>
+          <LineNumber number={leg.routeShortName} color={leg.routeColor} />
           {/* <WheelchairSvg width={30} height={20} /> // TODO add when trip data is available*/}
         </View>
         <View style={styles.stopsContainer}>
@@ -202,10 +207,10 @@ const MhdTransitCard = ({ leg }: MhdTransitCardProps) => {
         </View>
       </View>
       <View style={styles.right}>
-        <Text>
+        <Text style={{ fontWeight: 'bold' }}>
           {startTime && startTime.format(DateTimeFormatter.ofPattern('HH:mm'))}
         </Text>
-        <Text>
+        <Text style={{ fontWeight: 'bold' }}>
           {endTime && endTime.format(DateTimeFormatter.ofPattern('HH:mm'))}
         </Text>
       </View>
@@ -230,9 +235,6 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     elevation: 3,
   },
-  lineNumberMarginRight: {
-    marginRight: 10,
-  },
   line: {
     alignItems: 'center',
     flex: 1,
@@ -245,7 +247,6 @@ const styles = StyleSheet.create({
     flex: 1,
     display: 'flex',
     flexDirection: 'row',
-    backgroundColor: 'green',
   },
   textBold: {
     fontWeight: 'bold',
@@ -254,9 +255,6 @@ const styles = StyleSheet.create({
   textSizeBig: {
     fontSize: 16,
   },
-  greyText: {
-    color: colors.lightText,
-  },
   heading: {
     display: 'flex',
     flexDirection: 'row',
@@ -264,12 +262,11 @@ const styles = StyleSheet.create({
   mhdTripAdditionalInfoWrapper: {
     display: 'flex',
     flexDirection: 'row',
-    marginVertical: 5,
   },
   stopsContainer: {
     justifyContent: 'space-between',
     flex: 1,
-    backgroundColor: 'blue',
+    minHeight: 0,
   },
   right: {
     display: 'flex',

@@ -140,7 +140,6 @@ export const TextItinerary = ({
             )}
             <Text style={[styles.textBold, styles.textMargin]}>{text}</Text>
           </View>
-          <View style={styles.dashedLine}>{getDashedLine()}</View>
         </View>
       </View>
     )
@@ -150,6 +149,7 @@ export const TextItinerary = ({
     return (
       <View style={[styles.card, s.horizontalMargin]}>
         <View style={styles.left}>
+          <View style={styles.dashedLine}>{getDashedLine()}</View>
           <View style={styles.inline}>
             <WalkingSvg
               width={ITINERARY_ICON_WIDTH}
@@ -182,6 +182,7 @@ export const TextItinerary = ({
     return (
       <View style={[styles.card, s.horizontalMargin]}>
         <View style={styles.left}>
+          <View style={styles.dashedLine}>{getDashedLine()}</View>
           <View style={styles.inline}>
             {getMobilityIcon(isScooter)}
             <View style={styles.textMargin}>
@@ -189,6 +190,12 @@ export const TextItinerary = ({
                 {leg.duration &&
                   i18n.t('screens.PlannerScreen.minShort', {
                     count: Math.floor(leg.duration / 60),
+                  })}
+              </Text>
+              <Text>
+                {leg.distance !== undefined &&
+                  i18n.t('screens.PlannerScreen.distanceShort', {
+                    count: Math.floor(leg.distance),
                   })}
               </Text>
             </View>
@@ -291,7 +298,6 @@ export const TextItinerary = ({
                         {i18n.t('screens.PlannerScreen.start')}
                       </Text>
                     </View>
-                    <View style={styles.dashedLine}>{getDashedLine()}</View>
                   </View>
                 </View>
               )}

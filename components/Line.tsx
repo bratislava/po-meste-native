@@ -19,7 +19,7 @@ const Line = ({ color = colors.gray, strokeWidth = 2 }: Props) => {
         setlayout(event.nativeEvent.layout)
       }}
     >
-      <Svg height={layout?.height ? layout?.height : 15} width={strokeWidth}>
+      <Svg height="100%" width={strokeWidth}>
         <G>
           <SvgLine
             x1={strokeWidth / 2}

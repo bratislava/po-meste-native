@@ -6,7 +6,7 @@ import TrashcanSvg from '@icons/trashcan.svg'
 import WorkSvg from '@icons/work.svg'
 import { FavoritePlace, FavoriteStop, GooglePlaceDataCorrected } from '@types'
 import { s } from '@utils/globalStyles'
-import { colors } from '@utils/theme'
+import { colors, inputSelectionColor } from '@utils/theme'
 import { isFavoritePlace } from '@utils/utils'
 import i18n from 'i18n-js'
 import React, { useEffect, useRef, useState } from 'react'
@@ -29,7 +29,10 @@ import Modal from './Modal'
 export interface FavoriteModalProps {
   type: 'place' | 'stop'
   onClose: () => void
-  onConfirm?: (place: FavoritePlace | FavoriteStop | undefined) => void
+  onConfirm?: (
+    place?: FavoritePlace | FavoriteStop,
+    oldStop?: FavoriteStop
+  ) => void
   onDelete?: (place: FavoritePlace | FavoriteStop | undefined) => void
   favorite?: FavoritePlace | FavoriteStop
 }
@@ -51,7 +54,9 @@ const FavoriteModal = ({
   const [isEditingName, setIsEditingName] = useState(
     isFavoritePlace(favorite) && favorite.name ? false : true
   )
-  const [isEditingAddress, setIsEditingAddress] = useState(false)
+  const [isEditingAddress, setIsEditingAddress] = useState(
+    favorite ? false : true
+  )
 
   const isPlace = isFavoritePlace(favorite) || type === 'place'
   const iconData = isFavoritePlace(favorite) ? favorite.icon : undefined
@@ -82,6 +87,10 @@ const FavoriteModal = ({
     if (isEditingName) nameInputRef.current?.focus()
   }, [isEditingName])
 
+  useEffect(() => {
+    if (isEditingAddress) googleInputRef.current?.focus()
+  }, [isEditingAddress])
+
   const handleSave = () => {
     if (!onConfirm) {
       onClose()
@@ -111,7 +120,7 @@ const FavoriteModal = ({
         if (googlePlace) {
           updatedFavoriteStop.place = googlePlace
         }
-        onConfirm(updatedFavoriteStop)
+        onConfirm(updatedFavoriteStop, { ...favorite })
       } else {
         const newFavoriteStop: FavoriteStop = { place: googlePlace }
         onConfirm(newFavoriteStop)
@@ -127,7 +136,7 @@ const FavoriteModal = ({
 
   return (
     <Modal onClose={onClose}>
-      <View style={styles.modal}>
+      <View style={[styles.modal, { height: isPlace ? 360 : 290 }]}>
         <View style={{ alignItems: 'center' }}>
           <View style={styles.iconWrapper}>
             <Icon width={30} height={30} fill={colors.primary} />
@@ -137,9 +146,13 @@ const FavoriteModal = ({
           (isFavoritePlace(favorite) && favorite.isHardSetName ? (
             <Text
               style={[
-                s.textLarge,
                 s.boldText,
-                { alignSelf: 'center', marginBottom: 15 },
+                {
+                  alignSelf: 'center',
+                  marginBottom: 30,
+                  fontSize: 22,
+                  lineHeight: 33,
+                },
               ]}
             >
               {favorite.id === 'home'
@@ -161,6 +174,14 @@ const FavoriteModal = ({
                   isFavoritePlace(favorite) ? favorite.name : undefined
                 }
                 editable={isEditingName}
+                selectionColor={inputSelectionColor}
+                onBlur={() => {
+                  if (
+                    isFavoritePlace(favorite) &&
+                    favoriteName === favorite.name
+                  )
+                    setIsEditingName(false)
+                }}
               />
               {!isEditingName && (
                 <View style={styles.editButtonContainer}>
@@ -176,9 +197,16 @@ const FavoriteModal = ({
           ))}
         <View style={styles.googleFrom}>
           <Autocomplete
-            onGooglePlaceChosen={(data, detail) =>
-              setGooglePlace({ data, detail })
-            }
+            onGooglePlaceChosen={(data, detail) => {
+              const place = { data, detail }
+              setGooglePlace(place)
+              if (
+                place &&
+                favorite &&
+                place.data.place_id === favorite.place?.data.place_id
+              )
+                setIsEditingAddress(false)
+            }}
             inputPlaceholder={
               type === 'place'
                 ? i18n.t(
@@ -188,8 +216,41 @@ const FavoriteModal = ({
                     'screens.SearchFromToScreen.FavoriteModal.stopPlaceholder'
                   )
             }
+            renderLeftButton={undefined}
             googleInputRef={googleInputRef}
             placeTypeFilter={type === 'stop' ? 'transit_station' : undefined}
+            styles={{
+              textInputContainer: {
+                borderRadius: 10,
+                paddingLeft: 15,
+                paddingRight: isEditingAddress ? 0 : 5,
+              },
+              textInput: {
+                flex: 0.9,
+              },
+            }}
+            renderRightButton={() =>
+              !isEditingAddress ? (
+                <TouchableOpacity
+                  style={{
+                    alignSelf: 'center',
+                    padding: 10,
+                    flexBasis: 44,
+                    flex: 0,
+                  }}
+                  onPress={() => {
+                    setIsEditingAddress(true)
+                  }}
+                >
+                  <EditSvg width={24} height={24} />
+                </TouchableOpacity>
+              ) : (
+                <View />
+              )
+            }
+            textInputProps={{
+              editable: isEditingAddress,
+            }}
           />
         </View>
         <View style={{ flexGrow: 1 }} />
@@ -209,11 +270,21 @@ const FavoriteModal = ({
           )}
           {onConfirm && (
             <Button
-              style={styles.button}
+              style={[styles.button, { maxWidth: onDelete ? undefined : 166 }]}
               variant="approve"
               size="small"
               title={i18n.t('common.save')}
               onPress={() => handleSave()}
+              disabled={
+                isPlace && isFavoritePlace(favorite) && favoriteName
+                  ? favoriteName === favorite.name &&
+                    googlePlace &&
+                    favorite &&
+                    googlePlace.data.place_id === favorite?.place?.data.place_id
+                  : googlePlace &&
+                    favorite &&
+                    googlePlace.data.place_id === favorite?.place?.data.place_id
+              }
             />
           )}
         </View>
@@ -224,7 +295,7 @@ const FavoriteModal = ({
 
 const styles = StyleSheet.create({
   modal: {
-    height: 320,
+    minHeight: 290,
     paddingVertical: 32,
     overflow: 'hidden',
     display: 'flex',
@@ -236,8 +307,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: colors.mediumGray,
     height: 50,
-    borderRadius: 30,
-    paddingLeft: 18,
+    borderRadius: 10,
+    paddingLeft: 15,
     alignItems: 'stretch',
     justifyContent: 'flex-start',
     flexDirection: 'row',
@@ -245,7 +316,8 @@ const styles = StyleSheet.create({
   },
   input: {
     letterSpacing: 0.5,
-    flexGrow: 1,
+    flex: 1,
+    ...s.textSmall,
   },
   editButtonContainer: {
     justifyContent: 'center',
@@ -253,36 +325,37 @@ const styles = StyleSheet.create({
   editButton: {
     zIndex: 2,
     padding: 10,
-    paddingRight: 18,
+    paddingRight: 15,
     borderTopRightRadius: 30,
     borderBottomRightRadius: 30,
   },
   googleFrom: {
     flexDirection: 'row',
-    marginBottom: 7,
+    marginBottom: 30,
     zIndex: 1,
   },
-  button: { flexGrow: 1, maxWidth: 185 },
+  button: { flexGrow: 1 },
   iconWrapper: {
-    padding: 11,
-    borderWidth: 4,
-    borderColor: colors.primary,
+    backgroundColor: colors.lightLightGray,
     borderRadius: 30,
     width: 60,
     height: 60,
-    marginBottom: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 30,
   },
   buttonsContainer: {
-    marginTop: 15,
     display: 'flex',
     flexDirection: 'row',
   },
   deleteButton: {
-    padding: 7,
-    borderWidth: 3,
-    borderColor: colors.primary,
-    borderRadius: 22,
+    borderRadius: 20,
     marginRight: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 40,
+    height: 40,
+    backgroundColor: colors.secondary,
   },
 })
 

@@ -85,6 +85,7 @@ export default {
       openApp: 'Open application {{provider}}',
       start: 'Start',
       end: 'End',
+      departAt: 'Depart at',
     },
     ChooseLocationScreen: {
       screenTitle: 'Choose location',

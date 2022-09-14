@@ -87,6 +87,7 @@ export default {
       openApp: 'Otvor aplikáciu {{provider}}',
       start: 'Štart',
       end: 'Koniec',
+      departAt: 'Vyraziť o',
     },
     ChooseLocationScreen: {
       screenTitle: 'Výber miesta',

@@ -26,9 +26,10 @@ import {
 
 interface MhdTransitCardProps {
   leg: LegProps
+  isLastLeg: boolean
 }
 
-const MhdTransitCard = ({ leg }: MhdTransitCardProps) => {
+const MhdTransitCard = ({ leg, isLastLeg }: MhdTransitCardProps) => {
   const trip = useQuery(['getMhdTrip', leg.tripId], async () =>
     getMhdTrip(_.trimStart(leg.tripId, '1:'))
   )
@@ -81,27 +82,35 @@ const MhdTransitCard = ({ leg }: MhdTransitCardProps) => {
               <Text style={{ color: colors.darkGray, fontWeight: 'bold' }}>
                 {(leg?.from?.stopIndex || leg?.from?.stopIndex === 0) &&
                   (leg?.to?.stopIndex || leg?.to?.stopIndex === 0) &&
-                  `${
-                    leg.to.stopIndex - leg.from.stopIndex < 10 ? '0' : ''
-                  }${i18n.t('common.stops', {
+                  `${i18n.t('common.stops', {
                     count: leg.to.stopIndex - leg.from.stopIndex,
                   })}`}
               </Text>
               <Text style={{ color: colors.darkGray, fontWeight: 'bold' }}>
                 {leg?.duration &&
-                  `, ${leg.duration / 60 < 10 ? '0' : ''}${i18n.t(
-                    'common.minutes',
-                    {
-                      count: Math.floor(leg?.duration / 60),
-                    }
-                  )}`}
+                  `, ${i18n.t('common.minutes', {
+                    count: Math.floor(leg?.duration / 60),
+                  })}`}
               </Text>
             </View>
           ),
           body: (
             <View>
               {trip.data.timeline
-                ?.slice(leg.from.stopIndex, leg.to.stopIndex ?? 0 + 1)
+                ?.slice(
+                  trip.data.timeline.findIndex(
+                    // stop.stopId: 32500002
+                    // leg.to.stopId: 1:000000032500002
+                    (stop) =>
+                      stop.stopId ===
+                      _.trimStart(_.trimStart(leg.from.stopId, '1:'), '0')
+                  ) + 1,
+                  trip.data.timeline.findIndex(
+                    (stop) =>
+                      stop.stopId ===
+                      _.trimStart(_.trimStart(leg.to.stopId, '1:'), '0')
+                  )
+                )
                 .map((stop) => (
                   <View key={stop.stopId}>
                     <Text
@@ -154,7 +163,19 @@ const MhdTransitCard = ({ leg }: MhdTransitCardProps) => {
         <View style={styles.line}>
           <Line color={`#${leg.routeColor}`} />
         </View>
-        <MapPinSvg width={20} height={20} fill={`#${leg.routeColor}`} />
+        {isLastLeg ? (
+          <MapPinSvg width={20} height={20} fill={`#${leg.routeColor}`} />
+        ) : (
+          <View
+            style={{
+              width: 8,
+              height: 8,
+              backgroundColor: `#${leg.routeColor}`,
+              borderRadius: 4,
+              marginLeft: 6,
+            }}
+          ></View>
+        )}
       </View>
       <View style={styles.middle}>
         <View style={{ marginHorizontal: 8 }}>

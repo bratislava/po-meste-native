@@ -1,17 +1,17 @@
-import { Ionicons } from '@expo/vector-icons'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
-import { Instant, LocalTime } from '@js-joda/core'
+import { DateTimeFormatter, Instant, LocalTime } from '@js-joda/core'
 import i18n from 'i18n-js'
 import _ from 'lodash'
 import { StyleSheet, Text, View } from 'react-native'
 
 // import WheelchairSvg from '@icons/wheelchair.svg'
 import EllipseSvg from '@icons/ellipse.svg'
+import MapPinSvg from '@icons/map-pin-marker.svg'
 import CyclingSvg from '@icons/vehicles/cycling.svg'
 import ScooterSvg from '@icons/vehicles/scooter.svg'
 import WalkingSvg from '@icons/walking.svg'
 
-import { Button, DashedLine } from '@components'
+import { BOTTOM_TAB_NAVIGATOR_HEIGHT, Button, DashedLine } from '@components'
 import { LegModes, MicromobilityProvider } from '@types'
 import React, { useEffect, useState } from 'react'
 
@@ -125,6 +125,7 @@ export const TextItinerary = ({
   )
 
   const firstStop = legs.find((leg) => leg.from.vertexType === 'TRANSIT')
+  const isMhd = !!firstStop
 
   const getDashedLine = () => {
     return <DashedLine spacing={4} dashLength={2} color={colors.darkText} />
@@ -158,7 +159,7 @@ export const TextItinerary = ({
             />
             <View style={styles.textMargin}>
               {leg.duration !== undefined && (
-                <Text>
+                <Text style={s.boldText}>
                   {i18n.t('screens.PlannerScreen.minShort', {
                     count: Math.floor(leg.duration / 60),
                   })}
@@ -186,7 +187,7 @@ export const TextItinerary = ({
           <View style={styles.inline}>
             {getMobilityIcon(isScooter)}
             <View style={styles.textMargin}>
-              <Text>
+              <Text style={s.boldText}>
                 {leg.duration &&
                   i18n.t('screens.PlannerScreen.minShort', {
                     count: Math.floor(leg.duration / 60),
@@ -206,8 +207,8 @@ export const TextItinerary = ({
     )
   }
 
-  const renderTransitOnOther = (leg: LegProps) => {
-    return <MhdTransitCard leg={leg} />
+  const renderTransitOnOther = (leg: LegProps, isLastLeg: boolean) => {
+    return <MhdTransitCard leg={leg} isLastLeg={isLastLeg} />
   }
 
   const getMobilityIcon = (isScooter?: boolean) => {
@@ -234,7 +235,7 @@ export const TextItinerary = ({
   }
 
   return (
-    <BottomSheetScrollView style={styles.container}>
+    <View style={styles.container}>
       <View
         style={[
           styles.card,
@@ -278,85 +279,120 @@ export const TextItinerary = ({
           </Text>
         )}
       </View>
-      <View style={[styles.containerContent, styles.paddingVertical]}>
-        {legs.map((leg, index) => {
-          return (
-            <View key={index}>
-              {index === 0 && (
-                <View style={[styles.card, s.horizontalMargin]}>
-                  <View style={styles.left}>
-                    <View style={styles.row}>
-                      <View style={styles.icon}>
-                        <EllipseSvg
-                          width={ITINERARY_ICON_WIDTH}
-                          height={20}
-                          fill={colors.darkText}
-                        />
+      <BottomSheetScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={styles.scrollContainerContent}
+      >
+        <View style={[styles.containerContent, styles.paddingVertical]}>
+          {legs.map((leg, index) => {
+            return (
+              <View key={index}>
+                {index === 0 && leg.duration && leg.duration / 60 > 1 && (
+                  <View
+                    style={[
+                      styles.card,
+                      s.horizontalMargin,
+                      { justifyContent: 'space-between' },
+                    ]}
+                  >
+                    <View style={styles.left}>
+                      <View style={styles.row}>
+                        <View style={styles.iconStart}>
+                          <EllipseSvg
+                            width={ITINERARY_ICON_WIDTH}
+                            height={ITINERARY_ICON_WIDTH}
+                            fill={colors.darkText}
+                          />
+                        </View>
+                        {/* TODO add location based on google or get it from previous screen */}
+                        <Text style={[styles.textMargin, styles.textBold]}>
+                          {i18n.t('screens.PlannerScreen.start')}
+                        </Text>
                       </View>
-                      {/* TODO add location based on google or get it from previous screen */}
-                      <Text style={[styles.textMargin, styles.textBold]}>
-                        {i18n.t('screens.PlannerScreen.start')}
-                      </Text>
+                    </View>
+                    {leg.startTime && (
+                      <View style={{ alignItems: 'flex-end' }}>
+                        <Text style={s.textTiny}>
+                          {i18n.t('screens.PlannerScreen.departAt')}
+                        </Text>
+                        <Text style={[s.textSmall, s.boldText]}>
+                          {LocalTime.ofInstant(
+                            Instant.ofEpochMilli(parseInt(leg.startTime))
+                          ).format(DateTimeFormatter.ofPattern('HH:mm'))}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                )}
+                {getFirstRentedInstanceIndex === index &&
+                  renderProviderIconWithText(leg.from.name)}
+                {getLastRentedInstanceIndex === index &&
+                  renderProviderIconWithText(leg.from.name)}
+                {leg.mode === LegModes.walk &&
+                  leg.duration &&
+                  leg.duration / 60 > 1 &&
+                  renderTransitOnFoot(leg)}
+                {leg.mode === LegModes.bicycle &&
+                  renderTransitOnMicromobility(leg)}
+                {leg.mode !== LegModes.bicycle &&
+                  leg.mode !== LegModes.walk &&
+                  renderTransitOnOther(leg, index === legs.length - 1)}
+                {index === legs.length - 1 && (
+                  <View
+                    style={[
+                      styles.card,
+                      s.horizontalMargin,
+                      { justifyContent: 'space-between' },
+                    ]}
+                  >
+                    <View style={styles.left}>
+                      <View style={styles.row}>
+                        <View style={styles.iconDestination}>
+                          <MapPinSvg
+                            width={ITINERARY_ICON_WIDTH + 5}
+                            height={ITINERARY_ICON_WIDTH + 5}
+                            fill={colors.black}
+                          />
+                        </View>
+                        {/* TODO add location based on google or get it from previous screen */}
+                        <Text style={styles.textBold}>
+                          {i18n.t('screens.PlannerScreen.end')}
+                        </Text>
+                      </View>
                     </View>
                   </View>
-                </View>
-              )}
-              {getFirstRentedInstanceIndex === index &&
-                renderProviderIconWithText(leg.from.name)}
-              {getLastRentedInstanceIndex === index &&
-                renderProviderIconWithText(leg.from.name)}
-              {leg.mode === LegModes.walk && renderTransitOnFoot(leg)}
-              {leg.mode === LegModes.bicycle &&
-                renderTransitOnMicromobility(leg)}
-              {leg.mode !== LegModes.bicycle &&
-                leg.mode !== LegModes.walk &&
-                renderTransitOnOther(leg)}
-              {index === legs.length - 1 && (
-                <View style={[styles.card, s.horizontalMargin]}>
-                  <View style={styles.left}>
-                    <View style={styles.row}>
-                      <View style={styles.icon}>
-                        <Ionicons
-                          size={24}
-                          style={{
-                            alignSelf: 'center',
-                            color: colors.darkText,
-                          }}
-                          name="location-sharp"
-                        />
-                      </View>
-                      {/* TODO add location based on google or get it from previous screen */}
-                      <Text style={[styles.textMargin, styles.textBold]}>
-                        {i18n.t('screens.PlannerScreen.end')}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              )}
-            </View>
-          )
-        })}
-        {/* TODO do it like in https://github.com/bratislava/hybaj-native/pull/49 StationMicromobilityInfo.tsx */}
-        {provider && (
-          <Button
-            contentStyle={{
-              backgroundColor: getColor(provider),
-            }}
-            titleStyle={{ color: getTextColor(provider) }}
-            onPress={() => openProviderApp(provider)}
-            title={i18n.t('screens.PlannerScreen.openApp', {
-              provider: title,
-            })}
-          />
-        )}
-      </View>
-    </BottomSheetScrollView>
+                )}
+              </View>
+            )
+          })}
+          {/* TODO do it like in https://github.com/bratislava/hybaj-native/pull/49 StationMicromobilityInfo.tsx */}
+          {provider && (
+            <Button
+              contentStyle={{
+                backgroundColor: getColor(provider),
+              }}
+              titleStyle={{ color: getTextColor(provider) }}
+              onPress={() => openProviderApp(provider)}
+              title={i18n.t('screens.PlannerScreen.openApp', {
+                provider: title,
+              })}
+            />
+          )}
+        </View>
+      </BottomSheetScrollView>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
+    height: '100%',
+  },
+  scrollContainer: {
     backgroundColor: colors.lightLightGray,
+  },
+  scrollContainerContent: {
+    paddingBottom: BOTTOM_TAB_NAVIGATOR_HEIGHT + 20,
   },
   paddingVertical: {
     paddingVertical: 20,
@@ -384,10 +420,13 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
   },
-  icon: {
+  iconStart: {
     width: ITINERARY_ICON_WIDTH,
   },
-
+  iconDestination: {
+    width: ITINERARY_ICON_WIDTH + 5,
+    left: -2.5,
+  },
   dashedLine: {
     height: DASHED_HEIGHT,
     width: ITINERARY_ICON_WIDTH,

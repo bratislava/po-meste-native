@@ -153,19 +153,20 @@ export const TextItinerary = ({
           <View style={styles.dashedLine}>{getDashedLine()}</View>
           <View style={styles.inline}>
             <WalkingSvg
-              width={ITINERARY_ICON_WIDTH}
-              height={20}
+              width={ITINERARY_ICON_WIDTH + 2}
+              height={ITINERARY_ICON_WIDTH + 2}
+              style={{ left: -1 }}
               fill={colors.darkText}
             />
             <View style={styles.textMargin}>
               {leg.duration !== undefined && (
-                <Text style={s.boldText}>
+                <Text style={[s.boldText, { fontSize: 14, lineHeight: 14 }]}>
                   {i18n.t('screens.PlannerScreen.minShort', {
                     count: Math.floor(leg.duration / 60),
                   })}
                 </Text>
               )}
-              <Text>
+              <Text style={{ fontSize: 14, lineHeight: 14 }}>
                 {leg.distance !== undefined &&
                   i18n.t('screens.PlannerScreen.distanceShort', {
                     count: Math.floor(leg.distance),
@@ -187,13 +188,13 @@ export const TextItinerary = ({
           <View style={styles.inline}>
             {getMobilityIcon(isScooter)}
             <View style={styles.textMargin}>
-              <Text style={s.boldText}>
+              <Text style={[s.boldText, { fontSize: 14, lineHeight: 14 }]}>
                 {leg.duration &&
                   i18n.t('screens.PlannerScreen.minShort', {
                     count: Math.floor(leg.duration / 60),
                   })}
               </Text>
-              <Text>
+              <Text style={{ fontSize: 14, lineHeight: 14 }}>
                 {leg.distance !== undefined &&
                   i18n.t('screens.PlannerScreen.distanceShort', {
                     count: Math.floor(leg.distance),
@@ -311,7 +312,14 @@ export const TextItinerary = ({
                       </View>
                     </View>
                     {leg.startTime && (
-                      <View style={{ alignItems: 'flex-end' }}>
+                      <View
+                        style={{
+                          alignItems: 'flex-end',
+                          position: 'absolute',
+                          right: ITINERARY_PADDING_HORIZONTAL,
+                          top: -14,
+                        }}
+                      >
                         <Text style={s.textTiny}>
                           {i18n.t('screens.PlannerScreen.departAt')}
                         </Text>
@@ -392,6 +400,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightLightGray,
   },
   scrollContainerContent: {
+    paddingTop: 20,
     paddingBottom: BOTTOM_TAB_NAVIGATOR_HEIGHT + 20,
   },
   paddingVertical: {

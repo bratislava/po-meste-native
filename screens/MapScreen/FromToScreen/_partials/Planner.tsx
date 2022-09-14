@@ -718,6 +718,8 @@ export default function Planner(props: PlannerProps) {
                       provider: provider,
                       isScooter: selectedVehicle === TravelModes.scooter,
                       travelMode: selectedVehicle,
+                      fromPlace: fromName,
+                      toPlace: toName,
                     } as never
                   )
                 }

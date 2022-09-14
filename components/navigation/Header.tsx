@@ -4,12 +4,19 @@ import { StackHeaderProps } from '@react-navigation/stack'
 import { colors } from '@utils/theme'
 import { t } from 'i18n-js'
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export interface HeaderProps extends StackHeaderProps {
   onBack?: () => void
   borderShown?: boolean
+  titleElement?: (style: TextStyle) => JSX.Element
 }
 
 export const NAVIGATION_HEADER_HEIGHT = 56
@@ -19,6 +26,7 @@ export const Header = ({
   route,
   onBack,
   borderShown = true,
+  titleElement,
 }: HeaderProps) => {
   const navigation = useNavigation()
   const insets = useSafeAreaInsets()
@@ -47,9 +55,13 @@ export const Header = ({
         )}
       </View>
       <View style={styles.centerContainer}>
-        <Text style={styles.centerText}>
-          {options.title ?? t(`screens.${route.name}.screenTitle`)}
-        </Text>
+        {titleElement ? (
+          titleElement(styles.centerText)
+        ) : (
+          <Text style={styles.centerText}>
+            {options.title ?? t(`screens.${route.name}.screenTitle`)}
+          </Text>
+        )}
       </View>
       <View style={styles.rightContainer}>{options.headerRight}</View>
     </View>

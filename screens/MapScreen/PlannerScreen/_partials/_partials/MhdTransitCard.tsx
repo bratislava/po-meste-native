@@ -203,7 +203,7 @@ const MhdTransitCard = ({ leg, isLastLeg }: MhdTransitCardProps) => {
                 size={15}
                 style={{
                   alignSelf: 'center',
-                  marginBottom: -3,
+                  bottom: 1,
                 }}
                 name="arrow-forward"
               />

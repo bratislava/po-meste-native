@@ -1,6 +1,6 @@
 import i18n from 'i18n-js'
 import React, { useCallback } from 'react'
-import { Image, Platform, StyleSheet, Text, View } from 'react-native'
+import { Platform, StyleSheet, Text, View } from 'react-native'
 import AppLink from 'react-native-app-link'
 
 import { Button } from '@components'
@@ -9,6 +9,7 @@ import {
   boltPrice,
   colors,
   FreeBikeStatusProps,
+  getMicromobilityImage,
   rekolaPrice,
   s,
   slovnaftbajkPrice,
@@ -17,10 +18,6 @@ import {
 } from '@utils'
 
 import ChevronRightIconSVG from '@icons/chevron-right-small.svg'
-
-import RekoloVehicleIconSvg from '@images/rekolo-vehicle-icon.svg'
-import SlovnaftbajkVehicleIconSvg from '@images/slovnaftbajk-vehicle-icon.svg'
-import TierVehicleIconSvg from '@images/tier-vehicle-icon.svg'
 
 interface StationMicromobilityInfoProps {
   station: StationMicromobilityProps | FreeBikeStatusProps
@@ -32,26 +29,7 @@ const StationMicromobilityInfo = ({
   provider,
 }: StationMicromobilityInfoProps) => {
   const getMicromobilityIcon = useCallback(() => {
-    let icon = undefined
-    switch (provider) {
-      case MicromobilityProvider.rekola:
-        icon = <RekoloVehicleIconSvg height={150} />
-        break
-      case MicromobilityProvider.slovnaftbajk:
-        icon = <SlovnaftbajkVehicleIconSvg height={150} />
-        break
-      case MicromobilityProvider.tier:
-        icon = <TierVehicleIconSvg height={150} />
-        break
-      case MicromobilityProvider.bolt:
-        icon = (
-          <Image
-            source={require('@images/bolt-vehicle-image.png')}
-            height={150}
-          />
-        )
-    }
-    return icon
+    return getMicromobilityImage(provider, 150)
   }, [provider])
 
   const getButtonColor = useCallback(() => {

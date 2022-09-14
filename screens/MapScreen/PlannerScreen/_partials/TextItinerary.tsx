@@ -25,12 +25,14 @@ import OwnBicycle from '@icons/bottom-route-headers/own-bicycle.svg'
 import OwnScooter from '@icons/bottom-route-headers/own-scooter.svg'
 import Walking from '@icons/bottom-route-headers/walking.svg'
 
+import ChevronRightIconSVG from '@icons/chevron-right-small.svg'
 import { TravelModes } from '@types'
 import {
   colors,
   getColor,
   getHeaderBgColor,
   getIcon,
+  getMicromobilityImage,
   getProviderName,
   getTextColor,
   LegProps,
@@ -137,7 +139,11 @@ export const TextItinerary = ({
         <View style={styles.left}>
           <View style={styles.inline}>
             {ProviderIcon && (
-              <ProviderIcon width={ITINERARY_ICON_WIDTH} height={20} />
+              <ProviderIcon
+                width={ITINERARY_ICON_WIDTH + 8}
+                height={ITINERARY_ICON_WIDTH + 8}
+                style={{ left: -4 }}
+              />
             )}
             <Text style={[styles.textBold, styles.textMargin]}>{text}</Text>
           </View>
@@ -235,6 +241,15 @@ export const TextItinerary = ({
     }
   }
 
+  const buttonTitle =
+    provider === MicromobilityProvider.rekola
+      ? 'Rekola'
+      : provider === MicromobilityProvider.slovnaftbajk
+      ? 'Bajk'
+      : provider === MicromobilityProvider.tier
+      ? 'Tier'
+      : ''
+
   return (
     <View style={styles.container}>
       <View
@@ -311,7 +326,7 @@ export const TextItinerary = ({
                         </Text>
                       </View>
                     </View>
-                    {leg.startTime && (
+                    {leg.startTime && isMhd && (
                       <View
                         style={{
                           alignItems: 'flex-end',
@@ -375,16 +390,52 @@ export const TextItinerary = ({
           })}
           {/* TODO do it like in https://github.com/bratislava/hybaj-native/pull/49 StationMicromobilityInfo.tsx */}
           {provider && (
-            <Button
-              contentStyle={{
-                backgroundColor: getColor(provider),
-              }}
-              titleStyle={{ color: getTextColor(provider) }}
-              onPress={() => openProviderApp(provider)}
-              title={i18n.t('screens.PlannerScreen.openApp', {
-                provider: title,
-              })}
-            />
+            <View
+              style={[
+                styles.card,
+                styles.whiteCard,
+                {
+                  marginHorizontal: 20,
+                  marginTop: 30,
+                  justifyContent: 'space-between',
+                  flexDirection: 'row',
+                  height: 100,
+                  alignItems: 'center',
+                },
+              ]}
+            >
+              <View>{getMicromobilityImage(provider, 90, 90)}</View>
+              <View style={{ alignItems: 'center' }}>
+                <Button
+                  size="small"
+                  contentStyle={{
+                    backgroundColor: getColor(provider),
+                  }}
+                  titleStyle={{ color: getTextColor(provider) }}
+                  onPress={() => openProviderApp(provider)}
+                  title={i18n.t('screens.MapScreen.rent', {
+                    provider: buttonTitle,
+                  })}
+                  icon={
+                    <ChevronRightIconSVG
+                      height={14}
+                      fill={getTextColor(provider)}
+                      style={{ marginLeft: 14 }}
+                    />
+                  }
+                  iconRight
+                />
+                <Text
+                  style={{
+                    ...s.textTiny,
+                    color: colors.mediumGray,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  cena ~1,50€
+                </Text>
+              </View>
+            </View>
           )}
         </View>
       </BottomSheetScrollView>
@@ -425,9 +476,14 @@ const styles = StyleSheet.create({
   card: {
     paddingHorizontal: ITINERARY_PADDING_HORIZONTAL,
     paddingVertical: 3,
-    borderRadius: 7,
+    borderRadius: 10,
     display: 'flex',
     flexDirection: 'row',
+  },
+  whiteCard: {
+    paddingHorizontal: 20,
+    backgroundColor: 'white',
+    elevation: 3,
   },
   iconStart: {
     width: ITINERARY_ICON_WIDTH,

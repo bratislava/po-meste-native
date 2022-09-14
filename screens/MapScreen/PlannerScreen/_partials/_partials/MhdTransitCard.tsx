@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
   card: {
     paddingHorizontal: ITINERARY_PADDING_HORIZONTAL,
     paddingVertical: 3,
-    borderRadius: 7,
+    borderRadius: 10,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-start',

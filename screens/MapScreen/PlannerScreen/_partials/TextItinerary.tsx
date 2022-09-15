@@ -26,6 +26,7 @@ import OwnScooter from '@icons/bottom-route-headers/own-scooter.svg'
 import Walking from '@icons/bottom-route-headers/walking.svg'
 
 import ChevronRightIconSVG from '@icons/chevron-right-small.svg'
+import IsLiveSvg from '@icons/is-live.svg'
 import { TravelModes } from '@types'
 import {
   colors,
@@ -268,12 +269,13 @@ export const TextItinerary = ({
         ]}
       >
         {HeaderIcon && <HeaderIcon width={30} height={30} />}
+        {firstStop?.realTime && (
+          <View>
+            <IsLiveSvg fill={colors.white} />
+          </View>
+        )}
         <Text
-          style={[
-            styles.textMargin,
-            styles.textBold,
-            { color: getHeaderTextColor(provider) },
-          ]}
+          style={[styles.textBold, { color: getHeaderTextColor(provider) }]}
         >
           {headerTitle(
             firstStop?.startTime && //TODO Live data from getMhdStopStatusData(firstStop.id)

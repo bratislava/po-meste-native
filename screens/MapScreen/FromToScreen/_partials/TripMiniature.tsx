@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 import { LoadingView } from '@components'
+import IsLiveSvg from '@icons/is-live.svg'
 import { LegModes, MicromobilityProvider } from '@types'
 import {
   colors,
@@ -143,6 +144,11 @@ const TripMiniature = ({
             )}
             {startStationName.length > 0 && (
               <View style={styles.atTimeContainer}>
+                {isfirstStopLive && (
+                  <View>
+                    <IsLiveSvg fill={colors.brightGreen} />
+                  </View>
+                )}
                 {diffMinutes != undefined && (
                   <Text style={styles.atTime}>
                     {diffMinutes < 0

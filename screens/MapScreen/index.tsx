@@ -92,13 +92,13 @@ const plannerScreenHeader = (props: StackHeaderProps) => {
                 }}
               >
                 <Text>
-                  {params.fromPlace.slice(0, params.fromPlace.indexOf(','))}
+                  {params.fromPlace?.slice(0, params.fromPlace.indexOf(','))}
                 </Text>
                 <View style={{ paddingHorizontal: 11 }}>
                   <ArrowRightSvg fill={colors.primary} width={14} height={14} />
                 </View>
                 <Text>
-                  {params.toPlace.slice(0, params.toPlace.indexOf(','))}
+                  {params.toPlace?.slice(0, params.toPlace.indexOf(','))}
                 </Text>
               </Text>
             )

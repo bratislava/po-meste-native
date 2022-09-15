@@ -153,6 +153,7 @@ export const TextItinerary = ({
   }
 
   const renderTransitOnFoot = (leg: LegProps) => {
+    const durationMinutes = leg.duration && Math.floor(leg.duration / 60)
     return (
       <View style={[styles.card, s.horizontalMargin]}>
         <View style={styles.left}>
@@ -165,10 +166,10 @@ export const TextItinerary = ({
               fill={colors.darkText}
             />
             <View style={styles.textMargin}>
-              {leg.duration !== undefined && (
+              {durationMinutes && (
                 <Text style={[s.boldText, { fontSize: 14, lineHeight: 14 }]}>
                   {i18n.t('screens.PlannerScreen.minShort', {
-                    count: Math.floor(leg.duration / 60),
+                    count: durationMinutes < 1 ? '<1' : durationMinutes,
                   })}
                 </Text>
               )}
@@ -249,6 +250,12 @@ export const TextItinerary = ({
       : provider === MicromobilityProvider.tier
       ? 'Tier'
       : ''
+
+  const lastLeg = legs[legs.length - 1]
+  const renderWalkDestinationIcon =
+    lastLeg?.mode === LegModes.walk &&
+    lastLeg.duration &&
+    lastLeg.duration / 60 > 1
 
   return (
     <View style={styles.container}>
@@ -352,15 +359,24 @@ export const TextItinerary = ({
                 {getLastRentedInstanceIndex === index &&
                   renderProviderIconWithText(leg.from.name)}
                 {leg.mode === LegModes.walk &&
-                  leg.duration &&
-                  leg.duration / 60 > 1 &&
+                  !(
+                    index === legs.length - 1 &&
+                    leg.duration &&
+                    leg.duration / 60 < 1
+                  ) &&
                   renderTransitOnFoot(leg)}
                 {leg.mode === LegModes.bicycle &&
                   renderTransitOnMicromobility(leg)}
                 {leg.mode !== LegModes.bicycle &&
                   leg.mode !== LegModes.walk &&
-                  renderTransitOnOther(leg, index === legs.length - 1)}
-                {index === legs.length - 1 && (
+                  renderTransitOnOther(
+                    leg,
+                    index === legs.length - 1 ||
+                      (index === legs.length - 2 &&
+                        legs[legs.length - 1].mode === LegModes.walk &&
+                        !renderWalkDestinationIcon)
+                  )}
+                {index === legs.length - 1 && renderWalkDestinationIcon && (
                   <View
                     style={[
                       styles.card,

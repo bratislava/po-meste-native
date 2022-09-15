@@ -31,7 +31,11 @@ interface MhdTransitCardProps {
 
 const MhdTransitCard = ({ leg, isLastLeg }: MhdTransitCardProps) => {
   const trip = useQuery(['getMhdTrip', leg.tripId], async () =>
-    getMhdTrip(_.trimStart(leg.tripId, '1:'))
+    getMhdTrip(
+      leg.tripId?.startsWith('1:')
+        ? leg.tripId.replace('1:', '')
+        : leg.tripId ?? ''
+    )
   )
   const startTime =
     leg.startTime &&
@@ -241,7 +245,7 @@ const MhdTransitCard = ({ leg, isLastLeg }: MhdTransitCardProps) => {
 
 const styles = StyleSheet.create({
   card: {
-    paddingHorizontal: ITINERARY_PADDING_HORIZONTAL,
+    paddingHorizontal: ITINERARY_PADDING_HORIZONTAL || 10,
     paddingVertical: 3,
     borderRadius: 10,
     display: 'flex',

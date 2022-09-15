@@ -91,6 +91,12 @@ const TripMiniature = ({
     }
   }, [firstStopDateTime])
 
+  const lastLeg = legs && legs[legs?.length - 1]
+  const ignoreLastShortWalk =
+    lastLeg?.mode === LegModes.walk &&
+    lastLeg?.duration &&
+    Math.floor(lastLeg.duration / 60) < 1
+
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
       <View style={styles.containerOuter}>
@@ -115,17 +121,24 @@ const TripMiniature = ({
           <View style={styles.leftContainer}>
             {legs && (
               <View style={styles.legsContainer}>
-                {legs.map((leg, index) => (
-                  <Leg
-                    key={index}
-                    isLast={index === legs.length - 1}
-                    mode={leg.mode}
-                    duration={leg.duration}
-                    color={leg.routeColor}
-                    shortName={leg.routeShortName}
-                    TransportIcon={getIcon(provider, isScooter)}
-                  />
-                ))}
+                {legs.map((leg, index) => {
+                  if (index === legs.length - 1 && ignoreLastShortWalk) {
+                    return null
+                  }
+                  return (
+                    <Leg
+                      key={index}
+                      isLast={
+                        index === legs.length - (ignoreLastShortWalk ? 2 : 1)
+                      }
+                      mode={leg.mode}
+                      duration={leg.duration}
+                      color={leg.routeColor}
+                      shortName={leg.routeShortName}
+                      TransportIcon={getIcon(provider, isScooter)}
+                    />
+                  )
+                })}
               </View>
             )}
             {startStationName.length > 0 && (

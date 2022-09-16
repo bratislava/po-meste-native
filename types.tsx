@@ -95,8 +95,8 @@ export type MapParamList = {
     longitude?: number
     fromNavigation: boolean
     toNavigation: boolean
-    fromCoords: { latitude: number; longitude: number }
-    toCoords: { latitude: number; longitude: number }
+    fromCoordsName: { latitude: number; longitude: number; name: string }
+    toCoordsName: { latitude: number; longitude: number; name: string }
   }
   FeedbackScreen: undefined
 }

@@ -86,6 +86,7 @@ export default {
       start: 'Start',
       end: 'End',
       departAt: 'Depart at',
+      price: 'price ~{{count}}€',
     },
     ChooseLocationScreen: {
       screenTitle: 'Choose location',

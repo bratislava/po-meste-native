@@ -652,12 +652,12 @@ export default function Planner(props: PlannerProps) {
         latitude: fromCoordinates?.latitude,
         longitude: fromCoordinates?.longitude,
         fromNavigation: true,
-        fromCoords: fromCoordinates,
-        toCoords: toCoordinates,
+        fromCoordsName: { ...fromCoordinates, name: fromName },
+        toCoordsName: { ...toCoordinates, name: toName },
       } as never
     )
     fromBottomSheetRef?.current?.close()
-  }, [fromCoordinates, navigation, toCoordinates])
+  }, [fromCoordinates, navigation, toCoordinates, fromName, toName])
 
   const setLocationFromMapTo = useCallback(() => {
     navigation.navigate(
@@ -666,12 +666,12 @@ export default function Planner(props: PlannerProps) {
         latitude: toCoordinates?.latitude,
         longitude: toCoordinates?.longitude,
         toNavigation: true,
-        fromCoords: fromCoordinates,
-        toCoords: toCoordinates,
+        fromCoordsName: { ...fromCoordinates, name: fromName },
+        toCoordsName: { ...toCoordinates, name: toName },
       } as never
     )
     toBottomSheetRef?.current?.close()
-  }, [fromCoordinates, navigation, toCoordinates])
+  }, [fromCoordinates, navigation, toCoordinates, fromName, toName])
 
   const getElements = ({
     ommitFirst,

@@ -88,6 +88,7 @@ export default {
       start: 'Štart',
       end: 'Koniec',
       departAt: 'Vyraziť o',
+      price: 'cena ~{{count}}€',
     },
     ChooseLocationScreen: {
       screenTitle: 'Výber miesta',

@@ -137,6 +137,10 @@ export default function PlannerScreen({
           height: 4,
           marginTop: 4,
         }}
+        handleStyle={{
+          paddingTop: 14,
+          paddingBottom: 10,
+        }}
         backgroundStyle={{
           backgroundColor: getHeaderBgColor(travelMode, provider),
         }}

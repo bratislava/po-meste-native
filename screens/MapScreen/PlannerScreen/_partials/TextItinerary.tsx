@@ -253,10 +253,13 @@ export const TextItinerary = ({
       : ''
 
   const lastLeg = legs[legs.length - 1]
-  const renderWalkDestinationIcon =
-    lastLeg?.mode === LegModes.walk &&
-    lastLeg.duration &&
-    lastLeg.duration / 60 > 1
+  const renderDestinationIcon =
+    (lastLeg?.mode === LegModes.walk &&
+      lastLeg.duration &&
+      lastLeg.duration / 60 > 1) ||
+    ((lastLeg?.mode === LegModes.bicycle ||
+      lastLeg?.mode === LegModes.scooter) &&
+      !provider)
 
   return (
     <View style={styles.container}>
@@ -268,7 +271,13 @@ export const TextItinerary = ({
           { backgroundColor: getHeaderBgColor(travelMode, provider) },
         ]}
       >
-        {HeaderIcon && <HeaderIcon width={30} height={30} />}
+        {HeaderIcon && (
+          <HeaderIcon
+            width={30}
+            height={30}
+            style={{ marginRight: 10, top: -3 }}
+          />
+        )}
         {firstStop?.realTime && (
           <View>
             <IsLiveSvg fill={colors.white} />
@@ -376,9 +385,9 @@ export const TextItinerary = ({
                     index === legs.length - 1 ||
                       (index === legs.length - 2 &&
                         legs[legs.length - 1].mode === LegModes.walk &&
-                        !renderWalkDestinationIcon)
+                        !renderDestinationIcon)
                   )}
-                {index === legs.length - 1 && renderWalkDestinationIcon && (
+                {index === legs.length - 1 && renderDestinationIcon && (
                   <View
                     style={[
                       styles.card,
@@ -450,7 +459,8 @@ export const TextItinerary = ({
                     fontWeight: 'bold',
                   }}
                 >
-                  cena ~1,50€
+                  {/* TODO Calculate the price dynamically */}
+                  {i18n.t('screens.PlannerScreen.price', { count: 1.5 })}
                 </Text>
               </View>
             </View>
@@ -490,6 +500,7 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     justifyContent: 'center',
     paddingBottom: 14,
+    paddingTop: 4,
   },
   card: {
     paddingHorizontal: ITINERARY_PADDING_HORIZONTAL,

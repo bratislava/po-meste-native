@@ -445,6 +445,7 @@ export const TextItinerary = ({
                   })}
                   icon={
                     <ChevronRightIconSVG
+                      width={14}
                       height={14}
                       fill={getTextColor(provider)}
                       style={{ marginLeft: 14 }}

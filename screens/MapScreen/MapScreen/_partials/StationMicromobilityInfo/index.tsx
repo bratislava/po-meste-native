@@ -119,6 +119,8 @@ const StationMicromobilityInfo = ({
       ? 'Bajk'
       : provider === MicromobilityProvider.tier
       ? 'Tier'
+      : provider === MicromobilityProvider.bolt
+      ? 'Bolt'
       : ''
   const textColor =
     provider === MicromobilityProvider.tier ||
@@ -145,41 +147,42 @@ const StationMicromobilityInfo = ({
           <View>
             {station.num_bikes_available !== undefined && (
               <Text>
-                {i18n.t('screens.MapScreen.availableBikes', {
-                  amount: station.num_bikes_available,
-                })}
+                {i18n.t('screens.MapScreen.availableBikes')}
+                <Text style={s.boldText}>{station.num_bikes_available}</Text>
               </Text>
             )}
             {station.num_docks_available !== undefined && (
               <Text>
-                {i18n.t('screens.MapScreen.freeBikeSpaces', {
-                  amount: station.num_docks_available,
-                })}
+                {i18n.t('screens.MapScreen.freeBikeSpaces')}
+                <Text style={s.boldText}>{station.num_docks_available}</Text>
               </Text>
             )}
             {station.original?.attributes?.licencePlate !== undefined && ( // TODO remove from original
               <Text>
-                {i18n.t('screens.MapScreen.licencePlate', {
-                  id: station.original.attributes?.licencePlate, // TODO remove from original
-                })}
+                {i18n.t('screens.MapScreen.licencePlate')}
+                <Text style={s.boldText}>
+                  {station.original.attributes?.licencePlate}
+                </Text>
               </Text>
             )}
             {station?.original?.attributes?.batteryLevel !== undefined && ( // TODO remove from original
               <Text>
-                {i18n.t('screens.MapScreen.batteryCharge', {
-                  amount: station?.original?.attributes?.batteryLevel, // TODO remove from original
-                })}
+                {i18n.t('screens.MapScreen.batteryCharge')}
+                <Text style={s.boldText}>
+                  {station?.original?.attributes?.batteryLevel}%
+                </Text>
               </Text>
             )}
             {station?.original?.current_range_meters !== undefined && ( // TODO remove from original
               <Text>
-                {i18n.t('screens.MapScreen.currentRange', {
-                  kilometers: station?.original?.current_range_meters / 1000, // TODO remove from original
-                })}
+                {i18n.t('screens.MapScreen.currentRange')}
+                <Text style={s.boldText}>
+                  {station?.original?.current_range_meters / 1000} km
+                </Text>
               </Text>
             )}
           </View>
-          <View>
+          <View style={{ alignItems: 'center' }}>
             <Button
               contentStyle={{ backgroundColor: getButtonColor() }}
               titleStyle={[{ color: textColor }, { fontWeight: 'bold' }]}
@@ -271,12 +274,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   vehicleImage: {
-    width: 150,
+    width: 130,
+    margin: 20,
   },
   additionalText: {
     flex: 1,
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     paddingVertical: 20,
   },
 })

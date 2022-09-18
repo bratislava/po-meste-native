@@ -1024,7 +1024,7 @@ export default function Planner(props: PlannerProps) {
           inputPlaceholder={i18n.t(
             'screens.FromToScreen.Planner.toPlaceholder'
           )}
-          initialSnapIndex={0}
+          initialSnapIndex={-1}
           favoriteData={favoriteData}
           setFavoriteData={setFavoriteData}
         />

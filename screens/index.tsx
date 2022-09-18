@@ -35,6 +35,7 @@ const BottomTabNavigator = () => {
   return (
     <BottomTab.Navigator
       initialRouteName="Map"
+      backBehavior="initialRoute"
       tabBar={(props) => <TabBar {...props} />}
       screenOptions={{
         headerShown: false,

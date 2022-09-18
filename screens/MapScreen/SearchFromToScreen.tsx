@@ -77,10 +77,6 @@ export default function SearchFromToScreen({
     undefined
   )
 
-  useEffect(() => {
-    googleInputRef.current?.focus()
-  }, [googleInputRef])
-
   const saveFavoriteData = (data: FavoriteData) => {
     if (favoriteData) {
       AsyncStorage.setItem(FAVORITE_DATA_INDEX, JSON.stringify(data))
@@ -223,7 +219,6 @@ export default function SearchFromToScreen({
             onGooglePlaceChosen={onGooglePlaceChosen}
             inputPlaceholder={inputPlaceholder}
             googleInputRef={googleInputRef}
-            selectOnFocus
             addToHistory={addToHistory}
           />
         </View>

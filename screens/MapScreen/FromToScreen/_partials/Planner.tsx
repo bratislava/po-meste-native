@@ -17,7 +17,13 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { StyleSheet, Switch, Text, View } from 'react-native'
+import {
+  InteractionManager,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import {
   GooglePlaceDetail,
@@ -118,6 +124,15 @@ interface PlannerProps {
 export default function Planner(props: PlannerProps) {
   const { from: fromProp, to: toProp } = props
 
+  const [interactionsFinished, setInteractionsFinished] = useState(false)
+
+  useEffect(() => {
+    InteractionManager.runAfterInteractions(() => {
+      loadFavoriteData(setFavoriteData)
+      setInteractionsFinished(true)
+    })
+  }, [])
+
   const fromPropCoordinates = useMemo(
     () =>
       (fromProp?.latitude !== undefined &&
@@ -196,10 +211,6 @@ export default function Planner(props: PlannerProps) {
       saveFavoriteData(favoriteData)
     }
   }
-
-  useEffect(() => {
-    loadFavoriteData(setFavoriteData)
-  }, [])
   //#endregion "Favorites"
 
   const [locationPermisionError, setLocationPermisionError] =
@@ -776,8 +787,14 @@ export default function Planner(props: PlannerProps) {
     <View style={styles.container}>
       <View style={styles.header}>
         <FromToSelector
-          onFromPlacePress={() => fromBottomSheetRef?.current?.snapToIndex(0)}
-          onToPlacePress={() => toBottomSheetRef?.current?.snapToIndex(0)}
+          onFromPlacePress={() => {
+            fromBottomSheetRef?.current?.snapToIndex(0)
+            fromRef?.current?.focus()
+          }}
+          onToPlacePress={() => {
+            toBottomSheetRef?.current?.snapToIndex(0)
+            toRef?.current?.focus()
+          }}
           fromPlaceText={
             fromName ||
             (fromProp?.latitude !== undefined &&
@@ -1002,45 +1019,49 @@ export default function Planner(props: PlannerProps) {
             />
           )} */}
       </ScrollView>
-      <Portal hostName="MapScreen">
-        <SearchFromToScreen
-          sheetRef={fromBottomSheetRef}
-          getMyLocation={getMyLocation}
-          onGooglePlaceChosen={onGooglePlaceFromChosen}
-          googleInputRef={fromRef}
-          setLocationFromMap={setLocationFromMapFrom}
-          inputPlaceholder={i18n.t(
-            'screens.FromToScreen.Planner.fromPlaceholder'
-          )}
-          initialSnapIndex={-1}
-          favoriteData={favoriteData}
-          setFavoriteData={setFavoriteData}
-        />
-        <SearchFromToScreen
-          sheetRef={toBottomSheetRef}
-          onGooglePlaceChosen={onGooglePlaceToChosen}
-          googleInputRef={toRef}
-          setLocationFromMap={setLocationFromMapTo}
-          inputPlaceholder={i18n.t(
-            'screens.FromToScreen.Planner.toPlaceholder'
-          )}
-          initialSnapIndex={-1}
-          favoriteData={favoriteData}
-          setFavoriteData={setFavoriteData}
-        />
-      </Portal>
-      <BottomSheet
-        handleIndicatorStyle={s.handleStyle}
-        snapPoints={[400]}
-        index={-1}
-        enablePanDownToClose
-        ref={datetimeSheetRef}
-      >
-        <DateTimePicker
-          onConfirm={handleConfirm}
-          onScheduleTypeChange={handleOptionChange}
-        />
-      </BottomSheet>
+      {interactionsFinished && (
+        <Portal hostName="MapScreen">
+          <SearchFromToScreen
+            sheetRef={fromBottomSheetRef}
+            getMyLocation={getMyLocation}
+            onGooglePlaceChosen={onGooglePlaceFromChosen}
+            googleInputRef={fromRef}
+            setLocationFromMap={setLocationFromMapFrom}
+            inputPlaceholder={i18n.t(
+              'screens.FromToScreen.Planner.fromPlaceholder'
+            )}
+            initialSnapIndex={-1}
+            favoriteData={favoriteData}
+            setFavoriteData={setFavoriteData}
+          />
+          <SearchFromToScreen
+            sheetRef={toBottomSheetRef}
+            onGooglePlaceChosen={onGooglePlaceToChosen}
+            googleInputRef={toRef}
+            setLocationFromMap={setLocationFromMapTo}
+            inputPlaceholder={i18n.t(
+              'screens.FromToScreen.Planner.toPlaceholder'
+            )}
+            initialSnapIndex={-1}
+            favoriteData={favoriteData}
+            setFavoriteData={setFavoriteData}
+          />
+        </Portal>
+      )}
+      {interactionsFinished && (
+        <BottomSheet
+          handleIndicatorStyle={s.handleStyle}
+          snapPoints={[400]}
+          index={-1}
+          enablePanDownToClose
+          ref={datetimeSheetRef}
+        >
+          <DateTimePicker
+            onConfirm={handleConfirm}
+            onScheduleTypeChange={handleOptionChange}
+          />
+        </BottomSheet>
+      )}
     </View>
   )
 }

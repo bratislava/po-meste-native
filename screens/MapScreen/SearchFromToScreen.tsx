@@ -212,6 +212,7 @@ export default function SearchFromToScreen({
       snapPoints={['95%']}
       enablePanDownToClose
       handleIndicatorStyle={s.handleStyle}
+      onClose={() => googleInputRef?.current?.blur()}
     >
       <View style={styles.content}>
         <View style={[s.horizontalMargin, styles.googleForm]}>

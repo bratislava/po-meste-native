@@ -11,7 +11,7 @@ import CyclingSvg from '@icons/vehicles/cycling.svg'
 import ScooterSvg from '@icons/vehicles/scooter.svg'
 import WalkingSvg from '@icons/walking.svg'
 
-import { BOTTOM_TAB_NAVIGATOR_HEIGHT, Button, DashedLine } from '@components'
+import { BOTTOM_TAB_NAVIGATOR_HEIGHT, DashedLine } from '@components'
 import { LegModes, MicromobilityProvider } from '@types'
 import React, { useEffect, useState } from 'react'
 
@@ -25,19 +25,16 @@ import OwnBicycle from '@icons/bottom-route-headers/own-bicycle.svg'
 import OwnScooter from '@icons/bottom-route-headers/own-scooter.svg'
 import Walking from '@icons/bottom-route-headers/walking.svg'
 
-import ChevronRightIconSVG from '@icons/chevron-right-small.svg'
+import ProviderButton from '@components/ProviderButton'
 import IsLiveSvg from '@icons/is-live.svg'
 import { TravelModes } from '@types'
 import {
   colors,
-  getColor,
   getHeaderBgColor,
   getIcon,
   getMicromobilityImage,
   getProviderName,
-  getTextColor,
   LegProps,
-  openProviderApp,
   s,
 } from '@utils'
 import MhdTransitCard from './_partials/MhdTransitCard'
@@ -433,26 +430,7 @@ export const TextItinerary = ({
             >
               <View>{getMicromobilityImage(provider, 90, 90)}</View>
               <View style={{ alignItems: 'center' }}>
-                <Button
-                  size="small"
-                  contentStyle={{
-                    backgroundColor: getColor(provider),
-                  }}
-                  titleStyle={{ color: getTextColor(provider) }}
-                  onPress={() => openProviderApp(provider)}
-                  title={i18n.t('screens.MapScreen.rent', {
-                    provider: buttonTitle,
-                  })}
-                  icon={
-                    <ChevronRightIconSVG
-                      width={14}
-                      height={14}
-                      fill={getTextColor(provider)}
-                      style={{ marginLeft: 14 }}
-                    />
-                  }
-                  iconRight
-                />
+                <ProviderButton provider={provider} />
                 <Text
                   style={{
                     ...s.textTiny,

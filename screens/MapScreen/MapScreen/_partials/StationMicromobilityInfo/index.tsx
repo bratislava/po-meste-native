@@ -1,9 +1,7 @@
 import i18n from 'i18n-js'
 import React, { useCallback } from 'react'
-import { Platform, StyleSheet, Text, View } from 'react-native'
-import AppLink from 'react-native-app-link'
+import { StyleSheet, Text, View } from 'react-native'
 
-import { Button } from '@components'
 import { MicromobilityProvider } from '@types'
 import {
   boltPrice,
@@ -17,7 +15,7 @@ import {
   tierPrice,
 } from '@utils'
 
-import ChevronRightIconSVG from '@icons/chevron-right-small.svg'
+import ProviderButton from '@components/ProviderButton'
 
 interface StationMicromobilityInfoProps {
   station: StationMicromobilityProps | FreeBikeStatusProps
@@ -30,25 +28,6 @@ const StationMicromobilityInfo = ({
 }: StationMicromobilityInfoProps) => {
   const getMicromobilityIcon = useCallback(() => {
     return getMicromobilityImage(provider, 150)
-  }, [provider])
-
-  const getButtonColor = useCallback(() => {
-    let color = undefined
-    switch (provider) {
-      case MicromobilityProvider.rekola:
-        color = colors.rekolaColor
-        break
-      case MicromobilityProvider.slovnaftbajk:
-        color = colors.slovnaftColor
-        break
-      case MicromobilityProvider.tier:
-        color = colors.tierColor
-        break
-      case MicromobilityProvider.bolt:
-        color = colors.boltColor
-        break
-    }
-    return color
   }, [provider])
 
   const getTitlePrice = useCallback(() => {
@@ -112,21 +91,6 @@ const StationMicromobilityInfo = ({
   }, [provider])
 
   const providerTitlePrice = getTitlePrice()
-  const buttonTitle =
-    provider === MicromobilityProvider.rekola
-      ? 'Rekola'
-      : provider === MicromobilityProvider.slovnaftbajk
-      ? 'Bajk'
-      : provider === MicromobilityProvider.tier
-      ? 'Tier'
-      : provider === MicromobilityProvider.bolt
-      ? 'Bolt'
-      : ''
-  const textColor =
-    provider === MicromobilityProvider.tier ||
-    provider === MicromobilityProvider.slovnaftbajk
-      ? colors.darkText
-      : colors.white
   return (
     <View style={styles.container}>
       <View style={[styles.header, s.horizontalMargin]}>
@@ -183,70 +147,7 @@ const StationMicromobilityInfo = ({
             )}
           </View>
           <View style={{ alignItems: 'center' }}>
-            <Button
-              contentStyle={{ backgroundColor: getButtonColor() }}
-              titleStyle={[{ color: textColor }, { fontWeight: 'bold' }]}
-              onPress={() => {
-                switch (provider) {
-                  case MicromobilityProvider.rekola:
-                    AppLink.openInStore({
-                      appName: 'Rekola',
-                      appStoreId: 888759232,
-                      appStoreLocale: 'sk',
-                      playStoreId: 'cz.rekola.app',
-                    })
-                      .then()
-                      .catch()
-                    break
-                  case MicromobilityProvider.slovnaftbajk:
-                    AppLink.openInStore({
-                      appName: 'slovnaftbajk',
-                      appStoreId: 1364531772,
-                      appStoreLocale: 'sk',
-                      playStoreId: 'hu.cycleme.slovnaftbajk',
-                    })
-                      .then()
-                      .catch()
-                    break
-                  case MicromobilityProvider.tier:
-                    AppLink.openInStore({
-                      appName: 'tier',
-                      appStoreId: 1436140272,
-                      appStoreLocale: 'sk',
-                      playStoreId: 'com.tier.app',
-                    })
-                      .then()
-                      .catch()
-                    break
-                  case MicromobilityProvider.bolt:
-                    AppLink.maybeOpenURL(
-                      Platform.select({
-                        android: station.original.rental_uris.android,
-                        ios: station.original.rental_uris.ios,
-                      }) ?? '',
-                      {
-                        appName: 'bolt',
-                        appStoreId: 675033630,
-                        appStoreLocale: 'sk',
-                        playStoreId: 'ee.mtakso.client',
-                      }
-                    )
-                    break
-                }
-              }}
-              size="small"
-              title={i18n.t('screens.MapScreen.rent', {
-                provider: buttonTitle,
-              })}
-              icon={
-                <ChevronRightIconSVG
-                  height={14}
-                  fill={textColor}
-                  style={{ marginLeft: 14 }}
-                />
-              }
-              iconRight
-            />
+            <ProviderButton provider={provider} station={station} />
           </View>
         </View>
       </View>

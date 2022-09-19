@@ -93,6 +93,7 @@ export default {
     ChooseLocationScreen: {
       screenTitle: 'Výber miesta',
       confirmLocation: 'Potvrdiť miesto ',
+      unnamedLocation: 'Bez názvu: {{latitude}};{{longitude}}',
       moveTheMapAndSelectTheDesiredPoint:
         'Pohnite mapou a zvoľte požadovaný bod.',
     },

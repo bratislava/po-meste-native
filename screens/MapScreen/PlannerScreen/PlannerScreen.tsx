@@ -32,6 +32,8 @@ export default function PlannerScreen({
   const legs = route?.params?.legs
   const isScooter = route?.params?.isScooter
   const travelMode = route?.params?.travelMode
+  const toPlace = route?.params?.toPlace
+  const fromPlace = route?.params?.fromPlace
   const bottomSheetSnapPoints = [
     BOTTOM_VEHICLE_BAR_HEIGHT_ALL + 30,
     '60%',
@@ -150,6 +152,8 @@ export default function PlannerScreen({
           provider={provider}
           isScooter={isScooter}
           travelMode={travelMode}
+          fromPlace={fromPlace}
+          toPlace={toPlace}
         />
       </BottomSheet>
     </View>

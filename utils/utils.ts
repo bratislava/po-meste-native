@@ -298,3 +298,9 @@ export const getZoomLevel = (region: Region | null) => {
 export const isFavoritePlace = (
   obj: FavoritePlace | FavoriteStop | null | undefined
 ): obj is FavoritePlace => (obj ? 'id' in obj : false)
+
+export const getShortAddress = (fullAddress: string) =>
+  fullAddress.slice(
+    0,
+    fullAddress.indexOf(',') === -1 ? undefined : fullAddress.indexOf(',')
+  )

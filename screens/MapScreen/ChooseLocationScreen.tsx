@@ -55,9 +55,10 @@ export default function ChooseLocation({
             let name
             if (houseNumberRegex.test(address.name)) {
               if (address.thoroughfare == null) {
-                name = `Bez názvu: ${region.latitude.toFixed(
-                  5
-                )},${region.longitude.toFixed(5)}`
+                name = i18n.t('screens.ChooseLocationScreen.unnamedLocation', {
+                  latitude: region.latitude.toFixed(5),
+                  longitude: region.longitude.toFixed(5),
+                })
               } else {
                 name = `${address.thoroughfare} ${address.name}`
               }

@@ -16,6 +16,7 @@ import ArrowRightSvg from '@icons/arrow-right.svg'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
+import { getShortAddress } from '@utils/utils'
 import { Text, View } from 'react-native'
 
 const MapStack = createStackNavigator<MapParamList>()
@@ -92,24 +93,12 @@ const plannerScreenHeader = (props: StackHeaderProps) => {
                 }}
               >
                 <Text>
-                  {params.fromPlace?.slice(
-                    0,
-                    params.fromPlace.indexOf(',') === -1
-                      ? undefined
-                      : params.fromPlace.indexOf(',')
-                  )}
+                  {params.fromPlace && getShortAddress(params.fromPlace)}
                 </Text>
                 <View style={{ paddingHorizontal: 11 }}>
                   <ArrowRightSvg fill={colors.primary} width={14} height={14} />
                 </View>
-                <Text>
-                  {params.toPlace?.slice(
-                    0,
-                    params.toPlace.indexOf(',') === -1
-                      ? undefined
-                      : params.toPlace.indexOf(',')
-                  )}
-                </Text>
+                <Text>{params.toPlace && getShortAddress(params.toPlace)}</Text>
               </Text>
             )
           : undefined

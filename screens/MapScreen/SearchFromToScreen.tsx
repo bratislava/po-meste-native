@@ -1,4 +1,7 @@
-import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet'
+import BottomSheet, {
+  BottomSheetScrollView,
+  TouchableWithoutFeedback,
+} from '@gorhom/bottom-sheet'
 import i18n from 'i18n-js'
 import React, {
   Dispatch,
@@ -214,7 +217,10 @@ export default function SearchFromToScreen({
       handleIndicatorStyle={s.handleStyle}
       onClose={() => googleInputRef?.current?.blur()}
     >
-      <View style={styles.content}>
+      <TouchableWithoutFeedback
+        style={styles.content}
+        onPress={() => googleInputRef?.current?.blur()}
+      >
         <View style={[s.horizontalMargin, styles.googleForm]}>
           <Autocomplete
             onGooglePlaceChosen={onGooglePlaceChosen}
@@ -364,7 +370,7 @@ export default function SearchFromToScreen({
             ))}
           </BottomSheetScrollView>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
       {modal && (
         <FavoriteModal
           type={modal.type}

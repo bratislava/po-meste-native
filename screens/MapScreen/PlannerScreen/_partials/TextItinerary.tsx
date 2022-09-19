@@ -34,6 +34,7 @@ import {
   getIcon,
   getMicromobilityImage,
   getProviderName,
+  getShortAddress,
   LegProps,
   s,
 } from '@utils'
@@ -44,6 +45,8 @@ interface TextItineraryProps {
   provider?: MicromobilityProvider
   isScooter?: boolean
   travelMode: TravelModes
+  fromPlace?: string
+  toPlace?: string
 }
 
 export const ITINERARY_ICON_WIDTH = 20
@@ -57,6 +60,8 @@ export const TextItinerary = ({
   provider,
   isScooter,
   travelMode,
+  fromPlace,
+  toPlace,
 }: TextItineraryProps) => {
   const [timeNow, setTimeNow] = useState(LocalTime.now())
   const [updateEveryMinuteInterval, setUpdateEveryMinuteInterval] = useState<
@@ -337,7 +342,7 @@ export const TextItinerary = ({
                         </View>
                         {/* TODO add location based on google or get it from previous screen */}
                         <Text style={[styles.textMargin, styles.textBold]}>
-                          {i18n.t('screens.PlannerScreen.start')}
+                          {fromPlace && getShortAddress(fromPlace)}
                         </Text>
                       </View>
                     </View>
@@ -403,7 +408,7 @@ export const TextItinerary = ({
                         </View>
                         {/* TODO add location based on google or get it from previous screen */}
                         <Text style={styles.textBold}>
-                          {i18n.t('screens.PlannerScreen.end')}
+                          {toPlace && getShortAddress(toPlace)}
                         </Text>
                       </View>
                     </View>

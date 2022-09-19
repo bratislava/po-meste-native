@@ -158,7 +158,7 @@ export default function Planner(props: PlannerProps) {
   const fromPropName = fromProp?.name
   const toPropName = toProp?.name
 
-  const { setFeedbackSent, getLocationWithPermission } =
+  const { setFeedbackSent, getLocationWithPermission, location } =
     useContext(GlobalStateContext)
 
   const navigation = useNavigation()
@@ -561,6 +561,13 @@ export default function Planner(props: PlannerProps) {
     toRef.current?.setAddressText(toName || '')
   }, [toRef, toName])
 
+  useEffect(() => {
+    if (location) {
+      setFromName(i18n.t('screens.FromToScreen.Planner.currentPosition'))
+      setFromCoordinates(location.coords)
+    }
+  }, [])
+
   const getLocationAsync = useCallback(
     async (
       setCoordinates: (location: {
@@ -569,13 +576,9 @@ export default function Planner(props: PlannerProps) {
       }) => void,
       reask: boolean
     ) => {
-      const location = await getLocationWithPermission(true, reask)
-      if (location) {
-        const { latitude, longitude } = location.coords
-        setCoordinates({
-          latitude,
-          longitude,
-        })
+      const currentLocation = await getLocationWithPermission(true, reask)
+      if (currentLocation) {
+        setCoordinates(currentLocation.coords)
         setFromName(i18n.t('screens.FromToScreen.Planner.currentPosition'))
       }
     },

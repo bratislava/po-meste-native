@@ -20,12 +20,12 @@ const renderTabBar = (
   return (
     <TabBar
       {...props}
-      indicatorStyle={styles.tabBarIndicator}
       style={[styles.tabBar, variant === 'large' && { elevation: 0 }]}
       tabStyle={[
         styles.tabBarTab,
         variant === 'large' && styles.tabBarTabLarge,
       ]}
+      pressColor="rgba(0,0,0,0)"
       renderLabel={({ route, focused }) => {
         const [title, subtitle] = route.title
           ? route.title.split('|')
@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.primary,
     borderBottomWidth: 5,
   },
-  tabBarIndicator: { display: 'none' },
   tabBarTab: {
     backgroundColor: 'white',
     display: 'flex',

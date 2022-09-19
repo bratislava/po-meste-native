@@ -203,14 +203,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 8 },
     marginBottom: 10,
-  },
-  containerOuter: {
+    elevation: 10,
     borderRadius: 8,
     overflow: 'hidden',
     backgroundColor: 'white',
     minHeight: 100,
-    elevation: 10,
   },
+  containerOuter: {},
   row: {
     display: 'flex',
     flexDirection: 'row',

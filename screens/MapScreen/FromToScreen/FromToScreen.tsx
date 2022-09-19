@@ -1,12 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack'
 import i18n from 'i18n-js'
-import React, { useEffect } from 'react'
-import {
-  InteractionManager,
-  StyleSheet,
-  useWindowDimensions,
-  View,
-} from 'react-native'
+import React from 'react'
+import { StyleSheet, useWindowDimensions, View } from 'react-native'
 
 import { colors } from '@utils'
 
@@ -28,16 +23,16 @@ export default function FromToScreen({
   const layout = useWindowDimensions()
   const [index, setIndex] = React.useState(0)
 
-  // For load time checking
-  useEffect(() => {
-    const start = new Date()
-    InteractionManager.runAfterInteractions(() => {
-      const end = new Date()
-      console.log(
-        `FromToScreen rendered in ${end.getTime() - start.getTime()}ms`
-      )
-    })
-  }, [])
+  // // For load time checking
+  // useEffect(() => {
+  //   const start = new Date()
+  //   InteractionManager.runAfterInteractions(() => {
+  //     const end = new Date()
+  //     console.log(
+  //       `FromToScreen rendered in ${end.getTime() - start.getTime()}ms`
+  //     )
+  //   })
+  // }, [])
 
   const routes = [
     {

@@ -26,6 +26,7 @@ const renderTabBar = (
         variant === 'large' && styles.tabBarTabLarge,
       ]}
       pressColor="rgba(0,0,0,0)"
+      pressOpacity={0}
       renderLabel={({ route, focused }) => {
         const [title, subtitle] = route.title
           ? route.title.split('|')

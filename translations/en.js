@@ -91,7 +91,7 @@ export default {
     ChooseLocationScreen: {
       screenTitle: 'Choose location',
       confirmLocation: 'Confirm location',
-      unnamedLocation: 'Unnamed: {{latitude}};{{longitude}}',
+      unnamedLocation: 'Unnamed: {{latitude}},{{longitude}}',
       moveTheMapAndSelectTheDesiredPoint:
         'Move the map and select the desired point.',
     },

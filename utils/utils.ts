@@ -300,7 +300,9 @@ export const isFavoritePlace = (
 ): obj is FavoritePlace => (obj ? 'id' in obj : false)
 
 export const getShortAddress = (fullAddress: string) =>
-  fullAddress.slice(
-    0,
-    fullAddress.indexOf(',') === -1 ? undefined : fullAddress.indexOf(',')
-  )
+  /[0-9]{2}\.[0-9]{5,}/.test(fullAddress)
+    ? fullAddress
+    : fullAddress.slice(
+        0,
+        fullAddress.indexOf(',') === -1 ? undefined : fullAddress.indexOf(',')
+      )

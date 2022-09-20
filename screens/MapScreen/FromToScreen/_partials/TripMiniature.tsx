@@ -207,9 +207,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     overflow: 'hidden',
     backgroundColor: 'white',
-    minHeight: 100,
   },
-  containerOuter: {},
+  containerOuter: { minHeight: 100 },
   row: {
     display: 'flex',
     flexDirection: 'row',

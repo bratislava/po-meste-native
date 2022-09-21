@@ -25,6 +25,40 @@ const VehicleSelector = ({
     <ScrollView horizontal>
       <View style={styles.container}>
         {vehicles.map((vehicle, index) => {
+          //Price is in cents
+          const priceToString = (price?: number) =>
+            price
+              ? `${
+                  price % 100 === 0
+                    ? price / 100
+                    : (price / 100).toFixed(2).replace('.', ',')
+                }`
+              : undefined
+
+          const getDurationOrPrice = (isPrice = false) => {
+            const min = isPrice
+              ? priceToString(vehicle.priceMin)
+              : vehicle.estimatedTimeMin
+            const max = isPrice
+              ? priceToString(vehicle.priceMax)
+              : vehicle.estimatedTimeMax
+            if (!min) {
+              return null
+            }
+            if (isPrice && (vehicle.mode === TravelModes.mhd || min === max)) {
+              return `~${min}€`
+            }
+            if (min === max || (!isPrice && min > 100)) {
+              return `${min}${isPrice ? '€' : ' min'}`
+            }
+            return `${min}${min && max && ` - `}${max}${
+              (min || max) && (isPrice ? '€' : ' min')
+            }`
+          }
+
+          const duration = getDurationOrPrice()
+          const price = getDurationOrPrice(true)
+
           return (
             <TouchableOpacity
               key={index}
@@ -55,15 +89,7 @@ const VehicleSelector = ({
                     : {},
                 ]}
               >
-                {vehicle.estimatedTimeMin}
-                {vehicle.estimatedTimeMin !== undefined &&
-                  vehicle.estimatedTimeMax !== undefined &&
-                  ` - `}
-                {vehicle.estimatedTimeMax}
-                {vehicle.estimatedTimeMin !== undefined ||
-                vehicle.estimatedTimeMax !== undefined
-                  ? ` min`
-                  : `--`}
+                {duration ? duration : '--'}
               </Text>
               <Text
                 style={[
@@ -73,7 +99,7 @@ const VehicleSelector = ({
                     : {},
                 ]}
               >
-                {vehicle.priceMin}
+                {price ? price : '--'}
               </Text>
             </TouchableOpacity>
           )
@@ -93,7 +119,7 @@ const styles = StyleSheet.create({
     padding: 7,
     borderWidth: 2,
     borderColor: colors.mediumGray,
-    width: 85,
+    width: 87,
     height: 70,
     display: 'flex',
     alignItems: 'center',
@@ -104,7 +130,9 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   vehicleContainerSelected: {
+    padding: 9,
     borderWidth: 0,
+    borderColor: colors.primary,
     backgroundColor: colors.primary,
   },
   vehicleIcon: {
@@ -116,9 +144,11 @@ const styles = StyleSheet.create({
     ...s.textTiny,
   },
   vehicleEstimatedTimeSelected: {
+    ...s.textTiny,
     color: 'white',
   },
   vehiclePrice: {
+    ...s.textTiny,
     color: colors.gray,
   },
   vehiclePriceSelected: {

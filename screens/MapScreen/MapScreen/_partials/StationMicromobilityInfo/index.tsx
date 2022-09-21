@@ -78,7 +78,7 @@ const StationMicromobilityInfo = ({
     let providerPrice: {
       unlockPrice?: number
       price: number
-      duration: number
+      interval: number
       unit: { translate: boolean; text: string }
       translationOption: string
     } | null = null
@@ -104,7 +104,7 @@ const StationMicromobilityInfo = ({
     const formattedPrice = {
       unlockPrice: providerPrice.unlockPrice,
       price: providerPrice.price / 100,
-      duration: providerPrice.duration.toString(),
+      interval: providerPrice.interval.toString(),
       unit: providerPrice.unit.translate
         ? i18n.t(providerPrice.unit.text)
         : providerPrice.unit.text,
@@ -121,9 +121,9 @@ const StationMicromobilityInfo = ({
         formattedPrice.price.toFixed(2)
       }
     }
-    if (providerPrice.duration === 1) formattedPrice.duration = ''
+    if (providerPrice.interval === 1) formattedPrice.interval = ''
     else {
-      formattedPrice.duration = formattedPrice.duration + ' '
+      formattedPrice.interval = formattedPrice.interval + ' '
     }
     const price = i18n.t(translationOption, {
       ...formattedPrice,

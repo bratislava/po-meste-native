@@ -15,6 +15,7 @@ import { ValidationError } from 'yup'
 import {
   API_ERROR_TEXT,
   LATEST_DATASET_INDEX,
+  prices,
   trolleybusLineNumbers,
 } from './constants'
 import { colors } from './theme'
@@ -298,3 +299,24 @@ export const getZoomLevel = (region: Region | null) => {
 export const isFavoritePlace = (
   obj: FavoritePlace | FavoriteStop | null | undefined
 ): obj is FavoritePlace => (obj ? 'id' in obj : false)
+
+export const getShortAddress = (fullAddress: string) =>
+  /[0-9]{2}\.[0-9]{5,}/.test(fullAddress)
+    ? fullAddress
+    : fullAddress.slice(
+        0,
+        fullAddress.indexOf(',') === -1 ? undefined : fullAddress.indexOf(',')
+      )
+
+export const getMicromobilityPrice = (provider: MicromobilityProvider) => {
+  switch (provider) {
+    case MicromobilityProvider.rekola:
+      return prices.rekola
+    case MicromobilityProvider.slovnaftbajk:
+      return prices.slovnaftbajk
+    case MicromobilityProvider.tier:
+      return prices.tier
+    case MicromobilityProvider.bolt:
+      return prices.bolt
+  }
+}

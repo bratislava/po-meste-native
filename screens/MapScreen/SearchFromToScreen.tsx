@@ -218,157 +218,165 @@ export default function SearchFromToScreen({
       onClose={() => googleInputRef?.current?.blur()}
     >
       <TouchableWithoutFeedback
-        style={styles.content}
+        style={{ height: '100%' }}
         onPress={() => googleInputRef?.current?.blur()}
       >
-        <View style={[s.horizontalMargin, styles.googleForm]}>
-          <Autocomplete
-            onGooglePlaceChosen={onGooglePlaceChosen}
-            inputPlaceholder={inputPlaceholder}
-            googleInputRef={googleInputRef}
-            addToHistory={addToHistory}
-          />
-        </View>
-        <View style={s.horizontalMargin}>
-          <Text style={styles.categoriesTitle}>
-            {i18n.t('screens.SearchFromToScreen.myAddresses')}
-          </Text>
-          <ScrollView
-            contentContainerStyle={styles.horizontalScrollView}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          >
-            {favoriteData.favoritePlaces.map((favoriteItem, index) => (
-              <FavoriteTile
-                key={index}
-                favoriteItem={favoriteItem}
-                onPress={() => handleFavoritePress(favoriteItem)}
-                onMorePress={() =>
-                  setModal({
-                    type: 'place',
-                    favorite: favoriteItem,
-                    onConfirm: addOrUpdatePlace,
-                    onDelete: !favoriteItem.isHardSetName
-                      ? deleteFavorite
-                      : undefined,
-                  })
-                }
-              />
-            ))}
-          </ScrollView>
-          {renderAddButton(() =>
-            setModal({
-              type: 'place',
-              onConfirm: addOrUpdatePlace,
-            })
-          )}
-        </View>
-        <View style={[styles.categoryStops, s.horizontalMargin]}>
-          <Text style={styles.categoriesTitle}>
-            {i18n.t('screens.SearchFromToScreen.myStops')}
-          </Text>
-          <ScrollView
-            contentContainerStyle={styles.horizontalScrollView}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          >
-            {favoriteData.favoriteStops.length > 0 ? (
-              favoriteData.favoriteStops.map((favoriteItem, index) => (
+        <View style={styles.content}>
+          <View style={[s.horizontalMargin, styles.googleForm]}>
+            <Autocomplete
+              onGooglePlaceChosen={onGooglePlaceChosen}
+              inputPlaceholder={inputPlaceholder}
+              googleInputRef={googleInputRef}
+              addToHistory={addToHistory}
+            />
+          </View>
+          <View style={s.horizontalMargin}>
+            <Text style={styles.categoriesTitle}>
+              {i18n.t('screens.SearchFromToScreen.myAddresses')}
+            </Text>
+            <ScrollView
+              contentContainerStyle={styles.horizontalScrollView}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            >
+              {favoriteData.favoritePlaces.map((favoriteItem, index) => (
                 <FavoriteTile
                   key={index}
                   favoriteItem={favoriteItem}
                   onPress={() => handleFavoritePress(favoriteItem)}
                   onMorePress={() =>
                     setModal({
-                      type: 'stop',
+                      type: 'place',
                       favorite: favoriteItem,
-                      onDelete: deleteFavorite,
-                      onConfirm: addOrUpdateStop,
+                      onConfirm: addOrUpdatePlace,
+                      onDelete: !favoriteItem.isHardSetName
+                        ? deleteFavorite
+                        : undefined,
                     })
                   }
                 />
-              ))
-            ) : (
-              <AddStopFavoriteTile
-                title={i18n.t('screens.SearchFromToScreen.addStop')}
-                onPress={() =>
-                  setModal({ type: 'stop', onConfirm: addOrUpdateStop })
-                }
-              />
-            )}
-          </ScrollView>
-          {favoriteData.favoriteStops.length > 0 &&
-            renderAddButton(() =>
-              setModal({ type: 'stop', onConfirm: addOrUpdateStop })
-            )}
-        </View>
-        <View style={[styles.categoryStops, s.horizontalMargin]}>
-          <View style={styles.chooseFromMapRow}>
-            {getMyLocation && (
-              <TouchableOpacity onPress={() => getMyLocation(true)}>
-                <View style={styles.chooseFromMap}>
-                  <LocationSvg width={30} height={30} fill={colors.primary} />
-                  <View style={[styles.placeTexts, styles.chooseFromMapText]}>
-                    <Text style={styles.placeAddress}>
-                      {i18n.t('screens.SearchFromToScreen.currentPosition')}
-                    </Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            )}
-            {setLocationFromMap && (
-              <TouchableOpacity onPress={setLocationFromMap}>
-                <View style={styles.chooseFromMap}>
-                  <MapSvg width={30} height={30} fill={colors.primary} />
-                  <View style={[styles.placeTexts, styles.chooseFromMapText]}>
-                    <Text style={styles.placeAddress}>
-                      {i18n.t('screens.SearchFromToScreen.choosePlaceFromMap')}
-                    </Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
+              ))}
+            </ScrollView>
+            {renderAddButton(() =>
+              setModal({
+                type: 'place',
+                onConfirm: addOrUpdatePlace,
+              })
             )}
           </View>
-        </View>
-        <View style={[styles.categoryStops, styles.history]}>
-          <Text style={styles.categoriesTitle}>
-            {i18n.t('screens.SearchFromToScreen.history')}
-          </Text>
-          <BottomSheetScrollView style={styles.verticalScrollView}>
-            {favoriteData.history.map((place, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => onGooglePlaceChosen(place.data, place.detail)}
-              >
-                <View style={styles.verticalScrollItem}>
-                  <View style={styles.leftSideItemWrapper}>
-                    <HistorySvg width={30} height={20} fill={colors.black} />
-                    {(place.detail?.types[0] as any) === 'transit_station' ? (
-                      <StopSignSvg width={30} height={20} fill={colors.black} />
-                    ) : (
-                      <PlaceSvg width={30} height={20} fill={colors.black} />
-                    )}
-                    <View style={styles.placeTexts}>
-                      <Text
-                        style={[styles.placeAddress, { marginRight: 15 }]}
-                        numberOfLines={1}
-                      >
-                        {place.data?.structured_formatting.main_text}
+          <View style={[styles.categoryStops, s.horizontalMargin]}>
+            <Text style={styles.categoriesTitle}>
+              {i18n.t('screens.SearchFromToScreen.myStops')}
+            </Text>
+            <ScrollView
+              contentContainerStyle={styles.horizontalScrollView}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            >
+              {favoriteData.favoriteStops.length > 0 ? (
+                favoriteData.favoriteStops.map((favoriteItem, index) => (
+                  <FavoriteTile
+                    key={index}
+                    favoriteItem={favoriteItem}
+                    onPress={() => handleFavoritePress(favoriteItem)}
+                    onMorePress={() =>
+                      setModal({
+                        type: 'stop',
+                        favorite: favoriteItem,
+                        onDelete: deleteFavorite,
+                        onConfirm: addOrUpdateStop,
+                      })
+                    }
+                  />
+                ))
+              ) : (
+                <AddStopFavoriteTile
+                  title={i18n.t('screens.SearchFromToScreen.addStop')}
+                  onPress={() =>
+                    setModal({ type: 'stop', onConfirm: addOrUpdateStop })
+                  }
+                />
+              )}
+            </ScrollView>
+            {favoriteData.favoriteStops.length > 0 &&
+              renderAddButton(() =>
+                setModal({ type: 'stop', onConfirm: addOrUpdateStop })
+              )}
+          </View>
+          <View style={[styles.categoryStops, s.horizontalMargin]}>
+            <View style={styles.chooseFromMapRow}>
+              {getMyLocation && (
+                <TouchableOpacity onPress={() => getMyLocation(true)}>
+                  <View style={styles.chooseFromMap}>
+                    <LocationSvg width={30} height={30} fill={colors.primary} />
+                    <View style={[styles.placeTexts, styles.chooseFromMapText]}>
+                      <Text style={styles.placeAddress}>
+                        {i18n.t('screens.SearchFromToScreen.currentPosition')}
                       </Text>
                     </View>
                   </View>
-                  <View style={styles.rightSideItemWrapper}>
-                    <TouchableOpacity
-                      onPress={() => deleteFromHistory(place)}
-                      style={styles.deleteHistoryButton}
-                    >
-                      <XSvg width={16} height={16} fill={colors.black} />
-                    </TouchableOpacity>
+                </TouchableOpacity>
+              )}
+              {setLocationFromMap && (
+                <TouchableOpacity onPress={setLocationFromMap}>
+                  <View style={styles.chooseFromMap}>
+                    <MapSvg width={30} height={30} fill={colors.primary} />
+                    <View style={[styles.placeTexts, styles.chooseFromMapText]}>
+                      <Text style={styles.placeAddress}>
+                        {i18n.t(
+                          'screens.SearchFromToScreen.choosePlaceFromMap'
+                        )}
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </BottomSheetScrollView>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+          <View style={[styles.categoryStops, styles.history]}>
+            <Text style={styles.categoriesTitle}>
+              {i18n.t('screens.SearchFromToScreen.history')}
+            </Text>
+            <BottomSheetScrollView style={styles.verticalScrollView}>
+              {favoriteData.history.map((place, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => onGooglePlaceChosen(place.data, place.detail)}
+                >
+                  <View style={styles.verticalScrollItem}>
+                    <View style={styles.leftSideItemWrapper}>
+                      <HistorySvg width={30} height={20} fill={colors.black} />
+                      {(place.detail?.types[0] as any) === 'transit_station' ? (
+                        <StopSignSvg
+                          width={30}
+                          height={20}
+                          fill={colors.black}
+                        />
+                      ) : (
+                        <PlaceSvg width={30} height={20} fill={colors.black} />
+                      )}
+                      <View style={styles.placeTexts}>
+                        <Text
+                          style={[styles.placeAddress, { marginRight: 15 }]}
+                          numberOfLines={1}
+                        >
+                          {place.data?.structured_formatting.main_text}
+                        </Text>
+                      </View>
+                    </View>
+                    <View style={styles.rightSideItemWrapper}>
+                      <TouchableOpacity
+                        onPress={() => deleteFromHistory(place)}
+                        style={styles.deleteHistoryButton}
+                      >
+                        <XSvg width={16} height={16} fill={colors.black} />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </BottomSheetScrollView>
+          </View>
         </View>
       </TouchableWithoutFeedback>
       {modal && (

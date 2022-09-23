@@ -47,6 +47,7 @@ interface TextItineraryProps {
   travelMode: TravelModes
   fromPlace?: string
   toPlace?: string
+  price?: number
 }
 
 export const ITINERARY_ICON_WIDTH = 20
@@ -62,6 +63,7 @@ export const TextItinerary = ({
   travelMode,
   fromPlace,
   toPlace,
+  price,
 }: TextItineraryProps) => {
   const [timeNow, setTimeNow] = useState(LocalTime.now())
   const [updateEveryMinuteInterval, setUpdateEveryMinuteInterval] = useState<
@@ -444,7 +446,9 @@ export const TextItinerary = ({
                   }}
                 >
                   {/* TODO Calculate the price dynamically */}
-                  {i18n.t('screens.PlannerScreen.price', { count: 1.5 })}
+                  {i18n.t('screens.PlannerScreen.price', {
+                    count: (price ?? 0) / 100,
+                  })}
                 </Text>
               </View>
             </View>

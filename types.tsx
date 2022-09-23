@@ -87,6 +87,7 @@ export type MapParamList = {
     travelMode: TravelModes
     fromPlace: string
     toPlace: string
+    price?: number
   }
   LineTimelineScreen: { tripId: string; stopId: string }
   LineTimetableScreen: { stopId: string; lineNumber: string }

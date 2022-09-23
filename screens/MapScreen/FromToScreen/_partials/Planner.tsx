@@ -840,6 +840,11 @@ export default function Planner(props: PlannerProps) {
                       travelMode: selectedVehicle,
                       fromPlace: fromName,
                       toPlace: toName,
+                      price: getPriceFromItinerary(
+                        tripChoice,
+                        selectedVehicle,
+                        provider
+                      ),
                     } as never
                   )
                 }

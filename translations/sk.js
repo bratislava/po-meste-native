@@ -121,7 +121,7 @@ export default {
         rentedBike: 'Bicykel na prenájom',
         myScooter: 'Vlastná kolobežka',
         rentedScooter: 'Kolobežka na prenájom',
-        from: 'zo zastávky ',
+        from: 'z',
         startingIn: 'o {{time}} min',
         beforeIn: 'pred {{time}} min',
         departure: 'Odchod: {{time}}',

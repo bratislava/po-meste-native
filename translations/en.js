@@ -119,7 +119,7 @@ export default {
         rentedBike: 'Rented bicycles',
         myScooter: 'My scooter',
         rentedScooter: 'Rented scooter',
-        from: 'from ',
+        from: 'from',
         startingIn: 'in {{time}} min',
         beforeIn: 'before {{time}} min',
         departure: 'Departure: {{time}}',

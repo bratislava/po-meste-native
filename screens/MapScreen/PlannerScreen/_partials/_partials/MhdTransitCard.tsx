@@ -45,43 +45,17 @@ const MhdTransitCard = ({ leg, isLastLeg }: MhdTransitCardProps) => {
 
   const accordion = trip.data && (
     <Accordion
-      overrideStyles={{
-        container: {
-          backgroundColor: colors.white,
-          borderRadius: 8,
-          width: '100%',
-          paddingVertical: 15,
-          overflow: 'hidden',
-          alignItems: 'stretch',
-        },
-        header: {
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          flex: 1,
-        },
-        arrowContainer: {
-          justifyContent: 'center',
-          alignItems: 'center',
-        },
-        bodyContainer: {
-          marginTop: 10,
-          position: 'absolute',
-        },
-        bodyContainerText: {
-          height: 'auto',
-        },
+      containerStyle={{
+        backgroundColor: colors.white,
+        borderRadius: 8,
+        width: '100%',
+        paddingVertical: 10,
+        overflow: 'hidden',
+        alignItems: 'stretch',
       }}
-      arrowIcon={(isOpen) => (
-        <ChevronRightSmall
-          width={12}
-          height={12}
-          fill={colors.primary}
-          style={{ transform: [{ rotate: isOpen ? '270deg' : '90deg' }] }}
-        />
-      )}
-      items={[
-        {
-          title: (
+      items={{
+        header: (isOpen) => (
+          <View style={styles.mhdTripHeader}>
             <View style={styles.mhdTripAdditionalInfoWrapper}>
               <Text style={{ color: colors.darkGray, fontWeight: 'bold' }}>
                 {(leg?.from?.stopIndex || leg?.from?.stopIndex === 0) &&
@@ -97,39 +71,45 @@ const MhdTransitCard = ({ leg, isLastLeg }: MhdTransitCardProps) => {
                   })}`}
               </Text>
             </View>
-          ),
-          body: (
-            <View>
-              {trip.data.timeline
-                ?.slice(
-                  trip.data.timeline.findIndex(
-                    // stop.stopId: 32500002
-                    // leg.to.stopId: 1:000000032500002
-                    (stop) =>
-                      stop.stopId ===
-                      _.trimStart(_.trimStart(leg.from.stopId, '1:'), '0')
-                  ) + 1,
-                  trip.data.timeline.findIndex(
-                    (stop) =>
-                      stop.stopId ===
-                      _.trimStart(_.trimStart(leg.to.stopId, '1:'), '0')
-                  )
+            <ChevronRightSmall
+              width={12}
+              height={12}
+              fill={colors.primary}
+              style={{ transform: [{ rotate: isOpen ? '270deg' : '90deg' }] }}
+            />
+          </View>
+        ),
+        body: (
+          <View style={{ marginTop: 10 }}>
+            {trip.data.timeline
+              ?.slice(
+                trip.data.timeline.findIndex(
+                  // stop.stopId: 32500002
+                  // leg.to.stopId: 1:000000032500002
+                  (stop) =>
+                    stop.stopId ===
+                    _.trimStart(_.trimStart(leg.from.stopId, '1:'), '0')
+                ) + 1,
+                trip.data.timeline.findIndex(
+                  (stop) =>
+                    stop.stopId ===
+                    _.trimStart(_.trimStart(leg.to.stopId, '1:'), '0')
                 )
-                .map((stop) => (
-                  <View key={stop.stopId}>
-                    <Text
-                      style={{
-                        color: colors.darkGray,
-                        fontSize: 14,
-                        lineHeight: 25,
-                      }}
-                    >{`${stop.time.slice(0, -3)} ${stop.stopName}`}</Text>
-                  </View>
-                ))}
-            </View>
-          ),
-        },
-      ]}
+              )
+              .map((stop) => (
+                <View key={stop.stopId}>
+                  <Text
+                    style={{
+                      color: colors.darkGray,
+                      fontSize: 14,
+                      lineHeight: 25,
+                    }}
+                  >{`${stop.time.slice(0, -3)} ${stop.stopName}`}</Text>
+                </View>
+              ))}
+          </View>
+        ),
+      }}
     />
   )
 
@@ -297,6 +277,12 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  mhdTripHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flex: 1,
   },
 })
 

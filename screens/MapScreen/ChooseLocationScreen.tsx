@@ -12,6 +12,8 @@ import { colors, s } from '@utils'
 import MarkerSvg from '@icons/map-pin-marker.svg'
 import { customMapStyle } from './customMapStyle'
 
+const REVERSE_GEOCODING_DEBOUNCE = 200 //ms
+
 export default function ChooseLocation({
   route,
 }: StackScreenProps<MapParamList, 'ChooseLocationScreen'>) {
@@ -50,24 +52,28 @@ export default function ChooseLocation({
         // }
         if (region)
           ref.current?.addressForCoordinate(region).then((address) => {
-            console.log({ address })
             const houseNumberRegex = /[0-9/]{1,}[A-Z]?/
             let name
+            // address.name can either be a name of the place or the house number, which is weird
             if (houseNumberRegex.test(address.name)) {
+              // if address.name is the house number than address.thoroughfare is the street
               if (address.thoroughfare == null) {
+                // if it is null, the location does not have a name (e.g. a location in a forest)
                 name = i18n.t('screens.ChooseLocationScreen.unnamedLocation', {
-                  latitude: region.latitude.toFixed(5),
+                  latitude: region.latitude.toFixed(5), // 5 decimal digits means +-1m accuracy
                   longitude: region.longitude.toFixed(5),
                 })
               } else {
                 name = `${address.thoroughfare} ${address.name}`
               }
             } else {
+              // if address.name is not a house number, then most probably it is the same as address.thoroughfare
+              // and/or it is the actual name of the place and we display only the name
               name = address.name
             }
             setPlaceName(name)
           })
-      }, 200)
+      }, REVERSE_GEOCODING_DEBOUNCE)
     )
     return () => {
       if (debounceTimeout) clearTimeout(debounceTimeout)
@@ -117,8 +123,7 @@ export default function ChooseLocation({
         <Button
           style={styles.confirm}
           title={i18n.t('screens.ChooseLocationScreen.confirmLocation')}
-          onPress={async () => {
-            console.log({ fromCoordsName, toCoordsName })
+          onPress={() => {
             const naviagtionInstructions = {
               latitude: region?.latitude,
               longitude: region?.longitude,

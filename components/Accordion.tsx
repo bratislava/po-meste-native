@@ -1,17 +1,21 @@
-import React, { ReactNode, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
-import AccordionItem, { AccordionStyles } from './AccordionItem'
+import React, { useState } from 'react'
+import { StyleSheet, TouchableOpacityProps, View } from 'react-native'
+import AccordionItem from './AccordionItem'
 
 interface AccorionProps {
-  items: {
-    title: ReactNode | string
-    body: ReactNode | string
-  }[]
-  overrideStyles?: AccordionStyles
-  arrowIcon?: (isOpen: boolean) => JSX.Element
+  items:
+    | {
+        header: (isOpen: boolean) => JSX.Element
+        body: JSX.Element
+      }[]
+    | {
+        header: (isOpen: boolean) => JSX.Element
+        body: JSX.Element
+      }
+  containerStyle?: TouchableOpacityProps['style']
 }
 
-const Accordion = ({ items, overrideStyles, arrowIcon }: AccorionProps) => {
+const Accordion = ({ items, containerStyle }: AccorionProps) => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
 
   const onItemPress = (index: number) => {
@@ -24,17 +28,27 @@ const Accordion = ({ items, overrideStyles, arrowIcon }: AccorionProps) => {
 
   return (
     <View style={styles.container}>
-      {items.map(({ title, body }, index) => (
+      {Array.isArray(items) ? (
+        items.map(({ header, body }, index) => (
+          <AccordionItem
+            key={index}
+            onPress={() => onItemPress(index)}
+            isOpen={activeIndex === index}
+            header={header}
+            body={body}
+            containerStyle={containerStyle}
+          />
+        ))
+      ) : (
         <AccordionItem
-          key={index}
-          onPress={() => onItemPress(index)}
-          isOpen={activeIndex === index}
-          title={title}
-          body={body}
-          overrideStyles={overrideStyles}
-          arrowIcon={arrowIcon}
+          key={0}
+          onPress={() => onItemPress(0)}
+          isOpen={activeIndex === 0}
+          header={items.header}
+          body={items.body}
+          containerStyle={containerStyle}
         />
-      ))}
+      )}
     </View>
   )
 }

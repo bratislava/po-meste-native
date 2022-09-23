@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import i18n from 'i18n-js'
 import React, { useEffect, useRef, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Platform, StyleSheet, Text, View } from 'react-native'
 import MapView, { PROVIDER_GOOGLE, Region } from 'react-native-maps'
 
 import { Button } from '@components'
@@ -50,7 +50,11 @@ export default function ChooseLocation({
         //         setPlaceName(`${places[0].data.description}`)
         //     })
         // }
-        if (region)
+        if (region) {
+          if (Platform.select({ ios: true, android: false })) {
+            setPlaceName('Placeholer Street 10')
+            return
+          }
           ref.current?.addressForCoordinate(region).then((address) => {
             const houseNumberRegex = /[0-9/]{1,}[A-Z]?/
             let name
@@ -73,6 +77,7 @@ export default function ChooseLocation({
             }
             setPlaceName(name)
           })
+        }
       }, REVERSE_GEOCODING_DEBOUNCE)
     )
     return () => {

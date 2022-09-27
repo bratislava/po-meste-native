@@ -6,8 +6,13 @@ import { s } from '@utils/globalStyles'
 import { colors, inputSelectionColor } from '@utils/theme'
 import Constants from 'expo-constants'
 import React, { useState } from 'react'
-import { StyleSheet, Text, TextInputProps, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import {
+  StyleSheet,
+  Text,
+  TextInputProps,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 import {
   GooglePlaceData,
   GooglePlaceDetail,

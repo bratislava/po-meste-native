@@ -127,12 +127,11 @@ export const getSlovnaftbajkStationStatus = () =>
 
 export const getTierFreeBikeStatus = () =>
   fetchJsonFromApi('/tier/free_bike_status.json')
+//new Promise((resolve) => resolve(require('./tierDemoData.json')))
 
 export const getBoltFreeBikeStatus = () =>
   fetchJsonFromApi('/bolt/free_bike_status.json')
-
-// export const getBoltFreeBikeStatus = () =>
-//   new Promise((resolve) => resolve(BoltDemoData))
+//new Promise((resolve) => resolve(require('./boltDemoData.json')))
 
 export const getChargersStops = async () => fetchJsonFromApi('/zse')
 

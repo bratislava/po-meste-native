@@ -23,6 +23,17 @@ export default function FromToScreen({
   const layout = useWindowDimensions()
   const [index, setIndex] = React.useState(0)
 
+  // // For load time checking
+  // useEffect(() => {
+  //   const start = new Date()
+  //   InteractionManager.runAfterInteractions(() => {
+  //     const end = new Date()
+  //     console.log(
+  //       `FromToScreen rendered in ${end.getTime() - start.getTime()}ms`
+  //     )
+  //   })
+  // }, [])
+
   const routes = [
     {
       key: Routes.planner,

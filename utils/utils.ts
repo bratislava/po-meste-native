@@ -134,7 +134,7 @@ export const getColor = (provider?: MicromobilityProvider) => {
     case MicromobilityProvider.bolt:
       return colors.boltColor
     default:
-      break
+      return colors.primary
   }
 }
 

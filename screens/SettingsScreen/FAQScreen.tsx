@@ -1,9 +1,10 @@
-import React from 'react'
-import { View, StyleSheet, Text, ScrollView } from 'react-native'
+import ChevronRightSmall from '@icons/chevron-right-small.svg'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import Constants from 'expo-constants'
 import { openURL } from 'expo-linking'
 import { t } from 'i18n-js'
+import React from 'react'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
 import { Accordion, Link } from '@components'
 import { colors } from '@utils'
@@ -13,8 +14,29 @@ export const FAQScreen = () => {
 
   const questions = new Array(2).fill(null).map((question, index) => {
     return {
-      title: t(`screens.FAQScreen.questions.question${index + 1}.question`),
-      body: t(`screens.FAQScreen.questions.question${index + 1}.answer`),
+      header: (isOpen: boolean) => (
+        <View style={styles.accordionHeader}>
+          <Text>
+            {t(`screens.FAQScreen.questions.question${index + 1}.question`)}
+          </Text>
+          <ChevronRightSmall
+            width={16}
+            height={16}
+            fill={colors.tertiary}
+            style={[
+              { transform: [{ rotate: isOpen ? '270deg' : '90deg' }] },
+              styles.arrow,
+            ]}
+          />
+        </View>
+      ),
+      body: (
+        <View style={{ marginTop: 20 }}>
+          <Text>
+            {t(`screens.FAQScreen.questions.question${index + 1}.answer`)}
+          </Text>
+        </View>
+      ),
     }
   })
 
@@ -56,6 +78,12 @@ const styles = StyleSheet.create({
   },
   link: {
     color: colors.primary,
+  },
+  arrow: { backgroundColor: colors.secondary },
+  accordionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 })
 

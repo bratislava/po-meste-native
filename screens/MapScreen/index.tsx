@@ -1,4 +1,4 @@
-import { createStackNavigator } from '@react-navigation/stack'
+import { createStackNavigator, StackHeaderProps } from '@react-navigation/stack'
 import i18n from 'i18n-js'
 import React, { useContext } from 'react'
 
@@ -12,7 +12,12 @@ import PlannerScreen from '@screens/MapScreen/PlannerScreen'
 import { MapParamList } from '@types'
 
 import { Header } from '@components'
+import ArrowRightSvg from '@icons/arrow-right.svg'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
+import { s } from '@utils/globalStyles'
+import { colors } from '@utils/theme'
+import { getShortAddress } from '@utils/utils'
+import { Text, View } from 'react-native'
 
 const MapStack = createStackNavigator<MapParamList>()
 
@@ -36,7 +41,13 @@ const MapScreenNavigation = () => {
           header: (props) => <Header {...props} borderShown={false} />,
         }}
       />
-      <MapStack.Screen name="PlannerScreen" component={PlannerScreen} />
+      <MapStack.Screen
+        name="PlannerScreen"
+        component={PlannerScreen}
+        options={{
+          header: plannerScreenHeader,
+        }}
+      />
       <MapStack.Screen
         name="LineTimelineScreen"
         component={LineTimelineScreen}
@@ -61,6 +72,38 @@ const MapScreenNavigation = () => {
       />
       <MapStack.Screen name="FeedbackScreen" component={FeedbackScreen} />
     </MapStack.Navigator>
+  )
+}
+
+const plannerScreenHeader = (props: StackHeaderProps) => {
+  /* eslint-disable-next-line react/prop-types */
+  const params = props.route?.params as MapParamList['PlannerScreen']
+  return (
+    <Header
+      {...props}
+      borderShown={false}
+      titleElement={
+        params
+          ? (style) => (
+              <Text
+                style={{
+                  ...style,
+                  flexDirection: 'row',
+                  ...s.textSmall,
+                }}
+              >
+                <Text>
+                  {params.fromPlace && getShortAddress(params.fromPlace)}
+                </Text>
+                <View style={{ paddingHorizontal: 11 }}>
+                  <ArrowRightSvg fill={colors.primary} width={14} height={14} />
+                </View>
+                <Text>{params.toPlace && getShortAddress(params.toPlace)}</Text>
+              </Text>
+            )
+          : undefined
+      }
+    />
   )
 }
 

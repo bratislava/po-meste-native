@@ -1,14 +1,13 @@
 import i18n from 'i18n-js'
 import React, { useCallback } from 'react'
-import { Image, Platform, StyleSheet, Text, View } from 'react-native'
-import AppLink from 'react-native-app-link'
+import { StyleSheet, Text, View } from 'react-native'
 
-import { Button } from '@components'
 import { MicromobilityProvider } from '@types'
 import {
   boltPrice,
   colors,
   FreeBikeStatusProps,
+  getMicromobilityImage,
   rekolaPrice,
   s,
   slovnaftbajkPrice,
@@ -16,11 +15,7 @@ import {
   tierPrice,
 } from '@utils'
 
-import ChevronRightIconSVG from '@icons/chevron-right-small.svg'
-
-import RekoloVehicleIconSvg from '@images/rekolo-vehicle-icon.svg'
-import SlovnaftbajkVehicleIconSvg from '@images/slovnaftbajk-vehicle-icon.svg'
-import TierVehicleIconSvg from '@images/tier-vehicle-icon.svg'
+import ProviderButton from '@components/ProviderButton'
 
 interface StationMicromobilityInfoProps {
   station: StationMicromobilityProps | FreeBikeStatusProps
@@ -32,45 +27,7 @@ const StationMicromobilityInfo = ({
   provider,
 }: StationMicromobilityInfoProps) => {
   const getMicromobilityIcon = useCallback(() => {
-    let icon = undefined
-    switch (provider) {
-      case MicromobilityProvider.rekola:
-        icon = <RekoloVehicleIconSvg height={150} />
-        break
-      case MicromobilityProvider.slovnaftbajk:
-        icon = <SlovnaftbajkVehicleIconSvg height={150} />
-        break
-      case MicromobilityProvider.tier:
-        icon = <TierVehicleIconSvg height={150} />
-        break
-      case MicromobilityProvider.bolt:
-        icon = (
-          <Image
-            source={require('@images/bolt-vehicle-image.png')}
-            height={150}
-          />
-        )
-    }
-    return icon
-  }, [provider])
-
-  const getButtonColor = useCallback(() => {
-    let color = undefined
-    switch (provider) {
-      case MicromobilityProvider.rekola:
-        color = colors.rekolaColor
-        break
-      case MicromobilityProvider.slovnaftbajk:
-        color = colors.slovnaftColor
-        break
-      case MicromobilityProvider.tier:
-        color = colors.tierColor
-        break
-      case MicromobilityProvider.bolt:
-        color = colors.boltColor
-        break
-    }
-    return color
+    return getMicromobilityImage(provider, 150)
   }, [provider])
 
   const getTitlePrice = useCallback(() => {
@@ -134,19 +91,6 @@ const StationMicromobilityInfo = ({
   }, [provider])
 
   const providerTitlePrice = getTitlePrice()
-  const buttonTitle =
-    provider === MicromobilityProvider.rekola
-      ? 'Rekola'
-      : provider === MicromobilityProvider.slovnaftbajk
-      ? 'Bajk'
-      : provider === MicromobilityProvider.tier
-      ? 'Tier'
-      : ''
-  const textColor =
-    provider === MicromobilityProvider.tier ||
-    provider === MicromobilityProvider.slovnaftbajk
-      ? colors.darkText
-      : colors.white
   return (
     <View style={styles.container}>
       <View style={[styles.header, s.horizontalMargin]}>
@@ -167,105 +111,43 @@ const StationMicromobilityInfo = ({
           <View>
             {station.num_bikes_available !== undefined && (
               <Text>
-                {i18n.t('screens.MapScreen.availableBikes', {
-                  amount: station.num_bikes_available,
-                })}
+                {i18n.t('screens.MapScreen.availableBikes')}
+                <Text style={s.boldText}>{station.num_bikes_available}</Text>
               </Text>
             )}
             {station.num_docks_available !== undefined && (
               <Text>
-                {i18n.t('screens.MapScreen.freeBikeSpaces', {
-                  amount: station.num_docks_available,
-                })}
+                {i18n.t('screens.MapScreen.freeBikeSpaces')}
+                <Text style={s.boldText}>{station.num_docks_available}</Text>
               </Text>
             )}
             {station.original?.attributes?.licencePlate !== undefined && ( // TODO remove from original
               <Text>
-                {i18n.t('screens.MapScreen.licencePlate', {
-                  id: station.original.attributes?.licencePlate, // TODO remove from original
-                })}
+                {i18n.t('screens.MapScreen.licencePlate')}
+                <Text style={s.boldText}>
+                  {station.original.attributes?.licencePlate}
+                </Text>
               </Text>
             )}
             {station?.original?.attributes?.batteryLevel !== undefined && ( // TODO remove from original
               <Text>
-                {i18n.t('screens.MapScreen.batteryCharge', {
-                  amount: station?.original?.attributes?.batteryLevel, // TODO remove from original
-                })}
+                {i18n.t('screens.MapScreen.batteryCharge')}
+                <Text style={s.boldText}>
+                  {station?.original?.attributes?.batteryLevel}%
+                </Text>
               </Text>
             )}
             {station?.original?.current_range_meters !== undefined && ( // TODO remove from original
               <Text>
-                {i18n.t('screens.MapScreen.currentRange', {
-                  kilometers: station?.original?.current_range_meters / 1000, // TODO remove from original
-                })}
+                {i18n.t('screens.MapScreen.currentRange')}
+                <Text style={s.boldText}>
+                  {station?.original?.current_range_meters / 1000} km
+                </Text>
               </Text>
             )}
           </View>
-          <View>
-            <Button
-              contentStyle={{ backgroundColor: getButtonColor() }}
-              titleStyle={[{ color: textColor }, { fontWeight: 'bold' }]}
-              onPress={() => {
-                switch (provider) {
-                  case MicromobilityProvider.rekola:
-                    AppLink.openInStore({
-                      appName: 'Rekola',
-                      appStoreId: 888759232,
-                      appStoreLocale: 'sk',
-                      playStoreId: 'cz.rekola.app',
-                    })
-                      .then()
-                      .catch()
-                    break
-                  case MicromobilityProvider.slovnaftbajk:
-                    AppLink.openInStore({
-                      appName: 'slovnaftbajk',
-                      appStoreId: 1364531772,
-                      appStoreLocale: 'sk',
-                      playStoreId: 'hu.cycleme.slovnaftbajk',
-                    })
-                      .then()
-                      .catch()
-                    break
-                  case MicromobilityProvider.tier:
-                    AppLink.openInStore({
-                      appName: 'tier',
-                      appStoreId: 1436140272,
-                      appStoreLocale: 'sk',
-                      playStoreId: 'com.tier.app',
-                    })
-                      .then()
-                      .catch()
-                    break
-                  case MicromobilityProvider.bolt:
-                    AppLink.maybeOpenURL(
-                      Platform.select({
-                        android: station.original.rental_uris.android,
-                        ios: station.original.rental_uris.ios,
-                      }) ?? '',
-                      {
-                        appName: 'bolt',
-                        appStoreId: 675033630,
-                        appStoreLocale: 'sk',
-                        playStoreId: 'ee.mtakso.client',
-                      }
-                    )
-                    break
-                }
-              }}
-              size="small"
-              title={i18n.t('screens.MapScreen.rent', {
-                provider: buttonTitle,
-              })}
-              icon={
-                <ChevronRightIconSVG
-                  height={14}
-                  fill={textColor}
-                  style={{ marginLeft: 14 }}
-                />
-              }
-              iconRight
-            />
+          <View style={{ alignItems: 'center' }}>
+            <ProviderButton provider={provider} station={station} />
           </View>
         </View>
       </View>
@@ -293,12 +175,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   vehicleImage: {
-    width: 150,
+    width: 130,
+    margin: 20,
   },
   additionalText: {
     flex: 1,
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     paddingVertical: 20,
   },
 })

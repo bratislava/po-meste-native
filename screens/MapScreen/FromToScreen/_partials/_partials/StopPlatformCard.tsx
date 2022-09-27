@@ -5,8 +5,7 @@ import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
 import { MhdStopProps, MhdStopStatusProps } from '@utils/validation'
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 interface StopPlatformCardProps {
   stop: MhdStopProps

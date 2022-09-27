@@ -44,7 +44,7 @@ export default {
     MapScreen: {
       whereTo: 'Where to',
       rekolaBikesTitle: 'Rekola bicycles',
-      slovnaftbikesTitle: 'Slovnaft BAjk',
+      slovnaftbikesTitle: 'Slovnaft BAjk bicycles',
       tierTitle: 'TIER scooter',
       zseChargerTitle: 'Charging station/s',
       boltTitle: 'Bolt scooter',
@@ -55,11 +55,11 @@ export default {
       micromobilityWithUnlockPrice:
         '{{unlockPrice}}€ + {{price}}€/{{duration}}{{unit}}',
       rent: 'Rent {{provider}}',
-      availableBikes: 'Available bikes: {{amount}}',
-      freeBikeSpaces: 'Free bike spaces: {{amount}}',
-      licencePlate: 'Vehicle number: {{id}}',
-      batteryCharge: 'Battery: {{amount}}%',
-      currentRange: 'Dojazd: {{kilometers}} km',
+      availableBikes: 'Available bikes: ',
+      freeBikeSpaces: 'Free bike spaces: ',
+      licencePlate: 'Vehicle number: ',
+      batteryCharge: 'Battery: ',
+      currentRange: 'Dojazd: ',
       startZseCharger: 'Start charging',
       chargingPoints: 'Charging connectors',
       chargingPrice: 'charging price: ',
@@ -85,12 +85,16 @@ export default {
       openApp: 'Open application {{provider}}',
       start: 'Start',
       end: 'End',
+      departAt: 'Depart at',
+      price: 'price ~{{count}}€',
     },
     ChooseLocationScreen: {
       screenTitle: 'Choose location',
       confirmLocation: 'Confirm location',
+      unnamedLocation: 'Unnamed: {{latitude}},{{longitude}}',
       moveTheMapAndSelectTheDesiredPoint:
         'Move the map and select the desired point.',
+      noLocationSelected: 'No location selected',
     },
     LineTimetableScreen: {
       screenTitle: 'Timetable line %{lineNumber}',

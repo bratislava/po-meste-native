@@ -10,7 +10,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { ImageURISource, StyleSheet, Text, View } from 'react-native'
+import { ImageURISource, Platform, StyleSheet, Text, View } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
 
 import {
@@ -465,11 +465,15 @@ export default function MapScreen() {
                 onPress={() => operateBottomSheet({ mhd: stop })}
                 icon={getIcon(IconType.mhd)}
               >
-                {stop.platform && zoomLevel === ZoomLevel.lg && (
-                  <View style={markerLabelStyles.container}>
-                    <Text style={markerLabelStyles.label}>{stop.platform}</Text>
-                  </View>
-                )}
+                {stop.platform &&
+                  zoomLevel === ZoomLevel.lg &&
+                  (Platform.OS === 'android' ? (
+                    <View style={markerLabelStyles.container}>
+                      <Text style={markerLabelStyles.label}>
+                        {stop.platform}
+                      </Text>
+                    </View>
+                  ) : null)}
               </Marker>
             ))}
         {vehiclesContext.vehicleTypes?.find(

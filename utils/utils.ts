@@ -133,7 +133,7 @@ export const getColor = (provider?: MicromobilityProvider) => {
     case MicromobilityProvider.bolt:
       return colors.boltColor
     default:
-      break
+      return colors.primary
   }
 }
 
@@ -298,3 +298,11 @@ export const getZoomLevel = (region: Region | null) => {
 export const isFavoritePlace = (
   obj: FavoritePlace | FavoriteStop | null | undefined
 ): obj is FavoritePlace => (obj ? 'id' in obj : false)
+
+export const getShortAddress = (fullAddress: string) =>
+  /[0-9]{2}\.[0-9]{5,}/.test(fullAddress)
+    ? fullAddress
+    : fullAddress.slice(
+        0,
+        fullAddress.indexOf(',') === -1 ? undefined : fullAddress.indexOf(',')
+      )

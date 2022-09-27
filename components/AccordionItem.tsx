@@ -1,33 +1,28 @@
-import React, {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
-  StyleSheet,
-  Text,
-  View,
   Animated,
+  StyleSheet,
   TouchableOpacity,
+  TouchableOpacityProps,
+  View,
 } from 'react-native'
 
-import ChevronRightSmall from '@icons/chevron-right-small.svg'
 import { colors } from '@utils/theme'
 
 interface AccorionItemProps {
   isOpen?: boolean
   onPress?: () => void
-  title: string
-  body: ReactNode | string
+  body: JSX.Element
+  header: (isOpen: boolean) => JSX.Element
+  containerStyle?: TouchableOpacityProps['style']
 }
 
 const AccordionItem = ({
   isOpen = false,
   onPress,
-  title,
   body,
+  header,
+  containerStyle,
 }: AccorionItemProps) => {
   const [maxHeight, setMaxHeight] = useState(0)
 
@@ -56,25 +51,17 @@ const AccordionItem = ({
   }, [isOpen, playOpenAnimation, playCloseAnimation])
 
   return (
-    <TouchableOpacity onPress={onPress} style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{title}</Text>
-        <View style={styles.arrowContainer}>
-          <ChevronRightSmall width={16} height={16} fill={colors.tertiary} />
-        </View>
-      </View>
+    <TouchableOpacity
+      onPress={onPress}
+      style={containerStyle ?? styles.container}
+    >
+      {header(isOpen)}
       <Animated.View style={{ height: animation }}>
         <View
           style={styles.bodyContainer}
-          onLayout={(event) =>
-            setMaxHeight(event.nativeEvent.layout.height + 20)
-          }
+          onLayout={(event) => setMaxHeight(event.nativeEvent.layout.height)}
         >
-          {typeof body === 'string' ? (
-            <Text style={styles.bodyContainerText}>{body}</Text>
-          ) : (
-            { body }
-          )}
+          {body}
         </View>
       </Animated.View>
     </TouchableOpacity>
@@ -91,20 +78,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     overflow: 'hidden',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  title: {
-    fontWeight: '600',
-  },
-  arrowContainer: {},
   bodyContainer: {
-    marginTop: 20,
     position: 'absolute',
-  },
-  bodyContainerText: {
-    height: 'auto',
   },
 })
 

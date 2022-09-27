@@ -85,6 +85,8 @@ export type MapParamList = {
     provider?: MicromobilityProvider
     isScooter?: boolean
     travelMode: TravelModes
+    fromPlace: string
+    toPlace: string
   }
   LineTimelineScreen: { tripId: string; stopId: string }
   LineTimetableScreen: { stopId: string; lineNumber: string }
@@ -93,8 +95,8 @@ export type MapParamList = {
     longitude?: number
     fromNavigation: boolean
     toNavigation: boolean
-    fromCoords: { latitude: number; longitude: number }
-    toCoords: { latitude: number; longitude: number }
+    fromCoordsName: { latitude: number; longitude: number; name: string }
+    toCoordsName: { latitude: number; longitude: number; name: string }
   }
   FeedbackScreen: undefined
 }

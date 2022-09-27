@@ -46,7 +46,7 @@ export default {
     MapScreen: {
       whereTo: 'Kamže, kam?',
       rekolaBikesTitle: 'Rekola bicykle',
-      slovnaftbikesTitle: 'Slovnaft BAjk',
+      slovnaftbikesTitle: 'Slovnaft BAjk bicykle',
       tierTitle: 'TIER kolobežka',
       zseChargerTitle: 'Nabíjacia stanica/e',
       boltTitle: 'Bolt kolobežka',
@@ -57,11 +57,11 @@ export default {
       micromobilityWithUnlockPrice:
         '{{unlockPrice}}€ + {{price}}€/{{duration}}{{unit}}',
       rent: 'Prenajať {{provider}}',
-      availableBikes: 'Voľné bicykle: {{amount}}',
-      freeBikeSpaces: 'Voľné doky: {{amount}}',
-      licencePlate: 'Číslo vozidla: {{id}}',
-      batteryCharge: 'Batéria: {{amount}}%',
-      currentRange: 'Dojazd: {{kilometers}} km',
+      availableBikes: 'Voľné bicykle: ',
+      freeBikeSpaces: 'Voľné doky: ',
+      licencePlate: 'Číslo vozidla: ',
+      batteryCharge: 'Batéria: ',
+      currentRange: 'Dojazd: ',
       startZseCharger: 'Začať nabíjanie',
       chargingPoints: 'Nabíjacie konektory',
       chargingPrice: 'cena nabíjania: ',
@@ -87,12 +87,16 @@ export default {
       openApp: 'Otvor aplikáciu {{provider}}',
       start: 'Štart',
       end: 'Koniec',
+      departAt: 'Vyraziť o',
+      price: 'cena ~{{count}}€',
     },
     ChooseLocationScreen: {
       screenTitle: 'Výber miesta',
       confirmLocation: 'Potvrdiť miesto ',
+      unnamedLocation: 'Bez názvu: {{latitude}},{{longitude}}',
       moveTheMapAndSelectTheDesiredPoint:
         'Pohnite mapou a zvoľte požadovaný bod.',
+      noLocationSelected: 'Výber je prázdny',
     },
     LineTimetableScreen: {
       screenTitle: 'Grafikon linky %{lineNumber}',

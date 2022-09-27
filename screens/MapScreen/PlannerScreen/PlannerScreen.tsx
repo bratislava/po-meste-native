@@ -3,13 +3,13 @@ import { StackScreenProps } from '@react-navigation/stack'
 import googlePolyline from 'google-polyline'
 import React, { useMemo, useRef, useState } from 'react'
 import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native'
-import MapView, { Polyline, PROVIDER_GOOGLE } from 'react-native-maps'
+import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps'
 
 import {
   BOTTOM_TAB_NAVIGATOR_HEIGHT,
   BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
 } from '@components'
-import { MapParamList } from '@types'
+import { LegModes, MapParamList } from '@types'
 import {
   aggregateBicycleLegs,
   getColor,
@@ -32,6 +32,8 @@ export default function PlannerScreen({
   const legs = route?.params?.legs
   const isScooter = route?.params?.isScooter
   const travelMode = route?.params?.travelMode
+  const toPlace = route?.params?.toPlace
+  const fromPlace = route?.params?.fromPlace
   const bottomSheetSnapPoints = [
     BOTTOM_VEHICLE_BAR_HEIGHT_ALL + 30,
     '60%',
@@ -86,6 +88,10 @@ export default function PlannerScreen({
           left: 0,
         }}
       >
+        <Marker
+          coordinate={allMarkers[0]}
+          icon={require('@icons/map/circle.png')}
+        />
         {legs?.reduce<JSX.Element[]>((accumulator, leg, index) => {
           if (leg.legGeometry.points) {
             const latlngs = googlePolyline.decode(leg.legGeometry.points)
@@ -104,15 +110,21 @@ export default function PlannerScreen({
                   latitude: point[0],
                   longitude: point[1],
                 }))}
-                lineDashPattern={[1]}
+                lineDashPattern={
+                  leg.mode === LegModes.walk ? [10, 5] : undefined
+                }
                 strokeColor={color}
-                strokeWidth={6}
+                strokeWidth={3}
               />
             )
             return accumulator.concat(marker)
           }
           return accumulator
         }, [])}
+        <Marker
+          coordinate={allMarkers[allMarkers.length - 1]}
+          icon={require('@icons/map/pin.png')}
+        />
       </MapView>
       {Platform.select({ ios: true, android: true }) && (
         <CurrentLocationButton mapRef={mapRef} style={styles.currentLocation} />
@@ -127,6 +139,10 @@ export default function PlannerScreen({
           height: 4,
           marginTop: 4,
         }}
+        handleStyle={{
+          paddingTop: 14,
+          paddingBottom: 10,
+        }}
         backgroundStyle={{
           backgroundColor: getHeaderBgColor(travelMode, provider),
         }}
@@ -136,6 +152,8 @@ export default function PlannerScreen({
           provider={provider}
           isScooter={isScooter}
           travelMode={travelMode}
+          fromPlace={fromPlace}
+          toPlace={toPlace}
         />
       </BottomSheet>
     </View>

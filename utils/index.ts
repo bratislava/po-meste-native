@@ -1,6 +1,7 @@
 export * from './api'
 export * from './constants'
 export * from './globalStyles'
+export * from './jsxUtils'
 export { default as linking } from './linking'
 export * from './localization'
 export * from './theme'

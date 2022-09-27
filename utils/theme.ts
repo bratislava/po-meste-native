@@ -25,6 +25,7 @@ export const colors = {
   boltColor: '#34D186',
   available: '#5DB56E',
   ownVehicleHeaderColor: '#8D8D8D',
+  brightGreen: '#ADCD00',
 }
 
 export const inputSelectionColor = colors.primary

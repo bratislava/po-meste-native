@@ -3,8 +3,7 @@ import { s } from '@utils/globalStyles'
 import { colors, mhdDefaultColors } from '@utils/theme'
 import { getVehicle } from '@utils/utils'
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 interface LineFilterTileProps {
   departure: Departure

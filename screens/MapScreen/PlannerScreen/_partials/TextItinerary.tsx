@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { DateTimeFormatter, Instant, LocalTime } from '@js-joda/core'
 import i18n from 'i18n-js'
@@ -7,15 +6,12 @@ import { StyleSheet, Text, View } from 'react-native'
 
 // import WheelchairSvg from '@icons/wheelchair.svg'
 import EllipseSvg from '@icons/ellipse.svg'
-import BusSvg from '@icons/vehicles/bus.svg'
+import MapPinSvg from '@icons/map-pin-marker.svg'
 import CyclingSvg from '@icons/vehicles/cycling.svg'
 import ScooterSvg from '@icons/vehicles/scooter.svg'
-import TramSvg from '@icons/vehicles/tram.svg'
-import TrolleybusSvg from '@icons/vehicles/trolleybus.svg'
 import WalkingSvg from '@icons/walking.svg'
 
-import { Button, DashedLine } from '@components'
-import { useMhdStopsData } from '@hooks'
+import { BOTTOM_TAB_NAVIGATOR_HEIGHT, DashedLine } from '@components'
 import { LegModes, MicromobilityProvider } from '@types'
 import React, { useEffect, useState } from 'react'
 
@@ -29,30 +25,33 @@ import OwnBicycle from '@icons/bottom-route-headers/own-bicycle.svg'
 import OwnScooter from '@icons/bottom-route-headers/own-scooter.svg'
 import Walking from '@icons/bottom-route-headers/walking.svg'
 
+import ProviderButton from '@components/ProviderButton'
+import IsLiveSvg from '@icons/is-live.svg'
 import { TravelModes } from '@types'
 import {
   colors,
-  getColor,
   getHeaderBgColor,
   getIcon,
+  getMicromobilityImage,
   getProviderName,
-  getTextColor,
+  getShortAddress,
   LegProps,
-  openProviderApp,
   s,
-  trolleybusLineNumbers,
 } from '@utils'
+import MhdTransitCard from './_partials/MhdTransitCard'
 
 interface TextItineraryProps {
   legs: LegProps[]
   provider?: MicromobilityProvider
   isScooter?: boolean
   travelMode: TravelModes
+  fromPlace?: string
+  toPlace?: string
 }
 
-const ICON_WIDTH = 20
+export const ITINERARY_ICON_WIDTH = 20
 const DASHED_HEIGHT = 20
-const PADDING_HORIZONTAL = 10
+export const ITINERARY_PADDING_HORIZONTAL = 10
 
 const BIKESHARE_PROPERTY = 'BIKESHARE'
 
@@ -61,13 +60,9 @@ export const TextItinerary = ({
   provider,
   isScooter,
   travelMode,
+  fromPlace,
+  toPlace,
 }: TextItineraryProps) => {
-  // getData from /mhd/trip/{legs.tripId.substring(2)}
-  const {
-    data: dataMhdStops,
-    isLoading: isLoadingMhd,
-    errors: errorsMhd,
-  } = useMhdStopsData()
   const [timeNow, setTimeNow] = useState(LocalTime.now())
   const [updateEveryMinuteInterval, setUpdateEveryMinuteInterval] = useState<
     number | undefined
@@ -135,6 +130,7 @@ export const TextItinerary = ({
   )
 
   const firstStop = legs.find((leg) => leg.from.vertexType === 'TRANSIT')
+  const isMhd = !!firstStop
 
   const getDashedLine = () => {
     return <DashedLine spacing={4} dashLength={2} color={colors.darkText} />
@@ -145,30 +141,42 @@ export const TextItinerary = ({
       <View style={[styles.card, s.horizontalMargin]}>
         <View style={styles.left}>
           <View style={styles.inline}>
-            {ProviderIcon && <ProviderIcon width={ICON_WIDTH} height={20} />}
+            {ProviderIcon && (
+              <ProviderIcon
+                width={ITINERARY_ICON_WIDTH + 8}
+                height={ITINERARY_ICON_WIDTH + 8}
+                style={{ left: -4 }}
+              />
+            )}
             <Text style={[styles.textBold, styles.textMargin]}>{text}</Text>
           </View>
-          <View style={styles.dashedLine}>{getDashedLine()}</View>
         </View>
       </View>
     )
   }
 
   const renderTransitOnFoot = (leg: LegProps) => {
+    const durationMinutes = leg.duration && Math.floor(leg.duration / 60)
     return (
       <View style={[styles.card, s.horizontalMargin]}>
         <View style={styles.left}>
+          <View style={styles.dashedLine}>{getDashedLine()}</View>
           <View style={styles.inline}>
-            <WalkingSvg width={ICON_WIDTH} height={20} fill={colors.darkText} />
+            <WalkingSvg
+              width={ITINERARY_ICON_WIDTH + 2}
+              height={ITINERARY_ICON_WIDTH + 2}
+              style={{ left: -1 }}
+              fill={colors.darkText}
+            />
             <View style={styles.textMargin}>
-              {leg.duration !== undefined && (
-                <Text>
+              {durationMinutes && (
+                <Text style={[s.boldText, { fontSize: 14, lineHeight: 14 }]}>
                   {i18n.t('screens.PlannerScreen.minShort', {
-                    count: Math.floor(leg.duration / 60),
+                    count: durationMinutes < 1 ? '<1' : durationMinutes,
                   })}
                 </Text>
               )}
-              <Text>
+              <Text style={{ fontSize: 14, lineHeight: 14 }}>
                 {leg.distance !== undefined &&
                   i18n.t('screens.PlannerScreen.distanceShort', {
                     count: Math.floor(leg.distance),
@@ -186,13 +194,20 @@ export const TextItinerary = ({
     return (
       <View style={[styles.card, s.horizontalMargin]}>
         <View style={styles.left}>
+          <View style={styles.dashedLine}>{getDashedLine()}</View>
           <View style={styles.inline}>
             {getMobilityIcon(isScooter)}
             <View style={styles.textMargin}>
-              <Text>
+              <Text style={[s.boldText, { fontSize: 14, lineHeight: 14 }]}>
                 {leg.duration &&
                   i18n.t('screens.PlannerScreen.minShort', {
                     count: Math.floor(leg.duration / 60),
+                  })}
+              </Text>
+              <Text style={{ fontSize: 14, lineHeight: 14 }}>
+                {leg.distance !== undefined &&
+                  i18n.t('screens.PlannerScreen.distanceShort', {
+                    count: Math.floor(leg.distance),
                   })}
               </Text>
             </View>
@@ -203,129 +218,15 @@ export const TextItinerary = ({
     )
   }
 
-  const renderTransitOnOther = (
-    leg: LegProps,
-    startTime: '' | LocalTime | undefined,
-    endTime: 0 | LocalTime | undefined
-  ) => {
-    return (
-      <View
-        style={[
-          styles.card,
-          s.horizontalMargin,
-          styles.whiteCard,
-          styles.cardVerticalMargin,
-        ]}
-      >
-        <View style={styles.left}>
-          {leg.mode === LegModes.tram && (
-            <TramSvg
-              width={ICON_WIDTH}
-              height={20}
-              fill={`#${leg.routeColor}`}
-            />
-          )}
-          {leg.mode === LegModes.bus &&
-            (trolleybusLineNumbers.includes(leg.routeShortName ?? '') ? (
-              <TrolleybusSvg
-                width={ICON_WIDTH}
-                height={20}
-                fill={`#${leg.routeColor}`}
-              />
-            ) : (
-              <BusSvg
-                width={ICON_WIDTH}
-                height={20}
-                fill={`#${leg.routeColor}`}
-              />
-            ))}
-        </View>
-        <View style={styles.middle}>
-          <View>
-            <View
-              style={[
-                s.lineNumber,
-                { backgroundColor: `#${leg.routeColor}` },
-                styles.lineNumberMarginRight,
-              ]}
-            >
-              <Text style={{ color: `#${leg.routeTextColor}` }}>
-                {leg.routeShortName}
-              </Text>
-            </View>
-            {/* <WheelchairSvg width={30} height={20} /> // TODO add when trip data is available*/}
-          </View>
-          <View style={styles.stopsContainer}>
-            <View>
-              <Text style={[styles.textBold, styles.textSizeBig]}>
-                {leg.from.name}
-                {trimStopId(leg.from.stopId)}
-              </Text>
-              <View style={styles.heading}>
-                <Ionicons
-                  size={15}
-                  style={{
-                    alignSelf: 'center',
-                    marginBottom: -3,
-                  }}
-                  name="arrow-forward"
-                />
-                <Text>{leg.headsign}</Text>
-              </View>
-              <View style={styles.mhdTripAdditionalInfoWrapper}>
-                <Text style={styles.greyText}>
-                  {leg?.to?.stopIndex &&
-                    leg?.from?.stopIndex &&
-                    i18n.t('common.stops', {
-                      count: leg.to.stopIndex - leg.from.stopIndex,
-                    })}
-                </Text>
-                <Text style={styles.greyText}>
-                  {`${
-                    leg?.duration &&
-                    ', ' +
-                      i18n.t('common.minutes', {
-                        count: Math.floor(leg?.duration / 60),
-                      })
-                  }`}
-                </Text>
-                {/* TODO add multiple bus stops between api request when api for trip is available => /mhd/trip/{legs[].tripId}*/}
-              </View>
-            </View>
-            {/* TODO add platform when it's available https://inovaciebratislava.atlassian.net/browse/PLAN-256 */}
-            <Text style={[styles.textBold, styles.textSizeBig]}>
-              {leg.to.name}
-              {trimStopId(leg.to.stopId)}
-            </Text>
-          </View>
-        </View>
-        <View style={styles.right}>
-          <Text>
-            {startTime &&
-              startTime.format(DateTimeFormatter.ofPattern('HH:mm'))}
-          </Text>
-          <Text>
-            {endTime && endTime.format(DateTimeFormatter.ofPattern('HH:mm'))}
-          </Text>
-        </View>
-      </View>
-    )
+  const renderTransitOnOther = (leg: LegProps, isLastLeg: boolean) => {
+    return <MhdTransitCard leg={leg} isLastLeg={isLastLeg} />
   }
 
   const getMobilityIcon = (isScooter?: boolean) => {
     const Icon = isScooter ? ScooterSvg : CyclingSvg
-    return <Icon width={ICON_WIDTH} height={20} fill={colors.darkText} />
-  }
-
-  const trimStopId = (stopId: string | undefined) => {
-    return dataMhdStops?.stops?.map((mhdStop) => {
-      // mhdStop.id: 32500002
-      // leg.to.stopId: 1:000000032500002
-      const trimedStopId = _.trimStart(_.trimStart(stopId, '1:'), '0')
-      return trimedStopId === mhdStop.id && mhdStop.platform
-        ? ` ${mhdStop.platform}`
-        : ''
-    })
+    return (
+      <Icon width={ITINERARY_ICON_WIDTH} height={20} fill={colors.darkText} />
+    )
   }
 
   const headerTitle = (minutes = '13'): string => {
@@ -344,8 +245,26 @@ export const TextItinerary = ({
     }
   }
 
+  const buttonTitle =
+    provider === MicromobilityProvider.rekola
+      ? 'Rekola'
+      : provider === MicromobilityProvider.slovnaftbajk
+      ? 'Bajk'
+      : provider === MicromobilityProvider.tier
+      ? 'Tier'
+      : ''
+
+  const lastLeg = legs[legs.length - 1]
+  const renderDestinationIcon =
+    (lastLeg?.mode === LegModes.walk &&
+      lastLeg.duration &&
+      lastLeg.duration / 60 > 1) ||
+    ((lastLeg?.mode === LegModes.bicycle ||
+      lastLeg?.mode === LegModes.scooter) &&
+      !provider)
+
   return (
-    <BottomSheetScrollView style={styles.container}>
+    <View style={styles.container}>
       <View
         style={[
           styles.card,
@@ -354,13 +273,20 @@ export const TextItinerary = ({
           { backgroundColor: getHeaderBgColor(travelMode, provider) },
         ]}
       >
-        {HeaderIcon && <HeaderIcon width={30} height={30} />}
+        {HeaderIcon && (
+          <HeaderIcon
+            width={30}
+            height={30}
+            style={{ marginRight: 10, top: -3 }}
+          />
+        )}
+        {firstStop?.realTime && (
+          <View>
+            <IsLiveSvg fill={colors.white} />
+          </View>
+        )}
         <Text
-          style={[
-            styles.textMargin,
-            styles.textBold,
-            { color: getHeaderTextColor(provider) },
-          ]}
+          style={[styles.textBold, { color: getHeaderTextColor(provider) }]}
         >
           {headerTitle(
             firstStop?.startTime && //TODO Live data from getMhdStopStatusData(firstStop.id)
@@ -389,92 +315,156 @@ export const TextItinerary = ({
           </Text>
         )}
       </View>
-      <View style={[styles.containerContent, styles.paddingVertical]}>
-        {legs.map((leg, index) => {
-          const startTime =
-            leg.startTime &&
-            LocalTime.ofInstant(Instant.ofEpochMilli(parseInt(leg.startTime)))
-          const endTime =
-            leg.endTime &&
-            LocalTime.ofInstant(Instant.ofEpochMilli(leg.endTime))
-          return (
-            <View key={index}>
-              {index === 0 && (
-                <View style={[styles.card, s.horizontalMargin]}>
-                  <View style={styles.left}>
-                    <View style={styles.row}>
-                      <View style={styles.icon}>
-                        <EllipseSvg
-                          width={ICON_WIDTH}
-                          height={20}
-                          fill={colors.darkText}
-                        />
+      <BottomSheetScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={styles.scrollContainerContent}
+      >
+        <View style={[styles.containerContent, styles.paddingVertical]}>
+          {legs.map((leg, index) => {
+            return (
+              <View key={index}>
+                {index === 0 && leg.duration && leg.duration / 60 > 1 && (
+                  <View
+                    style={[
+                      styles.card,
+                      s.horizontalMargin,
+                      { justifyContent: 'space-between' },
+                    ]}
+                  >
+                    <View style={styles.left}>
+                      <View style={styles.row}>
+                        <View style={styles.iconStart}>
+                          <EllipseSvg
+                            width={ITINERARY_ICON_WIDTH}
+                            height={ITINERARY_ICON_WIDTH}
+                            fill={colors.darkText}
+                          />
+                        </View>
+                        {/* TODO add location based on google or get it from previous screen */}
+                        <Text style={[styles.textMargin, styles.textBold]}>
+                          {fromPlace && getShortAddress(fromPlace)}
+                        </Text>
                       </View>
-                      {/* TODO add location based on google or get it from previous screen */}
-                      <Text style={[styles.textMargin, styles.textBold]}>
-                        {i18n.t('screens.PlannerScreen.start')}
-                      </Text>
                     </View>
-                    <View style={styles.dashedLine}>{getDashedLine()}</View>
-                  </View>
-                </View>
-              )}
-              {getFirstRentedInstanceIndex === index &&
-                renderProviderIconWithText(leg.from.name)}
-              {getLastRentedInstanceIndex === index &&
-                renderProviderIconWithText(leg.from.name)}
-              {leg.mode === LegModes.walk && renderTransitOnFoot(leg)}
-              {leg.mode === LegModes.bicycle &&
-                renderTransitOnMicromobility(leg)}
-              {leg.mode !== LegModes.bicycle &&
-                leg.mode !== LegModes.walk &&
-                renderTransitOnOther(leg, startTime, endTime)}
-              {index === legs.length - 1 && (
-                <View style={[styles.card, s.horizontalMargin]}>
-                  <View style={styles.left}>
-                    <View style={styles.row}>
-                      <View style={styles.icon}>
-                        <Ionicons
-                          size={24}
-                          style={{
-                            alignSelf: 'center',
-                            color: colors.darkText,
-                          }}
-                          name="location-sharp"
-                        />
+                    {leg.startTime && isMhd && (
+                      <View
+                        style={{
+                          alignItems: 'flex-end',
+                          position: 'absolute',
+                          right: ITINERARY_PADDING_HORIZONTAL,
+                          top: -14,
+                        }}
+                      >
+                        <Text style={s.textTiny}>
+                          {i18n.t('screens.PlannerScreen.departAt')}
+                        </Text>
+                        <Text style={[s.textSmall, s.boldText]}>
+                          {LocalTime.ofInstant(
+                            Instant.ofEpochMilli(parseInt(leg.startTime))
+                          ).format(DateTimeFormatter.ofPattern('HH:mm'))}
+                        </Text>
                       </View>
-                      {/* TODO add location based on google or get it from previous screen */}
-                      <Text style={[styles.textMargin, styles.textBold]}>
-                        {i18n.t('screens.PlannerScreen.end')}
-                      </Text>
+                    )}
+                  </View>
+                )}
+                {getFirstRentedInstanceIndex === index &&
+                  renderProviderIconWithText(leg.from.name)}
+                {getLastRentedInstanceIndex === index &&
+                  renderProviderIconWithText(leg.from.name)}
+                {leg.mode === LegModes.walk &&
+                  !(
+                    index === legs.length - 1 &&
+                    leg.duration &&
+                    leg.duration / 60 < 1
+                  ) &&
+                  renderTransitOnFoot(leg)}
+                {leg.mode === LegModes.bicycle &&
+                  renderTransitOnMicromobility(leg)}
+                {leg.mode !== LegModes.bicycle &&
+                  leg.mode !== LegModes.walk &&
+                  renderTransitOnOther(
+                    leg,
+                    index === legs.length - 1 ||
+                      (index === legs.length - 2 &&
+                        legs[legs.length - 1].mode === LegModes.walk &&
+                        !renderDestinationIcon)
+                  )}
+                {index === legs.length - 1 && renderDestinationIcon && (
+                  <View
+                    style={[
+                      styles.card,
+                      s.horizontalMargin,
+                      { justifyContent: 'space-between' },
+                    ]}
+                  >
+                    <View style={styles.left}>
+                      <View style={styles.row}>
+                        <View style={styles.iconDestination}>
+                          <MapPinSvg
+                            width={ITINERARY_ICON_WIDTH + 5}
+                            height={ITINERARY_ICON_WIDTH + 5}
+                            fill={colors.black}
+                          />
+                        </View>
+                        {/* TODO add location based on google or get it from previous screen */}
+                        <Text style={styles.textBold}>
+                          {toPlace && getShortAddress(toPlace)}
+                        </Text>
+                      </View>
                     </View>
                   </View>
-                </View>
-              )}
+                )}
+              </View>
+            )
+          })}
+          {/* TODO do it like in https://github.com/bratislava/hybaj-native/pull/49 StationMicromobilityInfo.tsx */}
+          {provider && (
+            <View
+              style={[
+                styles.card,
+                styles.whiteCard,
+                {
+                  marginHorizontal: 20,
+                  marginTop: 30,
+                  justifyContent: 'space-between',
+                  flexDirection: 'row',
+                  height: 100,
+                  alignItems: 'center',
+                },
+              ]}
+            >
+              <View>{getMicromobilityImage(provider, 90, 90)}</View>
+              <View style={{ alignItems: 'center' }}>
+                <ProviderButton provider={provider} />
+                <Text
+                  style={{
+                    ...s.textTiny,
+                    color: colors.mediumGray,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {/* TODO Calculate the price dynamically */}
+                  {i18n.t('screens.PlannerScreen.price', { count: 1.5 })}
+                </Text>
+              </View>
             </View>
-          )
-        })}
-        {/* TODO do it like in https://github.com/bratislava/hybaj-native/pull/49 StationMicromobilityInfo.tsx */}
-        {provider && (
-          <Button
-            contentStyle={{
-              backgroundColor: getColor(provider),
-            }}
-            titleStyle={{ color: getTextColor(provider) }}
-            onPress={() => openProviderApp(provider)}
-            title={i18n.t('screens.PlannerScreen.openApp', {
-              provider: title,
-            })}
-          />
-        )}
-      </View>
-    </BottomSheetScrollView>
+          )}
+        </View>
+      </BottomSheetScrollView>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
+    height: '100%',
+  },
+  scrollContainer: {
     backgroundColor: colors.lightLightGray,
+  },
+  scrollContainerContent: {
+    paddingTop: 20,
+    paddingBottom: BOTTOM_TAB_NAVIGATOR_HEIGHT + 20,
   },
   paddingVertical: {
     paddingVertical: 20,
@@ -494,32 +484,30 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     justifyContent: 'center',
     paddingBottom: 14,
+    paddingTop: 4,
   },
   card: {
-    paddingHorizontal: PADDING_HORIZONTAL,
+    paddingHorizontal: ITINERARY_PADDING_HORIZONTAL,
     paddingVertical: 3,
-    borderRadius: 7,
+    borderRadius: 10,
     display: 'flex',
     flexDirection: 'row',
   },
-  cardVerticalMargin: {
-    marginVertical: 5,
-  },
   whiteCard: {
+    paddingHorizontal: 20,
     backgroundColor: 'white',
-    paddingVertical: 20,
     elevation: 3,
   },
-  lineNumberMarginRight: {
-    marginRight: 10,
+  iconStart: {
+    width: ITINERARY_ICON_WIDTH,
   },
-  icon: {
-    width: ICON_WIDTH,
+  iconDestination: {
+    width: ITINERARY_ICON_WIDTH + 5,
+    left: -2.5,
   },
-
   dashedLine: {
     height: DASHED_HEIGHT,
-    width: ICON_WIDTH,
+    width: ITINERARY_ICON_WIDTH,
     alignItems: 'center',
   },
   row: {
@@ -527,37 +515,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   left: {},
-  middle: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'row',
-  },
   textBold: {
     fontWeight: 'bold',
     fontSize: 16,
   },
   textSizeBig: {
     fontSize: 16,
-  },
-  greyText: {
-    color: colors.lightText,
-  },
-  heading: {
-    display: 'flex',
-    flexDirection: 'row',
-  },
-  mhdTripAdditionalInfoWrapper: {
-    display: 'flex',
-    flexDirection: 'row',
-    marginVertical: 5,
-  },
-  stopsContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-  right: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
   },
 })

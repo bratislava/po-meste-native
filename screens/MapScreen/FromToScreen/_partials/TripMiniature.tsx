@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 import { LoadingView } from '@components'
+import IsLiveSvg from '@icons/is-live.svg'
 import { LegModes, MicromobilityProvider } from '@types'
 import {
   colors,
@@ -91,6 +92,12 @@ const TripMiniature = ({
     }
   }, [firstStopDateTime])
 
+  const lastLeg = legs && legs[legs?.length - 1]
+  const ignoreLastShortWalk =
+    lastLeg?.mode === LegModes.walk &&
+    lastLeg?.duration &&
+    Math.floor(lastLeg.duration / 60) < 1
+
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
       <View style={styles.containerOuter}>
@@ -115,21 +122,33 @@ const TripMiniature = ({
           <View style={styles.leftContainer}>
             {legs && (
               <View style={styles.legsContainer}>
-                {legs.map((leg, index) => (
-                  <Leg
-                    key={index}
-                    isLast={index === legs.length - 1}
-                    mode={leg.mode}
-                    duration={leg.duration}
-                    color={leg.routeColor}
-                    shortName={leg.routeShortName}
-                    TransportIcon={getIcon(provider, isScooter)}
-                  />
-                ))}
+                {legs.map((leg, index) => {
+                  if (index === legs.length - 1 && ignoreLastShortWalk) {
+                    return null
+                  }
+                  return (
+                    <Leg
+                      key={index}
+                      isLast={
+                        index === legs.length - (ignoreLastShortWalk ? 2 : 1)
+                      }
+                      mode={leg.mode}
+                      duration={leg.duration}
+                      color={leg.routeColor}
+                      shortName={leg.routeShortName}
+                      TransportIcon={getIcon(provider, isScooter)}
+                    />
+                  )
+                })}
               </View>
             )}
             {startStationName.length > 0 && (
               <View style={styles.atTimeContainer}>
+                {isfirstStopLive && (
+                  <View>
+                    <IsLiveSvg fill={colors.brightGreen} />
+                  </View>
+                )}
                 {diffMinutes != undefined && (
                   <Text style={styles.atTime}>
                     {diffMinutes < 0
@@ -184,14 +203,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 8 },
     marginBottom: 10,
-  },
-  containerOuter: {
+    elevation: 10,
     borderRadius: 8,
     overflow: 'hidden',
     backgroundColor: 'white',
-    minHeight: 100,
-    elevation: 10,
   },
+  containerOuter: { minHeight: 100 },
   row: {
     display: 'flex',
     flexDirection: 'row',

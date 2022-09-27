@@ -52,7 +52,9 @@ export default function ChooseLocation({
         // }
         if (region) {
           if (Platform.select({ ios: true, android: false })) {
-            setPlaceName('Placeholer Street 10')
+            setPlaceName(
+              i18n.t('screens.ChooseLocationScreen.noLocationSelected')
+            )
             return
           }
           ref.current?.addressForCoordinate(region).then((address) => {
@@ -60,7 +62,7 @@ export default function ChooseLocation({
             let name
             // address.name can either be a name of the place or the house number, which is weird
             if (houseNumberRegex.test(address.name)) {
-              // if address.name is the house number than address.thoroughfare is the street
+              // if address.name is the house number then address.thoroughfare is the street
               if (address.thoroughfare == null) {
                 // if it is null, the location does not have a name (e.g. a location in a forest)
                 name = i18n.t('screens.ChooseLocationScreen.unnamedLocation', {

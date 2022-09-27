@@ -94,6 +94,7 @@ export default {
       unnamedLocation: 'Unnamed: {{latitude}},{{longitude}}',
       moveTheMapAndSelectTheDesiredPoint:
         'Move the map and select the desired point.',
+      noLocationSelected: 'No location selected',
     },
     LineTimetableScreen: {
       screenTitle: 'Timetable line %{lineNumber}',

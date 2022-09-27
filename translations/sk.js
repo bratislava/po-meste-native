@@ -96,6 +96,7 @@ export default {
       unnamedLocation: 'Bez názvu: {{latitude}},{{longitude}}',
       moveTheMapAndSelectTheDesiredPoint:
         'Pohnite mapou a zvoľte požadovaný bod.',
+      noLocationSelected: 'Výber je prázdny',
     },
     LineTimetableScreen: {
       screenTitle: 'Grafikon linky %{lineNumber}',

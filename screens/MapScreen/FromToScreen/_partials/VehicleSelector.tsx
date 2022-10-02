@@ -35,29 +35,32 @@ const VehicleSelector = ({
                 }`
               : undefined
 
-          const getDurationOrPrice = (isPrice = false) => {
-            const min = isPrice
-              ? priceToString(vehicle.priceMin)
-              : vehicle.estimatedTimeMin
-            const max = isPrice
-              ? priceToString(vehicle.priceMax)
-              : vehicle.estimatedTimeMax
+          const getPrice = () => {
+            const min = priceToString(vehicle.priceMin)
+            const max = priceToString(vehicle.priceMax)
             if (!min) {
               return null
             }
-            if (isPrice && (vehicle.mode === TravelModes.mhd || min === max)) {
+            if (vehicle.mode === TravelModes.mhd || min === max) {
               return `~${min}€`
             }
-            if (min === max || (!isPrice && min > 100)) {
-              return `${min}${isPrice ? '€' : ' min'}`
-            }
-            return `${min}${min && max && ` - `}${max}${
-              (min || max) && (isPrice ? '€' : ' min')
-            }`
+            return `${min}${min && max && ` - `}${max}${(min || max) && '€'}`
           }
 
-          const duration = getDurationOrPrice()
-          const price = getDurationOrPrice(true)
+          const getDuration = () => {
+            const min = vehicle.estimatedTimeMin
+            const max = vehicle.estimatedTimeMax
+            if (!min) {
+              return null
+            }
+            if (min === max || min >= 100) {
+              return `${min} min`
+            }
+            return `${min}${min && max && ` - `}${max}${(min || max) && ' min'}`
+          }
+
+          const duration = getPrice()
+          const price = getDuration()
 
           return (
             <TouchableOpacity
@@ -119,7 +122,7 @@ const styles = StyleSheet.create({
     padding: 7,
     borderWidth: 2,
     borderColor: colors.mediumGray,
-    width: 87,
+    width: 90,
     height: 70,
     display: 'flex',
     alignItems: 'center',

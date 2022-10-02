@@ -266,7 +266,7 @@ export default function MapScreen() {
         case ZoomLevel.lg:
           return icons.lg
         default:
-          return undefined
+          return icons.xs
       }
     },
     [region]

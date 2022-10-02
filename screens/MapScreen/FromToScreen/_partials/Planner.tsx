@@ -602,7 +602,15 @@ export default function Planner(props: PlannerProps) {
     adjustMinMaxTravelTime(
       [
         dataMhd?.plan?.itineraries
-          ? { itineraries: dataMhd?.plan?.itineraries }
+          ? {
+              itineraries: dataMhd?.plan?.itineraries.filter(
+                (trip) =>
+                  trip.legs?.findIndex(
+                    (leg) =>
+                      leg.mode === LegModes.bus || leg.mode === LegModes.tram
+                  ) !== -1
+              ),
+            }
           : { itineraries: [] },
       ],
       TravelModes.mhd
@@ -816,7 +824,9 @@ export default function Planner(props: PlannerProps) {
           <TripMiniature provider={provider} isLoading={isLoading} />
         )}
         {data?.plan?.itineraries?.map((tripChoice, index) => {
-          // first result for TRANSIT trip is always walking whole trip
+          // first result for TRANSIT trip is often walking whole trip,
+          // when the trip distance is smaller than the 'maxWalkDistance'
+
           // alternative is to reduce walking distance in request 'maxWalkDistance' http://dev.opentripplanner.org/apidoc/1.4.0/resource_PlannerResource.html
           if (
             selectedVehicle === TravelModes.mhd &&

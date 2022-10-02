@@ -29,6 +29,7 @@ import ScooterSvg from '@icons/vehicles/scooter.svg'
 import TramSvg from '@icons/vehicles/tram.svg'
 import TrolleybusSvg from '@icons/vehicles/trolleybus.svg'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Platform } from 'expo-modules-core'
 import { Region } from 'react-native-maps'
 
 export const presentPrice = (price: number /* in cents */) => {
@@ -283,12 +284,13 @@ const MIN_DELTA_FOR_MD_MARKER = 0.01
 
 export const getZoomLevel = (region: Region | null) => {
   const latDelta = region?.latitudeDelta
+  const multiplier = Platform.select({ ios: 0.4, android: 1 })
   if (latDelta) {
-    return latDelta >= MIN_DELTA_FOR_XS_MARKER
+    return latDelta >= MIN_DELTA_FOR_XS_MARKER * multiplier
       ? ZoomLevel.xs
-      : latDelta >= MIN_DELTA_FOR_SM_MARKER
+      : latDelta >= MIN_DELTA_FOR_SM_MARKER * multiplier
       ? ZoomLevel.sm
-      : latDelta >= MIN_DELTA_FOR_MD_MARKER
+      : latDelta >= MIN_DELTA_FOR_MD_MARKER * multiplier
       ? ZoomLevel.md
       : ZoomLevel.lg
   }

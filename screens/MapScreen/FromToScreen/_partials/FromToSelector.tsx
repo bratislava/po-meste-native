@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   switchPlaces: {
-    ...s.shadow,
     width: 36,
     height: 36,
     borderRadius: 18,

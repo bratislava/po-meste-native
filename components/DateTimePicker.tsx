@@ -4,7 +4,7 @@ import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
 import i18n from 'i18n-js'
 import { range } from 'lodash'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import ScrollPickerNative, {
@@ -50,10 +50,16 @@ interface DateTimePickerProps {
   onScheduleTypeChange: (scheduleType: ScheduleType) => void
 }
 
-const DateTimePicker = ({
-  onConfirm,
-  onScheduleTypeChange,
-}: DateTimePickerProps) => {
+interface DateTimePickerHandles {
+  setDate: (date: LocalDateTime) => void
+}
+
+export type DateTimePickerRef = DateTimePickerProps & DateTimePickerHandles
+
+const DateTimePicker = React.forwardRef<
+  DateTimePickerHandles,
+  DateTimePickerProps
+>(({ onConfirm, onScheduleTypeChange }: DateTimePickerProps, ref) => {
   const [now, setNow] = useState(LocalDateTime.now())
   const [selectedHour, setSelectedHour] = useState<number>(now.hour())
   const [selectedMinute, setSelectedMinute] = useState<number>(now.minute())
@@ -62,6 +68,10 @@ const DateTimePicker = ({
   const datePickerRef = useRef<ScrollHandle>(null)
   const hourPickerRef = useRef<ScrollHandle>(null)
   const minutePickerRef = useRef<ScrollHandle>(null)
+
+  useImperativeHandle(ref, () => ({
+    setDate: (date) => scrollToDate(date),
+  }))
 
   const days = range(0, 15, 1).map((value) => {
     const date = LocalDateTime.now()
@@ -75,14 +85,25 @@ const DateTimePicker = ({
     if (scheduleType !== 'now') onScheduleTypeChange(scheduleType)
   }, [scheduleType, onScheduleTypeChange])
 
-  useEffect(() => {
-    setSelectedHour(now.hour())
-    hourPickerRef.current?.scrollTo(now.hour())
-    setSelectedMinute(now.minute())
-    minutePickerRef.current?.scrollTo(now.minute())
+  // useEffect(() => {
+  //   setSelectedHour(now.hour())
+  //   hourPickerRef.current?.scrollTo(now.hour())
+  //   setSelectedMinute(now.minute())
+  //   minutePickerRef.current?.scrollTo(now.minute())
+  //   setSelectedDateIndex(7)
+  //   datePickerRef.current?.scrollTo(7)
+  // }, [now])
+
+  useEffect(() => scrollToDate(LocalDateTime.now()), [])
+
+  const scrollToDate = (date: LocalDateTime) => {
+    setSelectedHour(date.hour())
+    hourPickerRef.current?.scrollTo(date.hour(), false)
+    setSelectedMinute(date.minute())
+    minutePickerRef.current?.scrollTo(date.minute(), false)
     setSelectedDateIndex(7)
-    datePickerRef.current?.scrollTo(7)
-  }, [now])
+    datePickerRef.current?.scrollTo(7, false)
+  }
 
   const handleConfirm = () => {
     if (scheduleType === 'now') setScheduleType(ScheduleType.departure)
@@ -105,6 +126,7 @@ const DateTimePicker = ({
     const localNow = LocalDateTime.now()
     setScheduleType('now')
     setNow(localNow)
+    scrollToDate(localNow)
     onScheduleTypeChange(ScheduleType.departure)
     onConfirm(convert(localNow).toDate())
   }
@@ -160,7 +182,7 @@ const DateTimePicker = ({
         <ScrollPicker
           ref={datePickerRef}
           dataSource={days}
-          selectedIndex={7}
+          selectedIndex={selectedDateIndex}
           highlightStyle={{
             borderTopLeftRadius: 16,
             borderBottomLeftRadius: 16,
@@ -194,7 +216,7 @@ const DateTimePicker = ({
       </View>
     </View>
   )
-}
+})
 
 const styles = StyleSheet.create({
   contentWrapper: {

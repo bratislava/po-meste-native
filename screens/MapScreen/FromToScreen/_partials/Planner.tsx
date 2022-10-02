@@ -45,7 +45,7 @@ import {
 } from '@utils'
 
 import { ErrorView } from '@components'
-import DateTimePicker from '@components/DateTimePicker'
+import DateTimePicker, { DateTimePickerRef } from '@components/DateTimePicker'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 import {
@@ -174,6 +174,7 @@ export default function Planner(props: PlannerProps) {
   const fromBottomSheetRef = useRef<BottomSheet>(null)
   const toBottomSheetRef = useRef<BottomSheet>(null)
   const datetimeSheetRef = useRef<BottomSheet>(null)
+  const datetimePickerRef = useRef<DateTimePickerRef>(null)
 
   const [vehicles, setVehicles] = useState<VehicleData[]>(vehiclesDefault)
 
@@ -599,6 +600,9 @@ export default function Planner(props: PlannerProps) {
     >
   ) => {
     if (details?.geometry.location.lat && details?.geometry.location.lng) {
+      const localNow = LocalDateTime.now()
+      setDateTime(localNow)
+      datetimePickerRef.current?.setDate(localNow)
       setCoordinates({
         latitude: details?.geometry.location.lat,
         longitude: details?.geometry.location.lng,
@@ -1066,6 +1070,7 @@ export default function Planner(props: PlannerProps) {
           <DateTimePicker
             onConfirm={handleConfirm}
             onScheduleTypeChange={handleOptionChange}
+            ref={datetimePickerRef}
           />
         </BottomSheet>
       )}

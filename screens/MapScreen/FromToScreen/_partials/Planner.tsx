@@ -19,6 +19,7 @@ import React, {
 } from 'react'
 import {
   InteractionManager,
+  Platform,
   StyleSheet,
   Switch,
   Text,
@@ -883,7 +884,10 @@ export default function Planner(props: PlannerProps) {
                 ios_backgroundColor="#E1E4E8"
                 onValueChange={(value) => setAccessibleOnly(value)}
                 value={accessibleOnly}
-                style={{ flex: 0 }}
+                style={{
+                  flex: 0,
+                  marginLeft: Platform.select({ ios: 10, android: 0 }),
+                }}
               />
             </View>
           </View>

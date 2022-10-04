@@ -233,11 +233,15 @@ const SearchMhd = () => {
                   handleMarkerPress(stop)
                 }}
               >
-                {stop.platform && getZoomLevel(region) === ZoomLevel.lg && (
-                  <View style={markerLabelStyles.container}>
-                    <Text style={markerLabelStyles.label}>{stop.platform}</Text>
-                  </View>
-                )}
+                {stop.platform &&
+                  getZoomLevel(region) === ZoomLevel.lg &&
+                  Platform.OS === 'android' && (
+                    <View style={markerLabelStyles.container}>
+                      <Text style={markerLabelStyles.label}>
+                        {stop.platform}
+                      </Text>
+                    </View>
+                  )}
               </Marker>
             ))}
         </MapView>

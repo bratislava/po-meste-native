@@ -247,7 +247,7 @@ const SearchMhd = () => {
         </MapView>
       </View>
       <View style={styles.searchContainer}>
-        <View style={styles.inputWrapper}>
+        <View style={[styles.inputWrapper, { zIndex: 2 }]}>
           <SearchSvg
             width={20}
             height={20}

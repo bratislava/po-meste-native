@@ -191,6 +191,20 @@ export default function MapScreen() {
   const [showCurrentLocationButton, setShowCurrentLocationButton] =
     useState(true)
 
+  const [animateToLocation, setAnimateToLocation] = useState(true)
+  useEffect(() => {
+    if (vehiclesContext.location?.coords && animateToLocation) {
+      setAnimateToLocation(false)
+      mapRef.current?.animateCamera({
+        center: vehiclesContext.location?.coords,
+        zoom: 17,
+        // TODO altitude needs to be set for Apple maps
+        // https://github.com/react-native-maps/react-native-maps/blob/master/docs/mapview.md#types part camera
+        altitude: undefined,
+      })
+    }
+  }, [vehiclesContext.location, animateToLocation])
+
   const [vehicleSheetIndex, setVehicleSheetIndex] = useState(1)
 
   const bottomSheetRef = useRef<BottomSheet>(null)

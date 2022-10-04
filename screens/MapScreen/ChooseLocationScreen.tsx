@@ -50,36 +50,6 @@ export default function ChooseLocation({
             }
           )
         }
-        /*if (region) {
-          if (Platform.select({ ios: true, android: false })) {
-            setPlaceName(
-              i18n.t('screens.ChooseLocationScreen.noLocationSelected')
-            )
-            return
-          }
-          ref.current?.addressForCoordinate(region).then((address) => {
-            const houseNumberRegex = /[0-9/]{1,}[A-Z]?/
-            let name
-            // address.name can either be a name of the place or the house number, which is weird
-            if (houseNumberRegex.test(address.name)) {
-              // if address.name is the house number then address.thoroughfare is the street
-              if (address.thoroughfare == null) {
-                // if it is null, the location does not have a name (e.g. a location in a forest)
-                name = i18n.t('screens.ChooseLocationScreen.unnamedLocation', {
-                  latitude: region.latitude.toFixed(5), // 5 decimal digits means +-1m accuracy
-                  longitude: region.longitude.toFixed(5),
-                })
-              } else {
-                name = `${address.thoroughfare} ${address.name}`
-              }
-            } else {
-              // if address.name is not a house number, then most probably it is the same as address.thoroughfare
-              // and/or it is the actual name of the place and we display only the name
-              name = address.name
-            }
-            setPlaceName(name)
-          })
-        }*/
       }, REVERSE_GEOCODING_DEBOUNCE)
     )
     return () => {

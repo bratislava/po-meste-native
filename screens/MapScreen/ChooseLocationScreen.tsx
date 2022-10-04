@@ -2,12 +2,12 @@ import { useNavigation } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import i18n from 'i18n-js'
 import React, { useEffect, useRef, useState } from 'react'
-import { Platform, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import MapView, { PROVIDER_GOOGLE, Region } from 'react-native-maps'
 
 import { Button } from '@components'
 import { MapParamList } from '@types'
-import { colors, s } from '@utils'
+import { colors, googlePlacesReverseGeocode, s } from '@utils'
 
 import MarkerSvg from '@icons/map-pin-marker.svg'
 import { customMapStyle } from './customMapStyle'
@@ -35,22 +35,22 @@ export default function ChooseLocation({
     }
     setDebouceTimeout(
       setTimeout(() => {
-        // TODO Add GooglePlacesApiKey authorization for reverse geocoding
-        // if (region) {
-        //   fetch(
-        //     'https://maps.google.com/maps/api/geocode/json?' +
-        //       new URLSearchParams({
-        //         key: Constants.manifest?.extra?.googlePlacesApiKey,
-        //         latlng: `${region.latitude},${region.longitude}`,
-        //       })
-        //   )
-        //     .then((res) => res.json())
-        //     .then((places) => {
-        //       if (Array.isArray(places) && placeName.length > 0)
-        //         setPlaceName(`${places[0].data.description}`)
-        //     })
-        // }
         if (region) {
+          googlePlacesReverseGeocode(
+            region.latitude,
+            region.longitude,
+            (results) => {
+              const bestResult = results[0]
+              setPlaceName(
+                `${bestResult.formatted_address.slice(
+                  0,
+                  bestResult.formatted_address.indexOf(',')
+                )}`
+              )
+            }
+          )
+        }
+        /*if (region) {
           if (Platform.select({ ios: true, android: false })) {
             setPlaceName(
               i18n.t('screens.ChooseLocationScreen.noLocationSelected')
@@ -79,7 +79,7 @@ export default function ChooseLocation({
             }
             setPlaceName(name)
           })
-        }
+        }*/
       }, REVERSE_GEOCODING_DEBOUNCE)
     )
     return () => {
@@ -190,6 +190,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontSize: 20,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   confirm: {},
   mapWrapper: {

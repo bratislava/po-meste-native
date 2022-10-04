@@ -230,3 +230,28 @@ export enum ZoomLevel {
   md,
   lg,
 }
+
+type LatLng = { lat: number; lng: number }
+
+export type GooglePlacesResult = {
+  address_components: {
+    long_name: string
+    short_name: string
+    types: PlaceType[]
+  }[]
+  formatted_address: string
+  geometry: {
+    location: LatLng
+    location_type: string
+    viewport: {
+      northeast: LatLng
+      southwest: LatLng
+    }
+  }
+  place_id: string
+  plus_code: {
+    compound_code: string
+    global_code: string
+  }
+  types: PlaceType[]
+}

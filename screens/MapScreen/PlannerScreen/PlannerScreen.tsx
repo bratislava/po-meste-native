@@ -23,6 +23,11 @@ import { TextItinerary } from './_partials/TextItinerary'
 import CurrentLocationButton from '@components/CurrentLocationButton'
 import { customMapStyle } from '../customMapStyle'
 
+/* eslint-disable @typescript-eslint/no-var-requires */
+const circleLarge = require('@icons/map/circle.png')
+const circleSmall = require('@icons/map/circle.png')
+/* eslint-enable @typescript-eslint/no-var-requires */
+
 export default function PlannerScreen({
   route,
 }: StackScreenProps<MapParamList, 'PlannerScreen'>) {
@@ -90,7 +95,7 @@ export default function PlannerScreen({
       >
         <Marker
           coordinate={allMarkers[0]}
-          icon={require('@icons/map/circle.png')}
+          icon={Platform.OS === 'ios' ? circleSmall : circleLarge}
         />
         {legs?.reduce<JSX.Element[]>((accumulator, leg, index) => {
           if (leg.legGeometry.points) {

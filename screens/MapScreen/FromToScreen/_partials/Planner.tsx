@@ -23,6 +23,7 @@ import {
   StyleSheet,
   Switch,
   Text,
+  useWindowDimensions,
   View,
 } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -44,7 +45,7 @@ import {
   s,
 } from '@utils'
 
-import { ErrorView } from '@components'
+import { BOTTOM_TAB_NAVIGATOR_HEIGHT, ErrorView } from '@components'
 import DateTimePicker, { DateTimePickerRef } from '@components/DateTimePicker'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
@@ -115,6 +116,8 @@ import MhdSvg from '@icons/vehicles/mhd.svg'
 import ScooterSvg from '@icons/vehicles/scooter.svg'
 import WalkingSvg from '@icons/walking.svg'
 
+import { NAVIGATION_HEADER_HEIGHT } from '@components/navigation/Header'
+import { TAB_BAR_LARGE_HEIGHT } from '@components/TabView'
 import WheelchairSvg from '@icons/wheelchair.svg'
 
 interface PlannerProps {
@@ -133,6 +136,8 @@ export default function Planner(props: PlannerProps) {
       setInteractionsFinished(true)
     })
   }, [])
+
+  const dimensions = useWindowDimensions()
 
   const fromPropCoordinates = useMemo(
     () =>
@@ -175,6 +180,8 @@ export default function Planner(props: PlannerProps) {
   const toBottomSheetRef = useRef<BottomSheet>(null)
   const datetimeSheetRef = useRef<BottomSheet>(null)
   const datetimePickerRef = useRef<DateTimePickerRef>(null)
+
+  const [headerHeight, setHeaderHeight] = useState(0)
 
   const [vehicles, setVehicles] = useState<VehicleData[]>(vehiclesDefault)
 
@@ -792,8 +799,25 @@ export default function Planner(props: PlannerProps) {
     : dateTime.format(DateTimeFormatter.ofPattern('dd.MM. HH:mm'))
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+    <ScrollView
+      style={styles.container}
+      bounces={false}
+      contentContainerStyle={[
+        styles.contentContainer,
+        {
+          height:
+            dimensions.height -
+            TAB_BAR_LARGE_HEIGHT -
+            NAVIGATION_HEADER_HEIGHT -
+            BOTTOM_TAB_NAVIGATOR_HEIGHT +
+            headerHeight,
+        },
+      ]}
+    >
+      <View
+        style={styles.header}
+        onLayout={(event) => setHeaderHeight(event.nativeEvent.layout.height)}
+      >
         <FromToSelector
           onFromPlacePress={() => {
             fromBottomSheetRef?.current?.snapToIndex(0)
@@ -904,7 +928,7 @@ export default function Planner(props: PlannerProps) {
           selectedVehicle={selectedVehicle}
         />
       </View>
-      <ScrollView contentContainerStyle={styles.scrollView}>
+      <ScrollView contentContainerStyle={styles.scrollView} nestedScrollEnabled>
         {selectedVehicle === TravelModes.mhd && (
           <View>
             {(isLoadingMhd || dataMhd || errorMhd) && (
@@ -1074,16 +1098,18 @@ export default function Planner(props: PlannerProps) {
           />
         </BottomSheet>
       )}
-    </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  contentContainer: {
     alignItems: 'stretch',
     justifyContent: 'center',
     backgroundColor: colors.lightLightGray,
+  },
+  container: {
+    flex: 1,
     height: '100%',
   },
   textSizeBig: {

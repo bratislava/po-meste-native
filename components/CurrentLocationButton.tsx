@@ -15,7 +15,7 @@ import MapView from 'react-native-maps'
 
 interface CurrentLocationButtonProps {
   mapRef: RefObject<MapView>
-  style: StyleProp<ViewStyle>
+  style?: StyleProp<ViewStyle>
 }
 
 const moveMapToCurrentLocationAsync = async (

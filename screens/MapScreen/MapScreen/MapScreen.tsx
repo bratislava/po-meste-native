@@ -10,7 +10,14 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { ImageURISource, Platform, StyleSheet, Text, View } from 'react-native'
+import {
+  Animated,
+  ImageURISource,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
 
 import {
@@ -425,6 +432,19 @@ export default function MapScreen() {
   const filterMhdAmount = (mhdStop: MhdStopProps) =>
     zoomLevel === ZoomLevel.xs ? mhdStop.platform === 'A' : true
 
+  const moveAnim = useRef(new Animated.Value(0)).current
+  const moveCurrentLocationIcon = (index: number) => {
+    Animated.timing(moveAnim, {
+      toValue:
+        index === 0
+          ? VEHICLE_BAR_SHEET_HEIGHT_EXPANDED -
+            VEHICLE_BAR_SHEET_HEIGHT_COLLAPSED
+          : 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start()
+  }
+
   return (
     <View style={styles.container}>
       <MapView
@@ -631,15 +651,16 @@ export default function MapScreen() {
         )}
 
       {showCurrentLocationButton && (
-        <CurrentLocationButton
-          mapRef={mapRef}
+        <Animated.View
           style={{
-            bottom:
-              (vehicleSheetIndex === 0
-                ? VEHICLE_BAR_SHEET_HEIGHT_COLLAPSED
-                : VEHICLE_BAR_SHEET_HEIGHT_EXPANDED) + 15,
+            transform: [{ translateY: moveAnim }],
+            position: 'absolute',
+            right: 20,
+            bottom: VEHICLE_BAR_SHEET_HEIGHT_EXPANDED + 70,
           }}
-        />
+        >
+          <CurrentLocationButton mapRef={mapRef} />
+        </Animated.View>
       )}
       <BottomSheet
         ref={vehicleSheetRef}
@@ -650,7 +671,10 @@ export default function MapScreen() {
           VEHICLE_BAR_SHEET_HEIGHT_COLLAPSED,
           VEHICLE_BAR_SHEET_HEIGHT_EXPANDED,
         ]}
-        onChange={(index) => setVehicleSheetIndex(index)}
+        onChange={(index) => {
+          setVehicleSheetIndex(index)
+          moveCurrentLocationIcon(index)
+        }}
       >
         <VehicleBar />
       </BottomSheet>

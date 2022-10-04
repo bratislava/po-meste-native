@@ -7,6 +7,7 @@ import { colors, inputSelectionColor } from '@utils/theme'
 import Constants from 'expo-constants'
 import React, { useState } from 'react'
 import {
+  Platform,
   StyleSheet,
   Text,
   TextInputProps,
@@ -115,6 +116,7 @@ const Autocomplete = ({
       }}
       {...rest}
       textInputProps={{
+        placeholderTextColor: Platform.select({ ios: colors.gray }),
         selectTextOnFocus: selectOnFocus,
         selectionColor: inputSelectionColor,
         ...rest.textInputProps,
@@ -126,6 +128,7 @@ const Autocomplete = ({
           textInputProps?.onBlur && textInputProps.onBlur(e)
         },
         selection: googleAutocompleteSelection,
+        multiline: false,
       }}
       suppressDefaultStyles
       styles={mergedStyles}
@@ -154,6 +157,7 @@ export const autoCompleteStyles = {
     flexGrow: 1,
     flexBasis: 'auto',
     maxWidth: '90%',
+    paddingVertical: 8,
     ...s.textSmall,
   },
   textInputContainer: {

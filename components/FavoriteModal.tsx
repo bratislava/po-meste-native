@@ -11,6 +11,7 @@ import { isFavoritePlace } from '@utils/utils'
 import i18n from 'i18n-js'
 import React, { useEffect, useRef, useState } from 'react'
 import {
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -182,6 +183,7 @@ const FavoriteModal = ({
                   )
                     setIsEditingName(false)
                 }}
+                placeholderTextColor={Platform.select({ ios: colors.gray })}
               />
               {!isEditingName && (
                 <View style={styles.editButtonContainer}>

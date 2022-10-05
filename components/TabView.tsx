@@ -42,6 +42,7 @@ const renderTabBar = (
               {
                 backgroundColor:
                   variant === 'large' ? colors.lightLightGray : colors.white,
+                marginLeft: variant === 'large' && index !== 0 ? 1 : 0,
               },
               focused ? styles.tabBarTabLabelFocused : {},
               variant === 'large'
@@ -120,6 +121,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.primary,
     borderBottomWidth: 5,
     backgroundColor: colors.primary,
+    shadowOpacity: 0,
   },
   tabBarTab: {
     backgroundColor: 'white',

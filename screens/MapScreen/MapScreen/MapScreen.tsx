@@ -678,7 +678,7 @@ export default function MapScreen() {
       )}
       <BottomSheet
         ref={vehicleSheetRef}
-        style={{ zIndex: 2 }}
+        style={{ zIndex: 2, ...s.shadow }}
         handleIndicatorStyle={{ ...s.handleStyle, marginBottom: 0 }}
         index={1}
         snapPoints={[
@@ -695,7 +695,7 @@ export default function MapScreen() {
       <BottomSheet
         handleIndicatorStyle={s.handleStyle}
         ref={bottomSheetRef}
-        style={{ zIndex: 1 }}
+        style={{ zIndex: 1, ...s.shadow, elevation: 7 }}
         index={-1}
         snapPoints={bottomSheetSnapPoints}
         enablePanDownToClose

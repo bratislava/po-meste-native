@@ -1,5 +1,6 @@
 import SearchSvg from '@icons/search.svg'
 import { useNavigation } from '@react-navigation/native'
+import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
 import i18n from 'i18n-js'
 import React from 'react'
@@ -44,6 +45,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     alignItems: 'center',
     borderRadius: 30,
+    ...s.shadow,
+    elevation: 7,
   },
   searchInput: {
     marginLeft: 16,

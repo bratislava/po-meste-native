@@ -21,9 +21,11 @@ export const getMicromobilityImage = (
     case MicromobilityProvider.bolt:
       return (
         <Image
-          source={require('@images/bolt-vehicle-image.png')}
-          height={height}
-          width={width}
+          source={{
+            uri: require('@images/bolt-vehicle-image.png'),
+            height,
+            width,
+          }}
         />
       )
     default:

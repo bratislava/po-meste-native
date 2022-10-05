@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
   whiteCard: {
     backgroundColor: 'white',
     paddingVertical: 20,
-    elevation: 3,
+    elevation: 7,
   },
   line: {
     alignItems: 'center',

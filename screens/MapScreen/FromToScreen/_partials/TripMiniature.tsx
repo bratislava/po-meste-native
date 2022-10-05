@@ -99,116 +99,121 @@ const TripMiniature = ({
     Math.floor(lastLeg.duration / 60) < 1
 
   return (
-    <TouchableOpacity onPress={onPress} style={styles.container}>
-      <View style={styles.containerOuter}>
-        <View style={styles.row}>
-          {provider && (
-            <Text
-              style={[
-                s.boldText,
-                styles.providerText,
-                {
-                  backgroundColor: getColor(provider),
-                  color: getTextColor(provider),
-                },
-              ]}
-            >
-              {getProviderName(provider)}
-            </Text>
-          )}
-        </View>
-        {isLoading && <LoadingView fullscreen stylesOuter={styles.elevation} />}
-        <View style={styles.containerInner}>
-          <View style={styles.leftContainer}>
-            {legs && (
-              <View style={styles.legsContainer}>
-                {legs.map((leg, index) => {
-                  if (index === legs.length - 1 && ignoreLastShortWalk) {
-                    return null
-                  }
-                  return (
-                    <Leg
-                      key={index}
-                      isLast={
-                        index === legs.length - (ignoreLastShortWalk ? 2 : 1)
-                      }
-                      mode={leg.mode}
-                      duration={leg.duration}
-                      color={leg.routeColor}
-                      shortName={leg.routeShortName}
-                      TransportIcon={getIcon(provider, isScooter)}
-                    />
-                  )
-                })}
-              </View>
+    <View style={styles.containerOuter}>
+      <TouchableOpacity onPress={onPress} style={styles.touchable}>
+        <View style={styles.container}>
+          <View style={styles.row}>
+            {provider && (
+              <Text
+                style={[
+                  s.boldText,
+                  styles.providerText,
+                  {
+                    backgroundColor: getColor(provider),
+                    color: getTextColor(provider),
+                  },
+                ]}
+              >
+                {getProviderName(provider)}
+              </Text>
             )}
-            {startStationName.length > 0 && (
-              <View style={styles.atTimeContainer}>
-                {isfirstStopLive && (
-                  <View>
-                    <IsLiveSvg fill={colors.brightGreen} />
-                  </View>
-                )}
-                {diffMinutes != undefined && (
-                  <Text style={styles.atTime}>
-                    {diffMinutes < 0
-                      ? i18n.t('screens.FromToScreen.Planner.beforeIn', {
-                          time: Math.abs(diffMinutes),
-                        })
-                      : i18n.t('screens.FromToScreen.Planner.startingIn', {
-                          time: diffMinutes,
-                        })}
+          </View>
+          {isLoading && (
+            <LoadingView fullscreen stylesOuter={styles.elevation} />
+          )}
+          <View style={styles.containerInner}>
+            <View style={styles.leftContainer}>
+              {legs && (
+                <View style={styles.legsContainer}>
+                  {legs.map((leg, index) => {
+                    if (index === legs.length - 1 && ignoreLastShortWalk) {
+                      return null
+                    }
+                    return (
+                      <Leg
+                        key={index}
+                        isLast={
+                          index === legs.length - (ignoreLastShortWalk ? 2 : 1)
+                        }
+                        mode={leg.mode}
+                        duration={leg.duration}
+                        color={leg.routeColor}
+                        shortName={leg.routeShortName}
+                        TransportIcon={getIcon(provider, isScooter)}
+                      />
+                    )
+                  })}
+                </View>
+              )}
+              {startStationName.length > 0 && (
+                <View style={styles.atTimeContainer}>
+                  {isfirstStopLive && (
+                    <View>
+                      <IsLiveSvg fill={colors.brightGreen} />
+                    </View>
+                  )}
+                  {diffMinutes != undefined && (
+                    <Text style={styles.atTime}>
+                      {diffMinutes < 0
+                        ? i18n.t('screens.FromToScreen.Planner.beforeIn', {
+                            time: Math.abs(diffMinutes),
+                          })
+                        : i18n.t('screens.FromToScreen.Planner.startingIn', {
+                            time: diffMinutes,
+                          })}
+                    </Text>
+                  )}
+                  <Text numberOfLines={1}>
+                    {i18n.t('screens.FromToScreen.Planner.from')}
+                    <Text style={styles.stationName}>{startStationName}</Text>
                   </Text>
-                )}
-                <Text numberOfLines={1}>
-                  {i18n.t('screens.FromToScreen.Planner.from')}
-                  <Text style={styles.stationName}>{startStationName}</Text>
+                </View>
+              )}
+            </View>
+            <View style={styles.rightContainer}>
+              {duration !== undefined && (
+                <View style={styles.durationContainer}>
+                  <Text style={styles.durationNumber}>{duration}</Text>
+                  <Text style={styles.durationMin}>min</Text>
+                </View>
+              )}
+              <View style={styles.fromToTime}>
+                <Text style={styles.fromToTimeText}>
+                  {departureDateTime &&
+                    departureDateTime.format(
+                      DateTimeFormatter.ofPattern('HH:mm')
+                    )}
+                </Text>
+                <Text style={styles.fromToTimeText}>
+                  {arriveDateTime &&
+                    ` - ${arriveDateTime.format(
+                      DateTimeFormatter.ofPattern('HH:mm')
+                    )}`}
                 </Text>
               </View>
-            )}
-          </View>
-          <View style={styles.rightContainer}>
-            {duration !== undefined && (
-              <View style={styles.durationContainer}>
-                <Text style={styles.durationNumber}>{duration}</Text>
-                <Text style={styles.durationMin}>min</Text>
-              </View>
-            )}
-            <View style={styles.fromToTime}>
-              <Text style={styles.fromToTimeText}>
-                {departureDateTime &&
-                  departureDateTime.format(
-                    DateTimeFormatter.ofPattern('HH:mm')
-                  )}
-              </Text>
-              <Text style={styles.fromToTimeText}>
-                {arriveDateTime &&
-                  ` - ${arriveDateTime.format(
-                    DateTimeFormatter.ofPattern('HH:mm')
-                  )}`}
-              </Text>
+              <View style={styles.rightContainerBackground}></View>
             </View>
-            <View style={styles.rightContainerBackground}></View>
           </View>
         </View>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
+  touchable: {
     shadowColor: '#000',
     shadowRadius: 12,
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 4, height: 8 },
     marginBottom: 10,
     elevation: 10,
     borderRadius: 8,
     overflow: 'hidden',
     backgroundColor: 'white',
   },
-  containerOuter: { minHeight: 100 },
+  containerOuter: { ...s.shadow },
+  container: { minHeight: 100 },
   row: {
     display: 'flex',
     flexDirection: 'row',

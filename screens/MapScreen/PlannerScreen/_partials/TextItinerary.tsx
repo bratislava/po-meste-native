@@ -496,7 +496,7 @@ const styles = StyleSheet.create({
   whiteCard: {
     paddingHorizontal: 20,
     backgroundColor: 'white',
-    elevation: 3,
+    elevation: 7,
   },
   iconStart: {
     width: ITINERARY_ICON_WIDTH,

@@ -22,7 +22,9 @@ export const getMicromobilityImage = (
       return (
         <Image
           source={{
-            uri: require('@images/bolt-vehicle-image.png'),
+            uri: Image.resolveAssetSource(
+              require('@images/bolt-vehicle-image.png')
+            ).uri,
             height,
             width,
           }}

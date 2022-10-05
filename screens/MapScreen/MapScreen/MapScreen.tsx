@@ -489,26 +489,55 @@ export default function MapScreen() {
           filterMhdInView(dataMhd.stops)
             .filter(filterMhdAmount)
             .map((stop) => (
-              <Marker
-                key={stop.id}
-                coordinate={{
-                  latitude: parseFloat(stop.gpsLat),
-                  longitude: parseFloat(stop.gpsLon),
-                }}
-                tracksViewChanges={false}
-                onPress={() => operateBottomSheet({ mhd: stop })}
-                icon={getIcon(IconType.mhd)}
-              >
+              <>
+                <Marker
+                  key={stop.id}
+                  coordinate={{
+                    latitude: parseFloat(stop.gpsLat),
+                    longitude: parseFloat(stop.gpsLon),
+                  }}
+                  tracksViewChanges={false}
+                  onPress={() => operateBottomSheet({ mhd: stop })}
+                  icon={getIcon(IconType.mhd)}
+                >
+                  {stop.platform &&
+                    zoomLevel === ZoomLevel.lg &&
+                    (Platform.OS === 'android' ? (
+                      <View style={markerLabelStyles.container}>
+                        <Text style={markerLabelStyles.label}>
+                          {stop.platform}
+                        </Text>
+                      </View>
+                    ) : null)}
+                </Marker>
                 {stop.platform &&
                   zoomLevel === ZoomLevel.lg &&
-                  (Platform.OS === 'android' ? (
-                    <View style={markerLabelStyles.container}>
-                      <Text style={markerLabelStyles.label}>
-                        {stop.platform}
-                      </Text>
-                    </View>
-                  ) : null)}
-              </Marker>
+                  Platform.OS === 'ios' && (
+                    <Marker
+                      key={stop.id + 'platform'}
+                      coordinate={{
+                        latitude: parseFloat(stop.gpsLat),
+                        longitude: parseFloat(stop.gpsLon),
+                      }}
+                      tracksViewChanges={false}
+                      style={{ zIndex: 2 }}
+                    >
+                      <View
+                        style={[
+                          markerLabelStyles.container,
+                          {
+                            marginLeft: 0,
+                            marginTop: 0,
+                          },
+                        ]}
+                      >
+                        <Text style={markerLabelStyles.label}>
+                          {stop.platform}
+                        </Text>
+                      </View>
+                    </Marker>
+                  )}
+              </>
             ))}
         {vehiclesContext.vehicleTypes?.find(
           (vehicleType) => vehicleType.id === VehicleType.scooter

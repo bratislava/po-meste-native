@@ -217,32 +217,61 @@ const SearchMhd = () => {
         >
           {stopPlatforms &&
             stopPlatforms.map((stop) => (
-              <Marker
-                key={stop.id}
-                coordinate={{
-                  latitude: parseFloat(stop.gpsLat),
-                  longitude: parseFloat(stop.gpsLon),
-                }}
-                tracksViewChanges={false}
-                icon={getIcon(
-                  chosenPlatform ? stop.id === chosenPlatform?.id : true
-                )}
-                style={{ zIndex: stop.id === chosenPlatform?.id ? 2 : 1 }}
-                onPress={(event) => {
-                  event.stopPropagation()
-                  handleMarkerPress(stop)
-                }}
-              >
+              <>
+                <Marker
+                  key={stop.id}
+                  coordinate={{
+                    latitude: parseFloat(stop.gpsLat),
+                    longitude: parseFloat(stop.gpsLon),
+                  }}
+                  tracksViewChanges={false}
+                  icon={getIcon(
+                    chosenPlatform ? stop.id === chosenPlatform?.id : true
+                  )}
+                  style={{ zIndex: stop.id === chosenPlatform?.id ? 2 : 1 }}
+                  onPress={(event) => {
+                    event.stopPropagation()
+                    handleMarkerPress(stop)
+                  }}
+                >
+                  {stop.platform &&
+                    getZoomLevel(region) === ZoomLevel.lg &&
+                    Platform.OS === 'android' && (
+                      <View style={markerLabelStyles.container}>
+                        <Text style={markerLabelStyles.label}>
+                          {stop.platform}
+                        </Text>
+                      </View>
+                    )}
+                </Marker>
                 {stop.platform &&
                   getZoomLevel(region) === ZoomLevel.lg &&
-                  Platform.OS === 'android' && (
-                    <View style={markerLabelStyles.container}>
-                      <Text style={markerLabelStyles.label}>
-                        {stop.platform}
-                      </Text>
-                    </View>
+                  Platform.OS === 'ios' && (
+                    <Marker
+                      key={stop.id + 'platform'}
+                      coordinate={{
+                        latitude: parseFloat(stop.gpsLat),
+                        longitude: parseFloat(stop.gpsLon),
+                      }}
+                      tracksViewChanges={false}
+                      style={{ zIndex: stop.id === chosenPlatform?.id ? 4 : 3 }}
+                    >
+                      <View
+                        style={[
+                          markerLabelStyles.container,
+                          {
+                            marginLeft: 0,
+                            marginTop: 0,
+                          },
+                        ]}
+                      >
+                        <Text style={markerLabelStyles.label}>
+                          {stop.platform}
+                        </Text>
+                      </View>
+                    </Marker>
                   )}
-              </Marker>
+              </>
             ))}
         </MapView>
       </View>

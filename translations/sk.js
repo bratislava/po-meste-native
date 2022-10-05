@@ -52,10 +52,10 @@ export default {
       boltTitle: 'Bolt kolobežka',
       price: 'Cena: ',
       dailyTicket: 'denný lístok',
-      micromobilityPrice: '{{price}}€/{{duration}}{{unit}}',
-      micromobilityPriceFrom: 'od {{price}}€/{{duration}}{{unit}}',
+      micromobilityPrice: '{{price}}€/{{interval}}{{unit}}',
+      micromobilityPriceFrom: 'od {{price}}€/{{interval}}{{unit}}',
       micromobilityWithUnlockPrice:
-        '{{unlockPrice}}€ + {{price}}€/{{duration}}{{unit}}',
+        '{{unlockPrice}}€ + {{price}}€/{{interval}}{{unit}}',
       rent: 'Prenajať {{provider}}',
       availableBikes: 'Voľné bicykle: ',
       freeBikeSpaces: 'Voľné doky: ',

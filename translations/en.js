@@ -50,10 +50,10 @@ export default {
       boltTitle: 'Bolt scooter',
       price: 'Price: ',
       dailyTicket: 'daily ticket',
-      micromobilityPrice: '{{price}}€/{{duration}}{{unit}}',
-      micromobilityPriceFrom: 'from {{price}}€/{{duration}}{{unit}}',
+      micromobilityPrice: '{{price}}€/{{interval}}{{unit}}',
+      micromobilityPriceFrom: 'from {{price}}€/{{interval}}{{unit}}',
       micromobilityWithUnlockPrice:
-        '{{unlockPrice}}€ + {{price}}€/{{duration}}{{unit}}',
+        '{{unlockPrice}}€ + {{price}}€/{{interval}}{{unit}}',
       rent: 'Rent {{provider}}',
       availableBikes: 'Available bikes: ',
       freeBikeSpaces: 'Free bike spaces: ',

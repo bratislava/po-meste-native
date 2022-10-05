@@ -16,7 +16,14 @@ import { useQuery } from 'react-query'
 
 import { ErrorView, LineNumber, LoadingView } from '@components'
 import { MapParamList, TimetableType } from '@types'
-import { colors, getMhdGrafikon, getVehicle, mhdDefaultColors, s } from '@utils'
+import {
+  colors,
+  getMhdGrafikon,
+  getVehicle,
+  mhdDefaultColors,
+  padTimeToTwoDigits,
+  s,
+} from '@utils'
 
 import ArrowRight from '@icons/arrow-right.svg'
 
@@ -42,23 +49,27 @@ export default function LineTimetableScreen({
   const [highlightedMinutePositionY, setHighlightedMinutePositionY] =
     useState<number>(0)
 
+  const isToday = (d: LocalDate) => d.equals(LocalDate.now())
+
   //scroll to highlighted minute on layout event
   useEffect(() => {
-    setTimeout(() => {
-      horizontalScrollViewRef.current?.scrollTo({
-        x: highlightedMinutePositionX,
-        animated: true,
-      })
-      verticalScrollViewRef.current?.scrollTo({
-        y: highlightedMinutePositionY,
-        animated: true,
-      })
-    }, 500)
+    if (isToday(date))
+      setTimeout(() => {
+        horizontalScrollViewRef.current?.scrollTo({
+          x: highlightedMinutePositionX,
+          animated: true,
+        })
+        verticalScrollViewRef.current?.scrollTo({
+          y: highlightedMinutePositionY,
+          animated: true,
+        })
+      }, 500)
   }, [
     highlightedMinutePositionX,
     highlightedMinutePositionY,
     verticalScrollViewRef,
     horizontalScrollViewRef,
+    date,
   ])
 
   const formattedData = useMemo(() => {
@@ -135,8 +146,6 @@ export default function LineTimetableScreen({
       />
     )
   }, [data])
-
-  const isToday = (d: LocalDate) => d.equals(LocalDate.now())
 
   const shouldBeMinuteHighlighted = (
     indexHours: number,
@@ -269,7 +278,7 @@ export default function LineTimetableScreen({
                       setHighlightedMinutePositionY(event.nativeEvent.layout.y)
                     }
                   >
-                    {hour}
+                    {padTimeToTwoDigits(hour)}
                   </Text>
                   {dataToShow?.minutes.map((minuteData, indexMinutes) => {
                     return (
@@ -289,11 +298,12 @@ export default function LineTimetableScreen({
                         }
                       >
                         <Text
-                          style={
+                          style={[
                             shouldBeMinuteHighlighted(indexHours, indexMinutes)
                               ? styles.highlightedMinuteText
-                              : null
-                          }
+                              : null,
+                            indexHours % 2 === 0 ? styles.hourEven : null,
+                          ]}
                         >
                           {minuteData.minute}
                           {minuteData.additionalInfo
@@ -334,12 +344,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondary,
   },
   hourEven: {
-    color: colors.primary,
+    color: colors.tertiary,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 13.5,
   },
   timetableDayType: {
     flexDirection: 'column',
@@ -358,6 +368,7 @@ const styles = StyleSheet.create({
   },
   schedulingText: {
     color: colors.primary,
+    ...s.textMedium,
   },
   flexColumn: {
     flexDirection: 'column',

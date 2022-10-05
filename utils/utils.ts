@@ -308,3 +308,6 @@ export const getShortAddress = (fullAddress: string) =>
         0,
         fullAddress.indexOf(',') === -1 ? undefined : fullAddress.indexOf(',')
       )
+
+export const padTimeToTwoDigits = (time: number): string =>
+  time < 10 ? `0${time}` : time + ''

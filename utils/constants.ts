@@ -15,9 +15,6 @@ export const prices: {
   bolt: { price: 19, interval: 1 },
 }
 
-export const getMhdTicketPrice = (duration: number) =>
-  duration < 30 ? 90 : duration < 60 ? 130 : duration < 90 ? 210 : 280
-
 export const rekolaPrice = {
   ...prices.rekola,
   unit: { translate: false, text: 'min' },

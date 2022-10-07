@@ -445,7 +445,6 @@ export const TextItinerary = ({
                     fontWeight: 'bold',
                   }}
                 >
-                  {/* TODO Calculate the price dynamically */}
                   {i18n.t('screens.PlannerScreen.price', {
                     count: (price ?? 0) / 100,
                   })}

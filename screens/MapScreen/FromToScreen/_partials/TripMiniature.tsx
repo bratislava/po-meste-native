@@ -162,9 +162,10 @@ const TripMiniature = ({
                 )}
                 <Text numberOfLines={1} style={s.textTiny}>
                   {i18n.t('screens.FromToScreen.Planner.from') +
+                    // vocalizing the preposition for the slovak translation when needed (z -> zo)
                     (i18n.currentLocale() === 'sk' &&
                     ['s', 'z', 'š', 'ž'].includes(
-                      startStationName[0].toLocaleLowerCase()
+                      startStationName[0]?.toLocaleLowerCase()
                     )
                       ? 'o'
                       : '') +

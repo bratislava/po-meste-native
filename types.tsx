@@ -3,6 +3,7 @@
  * https://reactnavigation.org/docs/typescript/
  */
 
+import { IteneraryProps } from '@utils'
 import {
   GooglePlaceDetail,
   MatchedSubString,
@@ -230,4 +231,9 @@ export enum ZoomLevel {
   sm,
   md,
   lg,
+}
+
+export type ItinerariesWithProvider = {
+  itineraries: IteneraryProps[]
+  provider?: MicromobilityProvider
 }

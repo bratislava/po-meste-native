@@ -308,6 +308,9 @@ export const getShortAddress = (fullAddress: string) =>
         fullAddress.indexOf(',') === -1 ? undefined : fullAddress.indexOf(',')
       )
 
+export const getMhdTicketPrice = (duration: number) =>
+  duration < 30 ? 90 : duration < 60 ? 130 : duration < 90 ? 210 : 280
+
 export const getMicromobilityPrice = (provider: MicromobilityProvider) => {
   switch (provider) {
     case MicromobilityProvider.rekola:

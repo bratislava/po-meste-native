@@ -15,6 +15,7 @@ import { ValidationError } from 'yup'
 import {
   API_ERROR_TEXT,
   LATEST_DATASET_INDEX,
+  prices,
   trolleybusLineNumbers,
 } from './constants'
 import { colors } from './theme'
@@ -311,3 +312,19 @@ export const getShortAddress = (fullAddress: string) =>
 
 export const padTimeToTwoDigits = (time: number): string =>
   time < 10 ? `0${time}` : time + ''
+
+export const getMhdTicketPrice = (duration: number) =>
+  duration < 30 ? 90 : duration < 60 ? 130 : duration < 90 ? 210 : 280
+
+export const getMicromobilityPrice = (provider: MicromobilityProvider) => {
+  switch (provider) {
+    case MicromobilityProvider.rekola:
+      return prices.rekola
+    case MicromobilityProvider.slovnaftbajk:
+      return prices.slovnaftbajk
+    case MicromobilityProvider.tier:
+      return prices.tier
+    case MicromobilityProvider.bolt:
+      return prices.bolt
+  }
+}

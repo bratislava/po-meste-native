@@ -153,7 +153,7 @@ const TripMiniature = ({
                     </View>
                   )}
                   {diffMinutes != undefined && (
-                    <Text style={styles.atTime}>
+                    <Text style={[styles.atTime, s.textTiny]}>
                       {diffMinutes < 0
                         ? i18n.t('screens.FromToScreen.Planner.beforeIn', {
                             time: Math.abs(diffMinutes),
@@ -163,8 +163,16 @@ const TripMiniature = ({
                           })}
                     </Text>
                   )}
-                  <Text numberOfLines={1}>
-                    {i18n.t('screens.FromToScreen.Planner.from')}
+                  <Text numberOfLines={1} style={s.textTiny}>
+                    {i18n.t('screens.FromToScreen.Planner.from') +
+                      // vocalizing the preposition for the slovak translation when needed (z -> zo)
+                      (i18n.currentLocale() === 'sk' &&
+                      ['s', 'z', 'š', 'ž'].includes(
+                        startStationName[0]?.toLocaleLowerCase()
+                      )
+                        ? 'o'
+                        : '') +
+                      ' '}
                     <Text style={styles.stationName}>{startStationName}</Text>
                   </Text>
                 </View>

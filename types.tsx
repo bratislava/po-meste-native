@@ -3,6 +3,7 @@
  * https://reactnavigation.org/docs/typescript/
  */
 
+import { IteneraryProps } from '@utils'
 import {
   GooglePlaceDetail,
   MatchedSubString,
@@ -87,6 +88,7 @@ export type MapParamList = {
     travelMode: TravelModes
     fromPlace: string
     toPlace: string
+    price?: number
   }
   LineTimelineScreen: { tripId: string; stopId: string }
   LineTimetableScreen: { stopId: string; lineNumber: string }
@@ -254,4 +256,9 @@ export type GooglePlacesResult = {
     global_code: string
   }
   types: PlaceType[]
+}
+
+export type ItinerariesWithProvider = {
+  itineraries: IteneraryProps[]
+  provider?: MicromobilityProvider
 }

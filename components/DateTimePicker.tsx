@@ -32,7 +32,11 @@ const ScrollPicker = React.forwardRef<ScrollHandle, ScrollPickerNativeProps>(
         )}
         onValueChange={scrollPickerProps.onValueChange}
         wrapperHeight={180}
-        wrapperStyle={{ width: 100, height: 180 }}
+        wrapperStyle={{
+          width: 100,
+          height: 180,
+          ...scrollPickerProps.wrapperStyle,
+        }}
         itemHeight={60}
         scrollViewComponent={ScrollView}
         highlightStyle={{
@@ -204,6 +208,7 @@ const DateTimePicker = React.forwardRef<
             borderBottomRightRadius: 16,
           }}
           onValueChange={(value) => setSelectedMinute(+value)}
+          wrapperStyle={{ right: 1 }}
         />
       </View>
       <View

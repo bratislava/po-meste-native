@@ -37,9 +37,11 @@ import {
   colors,
   favoriteDataSchema,
   FAVORITE_DATA_INDEX,
+  getMinMaxDuration,
+  getMinMaxPrice,
+  getPriceFromItinerary,
   getProviderName,
   getTripPlanner,
-  IteneraryProps,
   OtpPlannerProps,
   s,
 } from '@utils'
@@ -51,6 +53,8 @@ import { GlobalStateContext } from '@state/GlobalStateProvider'
 import {
   FavoriteData,
   GooglePlaceDataCorrected,
+  ItinerariesWithProvider,
+  LegModes,
   MicromobilityProvider,
   ScheduleType,
   TravelModes,
@@ -95,7 +99,6 @@ const vehiclesDefault: VehicleData[] = [
 ]
 
 interface ElementsProps {
-  ommitFirst: boolean
   isLoading: boolean
   data?: OtpPlannerProps
   provider?: MicromobilityProvider
@@ -413,28 +416,11 @@ export default function Planner(props: PlannerProps) {
     setToName(toPropName)
   }, [toPropName, toPropCoordinates, setToCoordinates, setToName])
 
-  const getMinimalDurationFromIteneraries = (
-    iteneraries: IteneraryProps[][]
-  ) => {
-    return Math.min(
-      ...iteneraries.flatMap((tripChoice) =>
-        tripChoice.map((tripChoice) => tripChoice.duration || Infinity)
-      )
-    )
-  }
-  const getMaximalDurationFromIteneraries = (
-    iteneraries: IteneraryProps[][]
-  ) => {
-    return Math.max(
-      ...iteneraries.flatMap((tripChoice) =>
-        tripChoice.map((tripChoice) => tripChoice.duration || -Infinity)
-      )
-    )
-  }
-
   const getAdjustedVehicleData = (
     minDuration: number,
     maxDuration: number,
+    minPrice: number,
+    maxPrice: number,
     oldVehicles: VehicleData[],
     travelMode: TravelModes
   ) => {
@@ -448,6 +434,8 @@ export default function Planner(props: PlannerProps) {
             maxDuration !== -Infinity
               ? Math.round(maxDuration / 60)
               : undefined,
+          priceMin: minPrice !== Infinity ? minPrice : undefined,
+          priceMax: maxPrice !== -Infinity ? maxPrice : undefined,
         }
       } else {
         return vehiclesType
@@ -456,15 +444,20 @@ export default function Planner(props: PlannerProps) {
   }
 
   const adjustMinMaxTravelTime = useCallback(
-    (itineraries: IteneraryProps[][], travelMode: TravelModes) => {
-      const minDuration = getMinimalDurationFromIteneraries([...itineraries])
-
-      const maxDuration = getMaximalDurationFromIteneraries([...itineraries])
+    (itineraries: ItinerariesWithProvider[], travelMode: TravelModes) => {
+      const { min: minDuration, max: maxDuration } =
+        getMinMaxDuration(itineraries)
+      const { min: minPrice, max: maxPrice } = getMinMaxPrice(
+        itineraries,
+        travelMode
+      )
 
       setVehicles((oldVehicles) =>
         getAdjustedVehicleData(
           minDuration,
           maxDuration,
+          minPrice,
+          maxPrice,
           oldVehicles,
           travelMode
         )
@@ -477,10 +470,22 @@ export default function Planner(props: PlannerProps) {
     adjustMinMaxTravelTime(
       [
         dataSlovnaftbajk?.plan?.itineraries
-          ? dataSlovnaftbajk?.plan?.itineraries
-          : [],
-        dataRekola?.plan?.itineraries ? dataRekola?.plan?.itineraries : [],
-        dataMyBike?.plan?.itineraries ? dataMyBike?.plan?.itineraries : [],
+          ? {
+              itineraries: dataSlovnaftbajk?.plan?.itineraries,
+              provider: MicromobilityProvider.slovnaftbajk,
+            }
+          : { itineraries: [] },
+        dataRekola?.plan?.itineraries
+          ? {
+              itineraries: dataRekola?.plan?.itineraries,
+              provider: MicromobilityProvider.rekola,
+            }
+          : { itineraries: [] },
+        dataMyBike?.plan?.itineraries
+          ? {
+              itineraries: dataMyBike?.plan?.itineraries,
+            }
+          : { itineraries: [] },
       ],
       TravelModes.bicycle
     )
@@ -489,10 +494,17 @@ export default function Planner(props: PlannerProps) {
   useEffect(() => {
     adjustMinMaxTravelTime(
       [
-        dataTier?.plan?.itineraries ? dataTier?.plan?.itineraries : [],
+        dataTier?.plan?.itineraries
+          ? {
+              itineraries: dataTier?.plan?.itineraries,
+              provider: MicromobilityProvider.tier,
+            }
+          : { itineraries: [] },
         dataMyScooter?.plan?.itineraries
-          ? dataMyScooter?.plan?.itineraries
-          : [],
+          ? {
+              itineraries: dataMyScooter?.plan?.itineraries,
+            }
+          : { itineraries: [] },
       ],
       TravelModes.scooter
     )
@@ -502,12 +514,16 @@ export default function Planner(props: PlannerProps) {
     adjustMinMaxTravelTime(
       [
         dataMhd?.plan?.itineraries
-          ? // first result for TRANSIT trip is always walking whole trip
-            // alternative is to reduce walking distance in request 'maxWalkDistance' http://dev.opentripplanner.org/apidoc/1.4.0/resource_PlannerResource.html
-            dataMhd?.plan?.itineraries.filter(
-              (_itenerary, index) => index !== 0
-            )
-          : [],
+          ? {
+              itineraries: dataMhd?.plan?.itineraries.filter(
+                (trip) =>
+                  trip.legs?.findIndex(
+                    (leg) =>
+                      leg.mode === LegModes.bus || leg.mode === LegModes.tram
+                  ) !== -1
+              ),
+            }
+          : { itineraries: [] },
       ],
       TravelModes.mhd
     )
@@ -515,7 +531,11 @@ export default function Planner(props: PlannerProps) {
 
   useEffect(() => {
     adjustMinMaxTravelTime(
-      [dataWalk?.plan?.itineraries ? dataWalk?.plan?.itineraries : []],
+      [
+        dataWalk?.plan?.itineraries
+          ? { itineraries: dataWalk?.plan?.itineraries }
+          : { itineraries: [] },
+      ],
       TravelModes.walk
     )
   }, [adjustMinMaxTravelTime, dataWalk])
@@ -699,7 +719,6 @@ export default function Planner(props: PlannerProps) {
   }, [fromCoordinates, navigation, toCoordinates, fromName, toName])
 
   const getElements = ({
-    ommitFirst,
     isLoading,
     data,
     provider,
@@ -723,12 +742,16 @@ export default function Planner(props: PlannerProps) {
           <TripMiniature provider={provider} isLoading={isLoading} />
         )}
         {data?.plan?.itineraries?.map((tripChoice, index) => {
-          // first result for TRANSIT trip is always walking whole trip
+          // first result for TRANSIT trip is often walking whole trip,
+          // when the trip distance is smaller than the 'maxWalkDistance'
+
           // alternative is to reduce walking distance in request 'maxWalkDistance' http://dev.opentripplanner.org/apidoc/1.4.0/resource_PlannerResource.html
           if (
             selectedVehicle === TravelModes.mhd &&
             index === 0 &&
-            ommitFirst
+            tripChoice.legs?.findIndex(
+              (leg) => leg.mode === LegModes.bus || leg.mode === LegModes.tram
+            ) === -1
           ) {
             return undefined
           } else
@@ -745,6 +768,11 @@ export default function Planner(props: PlannerProps) {
                       travelMode: selectedVehicle,
                       fromPlace: fromName,
                       toPlace: toName,
+                      price: getPriceFromItinerary(
+                        tripChoice,
+                        selectedVehicle,
+                        provider
+                      ),
                     } as never
                   )
                 }
@@ -942,7 +970,6 @@ export default function Planner(props: PlannerProps) {
                 </Text>
               )}
               {getElements({
-                ommitFirst: true,
                 isLoading: isLoadingMhd,
                 data: dataMhd,
                 provider: undefined,
@@ -960,7 +987,6 @@ export default function Planner(props: PlannerProps) {
                   </Text>
                 )}
               {getElements({
-                ommitFirst: true,
                 isLoading: isLoadingMyBike,
                 data: dataMyBike,
                 provider: undefined,
@@ -979,7 +1005,6 @@ export default function Planner(props: PlannerProps) {
               )}
               <View style={styles.providerContainer}>
                 {getElements({
-                  ommitFirst: false,
                   isLoading: isLoadingSlovnaftbajk,
                   data: dataSlovnaftbajk,
                   provider: MicromobilityProvider.slovnaftbajk,
@@ -989,7 +1014,6 @@ export default function Planner(props: PlannerProps) {
               </View>
               <View style={styles.providerContainer}>
                 {getElements({
-                  ommitFirst: false,
                   isLoading: isLoadingRekola,
                   data: dataRekola,
                   provider: MicromobilityProvider.rekola,
@@ -1007,7 +1031,6 @@ export default function Planner(props: PlannerProps) {
                 </Text>
               )}
               {getElements({
-                ommitFirst: true,
                 isLoading: isLoadingMyScooter,
                 data: dataMyScooter,
                 provider: undefined,
@@ -1022,7 +1045,6 @@ export default function Planner(props: PlannerProps) {
               )}
               <View style={styles.providerContainer}>
                 {getElements({
-                  ommitFirst: false,
                   isLoading: isLoadingTier,
                   data: dataTier,
                   provider: MicromobilityProvider.tier,
@@ -1040,7 +1062,6 @@ export default function Planner(props: PlannerProps) {
                 </Text>
               )}
               {getElements({
-                ommitFirst: false,
                 isLoading: isLoadingWalk,
                 data: dataWalk,
                 provider: undefined,

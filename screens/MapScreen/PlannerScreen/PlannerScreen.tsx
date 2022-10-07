@@ -28,12 +28,8 @@ export default function PlannerScreen({
 }: StackScreenProps<MapParamList, 'PlannerScreen'>) {
   const mapRef = useRef<MapView | null>(null)
   const [sheetIndex, setSheetIndex] = useState(1)
-  const provider = route?.params?.provider
-  const legs = route?.params?.legs
-  const isScooter = route?.params?.isScooter
-  const travelMode = route?.params?.travelMode
-  const toPlace = route?.params?.toPlace
-  const fromPlace = route?.params?.fromPlace
+  const { provider, legs, isScooter, travelMode, toPlace, fromPlace, price } =
+    route.params
   const bottomSheetSnapPoints = [
     BOTTOM_VEHICLE_BAR_HEIGHT_ALL + 30,
     '60%',
@@ -154,6 +150,7 @@ export default function PlannerScreen({
           travelMode={travelMode}
           fromPlace={fromPlace}
           toPlace={toPlace}
+          price={price}
         />
       </BottomSheet>
     </View>

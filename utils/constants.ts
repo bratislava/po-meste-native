@@ -2,28 +2,37 @@ export const STYLES = {
   borderRadius: 10,
 }
 
+export const prices: {
+  [key: string]: {
+    price: number
+    interval: number
+    unlockPrice?: number
+  }
+} = {
+  rekola: { price: 100, interval: 30 },
+  slovnaftbajk: { price: 600, interval: 1440 },
+  tier: { unlockPrice: 100, price: 16, interval: 1 },
+  bolt: { price: 19, interval: 1 },
+}
+
 export const rekolaPrice = {
-  price: 100,
-  duration: 30,
+  ...prices.rekola,
   unit: { translate: false, text: 'min' },
   translationOption: 'screens.MapScreen.micromobilityPriceFrom',
 }
 export const slovnaftbajkPrice = {
-  price: 600,
-  duration: 1,
+  ...prices.slovnaftbajk,
+  interval: 1,
   unit: { translate: true, text: 'screens.MapScreen.dailyTicket' },
   translationOption: 'screens.MapScreen.micromobilityPriceFrom',
 }
 export const tierPrice = {
-  unlockPrice: 100,
-  price: 19,
-  duration: 1,
+  ...prices.tier,
   unit: { translate: false, text: 'min' },
   translationOption: 'screens.MapScreen.micromobilityWithUnlockPrice',
 }
 export const boltPrice = {
-  price: 19,
-  duration: 1,
+  ...prices.bolt,
   unit: { translate: false, text: 'min' },
   translationOption: 'screens.MapScreen.micromobilityPrice',
 }

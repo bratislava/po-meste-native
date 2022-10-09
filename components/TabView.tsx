@@ -11,6 +11,7 @@ import {
 } from 'react-native-tab-view'
 
 export const TAB_BAR_LARGE_HEIGHT = 56
+export const TAB_BAR_SMALL_HEIGHT = 34
 
 const renderTabBar = (
   props: SceneRendererProps & { navigationState: NavigationState<Route> },
@@ -22,9 +23,7 @@ const renderTabBar = (
       style={[styles.tabBar, variant === 'large' && { elevation: 0 }]}
       pressColor="rgba(0,0,0,0)"
       pressOpacity={0}
-      contentContainerStyle={{
-        backgroundColor: colors.white,
-      }}
+      contentContainerStyle={styles.tabBarContentContainer}
       renderTabBarItem={(props) => {
         const focused =
           props.key ===
@@ -93,6 +92,13 @@ const renderTabBar = (
           </View>
         )
       }}
+      renderIndicator={(props) => null}
+      indicatorContainerStyle={{
+        height: 5,
+        top: variant === 'large' ? TAB_BAR_LARGE_HEIGHT : TAB_BAR_SMALL_HEIGHT,
+        backgroundColor: colors.primary,
+        position: 'absolute',
+      }}
     />
   )
 }
@@ -118,17 +124,16 @@ const TabView = ({
 
 const styles = StyleSheet.create({
   tabBar: {
-    borderBottomColor: colors.primary,
-    borderBottomWidth: 5,
-    backgroundColor: colors.primary,
     shadowOpacity: 0,
+    backgroundColor: colors.white,
   },
+  tabBarContentContainer: {},
   tabBarTab: {
     backgroundColor: 'white',
-    alignItems: 'stretch',
+    alignItems: 'center',
     justifyContent: 'center',
     padding: 0,
-    height: 34,
+    height: TAB_BAR_SMALL_HEIGHT,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     flex: 1,
@@ -149,7 +154,6 @@ const styles = StyleSheet.create({
     color: colors.darkText,
     fontSize: 14,
     lineHeight: 16,
-    marginBottom: 6,
   },
   tabBarTabLabelTitleLarge: {
     fontSize: 16,

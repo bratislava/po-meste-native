@@ -88,4 +88,10 @@ export const s = StyleSheet.create({
     marginTop: 5,
     marginBottom: 10,
   },
+  fontNormal: {
+    fontFamily: 'work-sans',
+  },
+  fontBold: {
+    fontFamily: 'work-sans-bold',
+  },
 })

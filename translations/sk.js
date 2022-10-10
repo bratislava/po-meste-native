@@ -132,7 +132,7 @@ export default {
         accessibleVehicles: 'Nízkopodl.\nvozidlá',
       },
       SearchMhd: {
-        stopName: 'Meno zastávky',
+        stopName: 'Názov zastávky',
       },
     },
     SearchFromToScreen: {

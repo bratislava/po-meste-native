@@ -320,6 +320,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     flex: 1,
     ...s.textSmall,
+    ...s.fontNormal,
   },
   editButtonContainer: {
     justifyContent: 'center',

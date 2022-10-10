@@ -445,6 +445,7 @@ const autocompleteStyles = StyleSheet.create({
     color: colors.black,
     paddingHorizontal: 15,
     paddingLeft: 36,
+    ...s.fontNormal,
   },
   rightButtonContainer: {
     right: 8,

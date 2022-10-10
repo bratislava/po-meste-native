@@ -54,8 +54,8 @@ const VehicleSelector = ({
             return `${min}${min && max && ` - `}${max}${(min || max) && ' min'}`
           }
 
-          const duration = getPrice()
-          const price = getDuration()
+          const duration = getDuration()
+          const price = getPrice()
 
           return (
             <TouchableOpacity

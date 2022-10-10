@@ -159,6 +159,7 @@ export const autoCompleteStyles = {
     maxWidth: '90%',
     paddingVertical: 8,
     ...s.textSmall,
+    ...s.fontNormal,
   },
   textInputContainer: {
     borderWidth: 2,

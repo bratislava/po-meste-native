@@ -67,6 +67,8 @@ import CurrentLocationButton from '@components/CurrentLocationButton'
 import useBoltData from '@hooks/useBoltData'
 import { colors } from '@utils'
 
+import * as SplashScreen from 'expo-splash-screen'
+
 const VEHICLE_BAR_SHEET_HEIGHT_COLLAPSED = BOTTOM_TAB_NAVIGATOR_HEIGHT + 70
 const VEHICLE_BAR_SHEET_HEIGHT_EXPANDED = BOTTOM_TAB_NAVIGATOR_HEIGHT + 195 // + 195 for 2 rows
 
@@ -481,6 +483,7 @@ export default function MapScreen() {
           right: 0,
           left: 0,
         }}
+        onMapLoaded={() => SplashScreen.hideAsync()}
       >
         {vehiclesContext.vehicleTypes?.find(
           (vehicleType) => vehicleType.id === VehicleType.mhd

@@ -16,6 +16,7 @@ export default function useCachedResources() {
         await Font.loadAsync({
           ...Ionicons.font,
           'space-mono': require('@fonts/SpaceMono-Regular.ttf'),
+          'WorkSans-Variable': require('@fonts/WorkSans-VariableFont_wght.tff'),
         })
       } catch (e) {
         // We might want to provide this error information to an error reporting service

@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import Text from '@components/Text'
 import i18n from 'i18n-js'
-import { StyleSheet, Text } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { StyleSheet } from 'react-native'
 import CheckBox from 'react-native-check-box'
 
-import Modal from './Modal'
-import Button from './Button'
-import Link from './Link'
 import { colors } from '../utils/theme'
+import Button from './Button'
+import Modal from './Modal'
 
 export type ConfirmationModalProps = {
   visible?: boolean

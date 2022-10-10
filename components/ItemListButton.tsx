@@ -1,7 +1,8 @@
-import React, { FC } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import Text from '@components/Text'
 import ChevronRightSmall from '@icons/chevron-right-small.svg'
 import { colors } from '@utils/theme'
+import React, { FC } from 'react'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SvgProps } from 'react-native-svg'
 
 export interface ItemListButtonProps {

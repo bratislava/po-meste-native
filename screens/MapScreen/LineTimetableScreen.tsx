@@ -1,16 +1,11 @@
+import Text from '@components/Text'
 import { Ionicons } from '@expo/vector-icons'
 import { DateTimeFormatter, Instant, LocalDate } from '@js-joda/core'
 import { StackScreenProps } from '@react-navigation/stack'
 import i18n from 'i18n-js'
 import _ from 'lodash'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
 import { useQuery } from 'react-query'
 

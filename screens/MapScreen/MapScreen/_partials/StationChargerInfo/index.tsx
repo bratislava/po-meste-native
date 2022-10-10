@@ -1,8 +1,9 @@
+import Text from '@components/Text'
 import { Ionicons } from '@expo/vector-icons'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import i18n from 'i18n-js'
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import AppLink from 'react-native-app-link'
 
 import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL, Button } from '@components'

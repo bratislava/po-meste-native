@@ -1,9 +1,10 @@
 import ErrorView from '@components/ErrorView'
 import { LineNumber } from '@components/LineNumber'
+import Text from '@components/Text'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { useNavigation } from '@react-navigation/core'
 import React, { useContext } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { useQuery } from 'react-query'
 
 import { LoadingView } from '@components'

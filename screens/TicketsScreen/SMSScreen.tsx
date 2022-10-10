@@ -1,8 +1,9 @@
+import Text from '@components/Text'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import * as SMS from 'expo-sms'
 import i18n from 'i18n-js'
 import React, { useState } from 'react'
-import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Alert, ScrollView, StyleSheet, View } from 'react-native'
 
 import { Button, ConfirmationModal, ConfirmationModalProps } from '@components'
 import { SmsTicketNumbers, SmsTicketPrices, TicketName } from '@types'

@@ -1,10 +1,11 @@
+import Text from '@components/Text'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { useNavigation } from '@react-navigation/core'
 import Constants from 'expo-constants'
 import { openURL } from 'expo-linking'
 import { t } from 'i18n-js'
 import React, { useContext, useEffect, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import CheckBox from 'react-native-check-box'
 import { ScrollView } from 'react-native-gesture-handler'
 

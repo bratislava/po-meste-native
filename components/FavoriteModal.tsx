@@ -1,3 +1,4 @@
+import Text from '@components/Text'
 import EditSvg from '@icons/edit-pencil.svg'
 import HeartSvg from '@icons/favorite.svg'
 import HomeSvg from '@icons/home.svg'
@@ -13,7 +14,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import {
   Platform,
   StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
   View,

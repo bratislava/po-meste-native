@@ -1,10 +1,11 @@
+import Text from '@components/Text'
 import ChevronRightSmall from '@icons/chevron-right-small.svg'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import Constants from 'expo-constants'
 import { openURL } from 'expo-linking'
 import { t } from 'i18n-js'
 import React from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, View } from 'react-native'
 
 import { Accordion, Link } from '@components'
 import { colors } from '@utils'

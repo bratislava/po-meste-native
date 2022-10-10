@@ -1,3 +1,4 @@
+import Text from '@components/Text'
 import React, {
   useCallback,
   useEffect,
@@ -12,7 +13,6 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
   View,
   ViewProps,
   ViewStyle,

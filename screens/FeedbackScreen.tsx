@@ -1,15 +1,15 @@
-import React, { useState, useContext } from 'react'
-import {
-  StyleSheet,
-  View,
-  Text,
-  KeyboardAvoidingView,
-  TouchableOpacity,
-} from 'react-native'
+import Text from '@components/Text'
 import { useNavigation } from '@react-navigation/native'
-import { ScrollView, TextInput } from 'react-native-gesture-handler'
 import Constants from 'expo-constants'
 import i18n from 'i18n-js'
+import React, { useContext, useState } from 'react'
+import {
+  KeyboardAvoidingView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native'
+import { ScrollView, TextInput } from 'react-native-gesture-handler'
 
 import { Button } from '@components'
 import { GlobalStateContext } from '@state/GlobalStateProvider'

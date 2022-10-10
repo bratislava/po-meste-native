@@ -1,9 +1,10 @@
+import Text from '@components/Text'
 import { Departure, TransitVehicleType } from '@types'
 import { s } from '@utils/globalStyles'
 import { colors, mhdDefaultColors } from '@utils/theme'
 import { getVehicle } from '@utils/utils'
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 interface LineFilterTileProps {
   departure: Departure

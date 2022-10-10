@@ -1,7 +1,8 @@
+import Text from '@components/Text'
 import { tramNumbers } from '@utils/constants'
 import { mhdDefaultColors } from '@utils/theme'
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { TransitVehicleType } from './../types'
 
 interface LineNumberProps {

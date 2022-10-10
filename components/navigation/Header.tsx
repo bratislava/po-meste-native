@@ -1,16 +1,11 @@
+import Text from '@components/Text'
 import ChevronLeftSmall from '@icons/chevron-left-small.svg'
 import { useNavigation } from '@react-navigation/core'
 import { StackHeaderProps } from '@react-navigation/stack'
 import { colors } from '@utils/theme'
 import { t } from 'i18n-js'
 import React from 'react'
-import {
-  StyleSheet,
-  Text,
-  TextStyle,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { StyleSheet, TextStyle, TouchableOpacity, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export interface HeaderProps extends StackHeaderProps {

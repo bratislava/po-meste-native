@@ -1,3 +1,4 @@
+import Text from '@components/Text'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { useNetInfo } from '@react-native-community/netinfo'
 import { useIsFocused } from '@react-navigation/core'
@@ -15,7 +16,6 @@ import {
   ImageURISource,
   Platform,
   StyleSheet,
-  Text,
   View,
 } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'

@@ -1,10 +1,11 @@
+import Text from '@components/Text'
 import SearchSvg from '@icons/search.svg'
 import { useNavigation } from '@react-navigation/native'
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
 import i18n from 'i18n-js'
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const SearchBar = () => {

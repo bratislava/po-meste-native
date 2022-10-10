@@ -1,6 +1,7 @@
+import Text from '@components/Text'
 import i18n from 'i18n-js'
 import React, { useCallback } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 import { MicromobilityProvider } from '@types'
 import {

@@ -1,3 +1,4 @@
+import Text from '@components/Text'
 import { Feather, Ionicons } from '@expo/vector-icons'
 import BottomSheet, { TouchableOpacity } from '@gorhom/bottom-sheet'
 import {
@@ -22,7 +23,6 @@ import {
   Platform,
   StyleSheet,
   Switch,
-  Text,
   View,
 } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'

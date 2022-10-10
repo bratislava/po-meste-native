@@ -1,8 +1,9 @@
+import Text from '@components/Text'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { DateTimeFormatter, Instant, LocalTime } from '@js-joda/core'
 import i18n from 'i18n-js'
 import _ from 'lodash'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 // import WheelchairSvg from '@icons/wheelchair.svg'
 import EllipseSvg from '@icons/ellipse.svg'
@@ -37,6 +38,8 @@ import {
   getShortAddress,
   LegProps,
   s,
+  ITINERARY_ICON_WIDTH,
+  ITINERARY_PADDING_HORIZONTAL,
 } from '@utils'
 import MhdTransitCard from './_partials/MhdTransitCard'
 
@@ -50,9 +53,7 @@ interface TextItineraryProps {
   price?: number
 }
 
-export const ITINERARY_ICON_WIDTH = 20
 const DASHED_HEIGHT = 20
-export const ITINERARY_PADDING_HORIZONTAL = 10
 
 const BIKESHARE_PROPERTY = 'BIKESHARE'
 

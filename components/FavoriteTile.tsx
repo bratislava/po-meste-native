@@ -1,3 +1,4 @@
+import Text from '@components/Text'
 import HeartSvg from '@icons/favorite.svg'
 import HomeSvg from '@icons/home.svg'
 import MoreSvg from '@icons/more.svg'
@@ -10,7 +11,7 @@ import { colors } from '@utils/theme'
 import { isFavoritePlace } from '@utils/utils'
 import i18n from 'i18n-js'
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 interface FavoriteTileProps {
   favoriteItem: FavoritePlace | FavoriteStop

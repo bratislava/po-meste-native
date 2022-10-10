@@ -1,6 +1,7 @@
+import Text from '@components/Text'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import React from 'react'
-import { StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 
 import Shadow from '@components/Shadow'
 import TicketSvg from '@icons/ticket-alt.svg'

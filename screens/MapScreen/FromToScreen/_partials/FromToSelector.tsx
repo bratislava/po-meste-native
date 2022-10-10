@@ -1,5 +1,6 @@
+import Text from '@components/Text'
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import { DashedLine } from '@components'
 import { colors, s } from '@utils'

@@ -1,8 +1,8 @@
+import Text from '@components/Text'
 import { colors } from '@utils/theme'
 import React from 'react'
 import {
   StyleSheet,
-  Text,
   TextStyle,
   TouchableOpacity,
   View,

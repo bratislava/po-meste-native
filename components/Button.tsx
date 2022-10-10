@@ -1,10 +1,10 @@
 // TODO copied from different project, might need cleanup if we're to use it
+import Text from '@components/Text'
 import React, { ReactElement, useState } from 'react'
 import {
   GestureResponderEvent,
   StyleProp,
   StyleSheet,
-  Text,
   TextStyle,
   TouchableHighlight,
   View,

@@ -1,3 +1,4 @@
+import Text from '@components/Text'
 import BottomSheet, {
   BottomSheetScrollView,
   TouchableWithoutFeedback,
@@ -10,7 +11,7 @@ import React, {
   useEffect,
   useState,
 } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import {
   GooglePlaceDetail,

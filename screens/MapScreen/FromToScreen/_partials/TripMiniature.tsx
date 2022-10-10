@@ -1,3 +1,4 @@
+import Text from '@components/Text'
 import {
   DateTimeFormatter,
   Duration,
@@ -6,7 +7,7 @@ import {
 } from '@js-joda/core'
 import i18n from 'i18n-js'
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import { LoadingView } from '@components'
 import IsLiveSvg from '@icons/is-live.svg'

@@ -67,3 +67,6 @@ export const API_ERROR_TEXT = 'ApiErrorText'
 export const LATEST_DATASET_INDEX = 'latestDataset'
 
 export const FAVORITE_DATA_INDEX = 'favoriteData'
+
+export const ITINERARY_ICON_WIDTH = 20
+export const ITINERARY_PADDING_HORIZONTAL = 10

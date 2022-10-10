@@ -1,7 +1,8 @@
+import Text from '@components/Text'
 import * as Sentry from '@sentry/react-native'
 import i18n from 'i18n-js'
 import React, { useEffect } from 'react'
-import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 
 import { useNetInfo } from '@react-native-community/netinfo'
 import { isApiError, isNetworkError, isValidationError } from '@utils'

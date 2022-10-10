@@ -1,6 +1,7 @@
 import LoadingView from '@components/LoadingView'
 import { NAVIGATION_HEADER_HEIGHT } from '@components/navigation/Header'
 import { TAB_BAR_LARGE_HEIGHT } from '@components/TabView'
+import Text from '@components/Text'
 import BottomSheet, { TouchableOpacity } from '@gorhom/bottom-sheet'
 import ArrowRightSvg from '@icons/arrow-right.svg'
 import SearchSvg from '@icons/search.svg'
@@ -23,13 +24,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-} from 'react-native'
+import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native'
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown'
 import { ScrollView } from 'react-native-gesture-handler'
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'

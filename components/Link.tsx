@@ -1,3 +1,4 @@
+import Text from '@components/Text'
 import React from 'react'
 import {
   GestureResponderEvent,
@@ -5,7 +6,6 @@ import {
   StyleSheet,
   TextStyle,
   TouchableHighlight,
-  Text,
 } from 'react-native'
 import { colors } from '../utils/theme'
 

@@ -1,6 +1,7 @@
+import Text from '@components/Text'
 import { colors } from '@utils/theme'
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import {
   NavigationState,
   Route,

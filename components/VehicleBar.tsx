@@ -1,5 +1,6 @@
+import Text from '@components/Text'
 import React, { useContext, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 import { GlobalStateContext, VehicleProps } from '@state/GlobalStateProvider'
 import { TouchableHighlight } from 'react-native-gesture-handler'

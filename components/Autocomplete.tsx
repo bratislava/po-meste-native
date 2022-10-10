@@ -1,3 +1,4 @@
+import Text from '@components/Text'
 import MarkerSvg from '@icons/map-pin-marker.svg'
 import MhdStopSvg from '@icons/stop-sign.svg'
 import XSvg from '@icons/x.svg'
@@ -9,7 +10,6 @@ import React, { useState } from 'react'
 import {
   Platform,
   StyleSheet,
-  Text,
   TextInputProps,
   TouchableOpacity,
   View,

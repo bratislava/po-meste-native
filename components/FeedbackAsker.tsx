@@ -1,10 +1,11 @@
+import Text from '@components/Text'
 import React, { useContext } from 'react'
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 
-import ThumbUp from '@icons/thumb-up.svg'
 import ThumbDown from '@icons/thumb-down.svg'
+import ThumbUp from '@icons/thumb-up.svg'
 
 import { colors } from '@utils/theme'
 import i18n from 'i18n-js'

@@ -1,3 +1,4 @@
+import Text from '@components/Text'
 import { convert, DateTimeFormatter, LocalDateTime } from '@js-joda/core'
 import { ScheduleType } from '@types'
 import { s } from '@utils/globalStyles'
@@ -5,7 +6,7 @@ import { colors } from '@utils/theme'
 import i18n from 'i18n-js'
 import { range } from 'lodash'
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import ScrollPickerNative, {
   ScrollHandle,

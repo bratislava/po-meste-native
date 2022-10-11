@@ -47,6 +47,7 @@ import {
 import {
   ChargerStationProps,
   FreeBikeStatusProps,
+  getMapPinSize,
   getZoomLevel,
   LocalitiesProps,
   MhdStopProps,
@@ -68,6 +69,20 @@ import useBoltData from '@hooks/useBoltData'
 import { colors } from '@utils'
 
 import * as SplashScreen from 'expo-splash-screen'
+
+import BoltSmallIcon from '@icons/map/bolt/no-icon.svg'
+import BoltIcon from '@icons/map/bolt/with-icon.svg'
+import MhdSmallIcon from '@icons/map/mhd/no-icon.svg'
+import MhdIcon from '@icons/map/mhd/with-icon.svg'
+import RekolaSmallIcon from '@icons/map/rekola/no-icon.svg'
+import RekolaIcon from '@icons/map/rekola/with-icon.svg'
+import SlovnaftbajkSmallIcon from '@icons/map/slovnaftbajk/no-icon.svg'
+import SlovnaftbajkIcon from '@icons/map/slovnaftbajk/with-icon.svg'
+import TierSmallIcon from '@icons/map/tier/no-icon.svg'
+import TierIcon from '@icons/map/tier/with-icon.svg'
+import ZseSmallIcon from '@icons/map/zse/no-icon.svg'
+import ZseIcon from '@icons/map/zse/with-icon.svg'
+import { SvgProps } from 'react-native-svg'
 
 const VEHICLE_BAR_SHEET_HEIGHT_COLLAPSED = BOTTOM_TAB_NAVIGATOR_HEIGHT + 70
 const VEHICLE_BAR_SHEET_HEIGHT_EXPANDED = BOTTOM_TAB_NAVIGATOR_HEIGHT + 195 // + 195 for 2 rows
@@ -257,6 +272,37 @@ export default function MapScreen() {
 
   const zoomLevel = getZoomLevel(region)
 
+  const getSizedIcon = (Icon: React.FC<SvgProps>) => {
+    const size = getMapPinSize(zoomLevel)
+    return <Icon width={size} height={size} />
+  }
+
+  const getIosIcon = (name: IconType) => {
+    let icon: React.FC<SvgProps>
+    switch (name) {
+      case IconType.mhd:
+        icon = zoomLevel < ZoomLevel.md ? MhdSmallIcon : MhdIcon
+        break
+      case IconType.bolt:
+        icon = zoomLevel < ZoomLevel.md ? BoltSmallIcon : BoltIcon
+        break
+      case IconType.tier:
+        icon = zoomLevel < ZoomLevel.md ? TierSmallIcon : TierIcon
+        break
+      case IconType.slovnaftbajk:
+        icon =
+          zoomLevel < ZoomLevel.md ? SlovnaftbajkSmallIcon : SlovnaftbajkIcon
+        break
+      case IconType.rekola:
+        icon = zoomLevel < ZoomLevel.md ? RekolaSmallIcon : RekolaIcon
+        break
+      case IconType.zse:
+        icon = zoomLevel < ZoomLevel.md ? ZseSmallIcon : ZseIcon
+        break
+    }
+    return getSizedIcon(icon)
+  }
+
   const operateBottomSheet = ({
     charger,
     micromobilityStation,
@@ -386,7 +432,7 @@ export default function MapScreen() {
               <Marker
                 key={station.station_id}
                 coordinate={{ latitude: station.lat, longitude: station.lon }}
-                tracksViewChanges={false}
+                tracksViewChanges
                 onPress={() =>
                   operateBottomSheet({
                     micromobilityStation: station,
@@ -403,7 +449,14 @@ export default function MapScreen() {
                     ? getIcon(IconType.slovnaftbajk)
                     : undefined
                 }
-              />
+              >
+                {Platform.OS === 'ios' &&
+                  getIosIcon(
+                    bikeProvider === BikeProvider.rekola
+                      ? IconType.rekola
+                      : IconType.slovnaftbajk
+                  )}
+              </Marker>
             )
             return accumulator.concat(marker)
           }
@@ -492,55 +545,49 @@ export default function MapScreen() {
           filterMhdInView(dataMhd.stops)
             .filter(filterMhdAmount)
             .map((stop) => (
-              <>
-                <Marker
-                  key={stop.id}
-                  coordinate={{
-                    latitude: parseFloat(stop.gpsLat),
-                    longitude: parseFloat(stop.gpsLon),
-                  }}
-                  tracksViewChanges={false}
-                  onPress={() => operateBottomSheet({ mhd: stop })}
-                  icon={getIcon(IconType.mhd)}
-                >
-                  {stop.platform &&
-                    zoomLevel === ZoomLevel.lg &&
-                    (Platform.OS === 'android' ? (
-                      <View style={markerLabelStyles.container}>
-                        <Text style={markerLabelStyles.label}>
-                          {stop.platform}
-                        </Text>
-                      </View>
-                    ) : null)}
-                </Marker>
-                {stop.platform &&
-                  zoomLevel === ZoomLevel.lg &&
-                  Platform.OS === 'ios' && (
-                    <Marker
-                      key={stop.id + 'platform'}
-                      coordinate={{
-                        latitude: parseFloat(stop.gpsLat),
-                        longitude: parseFloat(stop.gpsLon),
-                      }}
-                      tracksViewChanges={false}
-                      style={{ zIndex: 2 }}
-                    >
+              <Marker
+                key={stop.id}
+                coordinate={{
+                  latitude: parseFloat(stop.gpsLat),
+                  longitude: parseFloat(stop.gpsLon),
+                }}
+                tracksViewChanges
+                onPress={() => operateBottomSheet({ mhd: stop })}
+                icon={getIcon(IconType.mhd)}
+              >
+                {Platform.OS === 'ios' && (
+                  <View
+                    style={{
+                      height:
+                        getMapPinSize(zoomLevel) +
+                        (zoomLevel === ZoomLevel.lg ? 6 : 0),
+                    }}
+                  >
+                    {getIosIcon(IconType.mhd)}
+                    {stop.platform && zoomLevel === ZoomLevel.lg && (
                       <View
                         style={[
                           markerLabelStyles.container,
-                          {
-                            marginLeft: 0,
-                            marginTop: 0,
-                          },
+                          markerLabelStyles.iosContainer,
                         ]}
                       >
                         <Text style={markerLabelStyles.label}>
                           {stop.platform}
                         </Text>
                       </View>
-                    </Marker>
+                    )}
+                  </View>
+                )}
+                {stop.platform &&
+                  zoomLevel === ZoomLevel.lg &&
+                  Platform.OS !== 'ios' && (
+                    <View style={markerLabelStyles.container}>
+                      <Text style={markerLabelStyles.label}>
+                        {stop.platform}
+                      </Text>
+                    </View>
                   )}
-              </>
+              </Marker>
             ))}
         {vehiclesContext.vehicleTypes?.find(
           (vehicleType) => vehicleType.id === VehicleType.scooter
@@ -553,7 +600,7 @@ export default function MapScreen() {
                 <Marker
                   key={vehicle.bike_id}
                   coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
-                  tracksViewChanges={false}
+                  tracksViewChanges
                   onPress={() =>
                     operateBottomSheet({
                       micromobilityStation: vehicle,
@@ -561,7 +608,9 @@ export default function MapScreen() {
                     })
                   }
                   icon={getIcon(IconType.tier)}
-                />
+                >
+                  {Platform.OS === 'ios' && getIosIcon(IconType.tier)}
+                </Marker>
               )
             })}
         {vehiclesContext.vehicleTypes?.find(
@@ -575,7 +624,7 @@ export default function MapScreen() {
                 <Marker
                   key={vehicle.bike_id}
                   coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
-                  tracksViewChanges={false}
+                  tracksViewChanges
                   onPress={() =>
                     operateBottomSheet({
                       micromobilityStation: vehicle,
@@ -583,7 +632,9 @@ export default function MapScreen() {
                     })
                   }
                   icon={getIcon(IconType.bolt)}
-                />
+                >
+                  {Platform.OS === 'ios' && getIosIcon(IconType.bolt)}
+                </Marker>
               )
             })}
 
@@ -614,10 +665,12 @@ export default function MapScreen() {
                       latitude: charger.coordinates.latitude,
                       longitude: charger.coordinates.longitude,
                     }}
-                    tracksViewChanges={false}
+                    tracksViewChanges
                     icon={getIcon(IconType.zse)}
                     onPress={() => operateBottomSheet({ charger })}
-                  />
+                  >
+                    {Platform.OS === 'ios' && getIosIcon(IconType.zse)}
+                  </Marker>
                 )
                 return accumulator.concat(marker)
               } else return accumulator
@@ -800,6 +853,14 @@ export const markerLabelStyles = StyleSheet.create({
     borderRadius: 2,
     paddingHorizontal: 3,
     paddingTop: 1,
+  },
+  iosContainer: {
+    marginTop: 0,
+    alignItems: 'center',
+    position: 'absolute',
+    top: 16,
+    left: -1,
+    zIndex: 2,
   },
   label: {
     fontWeight: '700',

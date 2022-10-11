@@ -14,7 +14,7 @@ import { ZoomLevel } from '@types'
 import { getMhdStopStatusData } from '@utils/api'
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
-import { getZoomLevel } from '@utils/utils'
+import { getMapPinSize, getZoomLevel } from '@utils/utils'
 import { MhdStopProps } from '@utils/validation'
 import i18n from 'i18n-js'
 import React, {
@@ -30,6 +30,10 @@ import { ScrollView } from 'react-native-gesture-handler'
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
 import { useQuery } from 'react-query'
 import StopPlatformCard from './_partials/StopPlatformCard'
+
+import MhdSmallIcon from '@icons/map/mhd/no-icon.svg'
+import MhdInactiveIcon from '@icons/map/mhd/with-icon-inactive.svg'
+import MhdIcon from '@icons/map/mhd/with-icon.svg'
 
 const MAP_HEIGHT = 200
 
@@ -104,6 +108,25 @@ const SearchMhd = () => {
         return iconsSubset.lg
       default:
         return undefined
+    }
+  }
+
+  const getIosIcon = (active: boolean) => {
+    const size = getMapPinSize(getZoomLevel(region))
+    const sizeProps = { width: size, height: size }
+    switch (getZoomLevel(region)) {
+      case ZoomLevel.xs:
+      case ZoomLevel.sm:
+        return <MhdSmallIcon {...sizeProps} />
+      case ZoomLevel.md:
+      case ZoomLevel.lg:
+        return active ? (
+          <MhdIcon {...sizeProps} />
+        ) : (
+          <MhdInactiveIcon {...sizeProps} />
+        )
+      default:
+        return null
     }
   }
 
@@ -212,61 +235,57 @@ const SearchMhd = () => {
         >
           {stopPlatforms &&
             stopPlatforms.map((stop) => (
-              <>
-                <Marker
-                  key={stop.id}
-                  coordinate={{
-                    latitude: parseFloat(stop.gpsLat),
-                    longitude: parseFloat(stop.gpsLon),
-                  }}
-                  tracksViewChanges={false}
-                  icon={getIcon(
-                    chosenPlatform ? stop.id === chosenPlatform?.id : true
-                  )}
-                  style={{ zIndex: stop.id === chosenPlatform?.id ? 2 : 1 }}
-                  onPress={(event) => {
-                    event.stopPropagation()
-                    handleMarkerPress(stop)
-                  }}
-                >
-                  {stop.platform &&
-                    getZoomLevel(region) === ZoomLevel.lg &&
-                    Platform.OS === 'android' && (
-                      <View style={markerLabelStyles.container}>
-                        <Text style={markerLabelStyles.label}>
-                          {stop.platform}
-                        </Text>
-                      </View>
+              <Marker
+                key={stop.id}
+                coordinate={{
+                  latitude: parseFloat(stop.gpsLat),
+                  longitude: parseFloat(stop.gpsLon),
+                }}
+                tracksViewChanges
+                icon={getIcon(
+                  chosenPlatform ? stop.id === chosenPlatform?.id : true
+                )}
+                style={{ zIndex: stop.id === chosenPlatform?.id ? 2 : 1 }}
+                onPress={(event) => {
+                  event.stopPropagation()
+                  handleMarkerPress(stop)
+                }}
+              >
+                {Platform.OS === 'ios' && (
+                  <View
+                    style={{
+                      height:
+                        getMapPinSize(getZoomLevel(region)) +
+                        (getZoomLevel(region) === ZoomLevel.lg ? 6 : 0),
+                    }}
+                  >
+                    {getIosIcon(
+                      chosenPlatform ? stop.id === chosenPlatform?.id : true
                     )}
-                </Marker>
-                {stop.platform &&
-                  getZoomLevel(region) === ZoomLevel.lg &&
-                  Platform.OS === 'ios' && (
-                    <Marker
-                      key={stop.id + 'platform'}
-                      coordinate={{
-                        latitude: parseFloat(stop.gpsLat),
-                        longitude: parseFloat(stop.gpsLon),
-                      }}
-                      tracksViewChanges={false}
-                      style={{ zIndex: stop.id === chosenPlatform?.id ? 4 : 3 }}
-                    >
+                    {stop.platform && getZoomLevel(region) === ZoomLevel.lg && (
                       <View
                         style={[
                           markerLabelStyles.container,
-                          {
-                            marginLeft: 0,
-                            marginTop: 0,
-                          },
+                          markerLabelStyles.iosContainer,
                         ]}
                       >
                         <Text style={markerLabelStyles.label}>
                           {stop.platform}
                         </Text>
                       </View>
-                    </Marker>
+                    )}
+                  </View>
+                )}
+                {stop.platform &&
+                  getZoomLevel(region) === ZoomLevel.lg &&
+                  Platform.OS === 'android' && (
+                    <View style={markerLabelStyles.container}>
+                      <Text style={markerLabelStyles.label}>
+                        {stop.platform}
+                      </Text>
+                    </View>
                   )}
-              </>
+              </Marker>
             ))}
         </MapView>
       </View>

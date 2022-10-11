@@ -285,7 +285,7 @@ const MIN_DELTA_FOR_MD_MARKER = 0.01
 
 export const getZoomLevel = (region: Region | null) => {
   const latDelta = region?.latitudeDelta
-  const multiplier = Platform.select({ ios: 0.4, android: 1 })
+  const multiplier = Platform.select({ ios: 1, android: 1 })
   if (latDelta) {
     return latDelta >= MIN_DELTA_FOR_XS_MARKER * multiplier
       ? ZoomLevel.xs
@@ -326,5 +326,18 @@ export const getMicromobilityPrice = (provider: MicromobilityProvider) => {
       return prices.tier
     case MicromobilityProvider.bolt:
       return prices.bolt
+  }
+}
+
+export const getMapPinSize = (zoomLevel: ZoomLevel): number => {
+  switch (zoomLevel) {
+    case ZoomLevel.xs:
+      return 4
+    case ZoomLevel.sm:
+      return 8
+    case ZoomLevel.md:
+      return 16
+    case ZoomLevel.lg:
+      return 22
   }
 }

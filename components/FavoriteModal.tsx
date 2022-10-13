@@ -71,18 +71,18 @@ const FavoriteModal = ({
       : HeartSvg
     : StopSignSvg
 
-  useEffect(() => {
-    if (isFavoritePlace(favorite)) {
-      setFavoriteName(favorite.name)
-    }
-    if (googleInputRef.current && favorite?.place?.data) {
-      googleInputRef.current.setAddressText(favorite.place.data.description)
-      setGooglePlace({
-        data: favorite.place.data,
-        detail: favorite.place.detail,
-      })
-    }
-  }, [favorite])
+  // useEffect(() => {
+  //   if (isFavoritePlace(favorite)) {
+  //     setFavoriteName(favorite.name)
+  //   }
+  //   if (googleInputRef.current && favorite?.place?.data) {
+  //     googleInputRef.current.setAddressText(favorite.place.data.description)
+  //     setGooglePlace({
+  //       data: favorite.place.data,
+  //       detail: favorite.place.detail,
+  //     })
+  //   }
+  // }, [favorite])
 
   useEffect(() => {
     if (isEditingName) nameInputRef.current?.focus()
@@ -167,23 +167,28 @@ const FavoriteModal = ({
               <TextInput
                 ref={nameInputRef}
                 style={styles.input}
-                placeholder={i18n.t(
-                  'screens.SearchFromToScreen.FavoriteModal.namePlaceholder'
-                )}
-                onChangeText={(text) => setFavoriteName(text)}
-                defaultValue={
-                  isFavoritePlace(favorite) ? favorite.name : undefined
+                placeholder={
+                  isFavoritePlace(favorite)
+                    ? favorite.name
+                    : i18n.t(
+                        'screens.SearchFromToScreen.FavoriteModal.namePlaceholder'
+                      )
                 }
-                editable={isEditingName}
+                onChangeText={(text) => setFavoriteName(text)}
                 selectionColor={inputSelectionColor}
                 onBlur={() => {
                   if (
-                    isFavoritePlace(favorite) &&
-                    favoriteName === favorite.name
-                  )
+                    !favoriteName ||
+                    (isFavoritePlace(favorite) &&
+                      favoriteName === favorite.name)
+                  ) {
                     setIsEditingName(false)
+                    nameInputRef.current?.clear()
+                  }
                 }}
                 placeholderTextColor={Platform.select({ ios: colors.gray })}
+                onFocus={() => setIsEditingName(true)}
+                multiline={false}
               />
               {!isEditingName && (
                 <View style={styles.editButtonContainer}>
@@ -210,7 +215,9 @@ const FavoriteModal = ({
                 setIsEditingAddress(false)
             }}
             inputPlaceholder={
-              type === 'place'
+              favorite?.place
+                ? favorite.place?.data.description
+                : type === 'place'
                 ? i18n.t(
                     'screens.SearchFromToScreen.FavoriteModal.addressPlaceholder'
                   )
@@ -251,7 +258,16 @@ const FavoriteModal = ({
               )
             }
             textInputProps={{
-              editable: isEditingAddress,
+              onFocus: () => setIsEditingAddress(true),
+              onBlur: () => {
+                if (
+                  !googlePlace ||
+                  googlePlace?.data.place_id === favorite?.place?.data.place_id
+                ) {
+                  setIsEditingAddress(false)
+                  googleInputRef.current?.clear()
+                }
+              },
             }}
           />
         </View>
@@ -278,11 +294,13 @@ const FavoriteModal = ({
               title={i18n.t('common.save')}
               onPress={() => handleSave()}
               disabled={
-                isPlace && isFavoritePlace(favorite) && favoriteName
-                  ? favoriteName === favorite.name &&
-                    googlePlace &&
-                    favorite &&
-                    googlePlace.data.place_id === favorite?.place?.data.place_id
+                isPlace && isFavoritePlace(favorite)
+                  ? !favoriteName ||
+                    (favoriteName === favorite.name &&
+                      googlePlace &&
+                      favorite &&
+                      googlePlace.data.place_id ===
+                        favorite?.place?.data.place_id)
                   : googlePlace &&
                     favorite &&
                     googlePlace.data.place_id === favorite?.place?.data.place_id
@@ -319,6 +337,8 @@ const styles = StyleSheet.create({
   input: {
     letterSpacing: 0.5,
     flex: 1,
+    paddingVertical: 8,
+    alignSelf: 'flex-start',
     ...s.textSmall,
     ...s.fontNormal,
   },

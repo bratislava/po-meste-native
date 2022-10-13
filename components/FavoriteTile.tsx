@@ -71,21 +71,21 @@ const FavoriteTile = ({
         <View style={styles.placeTexts}>
           {name ? (
             <>
-              <Text style={styles.placeName}>
+              <Text style={styles.placeName} numberOfLines={1}>
                 {id === 'home'
                   ? i18n.t('screens.SearchFromToScreen.FavoriteModal.home')
                   : id === 'work'
                   ? i18n.t('screens.SearchFromToScreen.FavoriteModal.work')
                   : name}
               </Text>
-              <Text style={styles.placeAddressMinor}>
+              <Text style={styles.placeAddressMinor} numberOfLines={1}>
                 {favoriteItem.place?.data?.structured_formatting.main_text ??
                   '??'}
               </Text>
             </>
           ) : (
             <>
-              <Text style={styles.placeName}>
+              <Text style={styles.placeName} numberOfLines={1}>
                 {favoriteItem.place?.data?.structured_formatting.main_text}
               </Text>
             </>
@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
   placeTexts: {
     color: colors.tertiary,
     marginLeft: 10,
+    maxWidth: 200,
     alignSelf: 'center',
   },
   placeName: {

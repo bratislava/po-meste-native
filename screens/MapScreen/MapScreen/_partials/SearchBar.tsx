@@ -19,6 +19,7 @@ const SearchBar = () => {
         marginTop: Math.max(insets.top, 30),
       }}
       onPress={() => navigation.navigate('FromToScreen')}
+      activeOpacity={0.6}
     >
       <SearchSvg
         width={20}

@@ -158,6 +158,8 @@ export const autoCompleteStyles = {
     flexBasis: 'auto',
     maxWidth: '90%',
     paddingVertical: 8,
+    flexWrap: 'nowrap',
+    alignSelf: 'flex-start',
     ...s.textSmall,
     ...s.fontNormal,
   },

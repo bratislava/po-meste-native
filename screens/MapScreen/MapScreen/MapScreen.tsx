@@ -229,9 +229,9 @@ export default function MapScreen() {
 
   const bottomSheetSnapPoints = useMemo(() => {
     if (selectedMicromobilityStation) {
-      return ['50%']
+      return [420]
     } else {
-      return ['50%', '95%']
+      return [420, '95%']
     }
   }, [selectedMicromobilityStation, selectedMhdStation, selectedChargerStation])
 
@@ -521,6 +521,7 @@ export default function MapScreen() {
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         customMapStyle={customMapStyle}
+        toolbarEnabled={false}
         initialRegion={{
           latitude: 48.1512015,
           longitude: 17.1110118,

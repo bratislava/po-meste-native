@@ -1,14 +1,18 @@
 import Text from '@components/Text'
 import i18n from 'i18n-js'
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 
+import BatteryIcon from '@icons/battery.svg'
+import RangeIcon from '@icons/finish-flag.svg'
+import HelmetIcon from '@icons/helmet.svg'
 import { MicromobilityProvider } from '@types'
 import {
   boltPrice,
   colors,
   FreeBikeStatusProps,
   getMicromobilityImage,
+  googlePlacesReverseGeocode,
   rekolaPrice,
   s,
   slovnaftbajkPrice,
@@ -30,8 +34,26 @@ const StationMicromobilityInfo = ({
   const getMicromobilityIcon = useCallback(() => {
     return getMicromobilityImage(provider, 150)
   }, [provider])
+  const [nameBasedOnLocation, setNameBasedOnLocation] = useState('')
+  useEffect(() => {
+    if (
+      station.name ||
+      station.original?.attributes?.licencePlate ||
+      !station.lat ||
+      !station.lon
+    )
+      return
+    googlePlacesReverseGeocode(station.lat, station.lon, (results) =>
+      setNameBasedOnLocation(
+        `${results[0].formatted_address.slice(
+          0,
+          results[0].formatted_address.indexOf(',')
+        )}`
+      )
+    )
+  }, [station])
 
-  const getTitlePrice = useCallback(() => {
+  const getTitleAndPrice = useCallback(() => {
     let title = undefined
     let providerPrice: {
       unlockPrice?: number
@@ -91,19 +113,27 @@ const StationMicromobilityInfo = ({
     return { title, price }
   }, [provider])
 
-  const providerTitlePrice = getTitlePrice()
+  const providerTitleAndPrice = getTitleAndPrice()
   return (
     <View style={styles.container}>
       <View style={[styles.header, s.horizontalMargin]}>
-        <Text>{providerTitlePrice.title}</Text>
-        {station.name && (
+        <Text>{providerTitleAndPrice.title}</Text>
+        {station.name ? (
           <Text style={[s.boldText, styles.fontBigger]}>{station.name}</Text>
+        ) : station.original?.attributes?.licencePlate ? (
+          <Text style={[s.boldText, styles.fontBigger]}>
+            {station.original.attributes.licencePlate}
+          </Text>
+        ) : (
+          <Text style={[s.boldText, styles.fontBigger]}>
+            {nameBasedOnLocation}
+          </Text>
         )}
       </View>
       <View style={styles.priceWrapper}>
         <Text style={s.horizontalMargin}>
           {i18n.t('screens.MapScreen.price')}
-          <Text style={s.boldText}>{providerTitlePrice.price}</Text>
+          <Text style={s.boldText}>{providerTitleAndPrice.price}</Text>
         </Text>
       </View>
       <View style={[s.horizontalMargin, styles.additionalInfoWrapper]}>
@@ -122,29 +152,41 @@ const StationMicromobilityInfo = ({
                 <Text style={s.boldText}>{station.num_docks_available}</Text>
               </Text>
             )}
-            {station.original?.attributes?.licencePlate !== undefined && ( // TODO remove from original
-              <Text>
-                {i18n.t('screens.MapScreen.licencePlate')}
-                <Text style={s.boldText}>
-                  {station.original.attributes?.licencePlate}
-                </Text>
-              </Text>
-            )}
             {station?.original?.attributes?.batteryLevel !== undefined && ( // TODO remove from original
-              <Text>
-                {i18n.t('screens.MapScreen.batteryCharge')}
-                <Text style={s.boldText}>
-                  {station?.original?.attributes?.batteryLevel}%
+              <View style={styles.infoRow}>
+                <BatteryIcon style={styles.infoIcon} />
+                <Text>
+                  {i18n.t('screens.MapScreen.batteryCharge')}
+                  <Text style={s.boldText}>
+                    {station?.original?.attributes?.batteryLevel}%
+                  </Text>
                 </Text>
-              </Text>
+              </View>
             )}
             {station?.original?.current_range_meters !== undefined && ( // TODO remove from original
-              <Text>
-                {i18n.t('screens.MapScreen.currentRange')}
-                <Text style={s.boldText}>
-                  {station?.original?.current_range_meters / 1000} km
+              <View style={styles.infoRow}>
+                <RangeIcon style={styles.infoIcon} />
+                <Text>
+                  {i18n.t('screens.MapScreen.currentRange')}
+                  <Text style={s.boldText}>
+                    {station?.original?.current_range_meters / 1000} km
+                  </Text>
                 </Text>
-              </Text>
+              </View>
+            )}
+            {station.original?.attributes?.hasHelmet !== undefined && ( // TODO remove from original
+              <View style={styles.infoRow}>
+                <HelmetIcon style={styles.infoIcon} />
+                <Text>
+                  {i18n.t('screens.MapScreen.helmet')}
+                  <Text style={s.boldText}>
+                    {i18n.t(
+                      'common.' +
+                        (station.original.attributes.hasHelmet ? 'yes' : 'no')
+                    )}
+                  </Text>
+                </Text>
+              </View>
             )}
           </View>
           <View style={{ alignItems: 'center' }}>
@@ -184,6 +226,13 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'space-evenly',
     paddingVertical: 20,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  infoIcon: {
+    marginRight: 5,
   },
 })
 

@@ -2,9 +2,11 @@ import Link from '@components/Link'
 import { t } from 'i18n-js'
 import React from 'react'
 import {
+  KeyboardAvoidingView,
   Modal as NativeModal,
   StyleSheet,
   TouchableWithoutFeedback,
+  useWindowDimensions,
   View,
 } from 'react-native'
 
@@ -19,6 +21,8 @@ export default function Modal({
   children,
   onClose = () => void 0,
 }: ModalProps) {
+  const dimensions = useWindowDimensions()
+  console.log({ height: dimensions.height })
   return (
     <NativeModal
       statusBarTranslucent
@@ -26,7 +30,11 @@ export default function Modal({
       transparent
       visible={visible}
     >
-      <View style={styles.modalWrapper}>
+      <KeyboardAvoidingView
+        style={styles.modalWrapper}
+        behavior="height"
+        enabled={dimensions.height < 750}
+      >
         <TouchableWithoutFeedback onPress={onClose}>
           <View style={styles.modalBackground}></View>
         </TouchableWithoutFeedback>
@@ -36,7 +44,7 @@ export default function Modal({
           onPress={onClose}
           title={t('common.cancel')}
         />
-      </View>
+      </KeyboardAvoidingView>
     </NativeModal>
   )
 }

@@ -222,7 +222,10 @@ export default function SearchFromToScreen({
         style={{ height: '100%' }}
         onPress={() => googleInputRef?.current?.blur()}
       >
-        <View style={styles.content}>
+        <BottomSheetScrollView
+          style={styles.content}
+          contentContainerStyle={styles.contentInnerContainer}
+        >
           <View style={[s.horizontalMargin, styles.googleForm]}>
             <Autocomplete
               onGooglePlaceChosen={onGooglePlaceChosen}
@@ -338,7 +341,7 @@ export default function SearchFromToScreen({
             <Text style={styles.categoriesTitle}>
               {i18n.t('screens.SearchFromToScreen.history')}
             </Text>
-            <BottomSheetScrollView style={styles.verticalScrollView}>
+            <View style={styles.historyContainer}>
               {favoriteData.history.map((place, index) => (
                 <TouchableOpacity
                   key={index}
@@ -376,9 +379,9 @@ export default function SearchFromToScreen({
                   </View>
                 </TouchableOpacity>
               ))}
-            </BottomSheetScrollView>
+            </View>
           </View>
-        </View>
+        </BottomSheetScrollView>
       </TouchableWithoutFeedback>
       {modal && (
         <FavoriteModal
@@ -405,7 +408,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingRight: 35,
   },
-  verticalScrollView: {
+  historyContainer: {
     marginBottom: BOTTOM_TAB_NAVIGATOR_HEIGHT + 5,
   },
   verticalScrollItem: {
@@ -450,10 +453,11 @@ const styles = StyleSheet.create({
   content: {
     backgroundColor: 'white',
     marginTop: 10,
-    display: 'flex',
+    height: '100%',
+  },
+  contentInnerContainer: {
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    height: '100%',
   },
   history: {
     backgroundColor: colors.lightLightGray,

@@ -66,6 +66,7 @@ export default function ChooseLocation({
           ref={ref}
           style={styles.map}
           customMapStyle={customMapStyle}
+          toolbarEnabled={false}
           initialRegion={
             (route?.params?.latitude &&
               route?.params?.longitude && {

@@ -1,5 +1,7 @@
 export default {
   common: {
+    yes: 'yes',
+    no: 'no',
     map: 'Map',
     tickets: 'Tickets',
     weekend: 'Weekend',
@@ -57,7 +59,7 @@ export default {
       rent: 'Rent {{provider}}',
       availableBikes: 'Available bikes: ',
       freeBikeSpaces: 'Free bike spaces: ',
-      licencePlate: 'Vehicle number: ',
+      helmet: 'Helmet: ',
       batteryCharge: 'Battery: ',
       currentRange: 'Dojazd: ',
       startZseCharger: 'Start charging',

@@ -17,6 +17,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  KeyboardAvoidingView,
 } from 'react-native'
 import {
   GooglePlaceDetail,

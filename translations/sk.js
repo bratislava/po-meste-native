@@ -1,5 +1,7 @@
 export default {
   common: {
+    yes: 'áno',
+    no: 'nie',
     map: 'Mapa',
     tickets: 'Lístky',
     weekend: 'Víkend',
@@ -59,7 +61,7 @@ export default {
       rent: 'Prenajať {{provider}}',
       availableBikes: 'Voľné bicykle: ',
       freeBikeSpaces: 'Voľné doky: ',
-      licencePlate: 'Číslo vozidla: ',
+      helmet: 'Prilba: ',
       batteryCharge: 'Batéria: ',
       currentRange: 'Dojazd: ',
       startZseCharger: 'Začať nabíjanie',

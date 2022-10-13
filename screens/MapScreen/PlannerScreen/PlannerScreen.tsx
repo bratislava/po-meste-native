@@ -73,6 +73,7 @@ export default function PlannerScreen({
         style={styles.map}
         customMapStyle={customMapStyle}
         provider={PROVIDER_GOOGLE}
+        toolbarEnabled={false}
         initialRegion={{
           latitude: 48.1512015,
           longitude: 17.1110118,

@@ -223,6 +223,7 @@ const SearchMhd = () => {
           provider={PROVIDER_GOOGLE}
           style={{ height: mapHeight }}
           customMapStyle={customMapStyle}
+          toolbarEnabled={false}
           initialRegion={{
             latitude: 48.1512015,
             longitude: 17.1110118,

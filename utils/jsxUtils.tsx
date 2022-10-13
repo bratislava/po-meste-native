@@ -1,5 +1,4 @@
-import { Image } from 'react-native'
-
+import BoltVehicleIconSvg from '@images/bolt-vehicle-icon.svg'
 import RekoloVehicleIconSvg from '@images/rekolo-vehicle-icon.svg'
 import SlovnaftbajkVehicleIconSvg from '@images/slovnaftbajk-vehicle-icon.svg'
 import TierVehicleIconSvg from '@images/tier-vehicle-icon.svg'
@@ -19,17 +18,7 @@ export const getMicromobilityImage = (
     case MicromobilityProvider.tier:
       return <TierVehicleIconSvg height={height} width={width} />
     case MicromobilityProvider.bolt:
-      return (
-        <Image
-          source={{
-            uri: Image.resolveAssetSource(
-              require('@images/bolt-vehicle-image.png')
-            ).uri,
-            height,
-            width,
-          }}
-        />
-      )
+      return <BoltVehicleIconSvg height={height} width={width} />
     default:
       return undefined
   }

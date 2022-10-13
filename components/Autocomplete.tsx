@@ -110,7 +110,9 @@ const Autocomplete = ({
               width={16}
               height={16}
             />
-            <Text>{`${correctedResult.description}`}</Text>
+            <Text
+              style={styles.searchResultText}
+            >{`${correctedResult.description}`}</Text>
           </View>
         )
       }}
@@ -139,10 +141,13 @@ const Autocomplete = ({
 const styles = StyleSheet.create({
   searchResultRow: {
     flexDirection: 'row',
+    alignItems: 'center',
+    height: 20,
   },
   searchResultRowIcon: {
     marginRight: 5,
   },
+  searchResultText: {},
 })
 
 export const autoCompleteStyles = {

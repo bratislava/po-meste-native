@@ -32,7 +32,7 @@ const StationMicromobilityInfo = ({
   provider,
 }: StationMicromobilityInfoProps) => {
   const getMicromobilityIcon = useCallback(() => {
-    return getMicromobilityImage(provider, 150)
+    return getMicromobilityImage(provider)
   }, [provider])
   const [nameBasedOnLocation, setNameBasedOnLocation] = useState('')
   useEffect(() => {
@@ -138,16 +138,16 @@ const StationMicromobilityInfo = ({
       </View>
       <View style={[s.horizontalMargin, styles.additionalInfoWrapper]}>
         <View style={styles.vehicleImage}>{getMicromobilityIcon()}</View>
-        <View style={styles.additionalText}>
-          <View>
+        <View style={styles.rightContainer}>
+          <View style={styles.additionalInfo}>
             {station.num_bikes_available !== undefined && (
-              <Text>
+              <Text style={styles.infoText}>
                 {i18n.t('screens.MapScreen.availableBikes')}
                 <Text style={s.boldText}>{station.num_bikes_available}</Text>
               </Text>
             )}
             {station.num_docks_available !== undefined && (
-              <Text>
+              <Text style={styles.infoText}>
                 {i18n.t('screens.MapScreen.freeBikeSpaces')}
                 <Text style={s.boldText}>{station.num_docks_available}</Text>
               </Text>
@@ -155,7 +155,7 @@ const StationMicromobilityInfo = ({
             {station?.original?.attributes?.batteryLevel !== undefined && ( // TODO remove from original
               <View style={styles.infoRow}>
                 <BatteryIcon style={styles.infoIcon} />
-                <Text>
+                <Text style={styles.infoText}>
                   {i18n.t('screens.MapScreen.batteryCharge')}
                   <Text style={s.boldText}>
                     {station?.original?.attributes?.batteryLevel}%
@@ -163,13 +163,17 @@ const StationMicromobilityInfo = ({
                 </Text>
               </View>
             )}
-            {station?.original?.current_range_meters !== undefined && ( // TODO remove from original
+            {(station?.original?.current_range_meters ||
+              station?.original?.attributes?.currentRangeMeters) && ( // TODO remove from original
               <View style={styles.infoRow}>
                 <RangeIcon style={styles.infoIcon} />
-                <Text>
+                <Text style={styles.infoText}>
                   {i18n.t('screens.MapScreen.currentRange')}
                   <Text style={s.boldText}>
-                    {station?.original?.current_range_meters / 1000} km
+                    {(station?.original?.current_range_meters ||
+                      station?.original?.attributes?.currentRangeMeters) /
+                      1000}{' '}
+                    km
                   </Text>
                 </Text>
               </View>
@@ -177,7 +181,7 @@ const StationMicromobilityInfo = ({
             {station.original?.attributes?.hasHelmet !== undefined && ( // TODO remove from original
               <View style={styles.infoRow}>
                 <HelmetIcon style={styles.infoIcon} />
-                <Text>
+                <Text style={styles.infoText}>
                   {i18n.t('screens.MapScreen.helmet')}
                   <Text style={s.boldText}>
                     {i18n.t(
@@ -189,7 +193,7 @@ const StationMicromobilityInfo = ({
               </View>
             )}
           </View>
-          <View style={{ alignItems: 'center' }}>
+          <View style={{ alignItems: 'flex-end' }}>
             <ProviderButton provider={provider} station={station} />
           </View>
         </View>
@@ -216,13 +220,17 @@ const styles = StyleSheet.create({
   additionalInfoWrapper: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
   },
   vehicleImage: {
-    width: 130,
-    margin: 20,
+    height: 130,
+    width: 140,
+    marginVertical: 20,
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
   },
-  additionalText: {
-    flex: 1,
+  rightContainer: {
     display: 'flex',
     justifyContent: 'space-evenly',
     paddingVertical: 20,
@@ -230,9 +238,16 @@ const styles = StyleSheet.create({
   infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 7,
   },
   infoIcon: {
     marginRight: 5,
+  },
+  infoText: {
+    ...s.textSmall,
+  },
+  additionalInfo: {
+    marginBottom: 22,
   },
 })
 

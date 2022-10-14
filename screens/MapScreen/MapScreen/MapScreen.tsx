@@ -229,9 +229,9 @@ export default function MapScreen() {
 
   const bottomSheetSnapPoints = useMemo(() => {
     if (selectedMicromobilityStation) {
-      return [420]
+      return [415]
     } else {
-      return [420, '95%']
+      return [415, '95%']
     }
   }, [selectedMicromobilityStation, selectedMhdStation, selectedChargerStation])
 

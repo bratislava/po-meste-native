@@ -17,7 +17,6 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  KeyboardAvoidingView,
 } from 'react-native'
 import {
   GooglePlaceDetail,
@@ -267,6 +266,10 @@ const FavoriteModal = ({
                 ) {
                   setIsEditingAddress(false)
                   googleInputRef.current?.clear()
+                } else if (googlePlace) {
+                  googleInputRef.current?.setAddressText(
+                    googlePlace.data.description
+                  )
                 }
               },
             }}
@@ -296,14 +299,12 @@ const FavoriteModal = ({
               onPress={() => handleSave()}
               disabled={
                 isPlace && isFavoritePlace(favorite)
-                  ? !favoriteName ||
-                    (favoriteName === favorite.name &&
-                      googlePlace &&
-                      favorite &&
+                  ? ((favorite.isHardSetName && !favoriteName) ||
+                      favoriteName === favorite.name) &&
+                    (!googlePlace ||
                       googlePlace.data.place_id ===
-                        favorite?.place?.data.place_id)
-                  : googlePlace &&
-                    favorite &&
+                        favorite.place?.data.place_id)
+                  : !googlePlace ||
                     googlePlace.data.place_id === favorite?.place?.data.place_id
               }
             />

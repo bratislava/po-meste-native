@@ -131,6 +131,7 @@ const Autocomplete = ({
         },
         selection: googleAutocompleteSelection,
         multiline: false,
+        numberOfLines: 1,
       }}
       suppressDefaultStyles
       styles={mergedStyles}
@@ -164,7 +165,7 @@ export const autoCompleteStyles = {
     maxWidth: '90%',
     paddingVertical: 8,
     flexWrap: 'nowrap',
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
     ...s.textSmall,
     ...s.fontNormal,
   },

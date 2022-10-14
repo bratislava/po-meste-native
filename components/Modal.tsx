@@ -22,7 +22,6 @@ export default function Modal({
   onClose = () => void 0,
 }: ModalProps) {
   const dimensions = useWindowDimensions()
-  console.log({ height: dimensions.height })
   return (
     <NativeModal
       statusBarTranslucent

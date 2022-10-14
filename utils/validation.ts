@@ -81,6 +81,9 @@ const tierOriginalSchema = yup.object().shape({
     batteryLevel: yup
       .number()
       .required('error-malformed-freeBikeStatusSchema-batteryLevel'), // 65,
+    currentRangeMeters: yup
+      .number()
+      .required('error-malformed-freeBikeStatusSchema-currentRangeMeters'), //17000,
     code: yup.number().required('error-malformed-freeBikeStatusSchema-code'), // 238289,
     hasHelmet: yup
       .boolean()

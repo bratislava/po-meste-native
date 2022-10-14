@@ -12,13 +12,18 @@ export const getMicromobilityImage = (
 ) => {
   switch (provider) {
     case MicromobilityProvider.rekola:
-      return <RekoloVehicleIconSvg height={height} width={width} />
+      return <RekoloVehicleIconSvg height={height ?? 91} width={width ?? 140} />
     case MicromobilityProvider.slovnaftbajk:
-      return <SlovnaftbajkVehicleIconSvg height={height} width={width} />
+      return (
+        <SlovnaftbajkVehicleIconSvg
+          height={height ?? 126.8}
+          width={width ?? 140}
+        />
+      )
     case MicromobilityProvider.tier:
-      return <TierVehicleIconSvg height={height} width={width} />
+      return <TierVehicleIconSvg height={height ?? 122} width={width ?? 140} />
     case MicromobilityProvider.bolt:
-      return <BoltVehicleIconSvg height={height} width={width} />
+      return <BoltVehicleIconSvg height={height ?? 118} width={width ?? 136} />
     default:
       return undefined
   }

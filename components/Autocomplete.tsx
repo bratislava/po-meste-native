@@ -79,7 +79,7 @@ const Autocomplete = ({
       ref={googleInputRef}
       enablePoweredByContainer={false}
       fetchDetails
-      placeholder={inputPlaceholder}
+      placeholder={inputPlaceholder.replace(/ /g, '\u00A0')}
       // "react-native-google-places-autocomplete" version: 2.4.1, wrong typing of GooglePlaceData
       onPress={(data, detail) => {
         onGooglePlaceChosen(data as unknown as GooglePlaceDataCorrected, detail)

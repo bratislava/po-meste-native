@@ -19,8 +19,8 @@ import React, {
   useState,
 } from 'react'
 import {
+  FlatList,
   InteractionManager,
-  Keyboard,
   Platform,
   StyleSheet,
   Switch,
@@ -959,119 +959,104 @@ export default function Planner(props: PlannerProps) {
             selectedVehicle={selectedVehicle}
           />
         </View>
-        <ScrollView
-          contentContainerStyle={styles.scrollView}
-          nestedScrollEnabled
-        >
-          {selectedVehicle === TravelModes.mhd && (
-            <View>
-              {(isLoadingMhd || dataMhd || errorMhd) && (
-                <Text style={styles.textSizeBig}>
-                  {i18n.t('screens.FromToScreen.Planner.transit')}
-                </Text>
-              )}
-              {getElements({
-                isLoading: isLoadingMhd,
-                data: dataMhd,
-                provider: undefined,
-                error: errorMhd,
-                refetch: refetchMhd,
-              })}
-            </View>
-          )}
-          {selectedVehicle === TravelModes.bicycle && (
-            <>
-              {(isLoadingMyBike || dataMyBike || errorMyBike) &&
-                selectedVehicle === TravelModes.bicycle && (
+        {selectedVehicle !== TravelModes.mhd ? (
+          <ScrollView
+            contentContainerStyle={styles.scrollView}
+            nestedScrollEnabled
+          >
+            {selectedVehicle === TravelModes.bicycle && (
+              <>
+                {(isLoadingMyBike || dataMyBike || errorMyBike) &&
+                  selectedVehicle === TravelModes.bicycle && (
+                    <Text style={styles.textSizeBig}>
+                      {i18n.t('screens.FromToScreen.Planner.myBike')}
+                    </Text>
+                  )}
+                {getElements({
+                  isLoading: isLoadingMyBike,
+                  data: dataMyBike,
+                  provider: undefined,
+                  error: errorMyBike,
+                  refetch: refetchMyBike,
+                })}
+                {(isLoadingSlovnaftbajk ||
+                  isLoadingRekola ||
+                  dataSlovnaftbajk ||
+                  dataRekola ||
+                  errorSlovnaftbajk ||
+                  errorRekola) && (
                   <Text style={styles.textSizeBig}>
-                    {i18n.t('screens.FromToScreen.Planner.myBike')}
+                    {i18n.t('screens.FromToScreen.Planner.rentedBike')}
                   </Text>
                 )}
-              {getElements({
-                isLoading: isLoadingMyBike,
-                data: dataMyBike,
-                provider: undefined,
-                error: errorMyBike,
-                refetch: refetchMyBike,
-              })}
-              {(isLoadingSlovnaftbajk ||
-                isLoadingRekola ||
-                dataSlovnaftbajk ||
-                dataRekola ||
-                errorSlovnaftbajk ||
-                errorRekola) && (
-                <Text style={styles.textSizeBig}>
-                  {i18n.t('screens.FromToScreen.Planner.rentedBike')}
-                </Text>
-              )}
-              <View style={styles.providerContainer}>
+                <View style={styles.providerContainer}>
+                  {getElements({
+                    isLoading: isLoadingSlovnaftbajk,
+                    data: dataSlovnaftbajk,
+                    provider: MicromobilityProvider.slovnaftbajk,
+                    error: errorSlovnaftbajk,
+                    refetch: refetchSlovnaftbajk,
+                  })}
+                </View>
+                <View style={styles.providerContainer}>
+                  {getElements({
+                    isLoading: isLoadingRekola,
+                    data: dataRekola,
+                    provider: MicromobilityProvider.rekola,
+                    error: errorRekola,
+                    refetch: refetchRekola,
+                  })}
+                </View>
+              </>
+            )}
+            {selectedVehicle === TravelModes.scooter && (
+              <>
+                {(isLoadingMyScooter || dataMyScooter || errorMyScooter) && (
+                  <Text style={styles.textSizeBig}>
+                    {i18n.t('screens.FromToScreen.Planner.myScooter')}
+                  </Text>
+                )}
                 {getElements({
-                  isLoading: isLoadingSlovnaftbajk,
-                  data: dataSlovnaftbajk,
-                  provider: MicromobilityProvider.slovnaftbajk,
-                  error: errorSlovnaftbajk,
-                  refetch: refetchSlovnaftbajk,
+                  isLoading: isLoadingMyScooter,
+                  data: dataMyScooter,
+                  provider: undefined,
+                  error: errorMyScooter,
+                  refetch: refetchMyScooter,
                 })}
-              </View>
-              <View style={styles.providerContainer}>
-                {getElements({
-                  isLoading: isLoadingRekola,
-                  data: dataRekola,
-                  provider: MicromobilityProvider.rekola,
-                  error: errorRekola,
-                  refetch: refetchRekola,
-                })}
-              </View>
-            </>
-          )}
-          {selectedVehicle === TravelModes.scooter && (
-            <>
-              {(isLoadingMyScooter || dataMyScooter || errorMyScooter) && (
-                <Text style={styles.textSizeBig}>
-                  {i18n.t('screens.FromToScreen.Planner.myScooter')}
-                </Text>
-              )}
-              {getElements({
-                isLoading: isLoadingMyScooter,
-                data: dataMyScooter,
-                provider: undefined,
-                error: errorMyScooter,
-                refetch: refetchMyScooter,
-              })}
 
-              {(isLoadingTier || dataTier || errorTier) && (
-                <Text style={styles.textSizeBig}>
-                  {i18n.t('screens.FromToScreen.Planner.rentedScooter')}
-                </Text>
-              )}
-              <View style={styles.providerContainer}>
+                {(isLoadingTier || dataTier || errorTier) && (
+                  <Text style={styles.textSizeBig}>
+                    {i18n.t('screens.FromToScreen.Planner.rentedScooter')}
+                  </Text>
+                )}
+                <View style={styles.providerContainer}>
+                  {getElements({
+                    isLoading: isLoadingTier,
+                    data: dataTier,
+                    provider: MicromobilityProvider.tier,
+                    error: errorTier,
+                    refetch: refetchTier,
+                  })}
+                </View>
+              </>
+            )}
+            {selectedVehicle === TravelModes.walk && (
+              <>
+                {(isLoadingWalk || dataWalk || errorWalk) && (
+                  <Text style={styles.textSizeBig}>
+                    {i18n.t('screens.FromToScreen.Planner.walk')}
+                  </Text>
+                )}
                 {getElements({
-                  isLoading: isLoadingTier,
-                  data: dataTier,
-                  provider: MicromobilityProvider.tier,
-                  error: errorTier,
-                  refetch: refetchTier,
+                  isLoading: isLoadingWalk,
+                  data: dataWalk,
+                  provider: undefined,
+                  error: errorWalk,
+                  refetch: refetchWalk,
                 })}
-              </View>
-            </>
-          )}
-          {selectedVehicle === TravelModes.walk && (
-            <>
-              {(isLoadingWalk || dataWalk || errorWalk) && (
-                <Text style={styles.textSizeBig}>
-                  {i18n.t('screens.FromToScreen.Planner.walk')}
-                </Text>
-              )}
-              {getElements({
-                isLoading: isLoadingWalk,
-                data: dataWalk,
-                provider: undefined,
-                error: errorWalk,
-                refetch: refetchWalk,
-              })}
-            </>
-          )}
-          {/* {dataStandard?.plan?.itineraries?.length != undefined &&
+              </>
+            )}
+            {/* {dataStandard?.plan?.itineraries?.length != undefined &&
           dataStandard.plan.itineraries.length > 0 && (
             <FeedbackAsker
               onNegativeFeedbackPress={() => {
@@ -1080,7 +1065,57 @@ export default function Planner(props: PlannerProps) {
               onPositiveFeedbackPress={handlePositiveFeedback}
             />
           )} */}
-        </ScrollView>
+          </ScrollView>
+        ) : (
+          <FlatList
+            data={dataMhd?.plan?.itineraries}
+            contentContainerStyle={styles.scrollView}
+            ListHeaderComponent={
+              <View>
+                {(isLoadingMhd || dataMhd || errorMhd) && (
+                  <Text style={styles.textSizeBig}>
+                    {i18n.t('screens.FromToScreen.Planner.transit')}
+                  </Text>
+                )}
+                {isLoadingMhd && <TripMiniature isLoading={isLoadingMhd} />}
+              </View>
+            }
+            nestedScrollEnabled
+            renderItem={(data) => (
+              <TripMiniature
+                onPress={() =>
+                  navigation.navigate(
+                    'PlannerScreen' as never,
+                    {
+                      legs: data.item.legs,
+                      isScooter: false,
+                      travelMode: selectedVehicle,
+                      fromPlace: fromName,
+                      toPlace: toName,
+                      price: getPriceFromItinerary(
+                        data.item,
+                        selectedVehicle,
+                        undefined
+                      ),
+                    } as never
+                  )
+                }
+                duration={Math.round(data.item.duration / 60)}
+                departureDateTime={LocalDateTime.ofInstant(
+                  Instant.ofEpochMilli(data.item.startTime)
+                )}
+                arriveDateTime={LocalDateTime.ofInstant(
+                  Instant.ofEpochMilli(data.item.endTime)
+                )}
+                legs={
+                  data.item.legs
+                    ? aggregateBicycleLegs(data.item.legs)
+                    : undefined
+                }
+              />
+            )}
+          />
+        )}
       </ScrollView>
       {interactionsFinished && (
         <Portal hostName="MapScreen">

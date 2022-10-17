@@ -150,7 +150,7 @@ export enum MicromobilityProvider {
 }
 
 export enum ChargersProvider {
-  zse = 'Zse',
+  zse = 'ZSE',
 }
 
 export type MobilityProvider = MicromobilityProvider | ChargersProvider

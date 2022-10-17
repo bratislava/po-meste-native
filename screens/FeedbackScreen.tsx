@@ -15,8 +15,8 @@ import { Button } from '@components'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 import { colors } from '@utils/theme'
 
+import CrossIcon from '@icons/cross.svg'
 import ThumbDown from '@icons/thumb-down.svg'
-import XIcon from '@icons/x.svg'
 
 const FeedbackScreen = () => {
   const [feedbackText, setFeedbackText] = useState('')
@@ -37,7 +37,7 @@ const FeedbackScreen = () => {
             onPress={navigation.goBack}
             style={styles.closeButton}
           >
-            <XIcon
+            <CrossIcon
               style={styles.icon}
               width={16}
               height={16}
@@ -72,7 +72,7 @@ const FeedbackScreen = () => {
             onPress={navigation.goBack}
             style={styles.closeButton}
           >
-            <XIcon
+            <CrossIcon
               style={styles.icon}
               width={16}
               height={16}

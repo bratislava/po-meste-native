@@ -41,7 +41,6 @@ import {
   getMinMaxDuration,
   getMinMaxPrice,
   getPriceFromItinerary,
-  getProviderName,
   getTripPlanner,
   OtpPlannerProps,
   s,
@@ -245,10 +244,9 @@ export default function Planner(props: PlannerProps) {
       scheduledTime,
       accessibleOnly,
     ],
-    () =>
-      fromCoordinates &&
-      toCoordinates &&
-      getTripPlanner(
+    async () => {
+      if (!fromCoordinates || !toCoordinates) return
+      const mhdData = await getTripPlanner(
         `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
         `${toCoordinates.latitude},${toCoordinates.longitude}`,
         dateTime,
@@ -256,7 +254,15 @@ export default function Planner(props: PlannerProps) {
         TravelModesOtpApi.transit,
         undefined,
         accessibleOnly
-      ),
+      )
+      mhdData.plan.itineraries = mhdData?.plan?.itineraries?.filter(
+        (trip) =>
+          trip.legs?.findIndex(
+            (leg) => leg.mode === LegModes.bus || leg.mode === LegModes.tram
+          ) !== -1
+      )
+      return mhdData
+    },
     { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
@@ -516,13 +522,7 @@ export default function Planner(props: PlannerProps) {
       [
         dataMhd?.plan?.itineraries
           ? {
-              itineraries: dataMhd?.plan?.itineraries.filter(
-                (trip) =>
-                  trip.legs?.findIndex(
-                    (leg) =>
-                      leg.mode === LegModes.bus || leg.mode === LegModes.tram
-                  ) !== -1
-              ),
+              itineraries: dataMhd?.plan?.itineraries,
             }
           : { itineraries: [] },
       ],
@@ -728,13 +728,18 @@ export default function Planner(props: PlannerProps) {
   }: ElementsProps) => {
     if (!isLoading && error)
       return (
-        <ErrorView
-          errorMessage={i18n.t('components.ErrorView.dataPlannerTripError', {
-            provider: (provider && getProviderName(provider)) || '',
-          })}
-          error={error}
-          action={refetch}
-        />
+        <View>
+          {error &&
+            renderError({
+              error: error,
+              errorType: 'dataPlannerTrip',
+              provider,
+              action: refetch,
+            })}
+          {data &&
+            data.plan?.itineraries?.length === 0 &&
+            renderError({ errorType: 'plannerNoRoute', provider })}
+        </View>
       )
 
     return (
@@ -795,6 +800,27 @@ export default function Planner(props: PlannerProps) {
             )
         })}
       </>
+    )
+  }
+
+  const renderError = ({
+    error,
+    errorType,
+    provider,
+    action,
+  }: {
+    error?: any
+    errorType: 'dataPlannerTrip' | 'plannerNoRoute' | 'plannerUnsupportedArea'
+    provider?: MicromobilityProvider | 'MHD'
+    action?: () => void
+  }) => {
+    return (
+      <ErrorView
+        error={error}
+        errorMessage={i18n.t(`components.ErrorView.errors.${errorType}`)}
+        action={action}
+        plainStyle
+      />
     )
   }
 
@@ -1069,7 +1095,31 @@ export default function Planner(props: PlannerProps) {
         ) : (
           <FlatList
             data={dataMhd?.plan?.itineraries}
-            contentContainerStyle={styles.scrollView}
+            contentContainerStyle={[
+              styles.scrollView,
+              !dataMhd?.plan?.itineraries && {
+                height: containerHeight - headerHeight - 90,
+              },
+            ]}
+            ListEmptyComponent={
+              <View
+                style={{
+                  height: '100%',
+                  justifyContent: 'center',
+                }}
+              >
+                {errorMhd &&
+                  renderError({
+                    error: errorMhd,
+                    errorType: 'dataPlannerTrip',
+                    provider: 'MHD',
+                    action: refetchMhd,
+                  })}
+                {dataMhd &&
+                  dataMhd.plan?.itineraries?.length === 0 &&
+                  renderError({ errorType: 'plannerNoRoute', provider: 'MHD' })}
+              </View>
+            }
             ListHeaderComponent={
               <View>
                 {(isLoadingMhd || dataMhd || errorMhd) && (

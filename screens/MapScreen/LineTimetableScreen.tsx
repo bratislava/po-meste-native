@@ -156,11 +156,10 @@ export default function LineTimetableScreen({
   if (!isLoading && error)
     return (
       <ErrorView
-        errorMessage={i18n.t(
-          'components.ErrorView.dataLineTimetableScreenError'
-        )}
+        errorMessage={i18n.t('components.ErrorView.errors.dataLineTimetabler')}
         error={error}
         action={refetch}
+        plainStyle
       />
     )
 

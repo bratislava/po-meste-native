@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     padding: 7,
     borderWidth: 2,
     borderColor: colors.mediumGray,
-    width: 90,
+    width: 100,
     height: 70,
     display: 'flex',
     alignItems: 'center',

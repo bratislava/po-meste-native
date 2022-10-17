@@ -66,7 +66,7 @@ const COLORS = {
     primary: colors.primary,
     secondary: colors.secondary,
     tertiary: colors.tertiary,
-    outlined: colors.white,
+    outlined: 'transparent',
     approve: colors.green,
     danger: colors.error,
   },
@@ -235,9 +235,12 @@ const Button = ({
           styles.container,
           styles[size],
           {
-            backgroundColor: showDisabledStyle
-              ? COLORS.disabledBackgroundColor[variant]
-              : COLORS.backgroundColor[variant],
+            backgroundColor:
+              isPressed && variant === 'outlined'
+                ? colors.secondary
+                : showDisabledStyle
+                ? COLORS.disabledBackgroundColor[variant]
+                : COLORS.backgroundColor[variant],
           },
           contentStyle,
         ]}

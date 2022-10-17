@@ -237,22 +237,22 @@ export default {
       thankYouText: 'Your feedback helps us improve the app :)',
     },
     ErrorView: {
-      errorViewTitle: 'Sadly an error has occured',
-      validationError: 'Sorry man, fault is on our side - validation',
       errorViewActionText: 'Try again',
-      errorViewCancelText: 'Cancel',
-      errorViewResetText: 'Reset',
-      dataLineTimelineScreenError: 'Opps, timeline could not be loaded',
-      dataLineTimetableScreenError: 'Opps, timetable could not be loaded',
-      dataPlannerTripError:
-        'Oops, there has been a problem while planning your trip',
-      dataMhdStopsError: 'Oops, MHD data could not be loaded',
-      dataRekolaError: 'Oops, Rekola data could not be loaded',
-      dataSlovnaftbajkError: 'Oops, SlovnaftBAjk data could not be loaded',
-      dataTierError: 'Oops, TIER data could not be loaded',
-      dataZseChargersError: 'Oops, ZSE data could not be loaded',
-      dataBoltError: 'Oops, Bolt data could not be loaded',
-      disconnectedError: 'Please connect to the internet to use this feature',
+      errors: {
+        generic: 'Sadly an error has occured.',
+        validation: 'Sorry, the fault is on our side.',
+        dataLineTimeline: 'Oops, the timeline could not be loaded.',
+        dataLineTimetable: 'Oops, the timetable could not be loaded.',
+        dataPlannerTrip:
+          'Oops, there has been a problem while planning your trip.',
+        dataProvider: 'Oops, {{provider}} data could not be loaded.',
+        dataGeneric: 'Data could not be loaded.',
+        disconnected: 'Please connect to the internet to use this feature.',
+        plannerUnsupportedArea:
+          'It seems that you are trying to plan a journey outside the supported area.\nTry adjusting search criteria to find a route you are looking for. ',
+        plannerNoRoute: 'No route found.',
+        mapUnsupportedArea: 'Your location is outside of Bratislava.',
+      },
     },
   },
 }

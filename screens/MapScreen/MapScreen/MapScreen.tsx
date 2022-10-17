@@ -472,17 +472,18 @@ export default function MapScreen() {
     isLoading: boolean,
     errors: any,
     refetch: () => unknown,
+    dismiss: () => void,
     errorMessage: string
   ) => {
     if (!isLoading) {
       return (
-        <View style={styles.errorBackground}>
-          <ErrorView
-            errorMessage={errorMessage}
-            error={errors}
-            action={refetch}
-          />
-        </View>
+        <ErrorView
+          errorMessage={errorMessage}
+          error={errors}
+          action={refetch}
+          dismiss={dismiss}
+          styleWrapper={{ position: 'absolute', top: 100 }}
+        />
       )
     }
   }
@@ -697,7 +698,10 @@ export default function MapScreen() {
             refetchMhd()
             setIsMhdErrorOpen(false)
           },
-          i18n.t('components.ErrorView.dataMhdStopsError')
+          () => setIsMhdErrorOpen(false),
+          i18n.t('components.ErrorView.errors.dataProvider', {
+            provider: 'MHD',
+          })
         )}
       {isRekolaErrorOpen &&
         dataError(
@@ -707,7 +711,10 @@ export default function MapScreen() {
             refetchRekola()
             setIsRekolaErrorOpen(false)
           },
-          i18n.t('components.ErrorView.dataRekolaError')
+          () => setIsRekolaErrorOpen(false),
+          i18n.t('components.ErrorView.errors.dataProvider', {
+            provider: 'Rekola',
+          })
         )}
       {isSlovnaftbajkErrorOpen &&
         dataError(
@@ -717,7 +724,10 @@ export default function MapScreen() {
             refetchSlovnaftbajk()
             setIsSlovnaftbajkErrorOpen(false)
           },
-          i18n.t('components.ErrorView.dataSlovnaftbajkError')
+          () => setIsSlovnaftbajkErrorOpen(false),
+          i18n.t('components.ErrorView.errors.dataProvider', {
+            provider: 'SlovnaftBAJK',
+          })
         )}
       {isTierErrorOpen &&
         dataError(
@@ -727,7 +737,10 @@ export default function MapScreen() {
             refetchTier()
             setIsTierErrorOpen(false)
           },
-          i18n.t('components.ErrorView.dataTierError')
+          () => setIsTierErrorOpen(false),
+          i18n.t('components.ErrorView.errors.dataProvider', {
+            provider: 'TIER',
+          })
         )}
       {isZseErrorOpen &&
         dataError(
@@ -737,7 +750,10 @@ export default function MapScreen() {
             refetchZseChargers()
             setIsZseErrorOpen(false)
           },
-          i18n.t('components.ErrorView.dataZseChargersError')
+          () => setIsZseErrorOpen(false),
+          i18n.t('components.ErrorView.errors.dataProvider', {
+            provider: 'ZSE',
+          })
         )}
       {isBoltErrorOpen &&
         dataError(
@@ -747,7 +763,10 @@ export default function MapScreen() {
             refetchBolt()
             setIsBoltErrorOpen(false)
           },
-          i18n.t('components.ErrorView.dataBoltError')
+          () => setIsBoltErrorOpen(false),
+          i18n.t('components.ErrorView.errors.dataProvider', {
+            provider: 'Bolt',
+          })
         )}
 
       {showCurrentLocationButton && (
@@ -829,18 +848,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: BOTTOM_TAB_NAVIGATOR_HEIGHT,
-  },
-  errorBackground: {
-    display: 'flex',
-    flex: 1,
-    position: 'absolute',
-    top: 100,
-    width: '90%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-    alignItems: 'center',
-    borderRadius: 15,
   },
 })
 

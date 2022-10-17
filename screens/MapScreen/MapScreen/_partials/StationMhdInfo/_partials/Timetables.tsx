@@ -51,6 +51,7 @@ const Timetables = ({ station }: TimetablesProps) => {
         error={error}
         action={refetch}
         styleWrapper={styles.errorWrapper}
+        plainStyle
       />
     )
 

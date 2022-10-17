@@ -103,6 +103,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
         error={error}
         action={refetch}
         styleWrapper={styles.errorWrapper}
+        plainStyle
       />
     )
 

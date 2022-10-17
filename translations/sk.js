@@ -240,24 +240,22 @@ export default {
       thankYouText: 'Vaša odozva nám pomáha zlepšovať appku :)',
     },
     ErrorView: {
-      errorViewTitle: 'Žial, nastala chyba',
-      validationError: 'Sorry kámo, chyba je na našej strane - validácia',
       errorViewActionText: 'Skúsiť znova',
-      errorViewCancelText: 'Zrušiť',
-      errorViewResetText: 'Resetovať',
-      dataLineTimelineScreenError: 'Hups, trasu sa nepodarilo načítať',
-      dataLineTimetableScreenError:
-        'Hups, cestovný poriadok sa nepodarilo načítať',
-      dataPlannerTripError: 'Hups, nastala chyba pri plánovaní tvojej cesty',
-      dataMhdStopsError: 'Hups, nepodarilo sa nám načítať MHD dáta',
-      dataRekolaError: 'Hups, nepodarilo sa nám načítať Rekola dáta',
-      dataSlovnaftbajkError:
-        'Hups, nepodarilo sa nám načítať SlovnaftBAjk dáta',
-      dataTierError: 'Hups, nepodarilo sa nám načítať TIER dáta',
-      dataZseChargersError: 'Hups, nepodarilo sa nám načítať ZSE dáta',
-      dataBoltError: 'Hups, nepodarilo sa nám načítať Bolt dáta',
-      disconnectedError:
-        'Prosím, pripoj sa na internet, ak chceš používať túto funkcionalitu',
+      errors: {
+        generic: 'Pardon, nastala chyba.',
+        validation: 'Pardon, na našej strane nastala chyba.',
+        dataLineTimeline: 'Hups, trasu sa nepodarilo načítať.',
+        dataLineTimetable: 'Hups, cestovný poriadok sa nepodarilo načítať.',
+        dataPlannerTrip: 'Hups, nastala chyba pri plánovaní vašej cesty.',
+        dataProvider: 'Hups, nepodarilo sa nám načítať {{provider}} dáta.',
+        dataGeneric: 'Dáta sa, žiaľ, nepodarilo načítať.',
+        disconnected:
+          'Pripojte sa, prosím, na internet – ak chcete používať túto funkcionalitu.',
+        plannerUnsupportedArea:
+          'Vyzerá to, že hľadáte trasu z miesta, ktoré aplikácia nepodporuje.\nSkúste zvoliť iné východzie miesto.',
+        plannerNoRoute: 'Žiaľ, nenašli sme pre vás žiadnu vhodnú trasu.',
+        mapUnsupportedArea: 'Vaša poloha je mimo Bratislavy.',
+      },
     },
   },
 }

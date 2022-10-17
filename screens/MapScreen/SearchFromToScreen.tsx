@@ -24,11 +24,11 @@ import Autocomplete from '@components/Autocomplete'
 import FavoriteModal, { FavoriteModalProps } from '@components/FavoriteModal'
 import FavoriteTile, { AddStopFavoriteTile } from '@components/FavoriteTile'
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components/navigation/TabBar'
+import CrossIcon from '@icons/cross.svg'
 import HistorySvg from '@icons/history-search.svg'
 import PlaceSvg from '@icons/map-pin-marker.svg'
 import PlusButtonSvg from '@icons/plus.svg'
 import StopSignSvg from '@icons/stop-sign.svg'
-import XSvg from '@icons/x.svg'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {
   FavoriteData,
@@ -373,7 +373,7 @@ export default function SearchFromToScreen({
                         onPress={() => deleteFromHistory(place)}
                         style={styles.deleteHistoryButton}
                       >
-                        <XSvg width={16} height={16} fill={colors.black} />
+                        <CrossIcon width={16} height={16} fill={colors.black} />
                       </TouchableOpacity>
                     </View>
                   </View>

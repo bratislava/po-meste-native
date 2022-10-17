@@ -19,7 +19,9 @@ type NotRegisteredStyle = Exclude<
   | RecursiveArray<Falsy | TextStyle | RegisteredStyle<TextStyle>>
 >
 
-const findFontWeight = (style: TextProps['style']): 'normal' | 'bold' => {
+const findFontWeight = (
+  style: TextProps['style']
+): 'normal' | 'medium' | 'bold' => {
   if (!style) return 'normal'
   let fontWeight = ''
   if (Array.isArray(style)) {
@@ -36,6 +38,7 @@ const findFontWeight = (style: TextProps['style']): 'normal' | 'bold' => {
   } else if (typeof style === 'object') {
     fontWeight = style.fontWeight ?? 'normal'
   } else return 'normal'
+  if (fontWeight === '500') return 'medium'
   return ['bold', '600', '700', '800', '900'].includes(fontWeight)
     ? 'bold'
     : 'normal'
@@ -43,17 +46,26 @@ const findFontWeight = (style: TextProps['style']): 'normal' | 'bold' => {
 
 const Text = ({ style, ...props }: TextProps) => {
   const fontWeight = findFontWeight(style)
+  let fontFamily = 'work-sans'
+  switch (fontWeight) {
+    case 'medium':
+      fontFamily = 'work-sans-medium'
+      break
+    case 'bold':
+      fontFamily = 'work-sans-bold'
+      break
+  }
   return (
     <NativeText
       {...props}
       style={[
         {
-          fontFamily:
-            fontWeight && fontWeight !== 'normal'
-              ? 'work-sans-bold'
-              : 'work-sans',
+          fontFamily,
         },
         style,
+        {
+          fontWeight: 'normal',
+        },
       ]}
     ></NativeText>
   )

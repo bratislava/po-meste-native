@@ -16,6 +16,9 @@ export const s = StyleSheet.create({
   boldText: {
     fontWeight: 'bold',
   },
+  fontWeightMedium: {
+    fontWeight: '500',
+  },
   blackText: {
     color: 'black',
   },

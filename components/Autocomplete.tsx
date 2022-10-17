@@ -1,7 +1,7 @@
 import Text from '@components/Text'
+import CrossIcon from '@icons/cross.svg'
 import MarkerSvg from '@icons/map-pin-marker.svg'
 import MhdStopSvg from '@icons/stop-sign.svg'
-import XSvg from '@icons/x.svg'
 import { GooglePlaceDataCorrected } from '@types'
 import { s } from '@utils/globalStyles'
 import { colors, inputSelectionColor } from '@utils/theme'
@@ -73,7 +73,7 @@ const Autocomplete = ({
           }}
           onPress={() => googleInputRef.current?.setAddressText('')}
         >
-          <XSvg width={20} height={20} fill={colors.mediumGray} />
+          <CrossIcon width={20} height={20} fill={colors.mediumGray} />
         </TouchableOpacity>
       )}
       ref={googleInputRef}

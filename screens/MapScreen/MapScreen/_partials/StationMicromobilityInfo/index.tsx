@@ -118,7 +118,7 @@ const StationMicromobilityInfo = ({
   return (
     <View style={styles.container}>
       <View style={[styles.header, s.horizontalMargin]}>
-        <Text>{providerTitleAndPrice.title}</Text>
+        <Text style={s.textTiny}>{providerTitleAndPrice.title}</Text>
         {station.name ? (
           <Text style={[s.boldText, styles.fontBigger]}>{station.name}</Text>
         ) : station.original?.attributes?.licencePlate ? (
@@ -201,6 +201,7 @@ const styles = StyleSheet.create({
   },
   fontBigger: {
     fontSize: 22,
+    lineHeight: 33,
   },
   priceWrapper: {
     paddingVertical: 10,

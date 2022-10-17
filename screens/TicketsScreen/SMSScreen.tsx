@@ -2,14 +2,61 @@ import Text from '@components/Text'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import * as SMS from 'expo-sms'
 import i18n from 'i18n-js'
-import React, { useState } from 'react'
-import { Alert, ScrollView, StyleSheet, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import {
+  Alert,
+  Linking,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 
-import { Button, ConfirmationModal, ConfirmationModalProps } from '@components'
-import { SmsTicketNumbers, SmsTicketPrices, TicketName } from '@types'
-import { presentPrice } from '@utils'
+import {
+  Button,
+  ConfirmationModal,
+  ConfirmationModalProps,
+  Modal,
+} from '@components'
+import LightBulbIcon from '@icons/light-bulb.svg'
+import { useNavigation } from '@react-navigation/native'
+import { StackScreenProps } from '@react-navigation/stack'
+import {
+  SmsTicketNumbers,
+  SmsTicketPrices,
+  TicketName,
+  TicketsParamList,
+} from '@types'
+import { colors, presentPrice, s } from '@utils'
 
-export default function SMSScreen() {
+export default function SMSScreen({
+  route,
+}: StackScreenProps<TicketsParamList, 'SMSScreen'>) {
+  const [showHintModal, setShowHintModal] = useState(false)
+
+  const navigation = useNavigation()
+
+  useEffect(() => {
+    // Use `setOptions` to update the button that we previously specified
+    // Now the button includes an `onPress` handler to update the count
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={() => setShowHintModal(true)}>
+          <View
+            style={{
+              borderRadius: 20,
+              borderColor: colors.mediumGray,
+              borderWidth: 2,
+              padding: 4,
+            }}
+          >
+            <LightBulbIcon width={22} height={22} fill={colors.mediumGray} />
+          </View>
+        </TouchableOpacity>
+      ),
+    })
+  }, [navigation])
+
   async function handleSend(receiverNumber: string) {
     const isAvailable = await SMS.isAvailableAsync()
     if (isAvailable) {
@@ -83,37 +130,55 @@ export default function SMSScreen() {
     setConfirmationModalVisible(true)
   }
 
+  const smsInfoTranslation = (part: number) =>
+    i18n.t(`screens.SMSScreen.smsInfoCut.part${part}`)
+
   return (
     <View style={{ flex: 1, paddingBottom: useBottomTabBarHeight() }}>
       <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollView}>
-          <Text style={styles.smsInfo}>
-            {i18n.t('screens.SMSScreen.smsInfo')}
-          </Text>
-          {ticketNames.map((ticketName, i) => {
-            return (
-              <View key={i} style={styles.buttonFullWidth}>
-                <Button
-                  title={getTicketButtonTitle(ticketName)}
-                  onPress={() => ticketButtonClickHandler(ticketName)}
-                  isFullWidth
-                  size="large"
-                />
-              </View>
-            )
-          })}
-          <View style={styles.separator}></View>
-          <Text style={styles.smsInfo}>
-            {i18n.t('screens.SMSScreen.ticketDuplicateDescription')}
-          </Text>
-          <View style={[styles.buttonFullWidth, { marginHorizontal: 71 }]}>
-            <Button
-              title={i18n.t('screens.SMSScreen.ticketDuplicate')}
-              onPress={() => handleSend(SmsTicketNumbers.ticketDuplicate)}
-              isFullWidth
-              size="small"
-              variant="secondary"
-            />
+        <ScrollView
+          contentContainerStyle={styles.scrollView}
+          style={{ height: '100%' }}
+        >
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              flex: 1,
+            }}
+          >
+            {ticketNames.map((ticketName, index) => {
+              return (
+                <View key={index} style={styles.buttonFullWidth}>
+                  <Button
+                    title={getTicketButtonTitle(ticketName)}
+                    onPress={() => ticketButtonClickHandler(ticketName)}
+                    isFullWidth
+                    size="large"
+                    variant={
+                      index === 0
+                        ? 'secondary'
+                        : index === 1
+                        ? 'primary'
+                        : 'tertiary'
+                    }
+                  />
+                </View>
+              )
+            })}
+          </View>
+          <View style={styles.bottomContainer}>
+            <Text style={styles.smsInfoText}>
+              {i18n.t('screens.SMSScreen.ticketDuplicateDescription')}
+            </Text>
+            <View style={{ marginTop: 30, alignItems: 'center' }}>
+              <Button
+                title={i18n.t('screens.SMSScreen.ticketDuplicate')}
+                onPress={() => handleSend(SmsTicketNumbers.ticketDuplicate)}
+                size="small"
+                variant="outlined"
+              />
+            </View>
           </View>
         </ScrollView>
         <ConfirmationModal
@@ -126,6 +191,45 @@ export default function SMSScreen() {
             'screens.SMSScreen.smsModal.checkboxText'
           )}
         />
+        <Modal visible={showHintModal} onClose={() => setShowHintModal(false)}>
+          <ScrollView contentContainerStyle={styles.hintModal}>
+            <View
+              style={{
+                borderRadius: 30,
+                borderColor: colors.primary,
+                borderWidth: 3,
+                padding: 10,
+                marginBottom: 30,
+              }}
+            >
+              <LightBulbIcon width={32} height={32} fill={colors.primary} />
+            </View>
+            <Text style={styles.smsInfoText}>
+              {smsInfoTranslation(1)}
+              <Text style={s.boldText}>{smsInfoTranslation(2)}</Text>
+              {smsInfoTranslation(3)}
+              <TouchableOpacity
+                onPress={() =>
+                  Linking.openURL(
+                    'https://dpba.blob.core.windows.net/media/Default/Dokumenty/Pre%20cestuj%C3%BAcich/TARIFA%20SMS%2025.05.2018.pdf'
+                  )
+                }
+              >
+                <Text>
+                  <Text
+                    style={{
+                      color: colors.primary,
+                      textDecorationLine: 'underline',
+                    }}
+                  >
+                    {smsInfoTranslation(4)}
+                  </Text>
+                  <Text>.</Text>
+                </Text>
+              </TouchableOpacity>
+            </Text>
+          </ScrollView>
+        </Modal>
       </View>
     </View>
   )
@@ -139,13 +243,12 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
+    height: '100%',
   },
-  smsInfo: {
-    // marginHorizontal: 28,
-    // marginBottom: 31,
-    // lineHeight: 23,
-    // fontSize: 15,
+  smsInfoText: {
+    lineHeight: 21,
+    fontSize: 14,
     textAlign: 'center',
   },
   buttonFullWidth: {
@@ -153,10 +256,18 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     margin: 10,
   },
-  separator: {
-    // marginTop: 45,
-    // marginBottom: 22,
-    borderBottomWidth: 1,
-    width: '60%',
+  hintModal: {
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingVertical: 40,
+    paddingHorizontal: 20,
+  },
+  bottomContainer: {
+    backgroundColor: colors.lightLightGray,
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+    paddingBottom: 50,
+    paddingTop: 30,
+    paddingHorizontal: 40,
   },
 })

@@ -150,7 +150,7 @@ const FONT_SIZE: { [key: string]: number } = {
 
 interface ButtonProps {
   onPress: (event: GestureResponderEvent) => void
-  title?: string
+  title?: string | JSX.Element
   // icon?: IconName
   isGrouped?: boolean
   isFullWidth?: boolean
@@ -190,7 +190,7 @@ const Button = ({
 }: ButtonProps) => {
   const showDisabledStyle = disabled && !loading
   const [isPressed, setIsPressed] = useState(false)
-  const renderText = (text: string) => (
+  const renderText = (text: string | JSX.Element) => (
     <Text
       style={[
         {

@@ -158,7 +158,14 @@ export default {
     SMSScreen: {
       screenTitle: 'SMS lístky',
       smsInfo:
-        'SMS lístok platí len na linkách MHD 1 až 212, N1 - N99, X1 - X99. \n Cestujúci by do vozidla MHD mal nastupovať až s prijatou SMS správou. \n Po kliknutí na tlačidlo sa automaticky odošle  sms spoplatnená podľa tarify uvedenej pri konkrétnom type sms lístka.',
+        'SMS CL platí len v prostiedkoch MHD DPB, a. s. v Bratislave (zóny 100 + 101), platí aj na linkách nočnej dopravy. SMS CL je prestupný a je platný počas celej doby časovej platnosti\nSMS CL je potrebné si zakúpiť pred nastúpením do vozidla.\nPo kliknutí na tlačidlo sa automaticky odošle sms spoplatnená podľa tarify uvedenej pri konkrétnom type sms lístka.\nPodrobnejší popis služby nájdete v Tarife MHD v Bratislave.',
+      smsInfoCut: {
+        part1: 'SMS CL platí ',
+        part2: 'len v prostiedkoch MHD DPB, a. s. v Bratislave ',
+        part3:
+          '(zóny 100 + 101), platí aj na linkách nočnej dopravy. SMS CL je prestupný a je platný počas celej doby časovej platnosti\n\nSMS CL je potrebné si zakúpiť pred nastúpením do vozidla.\n\nPo kliknutí na tlačidlo sa automaticky odošle sms spoplatnená podľa tarify uvedenej pri konkrétnom type sms lístka.\n\nPodrobnejší popis služby nájdete v ',
+        part4: 'Tarife MHD v Bratislave',
+      },
       ticketDuplicateDescription:
         'SMS lístok nedorazil do 10 minút alebo si ho omylom vymazal? Nevadí, nechaj si zaslať duplikát.',
       ticketDuplicate: 'Zaslať duplikát / 0 €',

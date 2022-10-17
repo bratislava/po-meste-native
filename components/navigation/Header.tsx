@@ -38,7 +38,7 @@ export const Header = ({
       ]}
     >
       <View style={styles.leftContainer}>
-        {options.headerLeft === undefined ? (
+        {!options.headerLeft ? (
           <TouchableOpacity
             style={styles.backButton}
             onPress={() => (onBack ? onBack() : navigation.goBack())}
@@ -46,7 +46,7 @@ export const Header = ({
             <ChevronLeftSmall width={16} height={16} fill={colors.gray} />
           </TouchableOpacity>
         ) : (
-          options.headerLeft
+          options.headerLeft({})
         )}
       </View>
       <View style={styles.centerContainer}>
@@ -58,7 +58,9 @@ export const Header = ({
           </Text>
         )}
       </View>
-      <View style={styles.rightContainer}>{options.headerRight}</View>
+      <View style={styles.rightContainer}>
+        {options.headerRight && options.headerRight({})}
+      </View>
     </View>
   )
 }

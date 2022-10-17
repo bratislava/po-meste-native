@@ -149,6 +149,12 @@ export enum MicromobilityProvider {
   bolt = 'Bolt',
 }
 
+export enum ChargersProvider {
+  zse = 'Zse',
+}
+
+export type MobilityProvider = MicromobilityProvider | ChargersProvider
+
 export enum TransitVehicleType {
   tram = '0',
   trolleybus = '800',

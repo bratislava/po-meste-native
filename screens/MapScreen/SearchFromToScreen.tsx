@@ -1,8 +1,5 @@
 import Text from '@components/Text'
-import BottomSheet, {
-  BottomSheetScrollView,
-  TouchableWithoutFeedback,
-} from '@gorhom/bottom-sheet'
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import i18n from 'i18n-js'
 import React, {
   Dispatch,
@@ -11,7 +8,7 @@ import React, {
   useEffect,
   useState,
 } from 'react'
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Keyboard, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import {
   GooglePlaceDetail,
@@ -216,15 +213,16 @@ export default function SearchFromToScreen({
       snapPoints={['95%']}
       enablePanDownToClose
       handleIndicatorStyle={s.handleStyle}
-      onClose={() => googleInputRef?.current?.blur()}
+      onClose={() => {
+        googleInputRef?.current?.blur()
+        Keyboard.dismiss()
+      }}
     >
-      <TouchableWithoutFeedback
-        style={{ height: '100%' }}
-        onPress={() => googleInputRef?.current?.blur()}
-      >
+      <View style={{ height: '100%' }}>
         <BottomSheetScrollView
           style={styles.content}
           contentContainerStyle={styles.contentInnerContainer}
+          keyboardShouldPersistTaps="handled"
         >
           <View style={[s.horizontalMargin, styles.googleForm]}>
             <Autocomplete
@@ -242,6 +240,7 @@ export default function SearchFromToScreen({
               contentContainerStyle={styles.horizontalScrollView}
               horizontal
               showsHorizontalScrollIndicator={false}
+              keyboardShouldPersistTaps="always"
             >
               {favoriteData.favoritePlaces.map((favoriteItem, index) => (
                 <FavoriteTile
@@ -276,6 +275,7 @@ export default function SearchFromToScreen({
               contentContainerStyle={styles.horizontalScrollView}
               horizontal
               showsHorizontalScrollIndicator={false}
+              keyboardShouldPersistTaps="always"
             >
               {favoriteData.favoriteStops.length > 0 ? (
                 favoriteData.favoriteStops.map((favoriteItem, index) => (
@@ -382,7 +382,7 @@ export default function SearchFromToScreen({
             </View>
           </View>
         </BottomSheetScrollView>
-      </TouchableWithoutFeedback>
+      </View>
       {modal && (
         <FavoriteModal
           type={modal.type}

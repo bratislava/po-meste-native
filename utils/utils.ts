@@ -1,8 +1,10 @@
 import {
+  ChargersProvider,
   FavoritePlace,
   FavoriteStop,
   LegModes,
   MicromobilityProvider,
+  MobilityProvider,
   TransitVehicleType,
   TravelModes,
   TravelModesOtpApi,
@@ -124,7 +126,7 @@ export const openProviderApp = async (provider: MicromobilityProvider) => {
   }
 }
 
-export const getColor = (provider?: MicromobilityProvider) => {
+export const getColor = (provider?: MobilityProvider) => {
   switch (provider) {
     case MicromobilityProvider.rekola:
       return colors.rekolaColor
@@ -134,16 +136,18 @@ export const getColor = (provider?: MicromobilityProvider) => {
       return colors.tierColor
     case MicromobilityProvider.bolt:
       return colors.boltColor
+    case ChargersProvider.zse:
+      return colors.zseColor
     default:
       return colors.primary
   }
 }
 
-export const getTextColor = (provider: MicromobilityProvider) => {
+export const getTextColor = (provider: MobilityProvider) => {
   switch (provider) {
     case MicromobilityProvider.rekola:
-      return colors.white
     case MicromobilityProvider.bolt:
+    case ChargersProvider.zse:
       return colors.white
     default:
       return colors.darkText

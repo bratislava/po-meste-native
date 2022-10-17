@@ -20,6 +20,7 @@ import React, {
 } from 'react'
 import {
   InteractionManager,
+  Keyboard,
   Platform,
   StyleSheet,
   Switch,

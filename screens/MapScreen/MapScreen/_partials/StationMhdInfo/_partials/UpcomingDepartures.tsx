@@ -114,9 +114,14 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
             <View style={s.icon}>
               <MhdStopSignSvg fill={colors.primary} />
             </View>
-            <Text>{`${station.name} ${
-              station.platform ? station.platform : ''
-            }`}</Text>
+            <Text style={s.boldText}>
+              {station.name}
+              {station.platform && (
+                <Text style={{ color: colors.primary, fontWeight: 'bold' }}>
+                  {` ${station.platform}`}
+                </Text>
+              )}
+            </Text>
           </View>
           <View style={styles.forward}>
             <TouchableOpacity

@@ -21,6 +21,7 @@ import {
 } from '@utils'
 
 import ProviderButton from '@components/ProviderButton'
+import InfoRow from '../InforRow'
 
 interface StationMicromobilityInfoProps {
   station: StationMicromobilityProps | FreeBikeStatusProps
@@ -141,56 +142,44 @@ const StationMicromobilityInfo = ({
         <View style={styles.rightContainer}>
           <View style={styles.additionalInfo}>
             {station.num_bikes_available !== undefined && (
-              <Text style={styles.infoText}>
-                {i18n.t('screens.MapScreen.availableBikes')}
-                <Text style={s.boldText}>{station.num_bikes_available}</Text>
-              </Text>
+              <InfoRow
+                value={station.num_bikes_available}
+                title={i18n.t('screens.MapScreen.availableBikes')}
+              />
             )}
             {station.num_docks_available !== undefined && (
-              <Text style={styles.infoText}>
-                {i18n.t('screens.MapScreen.freeBikeSpaces')}
-                <Text style={s.boldText}>{station.num_docks_available}</Text>
-              </Text>
+              <InfoRow
+                value={station.num_docks_available}
+                title={i18n.t('screens.MapScreen.freeBikeSpaces')}
+              />
             )}
             {station?.original?.attributes?.batteryLevel !== undefined && ( // TODO remove from original
-              <View style={styles.infoRow}>
-                <BatteryIcon style={styles.infoIcon} />
-                <Text style={styles.infoText}>
-                  {i18n.t('screens.MapScreen.batteryCharge')}
-                  <Text style={s.boldText}>
-                    {station?.original?.attributes?.batteryLevel}%
-                  </Text>
-                </Text>
-              </View>
+              <InfoRow
+                value={station?.original?.attributes?.batteryLevel + '%'}
+                title={i18n.t('screens.MapScreen.batteryCharge')}
+                Icon={BatteryIcon}
+              />
             )}
             {(station?.original?.current_range_meters ||
               station?.original?.attributes?.currentRangeMeters) && ( // TODO remove from original
-              <View style={styles.infoRow}>
-                <RangeIcon style={styles.infoIcon} />
-                <Text style={styles.infoText}>
-                  {i18n.t('screens.MapScreen.currentRange')}
-                  <Text style={s.boldText}>
-                    {(station?.original?.current_range_meters ||
-                      station?.original?.attributes?.currentRangeMeters) /
-                      1000}{' '}
-                    km
-                  </Text>
-                </Text>
-              </View>
+              <InfoRow
+                value={`${
+                  (station?.original?.current_range_meters ||
+                    station?.original?.attributes?.currentRangeMeters) / 1000
+                } km`}
+                title={i18n.t('screens.MapScreen.currentRange')}
+                Icon={RangeIcon}
+              />
             )}
             {station.original?.attributes?.hasHelmet !== undefined && ( // TODO remove from original
-              <View style={styles.infoRow}>
-                <HelmetIcon style={styles.infoIcon} />
-                <Text style={styles.infoText}>
-                  {i18n.t('screens.MapScreen.helmet')}
-                  <Text style={s.boldText}>
-                    {i18n.t(
-                      'common.' +
-                        (station.original.attributes.hasHelmet ? 'yes' : 'no')
-                    )}
-                  </Text>
-                </Text>
-              </View>
+              <InfoRow
+                value={i18n.t(
+                  'common.' +
+                    (station.original.attributes.hasHelmet ? 'yes' : 'no')
+                )}
+                title={i18n.t('screens.MapScreen.helmet')}
+                Icon={HelmetIcon}
+              />
             )}
           </View>
           <View style={{ alignItems: 'flex-end' }}>
@@ -234,17 +223,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'space-evenly',
     paddingVertical: 20,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 7,
-  },
-  infoIcon: {
-    marginRight: 5,
-  },
-  infoText: {
-    ...s.textSmall,
   },
   additionalInfo: {
     marginBottom: 22,

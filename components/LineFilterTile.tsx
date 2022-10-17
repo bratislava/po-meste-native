@@ -6,6 +6,8 @@ import { getVehicle } from '@utils/utils'
 import React from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
+const BORDER_WIDTH = 2
+
 interface LineFilterTileProps {
   departure: Departure
   index: number
@@ -32,6 +34,7 @@ const LineFilterTile = ({
     <TouchableOpacity
       style={[
         styles.linkFilter,
+        !isActive && styles.linkFilterInactive,
         {
           marginLeft: index ? 5 : 0,
           backgroundColor: `${
@@ -61,11 +64,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingVertical: 5 + BORDER_WIDTH,
+    paddingHorizontal: 4.5 + BORDER_WIDTH,
+    minWidth: 60,
+    borderRadius: 10,
+  },
+  linkFilterInactive: {
+    borderWidth: BORDER_WIDTH,
     paddingVertical: 5,
     paddingHorizontal: 4.5,
-    minWidth: 60,
-    borderWidth: 2,
-    borderRadius: 10,
   },
   icon: {
     marginRight: 6,

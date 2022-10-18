@@ -71,7 +71,7 @@ export const AboutScreen = () => {
               </View>
               <View style={styles.poweredByItem}>
                 <EuropeanUnionLogo width={64} height={48} />
-                <Text style={styles.poweredByItemText}>
+                <Text style={[styles.poweredByItemText, { color: '#003193' }]}>
                   {t('screens.AboutScreen.coFundedByTheEuropeanUnion')}
                 </Text>
               </View>
@@ -128,6 +128,7 @@ const styles = StyleSheet.create({
   poweredByContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
+    fontFamily: 'Open sans',
   },
   poweredByItem: {
     maxWidth: 120,

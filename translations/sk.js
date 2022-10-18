@@ -7,7 +7,7 @@ export default {
     weekend: 'Víkend',
     workDays: 'Pracovný týždeň',
     holidays: 'Prázdniny, sviatky',
-    cancel: 'Zrušiť',
+    close: 'Zavrieť',
     continue: 'Pokračovať',
     send: 'Odoslať',
     thankYou: 'Ďakujeme',
@@ -208,7 +208,7 @@ export default {
       version: 'Verzia',
       unknown: 'neznáma',
       description:
-        'Pred Vami sa nachádza prvá verzia MaaS (mobilita ako služba) aplikácie Po meste.  Pre Bratislavu postupne vytvárame otvorenú platformu, ktorá prepojí MHD s alternatívnou mobilitou a ponúkne na jednom mieste zelenú mobilitu od plánovania, porovnania a jazdy na pár klikov. Po meste peši, bicyklom, kolobežkou alebo električkou ? Je to na Vás.',
+        'Vitajte v prvej verzii MaaS (mobilita ako služba) aplikácie Po meste. \n\nPre Bratislavu postupne vytvárame otvorenú platformu pre ekologický presun po meste. Prepája MHD s alternatívnou mobilitou a na pár klikov si v nej viete svoje trasy naplánovať i porovnať.\n\nPo meste peši, bicyklom alebo kolobežkou? Je to len na Vás.',
       contact: 'Kontakt',
       createdBy: 'Vytvorené vďaka',
       generalTermsAndConditions: 'Všeobecné obchodné podmienky',

@@ -41,7 +41,7 @@ export default function Modal({
         <Link
           style={styles.modalDismiss}
           onPress={onClose}
-          title={t('common.cancel')}
+          title={t('common.close')}
         />
       </KeyboardAvoidingView>
     </NativeModal>

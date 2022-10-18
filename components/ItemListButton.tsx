@@ -45,9 +45,9 @@ const styles = StyleSheet.create({
   },
   text: {
     marginLeft: 20,
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
-  rightContainer: {},
+  rightContainer: { marginRight: 20 },
 })
 
 export default ItemListButton

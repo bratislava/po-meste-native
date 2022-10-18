@@ -43,19 +43,20 @@ export const FAQScreen = () => {
 
   return (
     <View style={{ flex: 1, paddingBottom: useBottomTabBarHeight() }}>
-      <ScrollView>
-        <View style={styles.bodyContainer}>
-          <Accordion items={questions} />
-          <View style={styles.footerContainer}>
-            <Text style={styles.footerText}>
-              {t('screens.FAQScreen.footerText')}
-            </Text>
-            <Link
-              style={styles.link}
-              onPress={() => openURL(`mailto:${contactEmailAddress}`)}
-              title={contactEmailAddress}
-            />
-          </View>
+      <ScrollView
+        style={{ height: '100%' }}
+        contentContainerStyle={styles.bodyContainer}
+      >
+        <Accordion items={questions} />
+        <View style={styles.footerContainer}>
+          <Text style={styles.footerText}>
+            {t('screens.FAQScreen.footerText')}
+          </Text>
+          <Link
+            style={styles.link}
+            onPress={() => openURL(`mailto:${contactEmailAddress}`)}
+            title={contactEmailAddress}
+          />
         </View>
       </ScrollView>
     </View>
@@ -64,10 +65,12 @@ export const FAQScreen = () => {
 
 const styles = StyleSheet.create({
   bodyContainer: {
+    flex: 1,
     width: '100%',
     paddingHorizontal: 20,
     paddingTop: 40,
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   footerContainer: {
     alignItems: 'center',

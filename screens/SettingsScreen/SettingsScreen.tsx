@@ -14,6 +14,7 @@ import { GlobalStateContext } from '@state/GlobalStateProvider'
 import { PreferredLanguage } from '@types'
 import { colors } from '@utils'
 
+import RadioButton from '@components/RadioButton'
 import AboutIcon from '@icons/information.svg'
 import LanguageIcon from '@icons/language.svg'
 import FAQIcon from '@icons/question.svg'
@@ -71,41 +72,44 @@ export const SettingsScreen = () => {
         </View>
       </ScrollView>
       <Modal visible={isLanguageModalVisible} onClose={onLanguageModalCancel}>
-        <Text style={styles.modalTitle}>
-          {t('screens.SettingsScreen.langugageModal.chooseLanguage')}
-        </Text>
-        <CheckBox
-          onClick={() => setSelectedLanguage(PreferredLanguage.en)}
-          isChecked={selectedLangugage == PreferredLanguage.en}
-          style={styles.modalCheckbox}
-          rightText="English"
-          rightTextStyle={styles.modalCheckboxText}
-          checkedCheckBoxColor={colors.primary}
-          uncheckedCheckBoxColor={colors.gray}
-        />
-        <CheckBox
-          onClick={() => setSelectedLanguage(PreferredLanguage.sk)}
-          isChecked={selectedLangugage == PreferredLanguage.sk}
-          style={styles.modalCheckbox}
-          rightText="Slovenčina"
-          rightTextStyle={styles.modalCheckboxText}
-          checkedCheckBoxColor={colors.primary}
-          uncheckedCheckBoxColor={colors.gray}
-        />
-        <CheckBox
-          onClick={() => setSelectedLanguage(PreferredLanguage.auto)}
-          isChecked={selectedLangugage == PreferredLanguage.auto}
-          style={styles.modalCheckbox}
-          rightText="Auto"
-          rightTextStyle={styles.modalCheckboxText}
-          checkedCheckBoxColor={colors.primary}
-          uncheckedCheckBoxColor={colors.gray}
-        />
-        <Button
-          style={styles.modalButton}
-          onPress={onLanguageModalConfirm}
-          title={t('screens.SettingsScreen.langugageModal.confirm')}
-        />
+        <View style={styles.modal}>
+          <Text style={styles.modalTitle}>
+            {t('screens.SettingsScreen.langugageModal.chooseLanguage')}
+          </Text>
+          <CheckBox
+            onClick={() => setSelectedLanguage(PreferredLanguage.en)}
+            isChecked={selectedLangugage == PreferredLanguage.en}
+            style={styles.modalCheckbox}
+            rightText="English"
+            rightTextStyle={styles.modalCheckboxText}
+            checkedImage={<RadioButton active />}
+            unCheckedImage={<RadioButton />}
+          />
+          <CheckBox
+            onClick={() => setSelectedLanguage(PreferredLanguage.sk)}
+            isChecked={selectedLangugage == PreferredLanguage.sk}
+            style={styles.modalCheckbox}
+            rightText="Slovenčina"
+            rightTextStyle={styles.modalCheckboxText}
+            checkedImage={<RadioButton active />}
+            unCheckedImage={<RadioButton />}
+          />
+          <CheckBox
+            onClick={() => setSelectedLanguage(PreferredLanguage.auto)}
+            isChecked={selectedLangugage == PreferredLanguage.auto}
+            style={styles.modalCheckbox}
+            rightText="Auto"
+            rightTextStyle={styles.modalCheckboxText}
+            checkedImage={<RadioButton active />}
+            unCheckedImage={<RadioButton />}
+          />
+          <Button
+            style={styles.modalButton}
+            onPress={onLanguageModalConfirm}
+            variant="approve"
+            title={t('screens.SettingsScreen.langugageModal.confirm')}
+          />
+        </View>
       </Modal>
     </View>
   )
@@ -116,6 +120,9 @@ const styles = StyleSheet.create({
     width: '100%',
     alignContent: 'stretch',
     paddingTop: 20,
+  },
+  modal: {
+    paddingVertical: 20,
   },
   modalTitle: {
     fontSize: 24,
@@ -130,7 +137,7 @@ const styles = StyleSheet.create({
   modalCheckboxText: {
     color: colors.darkText,
   },
-  modalButton: {},
+  modalButton: { marginTop: 10 },
 })
 
 export default SettingsScreen

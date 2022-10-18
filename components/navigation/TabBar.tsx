@@ -12,7 +12,7 @@ export const BOTTOM_TAB_NAVIGATOR_HEIGHT = 55
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
   return (
     <Shadow
-      innerContainerStyle={styles.tabBarContainer}
+      outerStyle={styles.tabBarContainer}
       element={(iosContainerAndShadowStyle) => (
         <View style={[iosContainerAndShadowStyle, styles.tabBar]}>
           {state.routes.map((route, index) => {
@@ -77,7 +77,7 @@ const TabItem = ({
           element={(iosContainerAndShadowStyle) => (
             <View style={iosContainerAndShadowStyle} />
           )}
-          outerStyle={styles.tabItemShadow}
+          innerContainerStyle={styles.tabItemShadow}
           customOffset={{ x: 5, y: 0 }}
         />
       )}

@@ -22,8 +22,8 @@ const Shadow = ({
         startColor={`rgba(0,0,0,${0.1})`}
         offset={customOffset ? [customOffset.x, customOffset.y] : [0, 0]}
         distance={s.shadow.shadowRadius}
-        style={outerStyle}
-        containerStyle={innerContainerStyle}
+        style={innerContainerStyle}
+        containerStyle={outerStyle}
       >
         {element()}
       </NativeShadow>

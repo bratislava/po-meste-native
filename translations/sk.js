@@ -156,18 +156,11 @@ export default {
       },
     },
     SMSScreen: {
-      screenTitle: 'SMS lístky',
+      screenTitle: 'Lístky MHD',
       smsInfo:
-        'SMS CL platí len v prostiedkoch MHD DPB, a. s. v Bratislave (zóny 100 + 101), platí aj na linkách nočnej dopravy. SMS CL je prestupný a je platný počas celej doby časovej platnosti\nSMS CL je potrebné si zakúpiť pred nastúpením do vozidla.\nPo kliknutí na tlačidlo sa automaticky odošle sms spoplatnená podľa tarify uvedenej pri konkrétnom type sms lístka.\nPodrobnejší popis služby nájdete v Tarife MHD v Bratislave.',
-      smsInfoCut: {
-        part1: 'SMS CL platí ',
-        part2: 'len v prostiedkoch MHD DPB, a. s. v Bratislave ',
-        part3:
-          '(zóny 100 + 101), platí aj na linkách nočnej dopravy. SMS CL je prestupný a je platný počas celej doby časovej platnosti\n\nSMS CL je potrebné si zakúpiť pred nastúpením do vozidla.\n\nPo kliknutí na tlačidlo sa automaticky odošle sms spoplatnená podľa tarify uvedenej pri konkrétnom type sms lístka.\n\nPodrobnejší popis služby nájdete v ',
-        part4: 'Tarife MHD v Bratislave',
-      },
+        'SMS CL platí **len v prostiedkoch MHD DPB, a. s. v Bratislave** (zóny 100 + 101), platí aj na linkách nočnej dopravy. SMS CL je prestupný a je platný počas celej doby časovej platnosti\n\nSMS CL je potrebné si zakúpiť pred nastúpením do vozidla.\n\nPo kliknutí na tlačidlo sa automaticky odošle sms spoplatnená podľa tarify uvedenej pri konkrétnom type sms lístka.\n\nPodrobnejší popis služby nájdete v __Tarife MHD v Bratislave__.',
       ticketDuplicateDescription:
-        'SMS lístok nedorazil do 10 minút alebo si ho omylom vymazal? Nevadí, nechaj si zaslať duplikát.',
+        'SMS lístok **nedorazil do 10 minút** alebo ho **neviete nájsť**? Nevadí, nechajte si zaslať duplikát.',
       ticketDuplicate: 'Zaslať duplikát / 0 €',
       smsOK: 'OK',
       smsNotAvailable:
@@ -175,18 +168,18 @@ export default {
       smsModal: {
         title: 'Spoplatnená služba',
         bodyText:
-          'SMS {{ticketName}} je spoplatnená služba. Bude vám účtovaná suma {{price}} prostredníctvom vášho operátora.',
-        checkboxText: 'Rozumiem, nabudúce sa nepýtať.',
+          '**SMS {{ticketName}} je spoplatnená služba. Bude vám **účtovaná suma {{price}}** prostredníctvom vášho operátora.',
+        checkboxText: '**Rozumiem**, nabudúce sa nepýtať.',
       },
       tickets: {
         ticket40min: {
-          name: 'Lístok 40 minút',
+          name: 'Lístok **40 minút**',
         },
         ticket70min: {
-          name: 'Lístok 70 minút',
+          name: 'Lístok **70 minút**',
         },
         ticket24hours: {
-          name: 'Lístok 24 hodín',
+          name: 'Lístok **24 hodín**',
         },
       },
     },

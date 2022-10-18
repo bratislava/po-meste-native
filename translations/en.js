@@ -156,9 +156,9 @@ export default {
     SMSScreen: {
       screenTitle: 'SMS tickets',
       smsInfo:
-        'The SMS ticket is valid only on public transport lines 1 to 212, N1 - N99, X1 - X99. /n The passenger should board the public transport vehicle only with the received SMS message. /n After clicking on the button, an sms will be sent automatically, charged according to the tariff specified for the specific type of sms ticket.',
+        'The SMS ticket is valid **only for the means of transit provided by MHD DPB, a. s. in Bratislava** (tariff zones 100 + 101) including the night lines. The ticket allows for line changes and is valid for the full time period of validity.\n\nIt is necessary to buy the SMS ticket before entering a public transport vehicle.\n\n After clicking the button, an sms will be sent automatically, charged according to the tariff specified for the specific type of sms ticket.\n\nA more detailed information can be found at __Tariffs for public transport in Bratislava__.',
       ticketDuplicateDescription:
-        'SMS ticket not received in 10 minutes or did you accidentally deleted it? No worries, have a duplicate sent to you.',
+        "SMS ticket **not received in 10 minutes** or you **can't find it**? No worries, have a duplicate sent to you.",
       ticketDuplicate: 'Send duplicate / 0 €',
       smsOK: 'OK',
       smsNotAvailable:
@@ -166,18 +166,18 @@ export default {
       smsModal: {
         title: 'Paid service',
         bodyText:
-          'SMS {{ticketName}} is a charged service. You will be charged {{price}} through your mobile carrier.',
-        checkboxText: "I understand, don't ask next time.",
+          '**SMS {{ticketName}} is a charged service. You will be **charged {{price}}** through your mobile carrier.',
+        checkboxText: "**I understand**, don't ask next time.",
       },
       tickets: {
         ticket40min: {
-          name: 'Ticket 40 minutes',
+          name: 'Ticket **40 min**',
         },
         ticket70min: {
-          name: 'Ticket 70 minutes',
+          name: 'Ticket **70 min**',
         },
         ticket24hours: {
-          name: 'Ticket 24 hours',
+          name: 'Ticket **24 h**',
         },
       },
     },

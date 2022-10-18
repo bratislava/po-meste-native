@@ -18,6 +18,7 @@ import {
   ConfirmationModalProps,
   Modal,
 } from '@components'
+import Markdown from '@components/Markdown'
 import LightBulbIcon from '@icons/light-bulb.svg'
 import { useNavigation } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
@@ -27,7 +28,7 @@ import {
   TicketName,
   TicketsParamList,
 } from '@types'
-import { colors, presentPrice, s } from '@utils'
+import { colors, presentPrice } from '@utils'
 
 export default function SMSScreen({
   route,
@@ -91,12 +92,17 @@ export default function SMSScreen({
     )} / ${presentPrice(SmsTicketPrices[ticketName])}`
   }
 
+  const ticketNameToBoldMarkdown = (ticketName: string) =>
+    `${ticketName.replace(/\*\*/g, '')}**`
+
   const modalData: { [key in TicketName]: ConfirmationModalProps } = {
     ticket40min: {
       onClose: onModalClose,
       onConfirm: () => onModalConfirm(SmsTicketNumbers.ticket40min),
       bodyText: i18n.t('screens.SMSScreen.smsModal.bodyText', {
-        ticketName: i18n.t('screens.SMSScreen.tickets.ticket40min.name'),
+        ticketName: ticketNameToBoldMarkdown(
+          i18n.t('screens.SMSScreen.tickets.ticket40min.name')
+        ),
         price: presentPrice(SmsTicketPrices.ticket40min),
       }),
     },
@@ -104,7 +110,9 @@ export default function SMSScreen({
       onClose: onModalClose,
       onConfirm: () => onModalConfirm(SmsTicketNumbers.ticket70min),
       bodyText: i18n.t('screens.SMSScreen.smsModal.bodyText', {
-        ticketName: i18n.t('screens.SMSScreen.tickets.ticket70min.name'),
+        ticketName: ticketNameToBoldMarkdown(
+          i18n.t('screens.SMSScreen.tickets.ticket70min.name')
+        ),
         price: presentPrice(SmsTicketPrices.ticket70min),
       }),
     },
@@ -112,7 +120,9 @@ export default function SMSScreen({
       onClose: onModalClose,
       onConfirm: () => onModalConfirm(SmsTicketNumbers.ticket24hours),
       bodyText: i18n.t('screens.SMSScreen.smsModal.bodyText', {
-        ticketName: i18n.t('screens.SMSScreen.tickets.ticket24hours.name'),
+        ticketName: ticketNameToBoldMarkdown(
+          i18n.t('screens.SMSScreen.tickets.ticket24hours.name')
+        ),
         price: presentPrice(SmsTicketPrices.ticket24hours),
       }),
     },
@@ -129,9 +139,6 @@ export default function SMSScreen({
     setConfirmationModalProps(modalData[ticketName])
     setConfirmationModalVisible(true)
   }
-
-  const smsInfoTranslation = (part: number) =>
-    i18n.t(`screens.SMSScreen.smsInfoCut.part${part}`)
 
   return (
     <View style={{ flex: 1, paddingBottom: useBottomTabBarHeight() }}>
@@ -151,7 +158,7 @@ export default function SMSScreen({
               return (
                 <View key={index} style={styles.buttonFullWidth}>
                   <Button
-                    title={getTicketButtonTitle(ticketName)}
+                    title={<Markdown text={getTicketButtonTitle(ticketName)} />}
                     onPress={() => ticketButtonClickHandler(ticketName)}
                     isFullWidth
                     size="large"
@@ -169,7 +176,9 @@ export default function SMSScreen({
           </View>
           <View style={styles.bottomContainer}>
             <Text style={styles.smsInfoText}>
-              {i18n.t('screens.SMSScreen.ticketDuplicateDescription')}
+              <Markdown
+                text={i18n.t('screens.SMSScreen.ticketDuplicateDescription')}
+              />
             </Text>
             <View style={{ marginTop: 30, alignItems: 'center' }}>
               <Button
@@ -205,28 +214,28 @@ export default function SMSScreen({
               <LightBulbIcon width={32} height={32} fill={colors.primary} />
             </View>
             <Text style={styles.smsInfoText}>
-              {smsInfoTranslation(1)}
-              <Text style={s.boldText}>{smsInfoTranslation(2)}</Text>
-              {smsInfoTranslation(3)}
-              <TouchableOpacity
-                onPress={() =>
-                  Linking.openURL(
-                    'https://dpba.blob.core.windows.net/media/Default/Dokumenty/Pre%20cestuj%C3%BAcich/TARIFA%20SMS%2025.05.2018.pdf'
-                  )
-                }
-              >
-                <Text>
+              <Markdown
+                text={i18n.t('screens.SMSScreen.smsInfo')}
+                renderCustomMatchComponent={(text, key) => (
                   <Text
                     style={{
                       color: colors.primary,
                       textDecorationLine: 'underline',
+                      top: 3,
+                      flexWrap: 'wrap',
+                      ...styles.smsInfoText,
                     }}
+                    key={key}
+                    onPress={() =>
+                      Linking.openURL(
+                        'https://dpba.blob.core.windows.net/media/Default/Dokumenty/Pre%20cestuj%C3%BAcich/TARIFA%20SMS%2025.05.2018.pdf'
+                      )
+                    }
                   >
-                    {smsInfoTranslation(4)}
+                    {text}
                   </Text>
-                  <Text>.</Text>
-                </Text>
-              </TouchableOpacity>
+                )}
+              />
             </Text>
           </ScrollView>
         </Modal>
@@ -245,6 +254,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-evenly',
     height: '100%',
+    width: '100%',
   },
   smsInfoText: {
     lineHeight: 21,
@@ -263,6 +273,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   bottomContainer: {
+    alignSelf: 'stretch',
     backgroundColor: colors.lightLightGray,
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,

@@ -458,6 +458,7 @@ const styles = StyleSheet.create({
   contentInnerContainer: {
     flexDirection: 'column',
     justifyContent: 'flex-start',
+    minHeight: '100%',
   },
   history: {
     backgroundColor: colors.lightLightGray,

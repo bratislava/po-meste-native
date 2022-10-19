@@ -7,7 +7,7 @@ export default {
     weekend: 'Weekend',
     workDays: 'Working weeks',
     holidays: 'Holidays',
-    cancel: 'Cancel',
+    close: 'Close',
     continue: 'Continue',
     send: 'Send',
     thankYou: 'Thank you',

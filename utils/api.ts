@@ -94,6 +94,7 @@ export const getHealth = async () => {
 export const getMhdStops = async () => {
   console.log('\x1b[92m%s\x1b[0m', 'fetching mhdStop data')
   return fetchJsonFromApi('/mhd/stops')
+  //return new Promise((resolve) => resolve(require('./mhdStops.json')))
 }
 export const getMhdStopStatusData = async (id: string) =>
   apiMhdStopStatus.validateSync(await fetchJsonFromApi(`/mhd/stop/${id}`))

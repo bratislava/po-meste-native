@@ -101,7 +101,9 @@ const ErrorView = ({
       <View style={[styles.containerPlain, styleWrapper]}>
         <Text style={[styles.error, styles.errorPlain]}>
           {errorMessageToDisplay ||
-            i18n.t('components.ErrorView.errors.generic')}
+            (isNetworkError(error)
+              ? i18n.t('components.ErrorView.errors.dataGeneric')
+              : i18n.t('components.ErrorView.errors.generic'))}
         </Text>
         {(!isNetworkError(error) || netInfo.isConnected) && action && (
           <Button
@@ -128,7 +130,9 @@ const ErrorView = ({
         <View style={styles.firstRow}>
           <Text style={styles.error}>
             {errorMessageToDisplay ||
-              i18n.t('components.ErrorView.errors.generic')}
+              (isNetworkError(error)
+                ? i18n.t('components.ErrorView.errors.dataGeneric')
+                : i18n.t('components.ErrorView.errors.generic'))}
           </Text>
           <TouchableOpacity onPress={dismiss} style={styles.dismiss}>
             <CrossIcon
@@ -190,8 +194,8 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   errorPlain: {
+    flex: 0,
     textAlign: 'center',
-    color: colors.darkText,
   },
   dismiss: {
     padding: 10,

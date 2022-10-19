@@ -20,6 +20,7 @@ import {
 } from '@utils'
 
 import MhdStopSignSvg from '@icons/stop-sign.svg'
+import i18n from 'i18n-js'
 
 interface TimetablesProps {
   station: MhdStopProps
@@ -51,6 +52,7 @@ const Timetables = ({ station }: TimetablesProps) => {
         error={error}
         action={refetch}
         styleWrapper={styles.errorWrapper}
+        errorMessage={i18n.t('components.ErrorView.errors.dataLineTimetable')}
         plainStyle
       />
     )

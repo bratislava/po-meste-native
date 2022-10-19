@@ -1,7 +1,7 @@
 import Text from '@components/Text'
 import * as Sentry from '@sentry/react-native'
 import i18n from 'i18n-js'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
   StyleProp,
   StyleSheet,
@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 
 import CrossIcon from '@icons/cross.svg'
-import { useNetInfo } from '@react-native-community/netinfo'
+import { GlobalStateContext } from '@state/GlobalStateProvider'
 import { isApiError, isNetworkError, isValidationError, s } from '@utils'
 import { colors } from '@utils/theme'
 import Button from './Button'
@@ -45,14 +45,14 @@ const ErrorView = ({
   styleWrapper,
   plainStyle = false,
 }: ErrorViewMerged) => {
-  const netInfo = useNetInfo()
+  const netInfo = useContext(GlobalStateContext).netInfo
   const [errorMessageToDisplay, setErrorMessageToDisplay] =
     useState(errorMessage)
   useEffect(() => {
     isNetworkError(error) &&
       !netInfo.isConnected &&
       setErrorMessageToDisplay(
-        i18n.t('components.ErrorView.errors.disconnectedError')
+        i18n.t('components.ErrorView.errors.disconnected')
       )
     if (__DEV__) {
       return
@@ -88,13 +88,14 @@ const ErrorView = ({
     } else if (errorMessage) {
       Sentry.captureMessage(errorMessage, Sentry.Severity.Error)
     }
-  }, [error, errorMessage])
+  }, [error, errorMessage, netInfo.isConnected])
 
   if (isValidationError(error)) {
     // TODO add proper error message
     return <Text>{i18n.t('components.ErrorView.errors.validation')}</Text>
   }
 
+  console.log({ errorMessageToDisplay })
   if (plainStyle) {
     return (
       <View style={[styles.containerPlain, styleWrapper]}>
@@ -190,6 +191,7 @@ const styles = StyleSheet.create({
   },
   errorPlain: {
     textAlign: 'center',
+    color: colors.darkText,
   },
   dismiss: {
     padding: 10,

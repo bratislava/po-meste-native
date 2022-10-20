@@ -185,7 +185,7 @@ export const googlePlacesReverseGeocode = (
   const url =
     'https://maps.google.com/maps/api/geocode/json?' +
     new URLSearchParams({
-      key: Constants?.manifest?.extra?.googlePlacesApiKeyUnlocked,
+      key: Constants?.manifest?.extra?.googlePlacesApiKey,
       latlng: `${lat},${lng}`,
       language: i18n.currentLocale() ?? 'sk',
     })

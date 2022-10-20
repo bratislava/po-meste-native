@@ -144,6 +144,7 @@ export default {
       history: 'History',
       choosePlaceFromMap: 'Choose from map',
       currentPosition: 'Current position',
+      add: 'Add',
       addStop: 'Add stop',
       FavoriteModal: {
         addressPlaceholder: 'Address',

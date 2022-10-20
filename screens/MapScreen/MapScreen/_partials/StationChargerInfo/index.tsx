@@ -55,30 +55,29 @@ const StationChargerInfo = ({
           </View>
           <View style={styles.additionalText}>
             <View>
-              {name !== undefined && name !== null && (
+              {name != null && (
                 <InfoRow
                   value={name}
                   Icon={MapPinSvg}
                   title={i18n.t('screens.MapScreen.location')}
                 />
               )}
-              {openingTimes !== undefined && openingTimes !== null && (
+              {openingTimes != null && (
                 <InfoRow
                   value={openingTimes}
                   Icon={ClockSvg}
                   title={i18n.t('screens.MapScreen.openingHours')}
                 />
               )}
-              {numberOfParkingSpaces !== undefined &&
-                numberOfParkingSpaces !== null && (
-                  <InfoRow
-                    value={numberOfParkingSpaces}
-                    Icon={CarSvg}
-                    title={i18n.t('screens.MapScreen.parkingSpaces', {
-                      amount: numberOfParkingSpaces,
-                    })}
-                  />
-                )}
+              {numberOfParkingSpaces != null && (
+                <InfoRow
+                  value={numberOfParkingSpaces}
+                  Icon={CarSvg}
+                  title={i18n.t('screens.MapScreen.parkingSpaces', {
+                    amount: numberOfParkingSpaces,
+                  })}
+                />
+              )}
             </View>
             <View>
               <ProviderButton provider={ChargersProvider.zse} />

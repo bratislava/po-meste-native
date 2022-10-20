@@ -146,6 +146,7 @@ export default {
       history: 'História',
       choosePlaceFromMap: 'Vybrať na mape',
       currentPosition: 'Aktuálna poloha',
+      add: 'Pridajte',
       addStop: 'Pridať zastávku',
       FavoriteModal: {
         addressPlaceholder: 'Adresa',

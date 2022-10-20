@@ -41,6 +41,11 @@ export default function ChooseLocation({
             region.latitude,
             region.longitude,
             (results) => {
+              if (results.length === 0) {
+                setPlaceName(
+                  `${region.latitude.toFixed(5)},${region.latitude.toFixed(5)}`
+                )
+              }
               const bestResult = results[0]
               setPlaceName(
                 `${bestResult.formatted_address.slice(

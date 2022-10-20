@@ -113,7 +113,7 @@ const ProviderButton = ({ provider, station }: ProviderButtonProps) => {
         />
       }
       iconRight
-      style={{ width: 164 }}
+      style={{ minWidth: 164 }}
     />
   )
 }

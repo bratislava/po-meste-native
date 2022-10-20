@@ -21,7 +21,6 @@ const Markdown = ({
     /([\s]|^)(\*\*[^\s*][^*\n]+[^\s*]\*\*|__[^\s_][^*]+[^\s_]__)([ !?.;,])/gu
   )
   const split = text.split(regex)
-  console.log({ split })
   return (
     <Text {...rest}>
       {split.map((t, index) => {

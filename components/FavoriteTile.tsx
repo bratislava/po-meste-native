@@ -80,7 +80,7 @@ const FavoriteTile = ({
               </Text>
               <Text style={styles.placeAddressMinor} numberOfLines={1}>
                 {favoriteItem.place?.data?.structured_formatting.main_text ??
-                  '??'}
+                  i18n.t('screens.SearchFromToScreen.add')}
               </Text>
             </>
           ) : (

@@ -5,7 +5,13 @@ import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
 import i18n from 'i18n-js'
 import { range } from 'lodash'
-import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
+import React, {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import ScrollPickerNative, {
@@ -90,25 +96,19 @@ const DateTimePicker = React.forwardRef<
     if (scheduleType !== 'now') onScheduleTypeChange(scheduleType)
   }, [scheduleType, onScheduleTypeChange])
 
-  // useEffect(() => {
-  //   setSelectedHour(now.hour())
-  //   hourPickerRef.current?.scrollTo(now.hour())
-  //   setSelectedMinute(now.minute())
-  //   minutePickerRef.current?.scrollTo(now.minute())
-  //   setSelectedDateIndex(7)
-  //   datePickerRef.current?.scrollTo(7)
-  // }, [now])
+  const scrollToDate = useCallback(
+    (date: LocalDateTime) => {
+      setSelectedHour(date.hour())
+      hourPickerRef.current?.scrollTo(date.hour(), false)
+      setSelectedMinute(date.minute())
+      minutePickerRef.current?.scrollTo(date.minute(), false)
+      setSelectedDateIndex(7)
+      datePickerRef.current?.scrollTo(7, false)
+    },
+    [setSelectedHour, setSelectedMinute, setSelectedDateIndex]
+  )
 
-  useEffect(() => scrollToDate(LocalDateTime.now()), [])
-
-  const scrollToDate = (date: LocalDateTime) => {
-    setSelectedHour(date.hour())
-    hourPickerRef.current?.scrollTo(date.hour(), false)
-    setSelectedMinute(date.minute())
-    minutePickerRef.current?.scrollTo(date.minute(), false)
-    setSelectedDateIndex(7)
-    datePickerRef.current?.scrollTo(7, false)
-  }
+  useEffect(() => scrollToDate(LocalDateTime.now()), [scrollToDate])
 
   const handleConfirm = () => {
     if (scheduleType === 'now') setScheduleType(ScheduleType.departure)

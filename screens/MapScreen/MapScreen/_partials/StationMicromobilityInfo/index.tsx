@@ -141,37 +141,38 @@ const StationMicromobilityInfo = ({
         <View style={styles.vehicleImage}>{getMicromobilityIcon()}</View>
         <View style={styles.rightContainer}>
           <View style={styles.additionalInfo}>
-            {station.num_bikes_available !== undefined && (
+            {station.num_bikes_available != null && (
               <InfoRow
                 value={station.num_bikes_available}
                 title={i18n.t('screens.MapScreen.availableBikes')}
               />
             )}
-            {station.num_docks_available !== undefined && (
+            {station.num_docks_available != null && (
               <InfoRow
                 value={station.num_docks_available}
                 title={i18n.t('screens.MapScreen.freeBikeSpaces')}
               />
             )}
-            {station?.original?.attributes?.batteryLevel !== undefined && ( // TODO remove from original
+            {station?.original?.attributes?.batteryLevel != null && ( // TODO remove from original
               <InfoRow
                 value={station?.original?.attributes?.batteryLevel + '%'}
                 title={i18n.t('screens.MapScreen.batteryCharge')}
                 Icon={BatteryIcon}
               />
             )}
-            {(station?.original?.current_range_meters ||
-              station?.original?.attributes?.currentRangeMeters) && ( // TODO remove from original
+            {(station?.original?.current_range_meters != null ||
+              station?.original?.attributes?.currentRangeMeters != null) && ( // TODO remove from original
               <InfoRow
                 value={`${
-                  (station?.original?.current_range_meters ||
-                    station?.original?.attributes?.currentRangeMeters) / 1000
+                  ((station?.original?.current_range_meters ||
+                    station?.original?.attributes?.currentRangeMeters) ??
+                    0) / 1000
                 } km`}
                 title={i18n.t('screens.MapScreen.currentRange')}
                 Icon={RangeIcon}
               />
             )}
-            {station.original?.attributes?.hasHelmet !== undefined && ( // TODO remove from original
+            {station.original?.attributes?.hasHelmet != null && ( // TODO remove from original
               <InfoRow
                 value={i18n.t(
                   'common.' +

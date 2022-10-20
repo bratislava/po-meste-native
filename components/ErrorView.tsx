@@ -95,7 +95,6 @@ const ErrorView = ({
     return <Text>{i18n.t('components.ErrorView.errors.validation')}</Text>
   }
 
-  console.log({ errorMessageToDisplay })
   if (plainStyle) {
     return (
       <View style={[styles.containerPlain, styleWrapper]}>

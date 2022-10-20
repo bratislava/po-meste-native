@@ -1,6 +1,7 @@
 import Accordion from '@components/Accordion'
 import Line from '@components/Line'
 import LineNumber from '@components/LineNumber'
+import Text from '@components/Text'
 import { Ionicons } from '@expo/vector-icons'
 import ChevronRightSmall from '@icons/chevron-right-small.svg'
 import MapPinSvg from '@icons/map-pin-marker.svg'
@@ -9,6 +10,7 @@ import TramSvg from '@icons/vehicles/tram.svg'
 import TrolleybusSvg from '@icons/vehicles/trolleybus.svg'
 import { DateTimeFormatter, Instant, LocalTime } from '@js-joda/core'
 import { LegModes } from '@types'
+import { ITINERARY_ICON_WIDTH, ITINERARY_PADDING_HORIZONTAL } from '@utils'
 import { getMhdTrip } from '@utils/api'
 import { trolleybusLineNumbers } from '@utils/constants'
 import { s } from '@utils/globalStyles'
@@ -17,12 +19,8 @@ import { LegProps } from '@utils/validation'
 import i18n from 'i18n-js'
 import _ from 'lodash'
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { useQuery } from 'react-query'
-import {
-  ITINERARY_ICON_WIDTH,
-  ITINERARY_PADDING_HORIZONTAL,
-} from '../TextItinerary'
 
 interface MhdTransitCardProps {
   leg: LegProps
@@ -238,7 +236,7 @@ const styles = StyleSheet.create({
   whiteCard: {
     backgroundColor: 'white',
     paddingVertical: 20,
-    elevation: 3,
+    elevation: 7,
   },
   line: {
     alignItems: 'center',

@@ -32,6 +32,7 @@ import MotorScooterSoon from '@icons/map-filters/motor-scooters-filter-soon.svg'
 import MotorScooterUnchosen from '@icons/map-filters/motor-scooters-filter-unchosen.svg'
 import ScooterChosen from '@icons/map-filters/scooters-filter-chosen.svg'
 import ScooterUnchosen from '@icons/map-filters/scooters-filter-unchosen.svg'
+import { NetInfoState, useNetInfo } from '@react-native-community/netinfo'
 import { LocationObject } from 'expo-location'
 import { QueryObserverResult } from 'react-query'
 
@@ -59,6 +60,7 @@ interface ContextProps {
     errors: unknown
     refetch: () => Promise<QueryObserverResult<any, unknown>> | null
   }
+  netInfo: NetInfoState
 }
 
 export interface VehicleProps {
@@ -134,6 +136,8 @@ export default function GlobalStateProvider({ children }: Props) {
 
   const mhdStopsData = useMhdData()
 
+  const netInfo = useNetInfo()
+
   return (
     <GlobalStateContext.Provider
       value={{
@@ -148,6 +152,7 @@ export default function GlobalStateProvider({ children }: Props) {
         getLocationWithPermission,
         location,
         mhdStopsData,
+        netInfo,
       }}
     >
       {children}

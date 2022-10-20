@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import Text from '@components/Text'
+import { s } from '@utils/globalStyles'
 import i18n from 'i18n-js'
-import { StyleSheet, Text } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { StyleSheet } from 'react-native'
 import CheckBox from 'react-native-check-box'
 
-import Modal from './Modal'
-import Button from './Button'
-import Link from './Link'
 import { colors } from '../utils/theme'
+import Button from './Button'
+import Checkbox from './Checkbox'
+import Markdown from './Markdown'
+import Modal from './Modal'
 
 export type ConfirmationModalProps = {
   visible?: boolean
@@ -38,8 +41,8 @@ export default function ConfirmationModal({
   return (
     <Modal visible={visible} onClose={onClose}>
       {title && <Text style={styles.modalTitle}>{title}</Text>}
-      {bodyText && <Text style={styles.modalText}>{bodyText}</Text>}
-      <Text style={styles.modalText}>
+      {bodyText && <Markdown text={bodyText} style={styles.modalText} />}
+      <Text style={[styles.modalText, s.boldText]}>
         {i18n.t('common.doYouWantToContinue')}
       </Text>
       {requiredCheckboxText && (
@@ -47,10 +50,16 @@ export default function ConfirmationModal({
           onClick={() => setChecked(!isChecked)}
           isChecked={isChecked}
           style={styles.modalCheckbox}
-          rightText={requiredCheckboxText}
-          rightTextStyle={styles.modalCheckboxText}
+          rightTextView={
+            <Markdown
+              style={styles.modalCheckboxText}
+              text={requiredCheckboxText}
+            />
+          }
           checkedCheckBoxColor={colors.primary}
           uncheckedCheckBoxColor={colors.gray}
+          unCheckedImage={<Checkbox />}
+          checkedImage={<Checkbox checked />}
         />
       )}
       <Button
@@ -67,25 +76,22 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 30,
     color: colors.darkText,
   },
   modalText: {
-    marginBottom: 20,
+    marginBottom: 30,
     color: colors.darkText,
   },
   modalCheckbox: {
-    marginBottom: 20,
+    marginBottom: 30,
     alignItems: 'flex-start',
   },
   modalCheckboxText: {
     color: colors.darkText,
+    marginLeft: 12,
   },
   modalButton: {
     marginBottom: 20,
-  },
-  modalDismiss: {
-    textAlign: 'center',
-    width: '100%',
   },
 })

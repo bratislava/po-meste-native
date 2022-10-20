@@ -1,3 +1,4 @@
+import Text from '@components/Text'
 import React, {
   useCallback,
   useEffect,
@@ -12,7 +13,6 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
   View,
   ViewProps,
   ViewStyle,
@@ -37,7 +37,9 @@ const isViewStyle = (style: ViewProps['style']): style is ViewStyle => {
   )
 }
 
-export type ScrollHandle = { scrollTo: (index: number) => void }
+export type ScrollHandle = {
+  scrollTo: (index: number, animated?: boolean) => void
+}
 
 export type ScrollPickerProps = {
   style?: ViewProps['style']
@@ -88,9 +90,9 @@ const ScrollPicker = React.forwardRef<ScrollHandle, ScrollPickerProps>(
     const [momentumStarted, setMomentumStarted] = useState(false)
     const [timer, setTimer] = useState<NodeJS.Timeout | null>(null)
 
-    const scrollTo = (index: number) => {
+    const scrollTo = (index: number, animated = true) => {
       const y = itemHeight * index
-      sView?.current?.scrollTo({ y: y })
+      sView?.current?.scrollTo({ y: y, animated })
     }
 
     useImperativeHandle(ref, () => ({

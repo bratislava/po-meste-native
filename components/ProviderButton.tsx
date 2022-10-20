@@ -1,5 +1,9 @@
 import ChevronRightIconSVG from '@icons/chevron-right-small.svg'
-import { MicromobilityProvider } from '@types'
+import {
+  ChargersProvider,
+  MicromobilityProvider,
+  MobilityProvider,
+} from '@types'
 import { getColor, getTextColor } from '@utils/utils'
 import {
   FreeBikeStatusProps,
@@ -12,7 +16,7 @@ import AppLink from 'react-native-app-link'
 import Button from './Button'
 
 interface ProviderButtonProps {
-  provider: MicromobilityProvider
+  provider: MobilityProvider
   station?: StationMicromobilityProps | FreeBikeStatusProps
 }
 
@@ -25,6 +29,8 @@ const ProviderButton = ({ provider, station }: ProviderButtonProps) => {
       : provider === MicromobilityProvider.tier
       ? 'Tier'
       : provider === MicromobilityProvider.bolt
+      ? 'Bolt'
+      : provider === ChargersProvider.zse
       ? 'Bolt'
       : ''
 
@@ -78,12 +84,26 @@ const ProviderButton = ({ provider, station }: ProviderButtonProps) => {
               }
             )
             break
+          case ChargersProvider.zse:
+            AppLink.openInStore({
+              appName: 'zse-drive',
+              appStoreId: 1180905521,
+              appStoreLocale: 'sk',
+              playStoreId: 'sk.zse.drive',
+            })
+              .then()
+              .catch()
+            break
         }
       }}
       size="small"
-      title={i18n.t('screens.MapScreen.rent', {
-        provider: buttonTitle,
-      })}
+      title={
+        provider === ChargersProvider.zse
+          ? i18n.t('screens.MapScreen.startZseCharger')
+          : i18n.t('screens.MapScreen.rent', {
+              provider: buttonTitle,
+            })
+      }
       icon={
         <ChevronRightIconSVG
           height={14}
@@ -93,6 +113,7 @@ const ProviderButton = ({ provider, station }: ProviderButtonProps) => {
         />
       }
       iconRight
+      style={{ minWidth: 164 }}
     />
   )
 }

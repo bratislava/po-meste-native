@@ -1,13 +1,18 @@
+import Text from '@components/Text'
 import i18n from 'i18n-js'
-import React, { useCallback } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
+import { StyleSheet, View } from 'react-native'
 
+import BatteryIcon from '@icons/battery.svg'
+import RangeIcon from '@icons/finish-flag.svg'
+import HelmetIcon from '@icons/helmet.svg'
 import { MicromobilityProvider } from '@types'
 import {
   boltPrice,
   colors,
   FreeBikeStatusProps,
   getMicromobilityImage,
+  googlePlacesReverseGeocode,
   rekolaPrice,
   s,
   slovnaftbajkPrice,
@@ -16,6 +21,7 @@ import {
 } from '@utils'
 
 import ProviderButton from '@components/ProviderButton'
+import InfoRow from '../InforRow'
 
 interface StationMicromobilityInfoProps {
   station: StationMicromobilityProps | FreeBikeStatusProps
@@ -27,10 +33,28 @@ const StationMicromobilityInfo = ({
   provider,
 }: StationMicromobilityInfoProps) => {
   const getMicromobilityIcon = useCallback(() => {
-    return getMicromobilityImage(provider, 150)
+    return getMicromobilityImage(provider)
   }, [provider])
+  const [nameBasedOnLocation, setNameBasedOnLocation] = useState('')
+  useEffect(() => {
+    if (
+      station.name ||
+      station.original?.attributes?.licencePlate ||
+      !station.lat ||
+      !station.lon
+    )
+      return
+    googlePlacesReverseGeocode(station.lat, station.lon, (results) =>
+      setNameBasedOnLocation(
+        `${results[0].formatted_address.slice(
+          0,
+          results[0].formatted_address.indexOf(',')
+        )}`
+      )
+    )
+  }, [station])
 
-  const getTitlePrice = useCallback(() => {
+  const getTitleAndPrice = useCallback(() => {
     let title = undefined
     let providerPrice: {
       unlockPrice?: number
@@ -90,63 +114,76 @@ const StationMicromobilityInfo = ({
     return { title, price }
   }, [provider])
 
-  const providerTitlePrice = getTitlePrice()
+  const providerTitleAndPrice = getTitleAndPrice()
   return (
     <View style={styles.container}>
       <View style={[styles.header, s.horizontalMargin]}>
-        <Text>{providerTitlePrice.title}</Text>
-        {station.name && (
+        <Text style={s.textTiny}>{providerTitleAndPrice.title}</Text>
+        {station.name ? (
           <Text style={[s.boldText, styles.fontBigger]}>{station.name}</Text>
+        ) : station.original?.attributes?.licencePlate ? (
+          <Text style={[s.boldText, styles.fontBigger]}>
+            {station.original.attributes.licencePlate}
+          </Text>
+        ) : (
+          <Text style={[s.boldText, styles.fontBigger]}>
+            {nameBasedOnLocation}
+          </Text>
         )}
       </View>
       <View style={styles.priceWrapper}>
         <Text style={s.horizontalMargin}>
           {i18n.t('screens.MapScreen.price')}
-          <Text style={s.boldText}>{providerTitlePrice.price}</Text>
+          <Text style={s.boldText}>{providerTitleAndPrice.price}</Text>
         </Text>
       </View>
       <View style={[s.horizontalMargin, styles.additionalInfoWrapper]}>
         <View style={styles.vehicleImage}>{getMicromobilityIcon()}</View>
-        <View style={styles.additionalText}>
-          <View>
-            {station.num_bikes_available !== undefined && (
-              <Text>
-                {i18n.t('screens.MapScreen.availableBikes')}
-                <Text style={s.boldText}>{station.num_bikes_available}</Text>
-              </Text>
+        <View style={styles.rightContainer}>
+          <View style={styles.additionalInfo}>
+            {station.num_bikes_available != null && (
+              <InfoRow
+                value={station.num_bikes_available}
+                title={i18n.t('screens.MapScreen.availableBikes')}
+              />
             )}
-            {station.num_docks_available !== undefined && (
-              <Text>
-                {i18n.t('screens.MapScreen.freeBikeSpaces')}
-                <Text style={s.boldText}>{station.num_docks_available}</Text>
-              </Text>
+            {station.num_docks_available != null && (
+              <InfoRow
+                value={station.num_docks_available}
+                title={i18n.t('screens.MapScreen.freeBikeSpaces')}
+              />
             )}
-            {station.original?.attributes?.licencePlate !== undefined && ( // TODO remove from original
-              <Text>
-                {i18n.t('screens.MapScreen.licencePlate')}
-                <Text style={s.boldText}>
-                  {station.original.attributes?.licencePlate}
-                </Text>
-              </Text>
+            {station?.original?.attributes?.batteryLevel != null && ( // TODO remove from original
+              <InfoRow
+                value={station?.original?.attributes?.batteryLevel + '%'}
+                title={i18n.t('screens.MapScreen.batteryCharge')}
+                Icon={BatteryIcon}
+              />
             )}
-            {station?.original?.attributes?.batteryLevel !== undefined && ( // TODO remove from original
-              <Text>
-                {i18n.t('screens.MapScreen.batteryCharge')}
-                <Text style={s.boldText}>
-                  {station?.original?.attributes?.batteryLevel}%
-                </Text>
-              </Text>
+            {(station?.original?.current_range_meters != null ||
+              station?.original?.attributes?.currentRangeMeters != null) && ( // TODO remove from original
+              <InfoRow
+                value={`${
+                  ((station?.original?.current_range_meters ||
+                    station?.original?.attributes?.currentRangeMeters) ??
+                    0) / 1000
+                } km`}
+                title={i18n.t('screens.MapScreen.currentRange')}
+                Icon={RangeIcon}
+              />
             )}
-            {station?.original?.current_range_meters !== undefined && ( // TODO remove from original
-              <Text>
-                {i18n.t('screens.MapScreen.currentRange')}
-                <Text style={s.boldText}>
-                  {station?.original?.current_range_meters / 1000} km
-                </Text>
-              </Text>
+            {station.original?.attributes?.hasHelmet != null && ( // TODO remove from original
+              <InfoRow
+                value={i18n.t(
+                  'common.' +
+                    (station.original.attributes.hasHelmet ? 'yes' : 'no')
+                )}
+                title={i18n.t('screens.MapScreen.helmet')}
+                Icon={HelmetIcon}
+              />
             )}
           </View>
-          <View style={{ alignItems: 'center' }}>
+          <View style={{ alignItems: 'flex-end' }}>
             <ProviderButton provider={provider} station={station} />
           </View>
         </View>
@@ -165,6 +202,7 @@ const styles = StyleSheet.create({
   },
   fontBigger: {
     fontSize: 22,
+    lineHeight: 33,
   },
   priceWrapper: {
     paddingVertical: 10,
@@ -173,16 +211,23 @@ const styles = StyleSheet.create({
   additionalInfoWrapper: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
   },
   vehicleImage: {
-    width: 130,
-    margin: 20,
+    height: 130,
+    width: 140,
+    marginVertical: 20,
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
   },
-  additionalText: {
-    flex: 1,
+  rightContainer: {
     display: 'flex',
     justifyContent: 'space-evenly',
     paddingVertical: 20,
+  },
+  additionalInfo: {
+    marginBottom: 22,
   },
 })
 

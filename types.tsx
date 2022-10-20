@@ -149,6 +149,12 @@ export enum MicromobilityProvider {
   bolt = 'Bolt',
 }
 
+export enum ChargersProvider {
+  zse = 'ZSE',
+}
+
+export type MobilityProvider = MicromobilityProvider | ChargersProvider
+
 export enum TransitVehicleType {
   tram = '0',
   trolleybus = '800',
@@ -231,6 +237,31 @@ export enum ZoomLevel {
   sm,
   md,
   lg,
+}
+
+type LatLng = { lat: number; lng: number }
+
+export type GooglePlacesResult = {
+  address_components: {
+    long_name: string
+    short_name: string
+    types: PlaceType[]
+  }[]
+  formatted_address: string
+  geometry: {
+    location: LatLng
+    location_type: string
+    viewport: {
+      northeast: LatLng
+      southwest: LatLng
+    }
+  }
+  place_id: string
+  plus_code: {
+    compound_code: string
+    global_code: string
+  }
+  types: PlaceType[]
 }
 
 export type ItinerariesWithProvider = {

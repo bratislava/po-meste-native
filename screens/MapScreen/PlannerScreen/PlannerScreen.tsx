@@ -21,7 +21,14 @@ import {
 import { TextItinerary } from './_partials/TextItinerary'
 
 import CurrentLocationButton from '@components/CurrentLocationButton'
+import CircleIcon from '@icons/map/circle.svg'
+import MapPinIcon from '@icons/map/pin.svg'
 import { customMapStyle } from '../customMapStyle'
+
+/* eslint-disable @typescript-eslint/no-var-requires */
+const circleLarge = require('@icons/map/circle.png')
+const circleSmall = require('@icons/map/circle.png')
+/* eslint-enable @typescript-eslint/no-var-requires */
 
 export default function PlannerScreen({
   route,
@@ -66,6 +73,7 @@ export default function PlannerScreen({
         style={styles.map}
         customMapStyle={customMapStyle}
         provider={PROVIDER_GOOGLE}
+        toolbarEnabled={false}
         initialRegion={{
           latitude: 48.1512015,
           longitude: 17.1110118,
@@ -86,8 +94,10 @@ export default function PlannerScreen({
       >
         <Marker
           coordinate={allMarkers[0]}
-          icon={require('@icons/map/circle.png')}
-        />
+          icon={Platform.OS === 'ios' ? circleSmall : circleLarge}
+        >
+          {Platform.OS === 'ios' && <CircleIcon width={10} height={10} />}
+        </Marker>
         {legs?.reduce<JSX.Element[]>((accumulator, leg, index) => {
           if (leg.legGeometry.points) {
             const latlngs = googlePolyline.decode(leg.legGeometry.points)
@@ -120,7 +130,9 @@ export default function PlannerScreen({
         <Marker
           coordinate={allMarkers[allMarkers.length - 1]}
           icon={require('@icons/map/pin.png')}
-        />
+        >
+          {Platform.OS === 'ios' && <MapPinIcon width={16} height={16} />}
+        </Marker>
       </MapView>
       {Platform.select({ ios: true, android: true }) && (
         <CurrentLocationButton mapRef={mapRef} style={styles.currentLocation} />

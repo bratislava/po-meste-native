@@ -1,7 +1,5 @@
-import BottomSheet, {
-  BottomSheetScrollView,
-  TouchableWithoutFeedback,
-} from '@gorhom/bottom-sheet'
+import Text from '@components/Text'
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import i18n from 'i18n-js'
 import React, {
   Dispatch,
@@ -10,7 +8,7 @@ import React, {
   useEffect,
   useState,
 } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Keyboard, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import {
   GooglePlaceDetail,
@@ -26,11 +24,11 @@ import Autocomplete from '@components/Autocomplete'
 import FavoriteModal, { FavoriteModalProps } from '@components/FavoriteModal'
 import FavoriteTile, { AddStopFavoriteTile } from '@components/FavoriteTile'
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components/navigation/TabBar'
+import CrossIcon from '@icons/cross.svg'
 import HistorySvg from '@icons/history-search.svg'
 import PlaceSvg from '@icons/map-pin-marker.svg'
 import PlusButtonSvg from '@icons/plus.svg'
 import StopSignSvg from '@icons/stop-sign.svg'
-import XSvg from '@icons/x.svg'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {
   FavoriteData,
@@ -215,13 +213,17 @@ export default function SearchFromToScreen({
       snapPoints={['95%']}
       enablePanDownToClose
       handleIndicatorStyle={s.handleStyle}
-      onClose={() => googleInputRef?.current?.blur()}
+      onClose={() => {
+        googleInputRef?.current?.blur()
+        Keyboard.dismiss()
+      }}
     >
-      <TouchableWithoutFeedback
-        style={{ height: '100%' }}
-        onPress={() => googleInputRef?.current?.blur()}
-      >
-        <View style={styles.content}>
+      <View style={{ height: '100%' }}>
+        <BottomSheetScrollView
+          style={styles.content}
+          contentContainerStyle={styles.contentInnerContainer}
+          keyboardShouldPersistTaps="handled"
+        >
           <View style={[s.horizontalMargin, styles.googleForm]}>
             <Autocomplete
               onGooglePlaceChosen={onGooglePlaceChosen}
@@ -238,6 +240,7 @@ export default function SearchFromToScreen({
               contentContainerStyle={styles.horizontalScrollView}
               horizontal
               showsHorizontalScrollIndicator={false}
+              keyboardShouldPersistTaps="always"
             >
               {favoriteData.favoritePlaces.map((favoriteItem, index) => (
                 <FavoriteTile
@@ -272,6 +275,7 @@ export default function SearchFromToScreen({
               contentContainerStyle={styles.horizontalScrollView}
               horizontal
               showsHorizontalScrollIndicator={false}
+              keyboardShouldPersistTaps="always"
             >
               {favoriteData.favoriteStops.length > 0 ? (
                 favoriteData.favoriteStops.map((favoriteItem, index) => (
@@ -337,7 +341,7 @@ export default function SearchFromToScreen({
             <Text style={styles.categoriesTitle}>
               {i18n.t('screens.SearchFromToScreen.history')}
             </Text>
-            <BottomSheetScrollView style={styles.verticalScrollView}>
+            <View style={styles.historyContainer}>
               {favoriteData.history.map((place, index) => (
                 <TouchableOpacity
                   key={index}
@@ -369,16 +373,16 @@ export default function SearchFromToScreen({
                         onPress={() => deleteFromHistory(place)}
                         style={styles.deleteHistoryButton}
                       >
-                        <XSvg width={16} height={16} fill={colors.black} />
+                        <CrossIcon width={16} height={16} fill={colors.black} />
                       </TouchableOpacity>
                     </View>
                   </View>
                 </TouchableOpacity>
               ))}
-            </BottomSheetScrollView>
+            </View>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
+        </BottomSheetScrollView>
+      </View>
       {modal && (
         <FavoriteModal
           type={modal.type}
@@ -404,7 +408,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingRight: 35,
   },
-  verticalScrollView: {
+  historyContainer: {
     marginBottom: BOTTOM_TAB_NAVIGATOR_HEIGHT + 5,
   },
   verticalScrollItem: {
@@ -449,10 +453,12 @@ const styles = StyleSheet.create({
   content: {
     backgroundColor: 'white',
     marginTop: 10,
-    display: 'flex',
+    height: '100%',
+  },
+  contentInnerContainer: {
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    height: '100%',
+    minHeight: '100%',
   },
   history: {
     backgroundColor: colors.lightLightGray,

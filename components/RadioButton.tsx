@@ -1,77 +1,39 @@
 import { colors } from '@utils/theme'
 import React from 'react'
-import {
-  StyleSheet,
-  Text,
-  TextStyle,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from 'react-native'
-
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 32,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  circle: {
-    height: 16,
-    width: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: colors.secondary,
-  },
-  checked: {
-    borderWidth: 6,
-  },
-  text: {
-    paddingHorizontal: 16,
-  },
-})
+import { StyleSheet, View } from 'react-native'
 
 interface RadioButtonProps {
-  containerStyle?: ViewStyle
-  labelStyle?: TextStyle
-  options: {
-    value: string
-    label: string
-    customComponent?: React.ReactElement
-  }[]
-  value: any
-  onChangeValue: (value: any) => void
+  active?: boolean
 }
 
-const RadioButton = ({
-  options,
-  value,
-  onChangeValue,
-  containerStyle,
-  labelStyle,
-}: RadioButtonProps) => {
+const RadioButton = ({ active = false }: RadioButtonProps) => {
   return (
-    <View>
-      {options.map((item, index) => (
-        <View style={[styles.row, containerStyle]} key={index}>
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={() => onChangeValue(item.value)}
-          >
-            <>
-              <View
-                style={[styles.circle, value === item.value && styles.checked]}
-              />
-              <Text style={[styles.text, labelStyle]}>{item.label}</Text>
-            </>
-          </TouchableOpacity>
-          <View>{item.customComponent}</View>
-        </View>
-      ))}
+    <View style={[styles.inactive, active && styles.active]}>
+      {active && (
+        <View
+          style={{
+            width: 10,
+            height: 10,
+            borderRadius: 5,
+            backgroundColor: colors.primary,
+          }}
+        />
+      )}
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  active: {},
+  inactive: {
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: colors.mediumGray,
+    borderRadius: 10,
+  },
+})
+
 export default RadioButton

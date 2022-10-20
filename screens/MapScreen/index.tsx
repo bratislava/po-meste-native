@@ -12,12 +12,13 @@ import PlannerScreen from '@screens/MapScreen/PlannerScreen'
 import { MapParamList } from '@types'
 
 import { Header } from '@components'
+import Text from '@components/Text'
 import ArrowRightSvg from '@icons/arrow-right.svg'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
 import { getShortAddress } from '@utils/utils'
-import { Text, View } from 'react-native'
+import { View } from 'react-native'
 
 const MapStack = createStackNavigator<MapParamList>()
 

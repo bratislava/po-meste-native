@@ -1,3 +1,4 @@
+import Text from '@components/Text'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { useNetInfo } from '@react-native-community/netinfo'
 import { useIsFocused } from '@react-navigation/core'
@@ -10,7 +11,13 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { ImageURISource, StyleSheet, Text, View } from 'react-native'
+import {
+  Animated,
+  ImageURISource,
+  Platform,
+  StyleSheet,
+  View,
+} from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
 
 import {
@@ -40,6 +47,7 @@ import {
 import {
   ChargerStationProps,
   FreeBikeStatusProps,
+  getMapPinSize,
   getZoomLevel,
   LocalitiesProps,
   MhdStopProps,
@@ -59,6 +67,22 @@ import { customMapStyle } from '../customMapStyle'
 import CurrentLocationButton from '@components/CurrentLocationButton'
 import useBoltData from '@hooks/useBoltData'
 import { colors } from '@utils'
+
+import * as SplashScreen from 'expo-splash-screen'
+
+import BoltSmallIcon from '@icons/map/bolt/no-icon.svg'
+import BoltIcon from '@icons/map/bolt/with-icon.svg'
+import MhdSmallIcon from '@icons/map/mhd/no-icon.svg'
+import MhdIcon from '@icons/map/mhd/with-icon.svg'
+import RekolaSmallIcon from '@icons/map/rekola/no-icon.svg'
+import RekolaIcon from '@icons/map/rekola/with-icon.svg'
+import SlovnaftbajkSmallIcon from '@icons/map/slovnaftbajk/no-icon.svg'
+import SlovnaftbajkIcon from '@icons/map/slovnaftbajk/with-icon.svg'
+import TierSmallIcon from '@icons/map/tier/no-icon.svg'
+import TierIcon from '@icons/map/tier/with-icon.svg'
+import ZseSmallIcon from '@icons/map/zse/no-icon.svg'
+import ZseIcon from '@icons/map/zse/with-icon.svg'
+import { SvgProps } from 'react-native-svg'
 
 const VEHICLE_BAR_SHEET_HEIGHT_COLLAPSED = BOTTOM_TAB_NAVIGATOR_HEIGHT + 70
 const VEHICLE_BAR_SHEET_HEIGHT_EXPANDED = BOTTOM_TAB_NAVIGATOR_HEIGHT + 195 // + 195 for 2 rows
@@ -184,6 +208,20 @@ export default function MapScreen() {
   const [showCurrentLocationButton, setShowCurrentLocationButton] =
     useState(true)
 
+  const [animateToLocation, setAnimateToLocation] = useState(true)
+  useEffect(() => {
+    if (vehiclesContext.location?.coords && animateToLocation) {
+      setAnimateToLocation(false)
+      mapRef.current?.animateCamera({
+        center: vehiclesContext.location?.coords,
+        zoom: 17,
+        // TODO altitude needs to be set for Apple maps
+        // https://github.com/react-native-maps/react-native-maps/blob/master/docs/mapview.md#types part camera
+        altitude: undefined,
+      })
+    }
+  }, [vehiclesContext.location, animateToLocation])
+
   const [vehicleSheetIndex, setVehicleSheetIndex] = useState(1)
 
   const bottomSheetRef = useRef<BottomSheet>(null)
@@ -191,9 +229,9 @@ export default function MapScreen() {
 
   const bottomSheetSnapPoints = useMemo(() => {
     if (selectedMicromobilityStation) {
-      return ['50%']
+      return [415]
     } else {
-      return ['50%', '95%']
+      return [415, '95%']
     }
   }, [selectedMicromobilityStation, selectedMhdStation, selectedChargerStation])
 
@@ -233,6 +271,37 @@ export default function MapScreen() {
   }
 
   const zoomLevel = getZoomLevel(region)
+
+  const getSizedIcon = (Icon: React.FC<SvgProps>) => {
+    const size = getMapPinSize(zoomLevel)
+    return <Icon width={size} height={size} />
+  }
+
+  const getIosIcon = (name: IconType) => {
+    let icon: React.FC<SvgProps>
+    switch (name) {
+      case IconType.mhd:
+        icon = zoomLevel < ZoomLevel.md ? MhdSmallIcon : MhdIcon
+        break
+      case IconType.bolt:
+        icon = zoomLevel < ZoomLevel.md ? BoltSmallIcon : BoltIcon
+        break
+      case IconType.tier:
+        icon = zoomLevel < ZoomLevel.md ? TierSmallIcon : TierIcon
+        break
+      case IconType.slovnaftbajk:
+        icon =
+          zoomLevel < ZoomLevel.md ? SlovnaftbajkSmallIcon : SlovnaftbajkIcon
+        break
+      case IconType.rekola:
+        icon = zoomLevel < ZoomLevel.md ? RekolaSmallIcon : RekolaIcon
+        break
+      case IconType.zse:
+        icon = zoomLevel < ZoomLevel.md ? ZseSmallIcon : ZseIcon
+        break
+    }
+    return getSizedIcon(icon)
+  }
 
   const operateBottomSheet = ({
     charger,
@@ -363,7 +432,7 @@ export default function MapScreen() {
               <Marker
                 key={station.station_id}
                 coordinate={{ latitude: station.lat, longitude: station.lon }}
-                tracksViewChanges={false}
+                tracksViewChanges
                 onPress={() =>
                   operateBottomSheet({
                     micromobilityStation: station,
@@ -380,7 +449,14 @@ export default function MapScreen() {
                     ? getIcon(IconType.slovnaftbajk)
                     : undefined
                 }
-              />
+              >
+                {Platform.OS === 'ios' &&
+                  getIosIcon(
+                    bikeProvider === BikeProvider.rekola
+                      ? IconType.rekola
+                      : IconType.slovnaftbajk
+                  )}
+              </Marker>
             )
             return accumulator.concat(marker)
           }
@@ -396,17 +472,18 @@ export default function MapScreen() {
     isLoading: boolean,
     errors: any,
     refetch: () => unknown,
+    dismiss: () => void,
     errorMessage: string
   ) => {
     if (!isLoading) {
       return (
-        <View style={styles.errorBackground}>
-          <ErrorView
-            errorMessage={errorMessage}
-            error={errors}
-            action={refetch}
-          />
-        </View>
+        <ErrorView
+          errorMessage={errorMessage}
+          error={errors}
+          action={refetch}
+          dismiss={dismiss}
+          styleWrapper={{ position: 'absolute', top: 100 }}
+        />
       )
     }
   }
@@ -425,6 +502,19 @@ export default function MapScreen() {
   const filterMhdAmount = (mhdStop: MhdStopProps) =>
     zoomLevel === ZoomLevel.xs ? mhdStop.platform === 'A' : true
 
+  const moveAnim = useRef(new Animated.Value(0)).current
+  const moveCurrentLocationIcon = (index: number) => {
+    Animated.timing(moveAnim, {
+      toValue:
+        index === 0
+          ? VEHICLE_BAR_SHEET_HEIGHT_EXPANDED -
+            VEHICLE_BAR_SHEET_HEIGHT_COLLAPSED
+          : 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start()
+  }
+
   return (
     <View style={styles.container}>
       <MapView
@@ -432,6 +522,7 @@ export default function MapScreen() {
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         customMapStyle={customMapStyle}
+        toolbarEnabled={false}
         initialRegion={{
           latitude: 48.1512015,
           longitude: 17.1110118,
@@ -447,6 +538,7 @@ export default function MapScreen() {
           right: 0,
           left: 0,
         }}
+        onMapLoaded={() => SplashScreen.hideAsync()}
       >
         {vehiclesContext.vehicleTypes?.find(
           (vehicleType) => vehicleType.id === VehicleType.mhd
@@ -461,15 +553,42 @@ export default function MapScreen() {
                   latitude: parseFloat(stop.gpsLat),
                   longitude: parseFloat(stop.gpsLon),
                 }}
-                tracksViewChanges={false}
+                tracksViewChanges
                 onPress={() => operateBottomSheet({ mhd: stop })}
                 icon={getIcon(IconType.mhd)}
               >
-                {stop.platform && zoomLevel === ZoomLevel.lg && (
-                  <View style={markerLabelStyles.container}>
-                    <Text style={markerLabelStyles.label}>{stop.platform}</Text>
+                {Platform.OS === 'ios' && (
+                  <View
+                    style={{
+                      height:
+                        getMapPinSize(zoomLevel) +
+                        (zoomLevel === ZoomLevel.lg ? 6 : 0),
+                    }}
+                  >
+                    {getIosIcon(IconType.mhd)}
+                    {stop.platform && zoomLevel === ZoomLevel.lg && (
+                      <View
+                        style={[
+                          markerLabelStyles.container,
+                          markerLabelStyles.iosContainer,
+                        ]}
+                      >
+                        <Text style={markerLabelStyles.label}>
+                          {stop.platform}
+                        </Text>
+                      </View>
+                    )}
                   </View>
                 )}
+                {stop.platform &&
+                  zoomLevel === ZoomLevel.lg &&
+                  Platform.OS !== 'ios' && (
+                    <View style={markerLabelStyles.container}>
+                      <Text style={markerLabelStyles.label}>
+                        {stop.platform}
+                      </Text>
+                    </View>
+                  )}
               </Marker>
             ))}
         {vehiclesContext.vehicleTypes?.find(
@@ -483,7 +602,7 @@ export default function MapScreen() {
                 <Marker
                   key={vehicle.bike_id}
                   coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
-                  tracksViewChanges={false}
+                  tracksViewChanges
                   onPress={() =>
                     operateBottomSheet({
                       micromobilityStation: vehicle,
@@ -491,7 +610,9 @@ export default function MapScreen() {
                     })
                   }
                   icon={getIcon(IconType.tier)}
-                />
+                >
+                  {Platform.OS === 'ios' && getIosIcon(IconType.tier)}
+                </Marker>
               )
             })}
         {vehiclesContext.vehicleTypes?.find(
@@ -505,7 +626,7 @@ export default function MapScreen() {
                 <Marker
                   key={vehicle.bike_id}
                   coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
-                  tracksViewChanges={false}
+                  tracksViewChanges
                   onPress={() =>
                     operateBottomSheet({
                       micromobilityStation: vehicle,
@@ -513,7 +634,9 @@ export default function MapScreen() {
                     })
                   }
                   icon={getIcon(IconType.bolt)}
-                />
+                >
+                  {Platform.OS === 'ios' && getIosIcon(IconType.bolt)}
+                </Marker>
               )
             })}
 
@@ -544,10 +667,12 @@ export default function MapScreen() {
                       latitude: charger.coordinates.latitude,
                       longitude: charger.coordinates.longitude,
                     }}
-                    tracksViewChanges={false}
+                    tracksViewChanges
                     icon={getIcon(IconType.zse)}
                     onPress={() => operateBottomSheet({ charger })}
-                  />
+                  >
+                    {Platform.OS === 'ios' && getIosIcon(IconType.zse)}
+                  </Marker>
                 )
                 return accumulator.concat(marker)
               } else return accumulator
@@ -573,7 +698,10 @@ export default function MapScreen() {
             refetchMhd()
             setIsMhdErrorOpen(false)
           },
-          i18n.t('components.ErrorView.dataMhdStopsError')
+          () => setIsMhdErrorOpen(false),
+          i18n.t('components.ErrorView.errors.dataProvider', {
+            provider: 'MHD',
+          })
         )}
       {isRekolaErrorOpen &&
         dataError(
@@ -583,7 +711,10 @@ export default function MapScreen() {
             refetchRekola()
             setIsRekolaErrorOpen(false)
           },
-          i18n.t('components.ErrorView.dataRekolaError')
+          () => setIsRekolaErrorOpen(false),
+          i18n.t('components.ErrorView.errors.dataProvider', {
+            provider: 'Rekola',
+          })
         )}
       {isSlovnaftbajkErrorOpen &&
         dataError(
@@ -593,7 +724,10 @@ export default function MapScreen() {
             refetchSlovnaftbajk()
             setIsSlovnaftbajkErrorOpen(false)
           },
-          i18n.t('components.ErrorView.dataSlovnaftbajkError')
+          () => setIsSlovnaftbajkErrorOpen(false),
+          i18n.t('components.ErrorView.errors.dataProvider', {
+            provider: 'SlovnaftBAJK',
+          })
         )}
       {isTierErrorOpen &&
         dataError(
@@ -603,7 +737,10 @@ export default function MapScreen() {
             refetchTier()
             setIsTierErrorOpen(false)
           },
-          i18n.t('components.ErrorView.dataTierError')
+          () => setIsTierErrorOpen(false),
+          i18n.t('components.ErrorView.errors.dataProvider', {
+            provider: 'TIER',
+          })
         )}
       {isZseErrorOpen &&
         dataError(
@@ -613,7 +750,10 @@ export default function MapScreen() {
             refetchZseChargers()
             setIsZseErrorOpen(false)
           },
-          i18n.t('components.ErrorView.dataZseChargersError')
+          () => setIsZseErrorOpen(false),
+          i18n.t('components.ErrorView.errors.dataProvider', {
+            provider: 'ZSE',
+          })
         )}
       {isBoltErrorOpen &&
         dataError(
@@ -623,37 +763,44 @@ export default function MapScreen() {
             refetchBolt()
             setIsBoltErrorOpen(false)
           },
-          i18n.t('components.ErrorView.dataBoltError')
+          () => setIsBoltErrorOpen(false),
+          i18n.t('components.ErrorView.errors.dataProvider', {
+            provider: 'Bolt',
+          })
         )}
 
       {showCurrentLocationButton && (
-        <CurrentLocationButton
-          mapRef={mapRef}
+        <Animated.View
           style={{
-            bottom:
-              (vehicleSheetIndex === 0
-                ? VEHICLE_BAR_SHEET_HEIGHT_COLLAPSED
-                : VEHICLE_BAR_SHEET_HEIGHT_EXPANDED) + 15,
+            transform: [{ translateY: moveAnim }],
+            position: 'absolute',
+            right: 20,
+            bottom: VEHICLE_BAR_SHEET_HEIGHT_EXPANDED + 70,
           }}
-        />
+        >
+          <CurrentLocationButton mapRef={mapRef} />
+        </Animated.View>
       )}
       <BottomSheet
         ref={vehicleSheetRef}
-        style={{ zIndex: 2 }}
+        style={{ zIndex: 2, ...s.shadow }}
         handleIndicatorStyle={{ ...s.handleStyle, marginBottom: 0 }}
         index={1}
         snapPoints={[
           VEHICLE_BAR_SHEET_HEIGHT_COLLAPSED,
           VEHICLE_BAR_SHEET_HEIGHT_EXPANDED,
         ]}
-        onChange={(index) => setVehicleSheetIndex(index)}
+        onChange={(index) => {
+          setVehicleSheetIndex(index)
+          moveCurrentLocationIcon(index)
+        }}
       >
         <VehicleBar />
       </BottomSheet>
       <BottomSheet
         handleIndicatorStyle={s.handleStyle}
         ref={bottomSheetRef}
-        style={{ zIndex: 1 }}
+        style={{ zIndex: 1, ...s.shadow, elevation: 7 }}
         index={-1}
         snapPoints={bottomSheetSnapPoints}
         enablePanDownToClose
@@ -702,18 +849,6 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: BOTTOM_TAB_NAVIGATOR_HEIGHT,
   },
-  errorBackground: {
-    display: 'flex',
-    flex: 1,
-    position: 'absolute',
-    top: 100,
-    width: '90%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-    alignItems: 'center',
-    borderRadius: 15,
-  },
 })
 
 export const markerLabelStyles = StyleSheet.create({
@@ -726,6 +861,14 @@ export const markerLabelStyles = StyleSheet.create({
     borderRadius: 2,
     paddingHorizontal: 3,
     paddingTop: 1,
+  },
+  iosContainer: {
+    marginTop: 0,
+    alignItems: 'center',
+    position: 'absolute',
+    top: 16,
+    left: -1,
+    zIndex: 2,
   },
   label: {
     fontWeight: '700',

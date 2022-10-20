@@ -1,14 +1,15 @@
+import Text from '@components/Text'
+import CrossIcon from '@icons/cross.svg'
 import MarkerSvg from '@icons/map-pin-marker.svg'
 import MhdStopSvg from '@icons/stop-sign.svg'
-import XSvg from '@icons/x.svg'
 import { GooglePlaceDataCorrected } from '@types'
 import { s } from '@utils/globalStyles'
 import { colors, inputSelectionColor } from '@utils/theme'
 import Constants from 'expo-constants'
 import React, { useState } from 'react'
 import {
+  Platform,
   StyleSheet,
-  Text,
   TextInputProps,
   TouchableOpacity,
   View,
@@ -72,13 +73,13 @@ const Autocomplete = ({
           }}
           onPress={() => googleInputRef.current?.setAddressText('')}
         >
-          <XSvg width={20} height={20} fill={colors.mediumGray} />
+          <CrossIcon width={20} height={20} fill={colors.mediumGray} />
         </TouchableOpacity>
       )}
       ref={googleInputRef}
       enablePoweredByContainer={false}
       fetchDetails
-      placeholder={inputPlaceholder}
+      placeholder={inputPlaceholder.replace(/ /g, '\u00A0')}
       // "react-native-google-places-autocomplete" version: 2.4.1, wrong typing of GooglePlaceData
       onPress={(data, detail) => {
         onGooglePlaceChosen(data as unknown as GooglePlaceDataCorrected, detail)
@@ -109,12 +110,15 @@ const Autocomplete = ({
               width={16}
               height={16}
             />
-            <Text>{`${correctedResult.description}`}</Text>
+            <Text
+              style={styles.searchResultText}
+            >{`${correctedResult.description}`}</Text>
           </View>
         )
       }}
       {...rest}
       textInputProps={{
+        placeholderTextColor: Platform.select({ ios: colors.gray }),
         selectTextOnFocus: selectOnFocus,
         selectionColor: inputSelectionColor,
         ...rest.textInputProps,
@@ -126,6 +130,8 @@ const Autocomplete = ({
           textInputProps?.onBlur && textInputProps.onBlur(e)
         },
         selection: googleAutocompleteSelection,
+        multiline: false,
+        numberOfLines: 1,
       }}
       suppressDefaultStyles
       styles={mergedStyles}
@@ -136,10 +142,13 @@ const Autocomplete = ({
 const styles = StyleSheet.create({
   searchResultRow: {
     flexDirection: 'row',
+    alignItems: 'center',
+    height: 20,
   },
   searchResultRowIcon: {
     marginRight: 5,
   },
+  searchResultText: {},
 })
 
 export const autoCompleteStyles = {
@@ -154,7 +163,11 @@ export const autoCompleteStyles = {
     flexGrow: 1,
     flexBasis: 'auto',
     maxWidth: '90%',
+    paddingVertical: 8,
+    flexWrap: 'nowrap',
+    alignSelf: 'center',
     ...s.textSmall,
+    ...s.fontNormal,
   },
   textInputContainer: {
     borderWidth: 2,

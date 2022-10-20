@@ -16,6 +16,9 @@ export const s = StyleSheet.create({
   boldText: {
     fontWeight: 'bold',
   },
+  fontWeightMedium: {
+    fontWeight: '500',
+  },
   blackText: {
     color: 'black',
   },
@@ -87,5 +90,11 @@ export const s = StyleSheet.create({
     height: 4,
     marginTop: 5,
     marginBottom: 10,
+  },
+  fontNormal: {
+    fontFamily: 'work-sans',
+  },
+  fontBold: {
+    fontFamily: 'work-sans-bold',
   },
 })

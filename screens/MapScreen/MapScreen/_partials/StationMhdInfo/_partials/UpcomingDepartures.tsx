@@ -1,7 +1,8 @@
+import Text from '@components/Text'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { useNavigation } from '@react-navigation/native'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { useQuery } from 'react-query'
 
@@ -102,6 +103,7 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
         error={error}
         action={refetch}
         styleWrapper={styles.errorWrapper}
+        plainStyle
       />
     )
 
@@ -113,9 +115,14 @@ const UpcomingDepartures = ({ station }: UpcomingDeparturesProps) => {
             <View style={s.icon}>
               <MhdStopSignSvg fill={colors.primary} />
             </View>
-            <Text>{`${station.name} ${
-              station.platform ? station.platform : ''
-            }`}</Text>
+            <Text style={s.boldText}>
+              {station.name}
+              {station.platform && (
+                <Text style={{ color: colors.primary, fontWeight: 'bold' }}>
+                  {` ${station.platform}`}
+                </Text>
+              )}
+            </Text>
           </View>
           <View style={styles.forward}>
             <TouchableOpacity

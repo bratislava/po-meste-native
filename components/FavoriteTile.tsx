@@ -1,3 +1,4 @@
+import Text from '@components/Text'
 import HeartSvg from '@icons/favorite.svg'
 import HomeSvg from '@icons/home.svg'
 import MoreSvg from '@icons/more.svg'
@@ -10,7 +11,7 @@ import { colors } from '@utils/theme'
 import { isFavoritePlace } from '@utils/utils'
 import i18n from 'i18n-js'
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 interface FavoriteTileProps {
   favoriteItem: FavoritePlace | FavoriteStop
@@ -70,21 +71,21 @@ const FavoriteTile = ({
         <View style={styles.placeTexts}>
           {name ? (
             <>
-              <Text style={styles.placeName}>
+              <Text style={styles.placeName} numberOfLines={1}>
                 {id === 'home'
                   ? i18n.t('screens.SearchFromToScreen.FavoriteModal.home')
                   : id === 'work'
                   ? i18n.t('screens.SearchFromToScreen.FavoriteModal.work')
                   : name}
               </Text>
-              <Text style={styles.placeAddressMinor}>
+              <Text style={styles.placeAddressMinor} numberOfLines={1}>
                 {favoriteItem.place?.data?.structured_formatting.main_text ??
-                  '??'}
+                  i18n.t('screens.SearchFromToScreen.add')}
               </Text>
             </>
           ) : (
             <>
-              <Text style={styles.placeName}>
+              <Text style={styles.placeName} numberOfLines={1}>
                 {favoriteItem.place?.data?.structured_formatting.main_text}
               </Text>
             </>
@@ -119,6 +120,7 @@ const styles = StyleSheet.create({
   placeTexts: {
     color: colors.tertiary,
     marginLeft: 10,
+    maxWidth: 200,
     alignSelf: 'center',
   },
   placeName: {

@@ -1,9 +1,10 @@
 import ErrorView from '@components/ErrorView'
 import { LineNumber } from '@components/LineNumber'
+import Text from '@components/Text'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { useNavigation } from '@react-navigation/core'
 import React, { useContext } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { useQuery } from 'react-query'
 
 import { LoadingView } from '@components'
@@ -19,6 +20,7 @@ import {
 } from '@utils'
 
 import MhdStopSignSvg from '@icons/stop-sign.svg'
+import i18n from 'i18n-js'
 
 interface TimetablesProps {
   station: MhdStopProps
@@ -50,6 +52,8 @@ const Timetables = ({ station }: TimetablesProps) => {
         error={error}
         action={refetch}
         styleWrapper={styles.errorWrapper}
+        errorMessage={i18n.t('components.ErrorView.errors.dataLineTimetable')}
+        plainStyle
       />
     )
 

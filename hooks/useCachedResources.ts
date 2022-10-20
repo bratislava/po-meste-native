@@ -16,13 +16,15 @@ export default function useCachedResources() {
         await Font.loadAsync({
           ...Ionicons.font,
           'space-mono': require('@fonts/SpaceMono-Regular.ttf'),
+          'work-sans': require('@fonts/WorkSans-Regular.ttf'),
+          'work-sans-bold': require('@fonts/WorkSans-Bold.ttf'),
+          'work-sans-medium': require('@fonts/WorkSans-Medium.ttf'),
         })
       } catch (e) {
         // We might want to provide this error information to an error reporting service
         console.warn(e)
       } finally {
         setLoadingComplete(true)
-        SplashScreen.hideAsync()
       }
     }
 

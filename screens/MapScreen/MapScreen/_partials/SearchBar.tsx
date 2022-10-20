@@ -1,9 +1,11 @@
+import Text from '@components/Text'
 import SearchSvg from '@icons/search.svg'
 import { useNavigation } from '@react-navigation/native'
+import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
 import i18n from 'i18n-js'
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const SearchBar = () => {
@@ -17,6 +19,7 @@ const SearchBar = () => {
         marginTop: Math.max(insets.top, 30),
       }}
       onPress={() => navigation.navigate('FromToScreen')}
+      activeOpacity={0.6}
     >
       <SearchSvg
         width={20}
@@ -36,7 +39,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flex: 1,
     position: 'absolute',
-    top: 0,
+    top: 10,
     width: '90%',
     height: 50,
     flexDirection: 'row',
@@ -44,6 +47,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     alignItems: 'center',
     borderRadius: 30,
+    ...s.shadow,
+    elevation: 7,
   },
   searchInput: {
     marginLeft: 16,

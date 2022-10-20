@@ -1,15 +1,10 @@
+import Text from '@components/Text'
 import { DateTimeFormatter, LocalTime } from '@js-joda/core'
 import { useNavigation } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import i18n from 'i18n-js'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { useQuery } from 'react-query'
 
 import { DashedLine, ErrorView, LineNumber, LoadingView } from '@components'
@@ -53,11 +48,10 @@ export default function LineTimelineScreen({
   if (!isLoading && error)
     return (
       <ErrorView
-        errorMessage={i18n.t(
-          'components.ErrorView.dataLineTimelineScreenError'
-        )}
+        errorMessage={i18n.t('components.ErrorView.errors.dataLineTimeline')}
         error={error}
         action={refetch}
+        plainStyle
       />
     )
 

@@ -1,5 +1,6 @@
+import Text from '@components/Text'
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { SvgProps } from 'react-native-svg'
 
 import { LegModes } from '@types'

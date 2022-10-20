@@ -1,13 +1,14 @@
+import Text from '@components/Text'
 import { useNavigation } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import i18n from 'i18n-js'
 import React, { useEffect, useRef, useState } from 'react'
-import { Platform, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import MapView, { PROVIDER_GOOGLE, Region } from 'react-native-maps'
 
 import { Button } from '@components'
 import { MapParamList } from '@types'
-import { colors, s } from '@utils'
+import { colors, googlePlacesReverseGeocode, s } from '@utils'
 
 import MarkerSvg from '@icons/map-pin-marker.svg'
 import { customMapStyle } from './customMapStyle'
@@ -35,50 +36,25 @@ export default function ChooseLocation({
     }
     setDebouceTimeout(
       setTimeout(() => {
-        // TODO Add GooglePlacesApiKey authorization for reverse geocoding
-        // if (region) {
-        //   fetch(
-        //     'https://maps.google.com/maps/api/geocode/json?' +
-        //       new URLSearchParams({
-        //         key: Constants.manifest?.extra?.googlePlacesApiKey,
-        //         latlng: `${region.latitude},${region.longitude}`,
-        //       })
-        //   )
-        //     .then((res) => res.json())
-        //     .then((places) => {
-        //       if (Array.isArray(places) && placeName.length > 0)
-        //         setPlaceName(`${places[0].data.description}`)
-        //     })
-        // }
         if (region) {
-          if (Platform.select({ ios: true, android: false })) {
-            setPlaceName(
-              i18n.t('screens.ChooseLocationScreen.noLocationSelected')
-            )
-            return
-          }
-          ref.current?.addressForCoordinate(region).then((address) => {
-            const houseNumberRegex = /[0-9/]{1,}[A-Z]?/
-            let name
-            // address.name can either be a name of the place or the house number, which is weird
-            if (houseNumberRegex.test(address.name)) {
-              // if address.name is the house number then address.thoroughfare is the street
-              if (address.thoroughfare == null) {
-                // if it is null, the location does not have a name (e.g. a location in a forest)
-                name = i18n.t('screens.ChooseLocationScreen.unnamedLocation', {
-                  latitude: region.latitude.toFixed(5), // 5 decimal digits means +-1m accuracy
-                  longitude: region.longitude.toFixed(5),
-                })
-              } else {
-                name = `${address.thoroughfare} ${address.name}`
+          googlePlacesReverseGeocode(
+            region.latitude,
+            region.longitude,
+            (results) => {
+              if (results.length === 0) {
+                setPlaceName(
+                  `${region.latitude.toFixed(5)},${region.latitude.toFixed(5)}`
+                )
               }
-            } else {
-              // if address.name is not a house number, then most probably it is the same as address.thoroughfare
-              // and/or it is the actual name of the place and we display only the name
-              name = address.name
+              const bestResult = results[0]
+              setPlaceName(
+                `${bestResult.formatted_address.slice(
+                  0,
+                  bestResult.formatted_address.indexOf(',')
+                )}`
+              )
             }
-            setPlaceName(name)
-          })
+          )
         }
       }, REVERSE_GEOCODING_DEBOUNCE)
     )
@@ -95,6 +71,7 @@ export default function ChooseLocation({
           ref={ref}
           style={styles.map}
           customMapStyle={customMapStyle}
+          toolbarEnabled={false}
           initialRegion={
             (route?.params?.latitude &&
               route?.params?.longitude && {
@@ -190,6 +167,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontSize: 20,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   confirm: {},
   mapWrapper: {

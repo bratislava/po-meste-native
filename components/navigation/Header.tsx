@@ -1,16 +1,11 @@
+import Text from '@components/Text'
 import ChevronLeftSmall from '@icons/chevron-left-small.svg'
 import { useNavigation } from '@react-navigation/core'
 import { StackHeaderProps } from '@react-navigation/stack'
 import { colors } from '@utils/theme'
 import { t } from 'i18n-js'
 import React from 'react'
-import {
-  StyleSheet,
-  Text,
-  TextStyle,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { StyleSheet, TextStyle, TouchableOpacity, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export interface HeaderProps extends StackHeaderProps {
@@ -43,7 +38,7 @@ export const Header = ({
       ]}
     >
       <View style={styles.leftContainer}>
-        {options.headerLeft === undefined ? (
+        {!options.headerLeft ? (
           <TouchableOpacity
             style={styles.backButton}
             onPress={() => (onBack ? onBack() : navigation.goBack())}
@@ -51,7 +46,7 @@ export const Header = ({
             <ChevronLeftSmall width={16} height={16} fill={colors.gray} />
           </TouchableOpacity>
         ) : (
-          options.headerLeft
+          options.headerLeft({})
         )}
       </View>
       <View style={styles.centerContainer}>
@@ -63,7 +58,9 @@ export const Header = ({
           </Text>
         )}
       </View>
-      <View style={styles.rightContainer}>{options.headerRight}</View>
+      <View style={styles.rightContainer}>
+        {options.headerRight && options.headerRight({})}
+      </View>
     </View>
   )
 }

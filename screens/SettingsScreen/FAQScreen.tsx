@@ -1,10 +1,11 @@
+import Text from '@components/Text'
 import ChevronRightSmall from '@icons/chevron-right-small.svg'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import Constants from 'expo-constants'
 import { openURL } from 'expo-linking'
 import { t } from 'i18n-js'
 import React from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, View } from 'react-native'
 
 import { Accordion, Link } from '@components'
 import { colors } from '@utils'
@@ -42,19 +43,20 @@ export const FAQScreen = () => {
 
   return (
     <View style={{ flex: 1, paddingBottom: useBottomTabBarHeight() }}>
-      <ScrollView>
-        <View style={styles.bodyContainer}>
-          <Accordion items={questions} />
-          <View style={styles.footerContainer}>
-            <Text style={styles.footerText}>
-              {t('screens.FAQScreen.footerText')}
-            </Text>
-            <Link
-              style={styles.link}
-              onPress={() => openURL(`mailto:${contactEmailAddress}`)}
-              title={contactEmailAddress}
-            />
-          </View>
+      <ScrollView
+        style={{ height: '100%' }}
+        contentContainerStyle={styles.bodyContainer}
+      >
+        <Accordion items={questions} />
+        <View style={styles.footerContainer}>
+          <Text style={styles.footerText}>
+            {t('screens.FAQScreen.footerText')}
+          </Text>
+          <Link
+            style={styles.link}
+            onPress={() => openURL(`mailto:${contactEmailAddress}`)}
+            title={contactEmailAddress}
+          />
         </View>
       </ScrollView>
     </View>
@@ -63,10 +65,12 @@ export const FAQScreen = () => {
 
 const styles = StyleSheet.create({
   bodyContainer: {
+    flex: 1,
     width: '100%',
     paddingHorizontal: 20,
     paddingTop: 40,
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   footerContainer: {
     alignItems: 'center',

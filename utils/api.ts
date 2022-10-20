@@ -7,7 +7,13 @@ import {
 } from '@js-joda/core'
 import '@js-joda/timezone'
 import * as Sentry from '@sentry/react-native'
-import { MicromobilityProvider, TravelModesOtpApi } from '@types'
+import {
+  GooglePlacesResult,
+  MicromobilityProvider,
+  TravelModesOtpApi,
+} from '@types'
+import Constants from 'expo-constants'
+import i18n from 'i18n-js'
 import qs from 'qs'
 import { API_ERROR_TEXT } from './constants'
 import {
@@ -88,6 +94,7 @@ export const getHealth = async () => {
 export const getMhdStops = async () => {
   console.log('\x1b[92m%s\x1b[0m', 'fetching mhdStop data')
   return fetchJsonFromApi('/mhd/stops')
+  //return new Promise((resolve) => resolve(require('./mhdStops.json')))
 }
 export const getMhdStopStatusData = async (id: string) =>
   apiMhdStopStatus.validateSync(await fetchJsonFromApi(`/mhd/stop/${id}`))
@@ -167,4 +174,27 @@ export const getTripPlanner = async (
   return apiOtpPlanner.validateSync(
     await fetchJsonFromOtpApi(otpPlannerUrl, data)
   )
+}
+
+export const googlePlacesReverseGeocode = (
+  lat: number,
+  lng: number,
+  onSucess: (results: GooglePlacesResult[]) => void,
+  onError?: (error: any) => void
+) => {
+  const url =
+    'https://maps.google.com/maps/api/geocode/json?' +
+    new URLSearchParams({
+      key: Constants?.manifest?.extra?.googlePlacesApiKeyUnlocked,
+      latlng: `${lat},${lng}`,
+      language: i18n.currentLocale() ?? 'sk',
+    })
+  fetch(url)
+    .then((res) => res.json())
+    .then((json: { results: GooglePlacesResult[] }) => {
+      if (Array.isArray(json.results)) {
+        onSucess(json.results)
+      }
+    })
+    .catch((error) => onError && onError(error))
 }

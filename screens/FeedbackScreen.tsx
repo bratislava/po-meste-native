@@ -1,22 +1,22 @@
-import React, { useState, useContext } from 'react'
-import {
-  StyleSheet,
-  View,
-  Text,
-  KeyboardAvoidingView,
-  TouchableOpacity,
-} from 'react-native'
+import Text from '@components/Text'
 import { useNavigation } from '@react-navigation/native'
-import { ScrollView, TextInput } from 'react-native-gesture-handler'
 import Constants from 'expo-constants'
 import i18n from 'i18n-js'
+import React, { useContext, useState } from 'react'
+import {
+  KeyboardAvoidingView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native'
+import { ScrollView, TextInput } from 'react-native-gesture-handler'
 
 import { Button } from '@components'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 import { colors } from '@utils/theme'
 
+import CrossIcon from '@icons/cross.svg'
 import ThumbDown from '@icons/thumb-down.svg'
-import XIcon from '@icons/x.svg'
 
 const FeedbackScreen = () => {
   const [feedbackText, setFeedbackText] = useState('')
@@ -37,7 +37,7 @@ const FeedbackScreen = () => {
             onPress={navigation.goBack}
             style={styles.closeButton}
           >
-            <XIcon
+            <CrossIcon
               style={styles.icon}
               width={16}
               height={16}
@@ -72,7 +72,7 @@ const FeedbackScreen = () => {
             onPress={navigation.goBack}
             style={styles.closeButton}
           >
-            <XIcon
+            <CrossIcon
               style={styles.icon}
               width={16}
               height={16}

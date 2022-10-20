@@ -1,10 +1,10 @@
 // TODO copied from different project, might need cleanup if we're to use it
+import Text from '@components/Text'
 import React, { ReactElement, useState } from 'react'
 import {
   GestureResponderEvent,
   StyleProp,
   StyleSheet,
-  Text,
   TextStyle,
   TouchableHighlight,
   View,
@@ -66,7 +66,7 @@ const COLORS = {
     primary: colors.primary,
     secondary: colors.secondary,
     tertiary: colors.tertiary,
-    outlined: colors.white,
+    outlined: 'transparent',
     approve: colors.green,
     danger: colors.error,
   },
@@ -150,7 +150,7 @@ const FONT_SIZE: { [key: string]: number } = {
 
 interface ButtonProps {
   onPress: (event: GestureResponderEvent) => void
-  title?: string
+  title?: string | JSX.Element
   // icon?: IconName
   isGrouped?: boolean
   isFullWidth?: boolean
@@ -190,7 +190,7 @@ const Button = ({
 }: ButtonProps) => {
   const showDisabledStyle = disabled && !loading
   const [isPressed, setIsPressed] = useState(false)
-  const renderText = (text: string) => (
+  const renderText = (text: string | JSX.Element) => (
     <Text
       style={[
         {
@@ -235,9 +235,12 @@ const Button = ({
           styles.container,
           styles[size],
           {
-            backgroundColor: showDisabledStyle
-              ? COLORS.disabledBackgroundColor[variant]
-              : COLORS.backgroundColor[variant],
+            backgroundColor:
+              isPressed && variant === 'outlined'
+                ? colors.secondary
+                : showDisabledStyle
+                ? COLORS.disabledBackgroundColor[variant]
+                : COLORS.backgroundColor[variant],
           },
           contentStyle,
         ]}

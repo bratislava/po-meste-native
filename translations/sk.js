@@ -1,11 +1,13 @@
 export default {
   common: {
+    yes: 'áno',
+    no: 'nie',
     map: 'Mapa',
     tickets: 'Lístky',
     weekend: 'Víkend',
     workDays: 'Pracovný týždeň',
     holidays: 'Prázdniny, sviatky',
-    cancel: 'Zrušiť',
+    close: 'Zavrieť',
     continue: 'Pokračovať',
     send: 'Odoslať',
     thankYou: 'Ďakujeme',
@@ -59,9 +61,12 @@ export default {
       rent: 'Prenajať {{provider}}',
       availableBikes: 'Voľné bicykle: ',
       freeBikeSpaces: 'Voľné doky: ',
-      licencePlate: 'Číslo vozidla: ',
+      helmet: 'Prilba: ',
       batteryCharge: 'Batéria: ',
       currentRange: 'Dojazd: ',
+      location: 'Lokalita: ',
+      openingHours: 'Otvorené: ',
+      parkingPlaces: 'Parkovacie miesta: ',
       startZseCharger: 'Začať nabíjanie',
       chargingPoints: 'Nabíjacie konektory',
       chargingPrice: 'cena nabíjania: ',
@@ -132,7 +137,7 @@ export default {
         accessibleVehicles: 'Nízkopodl.\nvozidlá',
       },
       SearchMhd: {
-        stopName: 'Meno zastávky',
+        stopName: 'Názov zastávky',
       },
     },
     SearchFromToScreen: {
@@ -141,6 +146,7 @@ export default {
       history: 'História',
       choosePlaceFromMap: 'Vybrať na mape',
       currentPosition: 'Aktuálna poloha',
+      add: 'Pridajte',
       addStop: 'Pridať zastávku',
       FavoriteModal: {
         addressPlaceholder: 'Adresa',
@@ -151,11 +157,11 @@ export default {
       },
     },
     SMSScreen: {
-      screenTitle: 'SMS lístky',
+      screenTitle: 'Lístky MHD',
       smsInfo:
-        'SMS lístok platí len na linkách MHD 1 až 212, N1 - N99, X1 - X99. \n Cestujúci by do vozidla MHD mal nastupovať až s prijatou SMS správou. \n Po kliknutí na tlačidlo sa automaticky odošle  sms spoplatnená podľa tarify uvedenej pri konkrétnom type sms lístka.',
+        'SMS CL platí **len v prostiedkoch MHD DPB, a. s. v Bratislave** (zóny 100 + 101), platí aj na linkách nočnej dopravy. SMS CL je prestupný a je platný počas celej doby časovej platnosti\n\nSMS CL je potrebné si zakúpiť pred nastúpením do vozidla.\n\nPo kliknutí na tlačidlo sa automaticky odošle sms spoplatnená podľa tarify uvedenej pri konkrétnom type sms lístka.\n\nPodrobnejší popis služby nájdete v __Tarife MHD v Bratislave__.',
       ticketDuplicateDescription:
-        'SMS lístok nedorazil do 10 minút alebo si ho omylom vymazal? Nevadí, nechaj si zaslať duplikát.',
+        'SMS lístok **nedorazil do 10 minút** alebo ho **neviete nájsť**? Nevadí, nechajte si zaslať duplikát.',
       ticketDuplicate: 'Zaslať duplikát / 0 €',
       smsOK: 'OK',
       smsNotAvailable:
@@ -163,18 +169,18 @@ export default {
       smsModal: {
         title: 'Spoplatnená služba',
         bodyText:
-          'SMS {{ticketName}} je spoplatnená služba. Bude vám účtovaná suma {{price}} prostredníctvom vášho operátora.',
-        checkboxText: 'Rozumiem, nabudúce sa nepýtať.',
+          '**SMS {{ticketName}} je spoplatnená služba. Bude vám **účtovaná suma {{price}}** prostredníctvom vášho operátora.',
+        checkboxText: '**Rozumiem**, nabudúce sa nepýtať.',
       },
       tickets: {
         ticket40min: {
-          name: 'Lístok 40 minút',
+          name: 'Lístok **40 minút**',
         },
         ticket70min: {
-          name: 'Lístok 70 minút',
+          name: 'Lístok **70 minút**',
         },
         ticket24hours: {
-          name: 'Lístok 24 hodín',
+          name: 'Lístok **24 hodín**',
         },
       },
     },
@@ -203,7 +209,7 @@ export default {
       version: 'Verzia',
       unknown: 'neznáma',
       description:
-        'Pred Vami sa nachádza prvá verzia MaaS (mobilita ako služba) aplikácie Po meste.  Pre Bratislavu postupne vytvárame otvorenú platformu, ktorá prepojí MHD s alternatívnou mobilitou a ponúkne na jednom mieste zelenú mobilitu od plánovania, porovnania a jazdy na pár klikov. Po meste peši, bicyklom, kolobežkou alebo električkou ? Je to na Vás.',
+        'Vitajte v prvej verzii MaaS (mobilita ako služba) aplikácie Po meste. \n\nPre Bratislavu postupne vytvárame otvorenú platformu pre ekologický presun po meste. Prepája MHD s alternatívnou mobilitou a na pár klikov si v nej viete svoje trasy naplánovať i porovnať.\n\nPo meste peši, bicyklom alebo kolobežkou? Je to len na Vás.',
       contact: 'Kontakt',
       createdBy: 'Vytvorené vďaka',
       generalTermsAndConditions: 'Všeobecné obchodné podmienky',
@@ -235,24 +241,22 @@ export default {
       thankYouText: 'Vaša odozva nám pomáha zlepšovať appku :)',
     },
     ErrorView: {
-      errorViewTitle: 'Žial, nastala chyba',
-      validationError: 'Sorry kámo, chyba je na našej strane - validácia',
       errorViewActionText: 'Skúsiť znova',
-      errorViewCancelText: 'Zrušiť',
-      errorViewResetText: 'Resetovať',
-      dataLineTimelineScreenError: 'Hups, trasu sa nepodarilo načítať',
-      dataLineTimetableScreenError:
-        'Hups, cestovný poriadok sa nepodarilo načítať',
-      dataPlannerTripError: 'Hups, nastala chyba pri plánovaní tvojej cesty',
-      dataMhdStopsError: 'Hups, nepodarilo sa nám načítať MHD dáta',
-      dataRekolaError: 'Hups, nepodarilo sa nám načítať Rekola dáta',
-      dataSlovnaftbajkError:
-        'Hups, nepodarilo sa nám načítať SlovnaftBAjk dáta',
-      dataTierError: 'Hups, nepodarilo sa nám načítať TIER dáta',
-      dataZseChargersError: 'Hups, nepodarilo sa nám načítať ZSE dáta',
-      dataBoltError: 'Hups, nepodarilo sa nám načítať Bolt dáta',
-      disconnectedError:
-        'Prosím, pripoj sa na internet, ak chceš používať túto funkcionalitu',
+      errors: {
+        generic: 'Pardon, nastala chyba.',
+        validation: 'Pardon, na našej strane nastala chyba.',
+        dataLineTimeline: 'Hups, trasu sa nepodarilo načítať.',
+        dataLineTimetable: 'Hups, cestovný poriadok sa nepodarilo načítať.',
+        dataPlannerTrip: 'Hups, nastala chyba pri plánovaní vašej cesty.',
+        dataProvider: 'Hups, nepodarilo sa nám načítať {{provider}} dáta.',
+        dataGeneric: 'Dáta sa, žiaľ, nepodarilo načítať.',
+        disconnected:
+          'Pripojte sa, prosím, na internet – ak chcete používať túto funkcionalitu.',
+        plannerUnsupportedArea:
+          'Vyzerá to, že hľadáte trasu z miesta, ktoré aplikácia nepodporuje.\nSkúste zvoliť iné východzie miesto.',
+        plannerNoRoute: 'Žiaľ, nenašli sme pre vás žiadnu vhodnú trasu.',
+        mapUnsupportedArea: 'Vaša poloha je mimo Bratislavy.',
+      },
     },
   },
 }

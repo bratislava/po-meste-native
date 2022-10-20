@@ -1,16 +1,20 @@
-import { Ionicons } from '@expo/vector-icons'
+import Text from '@components/Text'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import i18n from 'i18n-js'
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-import AppLink from 'react-native-app-link'
+import { StyleSheet, View } from 'react-native'
 
-import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL, Button } from '@components'
-import ChevronRightIconSvg from '@icons/chevron-right-small.svg'
+import { BOTTOM_VEHICLE_BAR_HEIGHT_ALL } from '@components'
 import { colors, ConnectorProps, s } from '@utils'
 import ConnectorMiniature from './_partials/ConnectorMiniature'
 
+import ProviderButton from '@components/ProviderButton'
+import ClockSvg from '@icons/clock.svg'
+import MapPinSvg from '@icons/map-pin-marker.svg'
+import CarSvg from '@icons/vehicles/car.svg'
 import ChargerSvg from '@images/charger.svg'
+import { ChargersProvider } from '@types'
+import InfoRow from '../InforRow'
 
 interface StationChargerInfoProps {
   name?: string
@@ -51,74 +55,32 @@ const StationChargerInfo = ({
           </View>
           <View style={styles.additionalText}>
             <View>
-              {name !== undefined && (
-                <Text style={[styles.mainInfoMargin, s.boldText]}>
-                  <Ionicons
-                    size={15}
-                    style={{
-                      alignSelf: 'center',
-                      color: colors.lighterGray,
-                    }}
-                    name="location-sharp"
-                  />
-                  {name}
-                </Text>
+              {name != null && (
+                <InfoRow
+                  value={name}
+                  Icon={MapPinSvg}
+                  title={i18n.t('screens.MapScreen.location')}
+                />
               )}
-              {openingTimes !== undefined && (
-                <Text style={[styles.mainInfoMargin, s.boldText]}>
-                  <Ionicons
-                    size={15}
-                    style={{
-                      alignSelf: 'center',
-                      color: colors.lighterGray,
-                    }}
-                    name="time"
-                  />
-                  {openingTimes}
-                </Text>
+              {openingTimes != null && (
+                <InfoRow
+                  value={openingTimes}
+                  Icon={ClockSvg}
+                  title={i18n.t('screens.MapScreen.openingHours')}
+                />
               )}
-              {(numberOfParkingSpaces !== undefined ||
-                numberOfParkingSpaces !== null) && (
-                <Text style={[styles.mainInfoMargin, s.boldText]}>
-                  <Ionicons
-                    size={15}
-                    style={{
-                      alignSelf: 'center',
-                      color: colors.lighterGray,
-                    }}
-                    name="car"
-                  />
-                  {i18n.t('screens.MapScreen.parkingSpaces', {
+              {numberOfParkingSpaces != null && (
+                <InfoRow
+                  value={numberOfParkingSpaces}
+                  Icon={CarSvg}
+                  title={i18n.t('screens.MapScreen.parkingSpaces', {
                     amount: numberOfParkingSpaces,
                   })}
-                </Text>
+                />
               )}
             </View>
             <View>
-              <Button
-                contentStyle={styles.rentButton}
-                titleStyle={[{ color: colors.white }, { fontWeight: 'bold' }]}
-                onPress={() =>
-                  AppLink.openInStore({
-                    appName: 'zse-drive',
-                    appStoreId: 1180905521,
-                    appStoreLocale: 'sk',
-                    playStoreId: 'sk.zse.drive',
-                  })
-                    .then()
-                    .catch()
-                }
-                title={i18n.t('screens.MapScreen.startZseCharger')}
-                size="small"
-                icon={
-                  <ChevronRightIconSvg
-                    height={14}
-                    fill={colors.white}
-                    style={{ marginLeft: 14 }}
-                  />
-                }
-                iconRight
-              />
+              <ProviderButton provider={ChargersProvider.zse} />
             </View>
           </View>
         </View>
@@ -128,11 +90,12 @@ const StationChargerInfo = ({
           <Text style={[s.boldText, styles.fontBigger, styles.connectorsTitle]}>
             {i18n.t('screens.MapScreen.chargingPoints')}
           </Text>
-          {connectors?.map((connector) => {
+          {connectors?.map((connector, index) => {
+            //TODO Bug? At each station, 2 connectors have the same id, cannot be used as a `key`
             const { id, status, type, pricing } = connector
             return (
               <ConnectorMiniature
-                key={id}
+                key={index}
                 status={status}
                 type={type}
                 chargingPrice={
@@ -155,7 +118,8 @@ const StationChargerInfo = ({
 
 const styles = StyleSheet.create({
   header: {
-    marginVertical: 10,
+    marginTop: 10,
+    marginBottom: 30,
   },
   fontBiggest: {
     fontSize: 22,
@@ -179,9 +143,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'space-between',
   },
-  rentButton: {
-    backgroundColor: colors.zseColor,
-  },
   backgroundColorGrey: {
     backgroundColor: colors.lightLightGray,
   },
@@ -190,9 +151,6 @@ const styles = StyleSheet.create({
   },
   backgroundColorWhite: {
     backgroundColor: 'white',
-  },
-  mainInfoMargin: {
-    marginBottom: 10,
   },
 })
 

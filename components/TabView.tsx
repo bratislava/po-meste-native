@@ -1,6 +1,7 @@
+import Text from '@components/Text'
 import { colors } from '@utils/theme'
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import {
   NavigationState,
   Route,
@@ -11,41 +12,65 @@ import {
 } from 'react-native-tab-view'
 
 export const TAB_BAR_LARGE_HEIGHT = 56
+export const TAB_BAR_SMALL_HEIGHT = 34
 
 const renderTabBar = (
   props: SceneRendererProps & { navigationState: NavigationState<Route> },
   variant: 'small' | 'large'
 ) => {
-  let index = -1
   return (
     <TabBar
       {...props}
       style={[styles.tabBar, variant === 'large' && { elevation: 0 }]}
-      tabStyle={[
-        styles.tabBarTab,
-        variant === 'large' && styles.tabBarTabLarge,
-      ]}
       pressColor="rgba(0,0,0,0)"
       pressOpacity={0}
-      renderLabel={({ route, focused }) => {
-        const [title, subtitle] = route.title
-          ? route.title.split('|')
-          : ['', '']
-        index++
+      contentContainerStyle={styles.tabBarContentContainer}
+      renderTabBarItem={(props) => {
+        const focused =
+          props.key ===
+          props.navigationState.routes[props.navigationState.index].key
+        const index = props.navigationState.routes.findIndex(
+          (route) => route.key === props.key
+        )
         return (
-          <View
+          <TouchableOpacity
+            key={props.key}
+            onPress={props.onPress}
             style={[
-              styles.tabBarTabLabel,
+              styles.tabBarTab,
+              variant === 'large' && styles.tabBarTabLarge,
+              {
+                backgroundColor:
+                  variant === 'large' ? colors.lightLightGray : colors.white,
+                marginLeft: variant === 'large' && index !== 0 ? 1 : 0,
+              },
               focused ? styles.tabBarTabLabelFocused : {},
               variant === 'large'
                 ? index === 0
                   ? { borderTopLeftRadius: 0 }
-                  : index > 0 //TODO: fix, very use case specific
+                  : index === props.navigationState.routes.length - 1
                   ? { borderTopRightRadius: 0 }
                   : {}
                 : {},
             ]}
           >
+            {props.renderLabel &&
+              props.renderLabel({
+                route: props.route,
+                focused,
+                color:
+                  (focused ? props.activeColor : props.inactiveColor) ??
+                  'transparent',
+              })}
+          </TouchableOpacity>
+        )
+      }}
+      renderLabel={({ route, focused }) => {
+        const [title, subtitle] = route.title
+          ? route.title.split('|')
+          : ['', '']
+        return (
+          <View style={styles.tabBarTabLabel}>
             <Text
               style={[
                 styles.tabBarTabLabelTitle,
@@ -67,6 +92,13 @@ const renderTabBar = (
             )}
           </View>
         )
+      }}
+      renderIndicator={(props) => null}
+      indicatorContainerStyle={{
+        height: 5,
+        top: variant === 'large' ? TAB_BAR_LARGE_HEIGHT : TAB_BAR_SMALL_HEIGHT,
+        backgroundColor: colors.primary,
+        position: 'absolute',
       }}
     />
   )
@@ -93,28 +125,27 @@ const TabView = ({
 
 const styles = StyleSheet.create({
   tabBar: {
-    borderBottomColor: colors.primary,
-    borderBottomWidth: 5,
+    shadowOpacity: 0,
+    backgroundColor: colors.white,
   },
+  tabBarContentContainer: {},
   tabBarTab: {
     backgroundColor: 'white',
-    display: 'flex',
-    alignItems: 'stretch',
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: 0,
-    height: 34,
+    height: TAB_BAR_SMALL_HEIGHT,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    flex: 1,
   },
   tabBarTabLarge: {
     height: TAB_BAR_LARGE_HEIGHT,
   },
   tabBarTabLabel: {
     backgroundColor: 'transparent',
-    width: '100%',
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    height: '100%',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
   },
   tabBarTabLabelFocused: {
     backgroundColor: colors.primary,
@@ -124,7 +155,6 @@ const styles = StyleSheet.create({
     color: colors.darkText,
     fontSize: 14,
     lineHeight: 16,
-    marginBottom: 6,
   },
   tabBarTabLabelTitleLarge: {
     fontSize: 16,

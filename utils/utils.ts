@@ -1,8 +1,10 @@
 import {
+  ChargersProvider,
   FavoritePlace,
   FavoriteStop,
   LegModes,
   MicromobilityProvider,
+  MobilityProvider,
   TransitVehicleType,
   TravelModes,
   TravelModesOtpApi,
@@ -30,6 +32,7 @@ import ScooterSvg from '@icons/vehicles/scooter.svg'
 import TramSvg from '@icons/vehicles/tram.svg'
 import TrolleybusSvg from '@icons/vehicles/trolleybus.svg'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Platform } from 'expo-modules-core'
 import { Region } from 'react-native-maps'
 
 export const presentPrice = (price: number /* in cents */) => {
@@ -123,7 +126,7 @@ export const openProviderApp = async (provider: MicromobilityProvider) => {
   }
 }
 
-export const getColor = (provider?: MicromobilityProvider) => {
+export const getColor = (provider?: MobilityProvider) => {
   switch (provider) {
     case MicromobilityProvider.rekola:
       return colors.rekolaColor
@@ -133,16 +136,18 @@ export const getColor = (provider?: MicromobilityProvider) => {
       return colors.tierColor
     case MicromobilityProvider.bolt:
       return colors.boltColor
+    case ChargersProvider.zse:
+      return colors.zseColor
     default:
       return colors.primary
   }
 }
 
-export const getTextColor = (provider: MicromobilityProvider) => {
+export const getTextColor = (provider: MobilityProvider) => {
   switch (provider) {
     case MicromobilityProvider.rekola:
-      return colors.white
     case MicromobilityProvider.bolt:
+    case ChargersProvider.zse:
       return colors.white
     default:
       return colors.darkText
@@ -284,12 +289,13 @@ const MIN_DELTA_FOR_MD_MARKER = 0.01
 
 export const getZoomLevel = (region: Region | null) => {
   const latDelta = region?.latitudeDelta
+  const multiplier = Platform.select({ ios: 1, android: 1 })
   if (latDelta) {
-    return latDelta >= MIN_DELTA_FOR_XS_MARKER
+    return latDelta >= MIN_DELTA_FOR_XS_MARKER * multiplier
       ? ZoomLevel.xs
-      : latDelta >= MIN_DELTA_FOR_SM_MARKER
+      : latDelta >= MIN_DELTA_FOR_SM_MARKER * multiplier
       ? ZoomLevel.sm
-      : latDelta >= MIN_DELTA_FOR_MD_MARKER
+      : latDelta >= MIN_DELTA_FOR_MD_MARKER * multiplier
       ? ZoomLevel.md
       : ZoomLevel.lg
   }
@@ -308,6 +314,9 @@ export const getShortAddress = (fullAddress: string) =>
         fullAddress.indexOf(',') === -1 ? undefined : fullAddress.indexOf(',')
       )
 
+export const padTimeToTwoDigits = (time: number): string =>
+  time < 10 ? `0${time}` : time + ''
+
 export const getMhdTicketPrice = (duration: number) =>
   duration < 30 ? 90 : duration < 60 ? 130 : duration < 90 ? 210 : 280
 
@@ -321,5 +330,18 @@ export const getMicromobilityPrice = (provider: MicromobilityProvider) => {
       return prices.tier
     case MicromobilityProvider.bolt:
       return prices.bolt
+  }
+}
+
+export const getMapPinSize = (zoomLevel: ZoomLevel): number => {
+  switch (zoomLevel) {
+    case ZoomLevel.xs:
+      return 4
+    case ZoomLevel.sm:
+      return 8
+    case ZoomLevel.md:
+      return 16
+    case ZoomLevel.lg:
+      return 22
   }
 }

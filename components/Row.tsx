@@ -1,13 +1,8 @@
 // TODO copied from different project, might need cleanup if we're to use it
-import { colors } from '../utils/theme'
+import Text from '@components/Text'
 import React, { ReactElement } from 'react'
-import {
-  StyleSheet,
-  TextStyle,
-  TouchableOpacity,
-  View,
-  Text,
-} from 'react-native'
+import { StyleSheet, TextStyle, TouchableOpacity, View } from 'react-native'
+import { colors } from '../utils/theme'
 
 const styles = StyleSheet.create({
   row: {

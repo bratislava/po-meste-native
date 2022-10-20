@@ -2,6 +2,7 @@ export { default as Accordion } from './Accordion'
 export { default as AccordionItem } from './AccordionItem'
 export { default as Button } from './Button'
 export { default as ButtonGroup } from './ButtonGroup'
+export { default as Checkbox } from './Checkbox'
 export {
   ConfirmationModalProps,
   default as ConfirmationModal,
@@ -21,6 +22,7 @@ export {
   default as TabBar,
 } from './navigation/TabBar'
 export { default as RadioButton } from './RadioButton'
+export { default as RadioButtonPicker } from './RadioButtonPicker'
 export { default as Row } from './Row'
 export { default as ScreenFooter } from './ScreenFooter'
 export { default as TabView } from './TabView'

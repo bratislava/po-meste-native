@@ -1,6 +1,7 @@
 import LoadingView from '@components/LoadingView'
 import { NAVIGATION_HEADER_HEIGHT } from '@components/navigation/Header'
 import { TAB_BAR_LARGE_HEIGHT } from '@components/TabView'
+import Text from '@components/Text'
 import BottomSheet, { TouchableOpacity } from '@gorhom/bottom-sheet'
 import ArrowRightSvg from '@icons/arrow-right.svg'
 import SearchSvg from '@icons/search.svg'
@@ -13,7 +14,7 @@ import { ZoomLevel } from '@types'
 import { getMhdStopStatusData } from '@utils/api'
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
-import { getZoomLevel } from '@utils/utils'
+import { getMapPinSize, getZoomLevel } from '@utils/utils'
 import { MhdStopProps } from '@utils/validation'
 import i18n from 'i18n-js'
 import React, {
@@ -23,18 +24,16 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-} from 'react-native'
+import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native'
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown'
 import { ScrollView } from 'react-native-gesture-handler'
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
 import { useQuery } from 'react-query'
 import StopPlatformCard from './_partials/StopPlatformCard'
+
+import MhdSmallIcon from '@icons/map/mhd/no-icon.svg'
+import MhdInactiveIcon from '@icons/map/mhd/with-icon-inactive.svg'
+import MhdIcon from '@icons/map/mhd/with-icon.svg'
 
 const MAP_HEIGHT = 200
 
@@ -109,6 +108,25 @@ const SearchMhd = () => {
         return iconsSubset.lg
       default:
         return undefined
+    }
+  }
+
+  const getIosIcon = (active: boolean) => {
+    const size = getMapPinSize(getZoomLevel(region))
+    const sizeProps = { width: size, height: size }
+    switch (getZoomLevel(region)) {
+      case ZoomLevel.xs:
+      case ZoomLevel.sm:
+        return <MhdSmallIcon {...sizeProps} />
+      case ZoomLevel.md:
+      case ZoomLevel.lg:
+        return active ? (
+          <MhdIcon {...sizeProps} />
+        ) : (
+          <MhdInactiveIcon {...sizeProps} />
+        )
+      default:
+        return null
     }
   }
 
@@ -205,6 +223,7 @@ const SearchMhd = () => {
           provider={PROVIDER_GOOGLE}
           style={{ height: mapHeight }}
           customMapStyle={customMapStyle}
+          toolbarEnabled={false}
           initialRegion={{
             latitude: 48.1512015,
             longitude: 17.1110118,
@@ -223,7 +242,7 @@ const SearchMhd = () => {
                   latitude: parseFloat(stop.gpsLat),
                   longitude: parseFloat(stop.gpsLon),
                 }}
-                tracksViewChanges={false}
+                tracksViewChanges
                 icon={getIcon(
                   chosenPlatform ? stop.id === chosenPlatform?.id : true
                 )}
@@ -233,17 +252,46 @@ const SearchMhd = () => {
                   handleMarkerPress(stop)
                 }}
               >
-                {stop.platform && getZoomLevel(region) === ZoomLevel.lg && (
-                  <View style={markerLabelStyles.container}>
-                    <Text style={markerLabelStyles.label}>{stop.platform}</Text>
+                {Platform.OS === 'ios' && (
+                  <View
+                    style={{
+                      height:
+                        getMapPinSize(getZoomLevel(region)) +
+                        (getZoomLevel(region) === ZoomLevel.lg ? 6 : 0),
+                    }}
+                  >
+                    {getIosIcon(
+                      chosenPlatform ? stop.id === chosenPlatform?.id : true
+                    )}
+                    {stop.platform && getZoomLevel(region) === ZoomLevel.lg && (
+                      <View
+                        style={[
+                          markerLabelStyles.container,
+                          markerLabelStyles.iosContainer,
+                        ]}
+                      >
+                        <Text style={markerLabelStyles.label}>
+                          {stop.platform}
+                        </Text>
+                      </View>
+                    )}
                   </View>
                 )}
+                {stop.platform &&
+                  getZoomLevel(region) === ZoomLevel.lg &&
+                  Platform.OS === 'android' && (
+                    <View style={markerLabelStyles.container}>
+                      <Text style={markerLabelStyles.label}>
+                        {stop.platform}
+                      </Text>
+                    </View>
+                  )}
               </Marker>
             ))}
         </MapView>
       </View>
       <View style={styles.searchContainer}>
-        <View style={styles.inputWrapper}>
+        <View style={[styles.inputWrapper, { zIndex: 2 }]}>
           <SearchSvg
             width={20}
             height={20}
@@ -417,6 +465,7 @@ const autocompleteStyles = StyleSheet.create({
     color: colors.black,
     paddingHorizontal: 15,
     paddingLeft: 36,
+    ...s.fontNormal,
   },
   rightButtonContainer: {
     right: 8,

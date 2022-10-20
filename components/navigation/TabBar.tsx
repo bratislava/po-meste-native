@@ -1,49 +1,57 @@
+import Text from '@components/Text'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import React from 'react'
-import { StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 
+import Shadow from '@components/Shadow'
 import TicketSvg from '@icons/ticket-alt.svg'
-import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
 
 export const BOTTOM_TAB_NAVIGATOR_HEIGHT = 55
 
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
   return (
-    <View style={styles.tabBar}>
-      {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key]
-        const label = options.title || ''
+    <Shadow
+      outerStyle={styles.tabBarContainer}
+      element={(iosContainerAndShadowStyle) => (
+        <View style={[iosContainerAndShadowStyle, styles.tabBar]}>
+          {state.routes.map((route, index) => {
+            const { options } = descriptors[route.key]
+            const label = options.title || ''
 
-        const isFocused = state.index === index
+            const isFocused = state.index === index
 
-        const onPress = () => {
-          const event = navigation.emit({
-            type: 'tabPress',
-            target: route.key,
-            canPreventDefault: true,
-          })
+            const onPress = () => {
+              const event = navigation.emit({
+                type: 'tabPress',
+                target: route.key,
+                canPreventDefault: true,
+              })
 
-          if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name)
-          }
-        }
+              if (!isFocused && !event.defaultPrevented) {
+                navigation.navigate(route.name)
+              }
+            }
 
-        return (
-          <TouchableWithoutFeedback key={index} onPress={onPress}>
-            <View>
-              <TabItem
-                label={label}
-                isFocused={isFocused}
-                IconComponent={(options.tabBarIcon || TicketSvg) as React.FC}
-                iconSize={index === 1 ? 42 : 30}
-                index={index}
-              />
-            </View>
-          </TouchableWithoutFeedback>
-        )
-      })}
-    </View>
+            return (
+              <TouchableWithoutFeedback key={index} onPress={onPress}>
+                <View>
+                  <TabItem
+                    label={label}
+                    isFocused={isFocused}
+                    IconComponent={
+                      (options.tabBarIcon || TicketSvg) as React.FC
+                    }
+                    iconSize={index === 1 ? 42 : 30}
+                    index={index}
+                  />
+                </View>
+              </TouchableWithoutFeedback>
+            )
+          })}
+        </View>
+      )}
+    />
   )
 }
 
@@ -65,10 +73,12 @@ const TabItem = ({
   return (
     <View style={styles.tabItemWrapper}>
       {index === 1 && (
-        <View
-          style={{
-            ...styles.tabItemShadow,
-          }}
+        <Shadow
+          element={(iosContainerAndShadowStyle) => (
+            <View style={iosContainerAndShadowStyle} />
+          )}
+          innerContainerStyle={styles.tabItemShadow}
+          customOffset={{ x: 5, y: 0 }}
         />
       )}
       <View style={styles.tabItemBackground} />
@@ -94,10 +104,12 @@ const styles = StyleSheet.create({
     height: BOTTOM_TAB_NAVIGATOR_HEIGHT,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
+    width: '100%',
+  },
+  tabBarContainer: {
     position: 'absolute',
     bottom: 0,
     width: '100%',
-    ...s.shadow,
   },
   tabItemWrapper: {
     width: 90,
@@ -112,7 +124,6 @@ const styles = StyleSheet.create({
     left: 5,
     backgroundColor: '#fff',
     borderRadius: 40,
-    ...s.shadow,
   },
   tabItemBackground: {
     width: 105,

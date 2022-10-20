@@ -1,11 +1,6 @@
+import Text from '@components/Text'
 import React from 'react'
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import { TravelModes, VehicleData } from '@types'
 import { colors, s } from '@utils'
@@ -59,8 +54,8 @@ const VehicleSelector = ({
             return `${min}${min && max && ` - `}${max}${(min || max) && ' min'}`
           }
 
-          const duration = getPrice()
-          const price = getDuration()
+          const duration = getDuration()
+          const price = getPrice()
 
           return (
             <TouchableOpacity
@@ -122,7 +117,7 @@ const styles = StyleSheet.create({
     padding: 7,
     borderWidth: 2,
     borderColor: colors.mediumGray,
-    width: 90,
+    width: 100,
     height: 70,
     display: 'flex',
     alignItems: 'center',

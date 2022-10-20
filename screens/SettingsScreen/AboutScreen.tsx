@@ -1,16 +1,17 @@
-import React from 'react'
-import { View, StyleSheet, Text, ScrollView } from 'react-native'
+import Text from '@components/Text'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import Constants from 'expo-constants'
 import { openURL } from 'expo-linking'
 import { t } from 'i18n-js'
+import React from 'react'
+import { ScrollView, StyleSheet, View } from 'react-native'
 
+import { Link, ScreenFooter } from '@components'
 import { colors } from '@utils'
-import { ScreenFooter, Link } from '@components'
 
-import InovationBratislavaLogo from '@images/inovation-bratislava-logo.svg'
-import EuropeanUnionLogo from '@images/european-union-logo.svg'
 import AppLogo from '@images/app-logo.svg'
+import EuropeanUnionLogo from '@images/european-union-logo.svg'
+import InovationBratislavaLogo from '@images/inovation-bratislava-logo.svg'
 
 export const AboutScreen = () => {
   const contactEmailAddress = Constants.manifest?.extra?.contactEmailAddress
@@ -70,7 +71,7 @@ export const AboutScreen = () => {
               </View>
               <View style={styles.poweredByItem}>
                 <EuropeanUnionLogo width={64} height={48} />
-                <Text style={styles.poweredByItemText}>
+                <Text style={[styles.poweredByItemText, { color: '#003193' }]}>
                   {t('screens.AboutScreen.coFundedByTheEuropeanUnion')}
                 </Text>
               </View>
@@ -127,6 +128,7 @@ const styles = StyleSheet.create({
   poweredByContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
+    fontFamily: 'Open sans',
   },
   poweredByItem: {
     maxWidth: 120,

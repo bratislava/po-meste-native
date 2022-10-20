@@ -61,6 +61,7 @@ export default {
     generalTermsAndConditionsLink:
       'https://pomeste.bratislava.sk/terms-conditions/',
     privacyPolicyLink: 'https://pomeste.bratislava.sk/privacy-policy/',
+    googlePlacesApiKeyUnlocked: process.env.GOOGLE_PLACES_API_KEY_UNLOCKED,
   },
   packagerOpts: {
     config: 'metro.config.js',

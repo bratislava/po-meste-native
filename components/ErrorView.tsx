@@ -1,19 +1,27 @@
+import Text from '@components/Text'
 import * as Sentry from '@sentry/react-native'
 import i18n from 'i18n-js'
-import React, { useEffect } from 'react'
-import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
+import {
+  StyleProp,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from 'react-native'
 
-import { useNetInfo } from '@react-native-community/netinfo'
-import { isApiError, isNetworkError, isValidationError } from '@utils'
+import CrossIcon from '@icons/cross.svg'
+import { GlobalStateContext } from '@state/GlobalStateProvider'
+import { isApiError, isNetworkError, isValidationError, s } from '@utils'
 import { colors } from '@utils/theme'
 import Button from './Button'
 
 interface ErrorViewProps {
   action?: () => unknown
-  reset?: () => unknown
-  cancel?: () => unknown
+  dismiss?: () => unknown
   isFullscreen?: boolean
   styleWrapper?: StyleProp<ViewStyle>
+  plainStyle?: boolean
 }
 
 interface ErrorViewPropsError extends ErrorViewProps {
@@ -32,13 +40,20 @@ const ErrorView = ({
   error,
   errorMessage,
   action,
-  reset,
-  cancel,
+  dismiss,
   isFullscreen,
   styleWrapper,
+  plainStyle = false,
 }: ErrorViewMerged) => {
-  const netInfo = useNetInfo()
+  const netInfo = useContext(GlobalStateContext).netInfo
+  const [errorMessageToDisplay, setErrorMessageToDisplay] =
+    useState(errorMessage)
   useEffect(() => {
+    isNetworkError(error) &&
+      !netInfo.isConnected &&
+      setErrorMessageToDisplay(
+        i18n.t('components.ErrorView.errors.disconnected')
+      )
     if (__DEV__) {
       return
     }
@@ -73,11 +88,33 @@ const ErrorView = ({
     } else if (errorMessage) {
       Sentry.captureMessage(errorMessage, Sentry.Severity.Error)
     }
-  }, [error, errorMessage])
+  }, [error, errorMessage, netInfo.isConnected])
 
   if (isValidationError(error)) {
     // TODO add proper error message
-    return <Text>{i18n.t('components.ErrorView.validationError')}</Text>
+    return <Text>{i18n.t('components.ErrorView.errors.validation')}</Text>
+  }
+
+  if (plainStyle) {
+    return (
+      <View style={[styles.containerPlain, styleWrapper]}>
+        <Text style={[styles.error, styles.errorPlain]}>
+          {errorMessageToDisplay ||
+            (isNetworkError(error)
+              ? i18n.t('components.ErrorView.errors.dataGeneric')
+              : i18n.t('components.ErrorView.errors.generic'))}
+        </Text>
+        {(!isNetworkError(error) || netInfo.isConnected) && action && (
+          <Button
+            title={i18n.t('components.ErrorView.errorViewActionText')}
+            size="small"
+            variant="outlined"
+            onPress={() => action()}
+            style={[styles.action, { flex: 0 }]}
+          />
+        )}
+      </View>
+    )
   }
 
   return (
@@ -89,37 +126,28 @@ const ErrorView = ({
       ]}
     >
       <View style={styles.container}>
-        <Text style={styles.error}>
-          {errorMessage || i18n.t('components.ErrorView.errorViewTitle')}
-        </Text>
-        <Text style={styles.bodyText}>
-          {(isNetworkError(error) &&
-            !netInfo.isConnected &&
-            i18n.t('components.ErrorView.disconnectedError')) ||
-            error?.toString() ||
-            i18n.t('components.ErrorView.errorViewBody')}
-        </Text>
-        {action && (
+        <View style={styles.firstRow}>
+          <Text style={styles.error}>
+            {errorMessageToDisplay ||
+              (isNetworkError(error)
+                ? i18n.t('components.ErrorView.errors.dataGeneric')
+                : i18n.t('components.ErrorView.errors.generic'))}
+          </Text>
+          <TouchableOpacity onPress={dismiss} style={styles.dismiss}>
+            <CrossIcon
+              width={20}
+              height={20}
+              fill={colors.tertiary}
+              strokeWidth={5}
+            />
+          </TouchableOpacity>
+        </View>
+        {(!isNetworkError(error) || netInfo.isConnected) && action && (
           <Button
             title={i18n.t('components.ErrorView.errorViewActionText')}
-            variant="secondary"
-            onPress={() => action()} // on purpose
-            style={styles.action}
-          />
-        )}
-        {reset && (
-          <Button
-            title={i18n.t('components.ErrorView.errorViewResetText')}
-            variant="primary"
-            onPress={reset}
-            style={styles.action}
-          />
-        )}
-        {cancel && (
-          <Button
-            title={i18n.t('components.ErrorView.errorViewCancelText')}
-            variant="primary"
-            onPress={cancel}
+            size="small"
+            variant="outlined"
+            onPress={() => action()}
             style={styles.action}
           />
         )}
@@ -135,26 +163,44 @@ const styles = StyleSheet.create({
   wrapper: {
     marginVertical: 20,
     justifyContent: 'center',
+    width: '100%',
   },
   container: {
-    borderWidth: 1,
-    borderColor: colors.lightGray,
-    borderTopColor: colors.primary,
-    borderTopWidth: 4,
-    borderRadius: 4,
-    paddingVertical: 16,
+    borderRadius: 10,
+    paddingVertical: 15,
     paddingHorizontal: 20,
     marginHorizontal: 16,
     alignItems: 'center',
+    backgroundColor: colors.secondary,
+    elevation: 7,
+    ...s.shadow,
+  },
+  containerPlain: {
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  firstRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
   },
   error: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    flex: 1,
+    textAlign: 'left',
+    ...s.fontWeightMedium,
+    ...s.textMedium,
+    lineHeight: 24,
+  },
+  errorPlain: {
+    flex: 0,
     textAlign: 'center',
   },
-  bodyText: {
-    textAlign: 'center',
+  dismiss: {
+    padding: 10,
+    top: -10,
+    right: -10,
+    flex: 0,
   },
   action: {
     marginTop: 20,

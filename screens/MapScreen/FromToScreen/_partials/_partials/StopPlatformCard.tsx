@@ -1,3 +1,4 @@
+import Text from '@components/Text'
 import ChevronRightSvg from '@icons/chevron-right-large.svg'
 import MhdStopSvg from '@icons/stop-sign.svg'
 import { tramNumbers } from '@utils/constants'
@@ -5,7 +6,7 @@ import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
 import { MhdStopProps, MhdStopStatusProps } from '@utils/validation'
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 interface StopPlatformCardProps {
   stop: MhdStopProps

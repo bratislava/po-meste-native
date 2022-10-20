@@ -1,5 +1,6 @@
+import Text from '@components/Text'
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import { DashedLine } from '@components'
 import { colors, s } from '@utils'
@@ -85,7 +86,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   switchPlaces: {
-    ...s.shadow,
     width: 36,
     height: 36,
     borderRadius: 18,

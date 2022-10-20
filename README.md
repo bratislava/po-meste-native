@@ -22,6 +22,10 @@ If you want to develop on your device, from [Expo Go](https://expo.io/client) ap
 
 To get Env keys:
 
+- GOOGLE_PLACES_API_KEY_UNLOCKED
+  1. Log into google account inovacie.bratislava@gmail.com
+  2. Proceed to console.cloud [dopravna aplikacia](https://console.cloud.google.com/google/maps-apis/credentials?pli=1&project=dopravna-aplikacia&folder=&organizationId=)
+  3. When developing use `UNRESTRICTED_TEST_KEY`, when releasing, check part with release instructions for [android](#release-new-internal-android-version)/[iOS](#release-testflight-ios-version) in this readme
 - GOOGLE_IOS_API_KEY
   1. Log into google account inovacie.bratislava@gmail.com
   2. Proceed to console.cloud [dopravna aplikacia](https://console.cloud.google.com/google/maps-apis/credentials?pli=1&project=dopravna-aplikacia&folder=&organizationId=)
@@ -105,12 +109,13 @@ yarn publish-production
 
 To release new `.apk` to Play Store:
 
-1. Bump `buildNumber` and `versionCode` in `app.config.js` - try keeping ios buildNumber and android versionCode in sync even if releasing to just one of the systems
-2. `yarn create-production-apk` - **WARNING: THIS ALSO CAUSES ALL THE CURRENT DEPLOYMENTS TO UPDATE OVER-THE-AIR INSTANTLY BEFORE THE NATIVE BUILD, EVEN BEFORE YOU SUBMIT THE APP FOR REVIEW** - modify the command with `--no-publish` flag if you don't wish to do this
-3. wait for [Expo](https://expo.dev/accounts/bratislava/projects/hybaj/builds) to build new `.apk`
-4. Download produced `.apk`
-5. Create new release to desired release channels, e.g. [Internal testing](https://play.google.com/console/u/1/developers/5957584533981072671/app/4975790424614272614/app-dashboard?timespan=thirtyDays)
-6. Upload new `.apk`
+1. **Enviroment variable `GOOGLE_PLACES_API_KEY_UNLOCKED` needs to be changed to key that belongs to Android (GOOGLE_ANDROID_API_KEY)**
+2. Bump `buildNumber` and `versionCode` in `app.config.js` - try keeping ios buildNumber and android versionCode in sync even if releasing to just one of the systems
+3. `yarn create-production-apk` - **WARNING: THIS ALSO CAUSES ALL THE CURRENT DEPLOYMENTS TO UPDATE OVER-THE-AIR INSTANTLY BEFORE THE NATIVE BUILD, EVEN BEFORE YOU SUBMIT THE APP FOR REVIEW** - modify the command with `--no-publish` flag if you don't wish to do this
+4. wait for [Expo](https://expo.dev/accounts/bratislava/projects/hybaj/builds) to build new `.apk`
+5. Download produced `.apk`
+6. Create new release to desired release channels, e.g. [Internal testing](https://play.google.com/console/u/1/developers/5957584533981072671/app/4975790424614272614/app-dashboard?timespan=thirtyDays)
+7. Upload new `.apk`
 
 **Note about updating the testing version on Android - Google Play store often can't see the updated version if you already downloaded an older one - what always works is to 1. uninstall the app 2. from the settings, force quit Play store 3. from the same place, clear cache and delete all app data 4. download the app again.**
 
@@ -118,12 +123,13 @@ To release new `.apk` to Play Store:
 
 You need a Mac with installed XCode or [Transporter app](https://apps.apple.com/us/app/transporter/id1450874784?mt=12)
 
-1. Bump `buildNumber` and `versionCode` in `app.config.js` - try keeping ios buildNumber and android versionCode in sync even if releasing to just one of the systems
-2. `yarn create-production-ipa` - **WARNING: THIS ALSO CAUSES ALL THE CURRENT DEPLOYMENTS TO UPDATE OVER-THE-AIR INSTANTLY BEFORE THE NATIVE BUILD, EVEN BEFORE YOU SUBMIT THE APP FOR REVIEW** - modify the command with `--no-publish` flag if you don't wish to do this
-3. You will be asked to log in to your apple account and select organisation and provider - you need to have access to Bratislava apple organisation
-4. wait for [Expo](https://expo.dev/accounts/bratislava/projects/hybaj/builds) to build new `.ipa`
-5. Download produced `.ipa` & upload it to App Store connect using the Transporter app or XCode
-6. Go to [app Testflight section](https://appstoreconnect.apple.com/apps/1599324226/testflight) and make the version available if needed - the processing usually takes up to an hour, but can get stuck for longer
+1. **Enviroment variable `GOOGLE_PLACES_API_KEY_UNLOCKED` needs to be changed to key that belongs to IOS (GOOGLE_IOS_API_KEY)**
+2. Bump `buildNumber` and `versionCode` in `app.config.js` - try keeping ios buildNumber and android versionCode in sync even if releasing to just one of the systems
+3. `yarn create-production-ipa` - **WARNING: THIS ALSO CAUSES ALL THE CURRENT DEPLOYMENTS TO UPDATE OVER-THE-AIR INSTANTLY BEFORE THE NATIVE BUILD, EVEN BEFORE YOU SUBMIT THE APP FOR REVIEW** - modify the command with `--no-publish` flag if you don't wish to do this
+4. You will be asked to log in to your apple account and select organisation and provider - you need to have access to Bratislava apple organisation
+5. wait for [Expo](https://expo.dev/accounts/bratislava/projects/hybaj/builds) to build new `.ipa`
+6. Download produced `.ipa` & upload it to App Store connect using the Transporter app or XCode
+7. Go to [app Testflight section](https://appstoreconnect.apple.com/apps/1599324226/testflight) and make the version available if needed - the processing usually takes up to an hour, but can get stuck for longer
 
 ## Additional info
 

@@ -60,7 +60,7 @@ export default {
     contactEmailAddress: 'pomeste@bratislava.sk',
     generalTermsAndConditionsLink:
       'https://pomeste.bratislava.sk/terms-conditions/',
-    privacyPolicyLink: 'https://pomeste.bratislava.sk/privacy-policy/',
+    privacyPolicyLink: 'https://pomeste.bratislava.sk/privacy-policy-2/',
   },
   packagerOpts: {
     config: 'metro.config.js',

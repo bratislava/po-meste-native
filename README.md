@@ -1,6 +1,12 @@
 # Po meste
 
-React Native Expo app. Bootstraped with expo typescript tabs example.
+React Native Expo app. Mobility, public transport and multimodal planner for Bratislava.
+
+This project is led by the [Department of Innovation and Technology of the City of Bratislava](https://inovacie.bratislava.sk). We’re making it open-source as we believe this promotes [savings, collaboration, auditability and innovation](https://publiccode.eu) in the public sector.
+
+Our goal is to be transparent about services we’re developing and providing, as well as to invite other cities and municipalities to build on top of the same or similar open-source technologies we’ve already tested and used - to foster an ecosystem of collaboration between teams facing similar challenges. We’ll be happy to [get in touch.](mailto:innovationteam@bratislava.sk)
+
+> If you are an individual or a company who’d like to take part in these efforts, collaborate closely on development or report an issue, we’d love to hear from you! 🙌 Contact us using this repository or at innovationteam@bratislava.sk
 
 ## Development
 
@@ -18,7 +24,7 @@ yarn start
 
 This will guide you how to open it locally on iOs simulator (if available) or Android emulator (also if available). Running in web browser is possible but discouraged (react-native-mapview is still experimental in browser).
 
-If you want to develop on your device, from [Expo Go](https://expo.io/client) application (downlaoaded from Play store). ping Martin Pinter to get it.
+If you want to develop on your device, you can use [Expo Go](https://expo.io/client) application.
 
 To get Env keys:
 

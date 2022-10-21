@@ -4,7 +4,7 @@ export default {
   name: 'Po Meste',
   owner: 'bratislava',
   slug: 'hybaj',
-  version: '1.2.2',
+  version: '1.2.3',
   orientation: 'portrait',
   icon: './assets/images/icon.png',
   scheme: 'myapp',
@@ -21,7 +21,7 @@ export default {
   ios: {
     bundleIdentifier: 'com.bratislava.hybaj',
     supportsTablet: false,
-    buildNumber: '32',
+    buildNumber: '34',
     infoPlist: {
       NSLocationWhenInUseUsageDescription:
         'Allow the app to use your location to show it on map and suggest navigation.',
@@ -37,7 +37,7 @@ export default {
   android: {
     softwareKeyboardLayoutMode: 'pan',
     package: 'com.bratislava.hybaj',
-    versionCode: 32,
+    versionCode: 34,
     permissions: ['ACCESS_COARSE_LOCATION', 'ACCESS_FINE_LOCATION'],
     adaptiveIcon: {
       foregroundImage: './assets/images/adaptive-icon.png',

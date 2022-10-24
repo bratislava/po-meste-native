@@ -36,10 +36,10 @@ import {
   getMicromobilityImage,
   getProviderName,
   getShortAddress,
-  LegProps,
-  s,
   ITINERARY_ICON_WIDTH,
   ITINERARY_PADDING_HORIZONTAL,
+  LegProps,
+  s,
 } from '@utils'
 import MhdTransitCard from './_partials/MhdTransitCard'
 

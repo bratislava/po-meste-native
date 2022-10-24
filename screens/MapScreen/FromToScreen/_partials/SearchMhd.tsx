@@ -143,7 +143,7 @@ const SearchMhd = () => {
 
   useEffect(() => {
     fitToCoordinates()
-  }, [mapHeight, stopPlatforms])
+  }, [stopPlatforms])
 
   const renderPlatforms = useCallback(() => {
     if (!stopPlatforms || stopPlatforms.length === 0) return null
@@ -233,6 +233,7 @@ const SearchMhd = () => {
           onRegionChangeComplete={(region) => setRegion(region)}
           showsMyLocationButton={false}
           mapPadding={mapPadding}
+          onLayout={() => fitToCoordinates()}
         >
           {stopPlatforms &&
             stopPlatforms.map((stop) => (

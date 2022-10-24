@@ -9,14 +9,14 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useState,
+  useState
 } from 'react'
 import {
   Animated,
   ImageURISource,
   Platform,
   StyleSheet,
-  View,
+  View
 } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
 
@@ -24,14 +24,14 @@ import {
   useHealthData,
   useRekolaData,
   useSlovnaftbajkData,
-  useTierData,
+  useTierData
 } from '@hooks'
 
 import {
   BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
   ErrorView,
   LoadingView,
-  VehicleBar,
+  VehicleBar
 } from '@components'
 
 import { GlobalStateContext } from '@state/GlobalStateProvider'
@@ -42,7 +42,7 @@ import {
   IconType,
   MicromobilityProvider,
   VehicleType,
-  ZoomLevel,
+  ZoomLevel
 } from '@types'
 import {
   ChargerStationProps,
@@ -52,7 +52,7 @@ import {
   LocalitiesProps,
   MhdStopProps,
   s,
-  StationMicromobilityProps,
+  StationMicromobilityProps
 } from '@utils'
 
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components/navigation/TabBar'
@@ -88,6 +88,8 @@ const VEHICLE_BAR_SHEET_HEIGHT_COLLAPSED = BOTTOM_TAB_NAVIGATOR_HEIGHT + 70
 const VEHICLE_BAR_SHEET_HEIGHT_EXPANDED = BOTTOM_TAB_NAVIGATOR_HEIGHT + 195 // + 195 for 2 rows
 
 const SPACING = 7.5
+
+//#region icons
 
 type markerIcon = {
   xs: ImageURISource
@@ -134,6 +136,47 @@ const markerIcons: { [index: string]: markerIcon } = {
     lg: require('@icons/map/bolt/lg.png'),
   },
 }
+
+const iosIcons: { [index: string]: markerIcon } = {
+  mhd: {
+    xs: require('@icons/map-ios/mhd/xs.png'),
+    sm: require('@icons/map-ios/mhd/sm.png'),
+    md: require('@icons/map-ios/mhd/md.png'),
+    lg: require('@icons/map-ios/mhd/lg.png'),
+  },
+  tier: {
+    xs: require('@icons/map-ios/tier/xs.png'),
+    sm: require('@icons/map-ios/tier/sm.png'),
+    md: require('@icons/map-ios/tier/md.png'),
+    lg: require('@icons/map-ios/tier/lg.png'),
+  },
+  slovnaftbajk: {
+    xs: require('@icons/map-ios/slovnaftbajk/xs.png'),
+    sm: require('@icons/map-ios/slovnaftbajk/sm.png'),
+    md: require('@icons/map-ios/slovnaftbajk/md.png'),
+    lg: require('@icons/map-ios/slovnaftbajk/lg.png'),
+  },
+  rekola: {
+    xs: require('@icons/map-ios/rekola/xs.png'),
+    sm: require('@icons/map-ios/rekola/sm.png'),
+    md: require('@icons/map-ios/rekola/md.png'),
+    lg: require('@icons/map-ios/rekola/lg.png'),
+  },
+  zse: {
+    xs: require('@icons/map-ios/zse/xs.png'),
+    sm: require('@icons/map-ios/zse/sm.png'),
+    md: require('@icons/map-ios/zse/md.png'),
+    lg: require('@icons/map-ios/zse/lg.png'),
+  },
+  bolt: {
+    xs: require('@icons/map-ios/bolt/xs.png'),
+    sm: require('@icons/map-ios/bolt/sm.png'),
+    md: require('@icons/map-ios/bolt/md.png'),
+    lg: require('@icons/map-ios/bolt/lg.png'),
+  },
+}
+
+//#endregion icons
 
 export default function MapScreen() {
   const netInfo = useNetInfo()
@@ -324,7 +367,7 @@ export default function MapScreen() {
 
   const getIcon = useCallback(
     (name: IconType) => {
-      const icons = markerIcons[name]
+      const icons = Platform.OS === 'ios' ? iosIcons[name] : markerIcons[name]
       switch (getZoomLevel(region)) {
         case ZoomLevel.xs:
           return icons.xs
@@ -432,7 +475,7 @@ export default function MapScreen() {
               <Marker
                 key={station.station_id}
                 coordinate={{ latitude: station.lat, longitude: station.lon }}
-                tracksViewChanges
+                tracksViewChanges={false}
                 onPress={() =>
                   operateBottomSheet({
                     micromobilityStation: station,
@@ -449,14 +492,7 @@ export default function MapScreen() {
                     ? getIcon(IconType.slovnaftbajk)
                     : undefined
                 }
-              >
-                {Platform.OS === 'ios' &&
-                  getIosIcon(
-                    bikeProvider === BikeProvider.rekola
-                      ? IconType.rekola
-                      : IconType.slovnaftbajk
-                  )}
-              </Marker>
+              />
             )
             return accumulator.concat(marker)
           }
@@ -602,7 +638,7 @@ export default function MapScreen() {
                 <Marker
                   key={vehicle.bike_id}
                   coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
-                  tracksViewChanges
+                  tracksViewChanges={false}
                   onPress={() =>
                     operateBottomSheet({
                       micromobilityStation: vehicle,
@@ -610,9 +646,7 @@ export default function MapScreen() {
                     })
                   }
                   icon={getIcon(IconType.tier)}
-                >
-                  {Platform.OS === 'ios' && getIosIcon(IconType.tier)}
-                </Marker>
+                />
               )
             })}
         {vehiclesContext.vehicleTypes?.find(
@@ -626,7 +660,7 @@ export default function MapScreen() {
                 <Marker
                   key={vehicle.bike_id}
                   coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
-                  tracksViewChanges
+                  tracksViewChanges={false}
                   onPress={() =>
                     operateBottomSheet({
                       micromobilityStation: vehicle,
@@ -634,9 +668,7 @@ export default function MapScreen() {
                     })
                   }
                   icon={getIcon(IconType.bolt)}
-                >
-                  {Platform.OS === 'ios' && getIosIcon(IconType.bolt)}
-                </Marker>
+                />
               )
             })}
 
@@ -667,12 +699,10 @@ export default function MapScreen() {
                       latitude: charger.coordinates.latitude,
                       longitude: charger.coordinates.longitude,
                     }}
-                    tracksViewChanges
+                    tracksViewChanges={false}
                     icon={getIcon(IconType.zse)}
                     onPress={() => operateBottomSheet({ charger })}
-                  >
-                    {Platform.OS === 'ios' && getIosIcon(IconType.zse)}
-                  </Marker>
+                  />
                 )
                 return accumulator.concat(marker)
               } else return accumulator

@@ -9,29 +9,29 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useState
+  useState,
 } from 'react'
 import {
   Animated,
   ImageURISource,
   Platform,
   StyleSheet,
-  View
+  View,
 } from 'react-native'
-import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
+import MapView, { Marker, Region } from 'react-native-maps'
 
 import {
   useHealthData,
   useRekolaData,
   useSlovnaftbajkData,
-  useTierData
+  useTierData,
 } from '@hooks'
 
 import {
   BOTTOM_VEHICLE_BAR_HEIGHT_ALL,
   ErrorView,
   LoadingView,
-  VehicleBar
+  VehicleBar,
 } from '@components'
 
 import { GlobalStateContext } from '@state/GlobalStateProvider'
@@ -42,7 +42,7 @@ import {
   IconType,
   MicromobilityProvider,
   VehicleType,
-  ZoomLevel
+  ZoomLevel,
 } from '@types'
 import {
   ChargerStationProps,
@@ -52,7 +52,7 @@ import {
   LocalitiesProps,
   MhdStopProps,
   s,
-  StationMicromobilityProps
+  StationMicromobilityProps,
 } from '@utils'
 
 import { BOTTOM_TAB_NAVIGATOR_HEIGHT } from '@components/navigation/TabBar'
@@ -492,6 +492,13 @@ export default function MapScreen() {
                     ? getIcon(IconType.slovnaftbajk)
                     : undefined
                 }
+                image={
+                  bikeProvider === BikeProvider.rekola
+                    ? getIcon(IconType.rekola)
+                    : bikeProvider === BikeProvider.slovnaftbajk
+                    ? getIcon(IconType.slovnaftbajk)
+                    : undefined
+                }
               />
             )
             return accumulator.concat(marker)
@@ -555,7 +562,6 @@ export default function MapScreen() {
     <View style={styles.container}>
       <MapView
         ref={mapRef}
-        provider={PROVIDER_GOOGLE}
         style={styles.map}
         customMapStyle={customMapStyle}
         toolbarEnabled={false}
@@ -575,6 +581,7 @@ export default function MapScreen() {
           left: 0,
         }}
         onMapLoaded={() => SplashScreen.hideAsync()}
+        showsPointsOfInterest={false}
       >
         {vehiclesContext.vehicleTypes?.find(
           (vehicleType) => vehicleType.id === VehicleType.mhd
@@ -592,6 +599,7 @@ export default function MapScreen() {
                 tracksViewChanges
                 onPress={() => operateBottomSheet({ mhd: stop })}
                 icon={getIcon(IconType.mhd)}
+                image={getIcon(IconType.mhd)}
               >
                 {Platform.OS === 'ios' && (
                   <View
@@ -646,6 +654,7 @@ export default function MapScreen() {
                     })
                   }
                   icon={getIcon(IconType.tier)}
+                  image={getIcon(IconType.tier)}
                 />
               )
             })}
@@ -668,6 +677,7 @@ export default function MapScreen() {
                     })
                   }
                   icon={getIcon(IconType.bolt)}
+                  image={getIcon(IconType.bolt)}
                 />
               )
             })}
@@ -701,6 +711,7 @@ export default function MapScreen() {
                     }}
                     tracksViewChanges={false}
                     icon={getIcon(IconType.zse)}
+                    image={getIcon(IconType.zse)}
                     onPress={() => operateBottomSheet({ charger })}
                   />
                 )

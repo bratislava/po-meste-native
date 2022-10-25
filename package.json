@@ -37,6 +37,7 @@
     "expo": "46.0.16",
     "expo-application": "~4.2.2",
     "expo-asset": "~8.6.1",
+    "expo-cli": "^6.0.6",
     "expo-constants": "~13.2.4",
     "expo-device": "~4.3.0",
     "expo-font": "~10.2.0",

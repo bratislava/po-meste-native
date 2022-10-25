@@ -51,6 +51,12 @@ To get Env keys:
 
 For help reach to @mpinter (Martin Pinter) or @Balros (Adam Grund)
 
+### Patch-package note
+
+List of temporary patches & why they are here:
+
+- react-native 0.69.6 - this is to make react-native-maps 0.31.1 work, which is the newest version supported by expo 0.46
+
 ### Note about GOOGLE_PLACES_API_KEY
 
 Since we are using [this library](https://www.npmjs.com/package/react-native-google-places-autocomplete) for Places Autocomplete, we can't restrict the API key to just our bundle - this is not ideal and we may want to change it in the future. It's also the reason why all other google APIs are accessed by the iOs/Android keys, but the Places API is a separate one.

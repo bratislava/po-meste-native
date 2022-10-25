@@ -4,14 +4,13 @@ import { StackScreenProps } from '@react-navigation/stack'
 import i18n from 'i18n-js'
 import React, { useEffect, useRef, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import MapView, { PROVIDER_GOOGLE, Region } from 'react-native-maps'
+import MapView, { Region } from 'react-native-maps'
 
 import { Button } from '@components'
 import { MapParamList } from '@types'
-import { colors, googlePlacesReverseGeocode, s } from '@utils'
+import { colors, googlePlacesReverseGeocode, mapStyles, s } from '@utils'
 
 import MarkerSvg from '@icons/map-pin-marker.svg'
-import { customMapStyle } from './customMapStyle'
 
 const REVERSE_GEOCODING_DEBOUNCE = 200 //ms
 
@@ -67,11 +66,9 @@ export default function ChooseLocation({
     <View style={styles.container}>
       <View style={styles.mapWrapper}>
         <MapView
-          provider={PROVIDER_GOOGLE}
           ref={ref}
           style={styles.map}
-          customMapStyle={customMapStyle}
-          toolbarEnabled={false}
+          {...mapStyles}
           initialRegion={
             (route?.params?.latitude &&
               route?.params?.longitude && {
@@ -79,12 +76,8 @@ export default function ChooseLocation({
                 longitude: route?.params?.longitude,
                 latitudeDelta: 0.0461,
                 longitudeDelta: 0.02105,
-              }) || {
-              latitude: 48.1512015,
-              longitude: 17.1110118,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            }
+              }) ||
+            mapStyles.initialRegion
           }
           onRegionChange={(region) => {
             setRegion(region)

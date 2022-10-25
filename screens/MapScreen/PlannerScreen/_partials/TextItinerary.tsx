@@ -172,19 +172,20 @@ export const TextItinerary = ({
               fill={colors.darkText}
             />
             <View style={styles.textMargin}>
-              {durationMinutes && (
+              {durationMinutes !== undefined && (
                 <Text style={[s.boldText, { fontSize: 14, lineHeight: 14 }]}>
                   {i18n.t('screens.PlannerScreen.minShort', {
                     count: durationMinutes < 1 ? '<1' : durationMinutes,
                   })}
                 </Text>
               )}
-              <Text style={{ fontSize: 14, lineHeight: 14 }}>
-                {leg.distance !== undefined &&
-                  i18n.t('screens.PlannerScreen.distanceShort', {
+              {leg.distance !== undefined && (
+                <Text style={{ fontSize: 14, lineHeight: 14 }}>
+                  {i18n.t('screens.PlannerScreen.distanceShort', {
                     count: Math.floor(leg.distance),
                   })}
-              </Text>
+                </Text>
+              )}
             </View>
           </View>
           <View style={styles.dashedLine}>{getDashedLine()}</View>
@@ -375,6 +376,7 @@ export const TextItinerary = ({
                 {getLastRentedInstanceIndex === index &&
                   renderProviderIconWithText(leg.from.name)}
                 {leg.mode === LegModes.walk &&
+                  // if the last leg is walking and shorter than 1 minute, it does not render
                   !(
                     index === legs.length - 1 &&
                     leg.duration &&

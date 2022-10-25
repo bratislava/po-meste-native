@@ -50,6 +50,7 @@ import {
   getMapPinSize,
   getZoomLevel,
   LocalitiesProps,
+  mapStyles,
   MhdStopProps,
   s,
   StationMicromobilityProps,
@@ -61,8 +62,6 @@ import SearchBar from './_partials/SearchBar'
 import StationChargerInfo from './_partials/StationChargerInfo'
 import StationMhdInfo from './_partials/StationMhdInfo'
 import StationMicromobilityInfo from './_partials/StationMicromobilityInfo'
-
-import { customMapStyle } from '../customMapStyle'
 
 import CurrentLocationButton from '@components/CurrentLocationButton'
 import useBoltData from '@hooks/useBoltData'
@@ -492,14 +491,14 @@ export default function MapScreen() {
                     ? getIcon(IconType.slovnaftbajk)
                     : undefined
                 }
-                image={
-                  bikeProvider === BikeProvider.rekola
-                    ? getIcon(IconType.rekola)
-                    : bikeProvider === BikeProvider.slovnaftbajk
-                    ? getIcon(IconType.slovnaftbajk)
-                    : undefined
-                }
-              />
+              >
+                {Platform.OS === 'ios' &&
+                  getIosIcon(
+                    bikeProvider === BikeProvider.rekola
+                      ? IconType.rekola
+                      : IconType.slovnaftbajk
+                  )}
+              </Marker>
             )
             return accumulator.concat(marker)
           }
@@ -562,15 +561,8 @@ export default function MapScreen() {
     <View style={styles.container}>
       <MapView
         ref={mapRef}
+        {...mapStyles}
         style={styles.map}
-        customMapStyle={customMapStyle}
-        toolbarEnabled={false}
-        initialRegion={{
-          latitude: 48.1512015,
-          longitude: 17.1110118,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
         onRegionChangeComplete={(region) => setRegion(region)}
         showsUserLocation
         showsMyLocationButton={false}
@@ -581,7 +573,6 @@ export default function MapScreen() {
           left: 0,
         }}
         onMapLoaded={() => SplashScreen.hideAsync()}
-        showsPointsOfInterest={false}
       >
         {vehiclesContext.vehicleTypes?.find(
           (vehicleType) => vehicleType.id === VehicleType.mhd
@@ -599,7 +590,6 @@ export default function MapScreen() {
                 tracksViewChanges
                 onPress={() => operateBottomSheet({ mhd: stop })}
                 icon={getIcon(IconType.mhd)}
-                image={getIcon(IconType.mhd)}
               >
                 {Platform.OS === 'ios' && (
                   <View
@@ -654,8 +644,9 @@ export default function MapScreen() {
                     })
                   }
                   icon={getIcon(IconType.tier)}
-                  image={getIcon(IconType.tier)}
-                />
+                >
+                  {Platform.OS === 'ios' && getIosIcon(IconType.tier)}
+                </Marker>
               )
             })}
         {vehiclesContext.vehicleTypes?.find(
@@ -677,8 +668,9 @@ export default function MapScreen() {
                     })
                   }
                   icon={getIcon(IconType.bolt)}
-                  image={getIcon(IconType.bolt)}
-                />
+                >
+                  {Platform.OS === 'ios' && getIosIcon(IconType.bolt)}
+                </Marker>
               )
             })}
 
@@ -713,7 +705,9 @@ export default function MapScreen() {
                     icon={getIcon(IconType.zse)}
                     image={getIcon(IconType.zse)}
                     onPress={() => operateBottomSheet({ charger })}
-                  />
+                  >
+                    {Platform.OS === 'ios' && getIosIcon(IconType.zse)}
+                  </Marker>
                 )
                 return accumulator.concat(marker)
               } else return accumulator

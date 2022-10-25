@@ -98,8 +98,17 @@ export default function SearchFromToScreen({
   )
 
   const handleFavoritePress = (favoriteItem: FavoriteItem) => {
-    if (favoriteItem.place?.data && favoriteItem.place.detail)
+    if (favoriteItem.place?.data && favoriteItem.place.detail) {
       onGooglePlaceChosen(favoriteItem.place.data, favoriteItem.place.detail)
+      return
+    }
+    if (isFavoritePlace(favoriteItem))
+      setModal({
+        type: 'place',
+        favorite: favoriteItem,
+        onConfirm: addOrUpdatePlace,
+        onDelete: !favoriteItem.isHardSetName ? deleteFavorite : undefined,
+      })
   }
 
   const addOrUpdatePlace = (favoritePlace?: FavoriteItem) => {

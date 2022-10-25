@@ -1167,35 +1167,33 @@ export default function Planner(props: PlannerProps) {
           />
         )}
       </ScrollView>
-      {interactionsFinished && (
-        <Portal hostName="MapScreen">
-          <SearchFromToScreen
-            sheetRef={fromBottomSheetRef}
-            getMyLocation={getMyLocation}
-            onGooglePlaceChosen={onGooglePlaceFromChosen}
-            googleInputRef={fromRef}
-            setLocationFromMap={setLocationFromMapFrom}
-            inputPlaceholder={i18n.t(
-              'screens.FromToScreen.Planner.fromPlaceholder'
-            )}
-            initialSnapIndex={-1}
-            favoriteData={favoriteData}
-            setFavoriteData={setFavoriteData}
-          />
-          <SearchFromToScreen
-            sheetRef={toBottomSheetRef}
-            onGooglePlaceChosen={onGooglePlaceToChosen}
-            googleInputRef={toRef}
-            setLocationFromMap={setLocationFromMapTo}
-            inputPlaceholder={i18n.t(
-              'screens.FromToScreen.Planner.toPlaceholder'
-            )}
-            initialSnapIndex={-1}
-            favoriteData={favoriteData}
-            setFavoriteData={setFavoriteData}
-          />
-        </Portal>
-      )}
+      <Portal hostName="MapScreen">
+        <SearchFromToScreen
+          sheetRef={fromBottomSheetRef}
+          getMyLocation={getMyLocation}
+          onGooglePlaceChosen={onGooglePlaceFromChosen}
+          googleInputRef={fromRef}
+          setLocationFromMap={setLocationFromMapFrom}
+          inputPlaceholder={i18n.t(
+            'screens.FromToScreen.Planner.fromPlaceholder'
+          )}
+          initialSnapIndex={-1}
+          favoriteData={favoriteData}
+          setFavoriteData={setFavoriteData}
+        />
+        <SearchFromToScreen
+          sheetRef={toBottomSheetRef}
+          onGooglePlaceChosen={onGooglePlaceToChosen}
+          googleInputRef={toRef}
+          setLocationFromMap={setLocationFromMapTo}
+          inputPlaceholder={i18n.t(
+            'screens.FromToScreen.Planner.toPlaceholder'
+          )}
+          initialSnapIndex={-1}
+          favoriteData={favoriteData}
+          setFavoriteData={setFavoriteData}
+        />
+      </Portal>
       {interactionsFinished && (
         <BottomSheet
           handleIndicatorStyle={s.handleStyle}

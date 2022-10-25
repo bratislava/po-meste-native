@@ -3,7 +3,7 @@ import { StackScreenProps } from '@react-navigation/stack'
 import googlePolyline from 'google-polyline'
 import React, { useMemo, useRef, useState } from 'react'
 import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native'
-import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps'
+import MapView, { Marker, Polyline } from 'react-native-maps'
 
 import {
   BOTTOM_TAB_NAVIGATOR_HEIGHT,
@@ -12,9 +12,11 @@ import {
 import { LegModes, MapParamList } from '@types'
 import {
   aggregateBicycleLegs,
+  colors,
   getColor,
   getHeaderBgColor,
   hexToRgba,
+  mapStyles,
   modeColors,
 } from '@utils'
 
@@ -23,7 +25,6 @@ import { TextItinerary } from './_partials/TextItinerary'
 import CurrentLocationButton from '@components/CurrentLocationButton'
 import CircleIcon from '@icons/map/circle.svg'
 import MapPinIcon from '@icons/map/pin.svg'
-import { customMapStyle } from '../customMapStyle'
 
 /* eslint-disable @typescript-eslint/no-var-requires */
 const circleLarge = require('@icons/map/circle.png')
@@ -71,15 +72,7 @@ export default function PlannerScreen({
       <MapView
         ref={mapRef}
         style={styles.map}
-        customMapStyle={customMapStyle}
-        provider={PROVIDER_GOOGLE}
-        toolbarEnabled={false}
-        initialRegion={{
-          latitude: 48.1512015,
-          longitude: 17.1110118,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
+        {...mapStyles}
         onLayout={() => mapRef.current?.fitToCoordinates(allMarkers)}
         showsUserLocation
         showsMyLocationButton={false}
@@ -102,13 +95,18 @@ export default function PlannerScreen({
           if (leg.legGeometry.points) {
             const latlngs = googlePolyline.decode(leg.legGeometry.points)
             const color = hexToRgba(
-              leg.rentedBike
+              Platform.OS === 'ios' &&
+                (leg.mode === LegModes.bus || leg.mode === LegModes.tram) &&
+                leg.routeColor === '898989'
+                ? colors.primary
+                : leg.rentedBike
                 ? getColor(provider) || '#aaa'
                 : leg.routeColor
                 ? `#${leg.routeColor}`
                 : modeColors[leg.mode || 'DEFAULT'],
-              0.6
+              Platform.OS === 'ios' ? 0.8 : 0.6
             )
+            console.log({ color })
             const marker = (
               <Polyline
                 key={index}

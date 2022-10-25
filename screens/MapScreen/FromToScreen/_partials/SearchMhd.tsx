@@ -6,14 +6,13 @@ import BottomSheet, { TouchableOpacity } from '@gorhom/bottom-sheet'
 import ArrowRightSvg from '@icons/arrow-right.svg'
 import SearchSvg from '@icons/search.svg'
 import MhdStopSvg from '@icons/stop-sign.svg'
-import { customMapStyle } from '@screens/MapScreen/customMapStyle'
 import { markerLabelStyles } from '@screens/MapScreen/MapScreen/MapScreen'
 import StationMhdInfo from '@screens/MapScreen/MapScreen/_partials/StationMhdInfo'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
 import { ZoomLevel } from '@types'
 import { getMhdStopStatusData } from '@utils/api'
 import { s } from '@utils/globalStyles'
-import { colors } from '@utils/theme'
+import { colors, mapStyles } from '@utils/theme'
 import { getMapPinSize, getZoomLevel } from '@utils/utils'
 import { MhdStopProps } from '@utils/validation'
 import i18n from 'i18n-js'
@@ -27,7 +26,7 @@ import React, {
 import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native'
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown'
 import { ScrollView } from 'react-native-gesture-handler'
-import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
+import MapView, { Marker, Region } from 'react-native-maps'
 import { useQuery } from 'react-query'
 import StopPlatformCard from './_partials/StopPlatformCard'
 
@@ -142,7 +141,7 @@ const SearchMhd = () => {
   }, [setStopPlatforms, chosenStop, globalContext.mhdStopsData.data?.stops])
 
   useEffect(() => {
-    fitToCoordinates()
+    animateToPlatforms()
   }, [stopPlatforms])
 
   const renderPlatforms = useCallback(() => {
@@ -178,6 +177,29 @@ const SearchMhd = () => {
     )
   }
 
+  const animateToPlatforms = (iosAnimate = true) => {
+    if (stopPlatforms.length === 0) {
+      return
+    }
+    if (Platform.OS === 'android' || !iosAnimate) {
+      fitToCoordinates()
+      return
+    }
+    const center = stopPlatforms.reduce(
+      (prev, stop) => ({
+        latitude:
+          (prev.latitude + Number.parseFloat(stop.gpsLat)) /
+          (prev.latitude === 0 ? 1 : 2),
+        longitude:
+          (prev.longitude + Number.parseFloat(stop.gpsLon)) /
+          (prev.latitude === 0 ? 1 : 2),
+      }),
+      { latitude: 0, longitude: 0 }
+    )
+    mapRef.current?.animateCamera({ center }, { duration: 1000 })
+    setTimeout(fitToCoordinates, 1000)
+  }
+
   const handleBottomSheetClose = () => {
     setChosenPlatform(undefined)
     setMapHeight(MAP_HEIGHT)
@@ -206,8 +228,8 @@ const SearchMhd = () => {
           left: 20,
         }
       : {
-          bottom: 0,
-          top: 50,
+          bottom: Platform.OS === 'ios' ? 10 : 0,
+          top: Platform.OS === 'ios' ? 20 : 50,
           right: 0,
           left: 0,
         }
@@ -220,20 +242,12 @@ const SearchMhd = () => {
       >
         <MapView
           ref={mapRef}
-          provider={PROVIDER_GOOGLE}
           style={{ height: mapHeight }}
-          customMapStyle={customMapStyle}
-          toolbarEnabled={false}
-          initialRegion={{
-            latitude: 48.1512015,
-            longitude: 17.1110118,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
+          {...mapStyles}
           onRegionChangeComplete={(region) => setRegion(region)}
           showsMyLocationButton={false}
           mapPadding={mapPadding}
-          onLayout={() => fitToCoordinates()}
+          onLayout={() => animateToPlatforms(false)}
         >
           {stopPlatforms &&
             stopPlatforms.map((stop) => (

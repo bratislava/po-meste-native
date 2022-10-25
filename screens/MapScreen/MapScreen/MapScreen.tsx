@@ -136,44 +136,44 @@ const markerIcons: { [index: string]: markerIcon } = {
   },
 }
 
-const iosIcons: { [index: string]: markerIcon } = {
-  mhd: {
-    xs: require('@icons/map-ios/mhd/xs.png'),
-    sm: require('@icons/map-ios/mhd/sm.png'),
-    md: require('@icons/map-ios/mhd/md.png'),
-    lg: require('@icons/map-ios/mhd/lg.png'),
-  },
-  tier: {
-    xs: require('@icons/map-ios/tier/xs.png'),
-    sm: require('@icons/map-ios/tier/sm.png'),
-    md: require('@icons/map-ios/tier/md.png'),
-    lg: require('@icons/map-ios/tier/lg.png'),
-  },
-  slovnaftbajk: {
-    xs: require('@icons/map-ios/slovnaftbajk/xs.png'),
-    sm: require('@icons/map-ios/slovnaftbajk/sm.png'),
-    md: require('@icons/map-ios/slovnaftbajk/md.png'),
-    lg: require('@icons/map-ios/slovnaftbajk/lg.png'),
-  },
-  rekola: {
-    xs: require('@icons/map-ios/rekola/xs.png'),
-    sm: require('@icons/map-ios/rekola/sm.png'),
-    md: require('@icons/map-ios/rekola/md.png'),
-    lg: require('@icons/map-ios/rekola/lg.png'),
-  },
-  zse: {
-    xs: require('@icons/map-ios/zse/xs.png'),
-    sm: require('@icons/map-ios/zse/sm.png'),
-    md: require('@icons/map-ios/zse/md.png'),
-    lg: require('@icons/map-ios/zse/lg.png'),
-  },
-  bolt: {
-    xs: require('@icons/map-ios/bolt/xs.png'),
-    sm: require('@icons/map-ios/bolt/sm.png'),
-    md: require('@icons/map-ios/bolt/md.png'),
-    lg: require('@icons/map-ios/bolt/lg.png'),
-  },
-}
+// const iosIcons: { [index: string]: markerIcon } = {
+//   mhd: {
+//     xs: require('@icons/map-ios/mhd/xs.png'),
+//     sm: require('@icons/map-ios/mhd/sm.png'),
+//     md: require('@icons/map-ios/mhd/md.png'),
+//     lg: require('@icons/map-ios/mhd/lg.png'),
+//   },
+//   tier: {
+//     xs: require('@icons/map-ios/tier/xs.png'),
+//     sm: require('@icons/map-ios/tier/sm.png'),
+//     md: require('@icons/map-ios/tier/md.png'),
+//     lg: require('@icons/map-ios/tier/lg.png'),
+//   },
+//   slovnaftbajk: {
+//     xs: require('@icons/map-ios/slovnaftbajk/xs.png'),
+//     sm: require('@icons/map-ios/slovnaftbajk/sm.png'),
+//     md: require('@icons/map-ios/slovnaftbajk/md.png'),
+//     lg: require('@icons/map-ios/slovnaftbajk/lg.png'),
+//   },
+//   rekola: {
+//     xs: require('@icons/map-ios/rekola/xs.png'),
+//     sm: require('@icons/map-ios/rekola/sm.png'),
+//     md: require('@icons/map-ios/rekola/md.png'),
+//     lg: require('@icons/map-ios/rekola/lg.png'),
+//   },
+//   zse: {
+//     xs: require('@icons/map-ios/zse/xs.png'),
+//     sm: require('@icons/map-ios/zse/sm.png'),
+//     md: require('@icons/map-ios/zse/md.png'),
+//     lg: require('@icons/map-ios/zse/lg.png'),
+//   },
+//   bolt: {
+//     xs: require('@icons/map-ios/bolt/xs.png'),
+//     sm: require('@icons/map-ios/bolt/sm.png'),
+//     md: require('@icons/map-ios/bolt/md.png'),
+//     lg: require('@icons/map-ios/bolt/lg.png'),
+//   },
+// }
 
 //#endregion icons
 
@@ -366,7 +366,7 @@ export default function MapScreen() {
 
   const getIcon = useCallback(
     (name: IconType) => {
-      const icons = Platform.OS === 'ios' ? iosIcons[name] : markerIcons[name]
+      const icons = markerIcons[name]
       switch (getZoomLevel(region)) {
         case ZoomLevel.xs:
           return icons.xs

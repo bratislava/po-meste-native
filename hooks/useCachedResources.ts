@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons'
 import * as Font from 'expo-font'
 import * as SplashScreen from 'expo-splash-screen'
 import * as React from 'react'
+import { Platform } from 'react-native'
 
 export default function useCachedResources() {
   const [isLoadingComplete, setLoadingComplete] = React.useState(false)
@@ -24,6 +25,7 @@ export default function useCachedResources() {
         // We might want to provide this error information to an error reporting service
         console.warn(e)
       } finally {
+        if (Platform.OS === 'ios') SplashScreen.hideAsync()
         setLoadingComplete(true)
       }
     }

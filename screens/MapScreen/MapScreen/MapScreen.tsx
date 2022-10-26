@@ -18,7 +18,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native'
-import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
+import MapView, { Marker, Region } from 'react-native-maps'
 
 import {
   useHealthData,
@@ -50,6 +50,7 @@ import {
   getMapPinSize,
   getZoomLevel,
   LocalitiesProps,
+  mapStyles,
   MhdStopProps,
   s,
   StationMicromobilityProps,
@@ -61,8 +62,6 @@ import SearchBar from './_partials/SearchBar'
 import StationChargerInfo from './_partials/StationChargerInfo'
 import StationMhdInfo from './_partials/StationMhdInfo'
 import StationMicromobilityInfo from './_partials/StationMicromobilityInfo'
-
-import { customMapStyle } from '../customMapStyle'
 
 import CurrentLocationButton from '@components/CurrentLocationButton'
 import useBoltData from '@hooks/useBoltData'
@@ -88,6 +87,8 @@ const VEHICLE_BAR_SHEET_HEIGHT_COLLAPSED = BOTTOM_TAB_NAVIGATOR_HEIGHT + 70
 const VEHICLE_BAR_SHEET_HEIGHT_EXPANDED = BOTTOM_TAB_NAVIGATOR_HEIGHT + 195 // + 195 for 2 rows
 
 const SPACING = 7.5
+
+//#region icons
 
 type markerIcon = {
   xs: ImageURISource
@@ -134,6 +135,47 @@ const markerIcons: { [index: string]: markerIcon } = {
     lg: require('@icons/map/bolt/lg.png'),
   },
 }
+
+// const iosIcons: { [index: string]: markerIcon } = {
+//   mhd: {
+//     xs: require('@icons/map-ios/mhd/xs.png'),
+//     sm: require('@icons/map-ios/mhd/sm.png'),
+//     md: require('@icons/map-ios/mhd/md.png'),
+//     lg: require('@icons/map-ios/mhd/lg.png'),
+//   },
+//   tier: {
+//     xs: require('@icons/map-ios/tier/xs.png'),
+//     sm: require('@icons/map-ios/tier/sm.png'),
+//     md: require('@icons/map-ios/tier/md.png'),
+//     lg: require('@icons/map-ios/tier/lg.png'),
+//   },
+//   slovnaftbajk: {
+//     xs: require('@icons/map-ios/slovnaftbajk/xs.png'),
+//     sm: require('@icons/map-ios/slovnaftbajk/sm.png'),
+//     md: require('@icons/map-ios/slovnaftbajk/md.png'),
+//     lg: require('@icons/map-ios/slovnaftbajk/lg.png'),
+//   },
+//   rekola: {
+//     xs: require('@icons/map-ios/rekola/xs.png'),
+//     sm: require('@icons/map-ios/rekola/sm.png'),
+//     md: require('@icons/map-ios/rekola/md.png'),
+//     lg: require('@icons/map-ios/rekola/lg.png'),
+//   },
+//   zse: {
+//     xs: require('@icons/map-ios/zse/xs.png'),
+//     sm: require('@icons/map-ios/zse/sm.png'),
+//     md: require('@icons/map-ios/zse/md.png'),
+//     lg: require('@icons/map-ios/zse/lg.png'),
+//   },
+//   bolt: {
+//     xs: require('@icons/map-ios/bolt/xs.png'),
+//     sm: require('@icons/map-ios/bolt/sm.png'),
+//     md: require('@icons/map-ios/bolt/md.png'),
+//     lg: require('@icons/map-ios/bolt/lg.png'),
+//   },
+// }
+
+//#endregion icons
 
 export default function MapScreen() {
   const netInfo = useNetInfo()
@@ -432,7 +474,7 @@ export default function MapScreen() {
               <Marker
                 key={station.station_id}
                 coordinate={{ latitude: station.lat, longitude: station.lon }}
-                tracksViewChanges
+                tracksViewChanges={false}
                 onPress={() =>
                   operateBottomSheet({
                     micromobilityStation: station,
@@ -519,16 +561,8 @@ export default function MapScreen() {
     <View style={styles.container}>
       <MapView
         ref={mapRef}
-        provider={PROVIDER_GOOGLE}
+        {...mapStyles}
         style={styles.map}
-        customMapStyle={customMapStyle}
-        toolbarEnabled={false}
-        initialRegion={{
-          latitude: 48.1512015,
-          longitude: 17.1110118,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
         onRegionChangeComplete={(region) => setRegion(region)}
         showsUserLocation
         showsMyLocationButton={false}
@@ -602,7 +636,7 @@ export default function MapScreen() {
                 <Marker
                   key={vehicle.bike_id}
                   coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
-                  tracksViewChanges
+                  tracksViewChanges={false}
                   onPress={() =>
                     operateBottomSheet({
                       micromobilityStation: vehicle,
@@ -626,7 +660,7 @@ export default function MapScreen() {
                 <Marker
                   key={vehicle.bike_id}
                   coordinate={{ latitude: vehicle.lat, longitude: vehicle.lon }}
-                  tracksViewChanges
+                  tracksViewChanges={false}
                   onPress={() =>
                     operateBottomSheet({
                       micromobilityStation: vehicle,
@@ -667,8 +701,9 @@ export default function MapScreen() {
                       latitude: charger.coordinates.latitude,
                       longitude: charger.coordinates.longitude,
                     }}
-                    tracksViewChanges
+                    tracksViewChanges={false}
                     icon={getIcon(IconType.zse)}
+                    image={getIcon(IconType.zse)}
                     onPress={() => operateBottomSheet({ charger })}
                   >
                     {Platform.OS === 'ios' && getIosIcon(IconType.zse)}

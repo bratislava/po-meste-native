@@ -1,3 +1,6 @@
+import { customMapStyle } from '@screens/MapScreen/customMapStyle'
+import { MapViewProps } from 'react-native-maps'
+
 export const colors = {
   primary: '#FF5D52',
   secondary: '#F8D7D4',
@@ -32,4 +35,16 @@ export const inputSelectionColor = colors.primary
 
 export const mhdDefaultColors = {
   grey: '#9E9E9E',
+}
+
+export const mapStyles: MapViewProps = {
+  customMapStyle: customMapStyle,
+  toolbarEnabled: false,
+  initialRegion: {
+    latitude: 48.1512015,
+    longitude: 17.1110118,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  },
+  showsPointsOfInterest: false,
 }

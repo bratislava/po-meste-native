@@ -47,6 +47,7 @@ import {
 import {
   ChargerStationProps,
   FreeBikeStatusProps,
+  FreeBikeStatusScooterProps,
   getMapPinSize,
   getZoomLevel,
   LocalitiesProps,
@@ -64,7 +65,6 @@ import StationMhdInfo from './_partials/StationMhdInfo'
 import StationMicromobilityInfo from './_partials/StationMicromobilityInfo'
 
 import CurrentLocationButton from '@components/CurrentLocationButton'
-import useBoltData from '@hooks/useBoltData'
 import { colors } from '@utils'
 
 import * as SplashScreen from 'expo-splash-screen'
@@ -216,7 +216,7 @@ export default function MapScreen() {
     isLoading: isLoadingBolt,
     errors: errorsBolt,
     refetch: refetchBolt,
-  } = useBoltData()
+  } = vehiclesContext.boltData
   const { data: healthData, error: healthError } = useHealthData()
   const providerStatus = healthData?.dependencyResponseStatus
 
@@ -430,7 +430,7 @@ export default function MapScreen() {
   )
 
   const filterScootersInView = useCallback(
-    (data: FreeBikeStatusProps[]) => {
+    (data: FreeBikeStatusScooterProps[]) => {
       if (region) {
         const inRange = data.filter((stop) => {
           if (stop.lat && stop.lon) {
@@ -629,7 +629,7 @@ export default function MapScreen() {
           (vehicleType) => vehicleType.id === VehicleType.scooter
         )?.show &&
           dataTier &&
-          filterScootersInView(dataTier)
+          filterScootersInView(dataTier.bikes)
             .filter(filterScooterAmount)
             .map((vehicle) => {
               return (
@@ -653,7 +653,7 @@ export default function MapScreen() {
           (vehicleType) => vehicleType.id === VehicleType.scooter
         )?.show &&
           dataBolt &&
-          filterScootersInView(dataBolt)
+          filterScootersInView(dataBolt.bikes)
             .filter(filterScooterAmount)
             .map((vehicle) => {
               return (

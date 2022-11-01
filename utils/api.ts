@@ -24,7 +24,7 @@ import {
 } from './validation'
 
 const host = 'planner.bratislava.sk'
-const dataHostUrl = 'http://192.168.0.100:8000' || `https://live.${host}`
+const dataHostUrl = `https://live.${host}`
 const otpPlannerUrl = `https://api.${host}/otp/routers/default/plan` // TODO use otp.planner.bratislava.sk
 
 // we should throw throwables only, so it's useful to extend Error class to contain useful info

@@ -162,7 +162,7 @@ export const getTripPlanner = async (
       toPlace: to,
       time: zonedTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
       mode: mode,
-      maxWalkDistance: '4828.032',
+      maxWalkDistance: mode === TravelModesOtpApi.walk ? 10000 : 890, // was '4828.032'
       arriveBy: arriveBy,
       wheelchair: wheelchair,
       debugItineraryFilter: wheelchair.toString(),

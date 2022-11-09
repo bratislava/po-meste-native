@@ -160,6 +160,7 @@ const VehicleFilterTouchable = ({
         key={id}
         underlayColor="#000000"
         style={styles.icon}
+        containerStyle={styles.icon}
         onPress={() => onVehicleClick(id)}
         onPressIn={() => setIsPressed(true)}
         onPressOut={() => setIsPressed(false)}

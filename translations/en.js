@@ -251,7 +251,7 @@ export default {
         disconnected: 'Please connect to the internet to use this feature.',
         plannerUnsupportedArea:
           'It seems that you are trying to plan a journey outside the supported area.\nTry adjusting search criteria to find a route you are looking for. ',
-        plannerNoRoute: 'No route found.',
+        plannerNoRoute: 'No suitable{{provider}} route found.',
         mapUnsupportedArea: 'Your location is outside of Bratislava.',
       },
     },

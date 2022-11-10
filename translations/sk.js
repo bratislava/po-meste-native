@@ -254,7 +254,8 @@ export default {
           'Pripojte sa, prosím, na internet – ak chcete používať túto funkcionalitu.',
         plannerUnsupportedArea:
           'Vyzerá to, že hľadáte trasu z miesta, ktoré aplikácia nepodporuje.\nSkúste zvoliť iné východzie miesto.',
-        plannerNoRoute: 'Žiaľ, nenašli sme pre vás žiadnu vhodnú trasu.',
+        plannerNoRoute:
+          'Žiaľ, nenašli sme pre vás žiadnu vhodnú{{provider}} trasu.',
         mapUnsupportedArea: 'Vaša poloha je mimo Bratislavy.',
       },
     },

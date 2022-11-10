@@ -5,7 +5,7 @@ import {
   DateTimeFormatter,
   Duration,
   Instant,
-  LocalDateTime,
+  LocalDateTime
 } from '@js-joda/core'
 import { useNavigation } from '@react-navigation/native'
 import * as Location from 'expo-location'
@@ -16,7 +16,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useState,
+  useState
 } from 'react'
 import {
   FlatList,
@@ -24,12 +24,12 @@ import {
   Platform,
   StyleSheet,
   Switch,
-  View,
+  View
 } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import {
   GooglePlaceDetail,
-  GooglePlacesAutocompleteRef,
+  GooglePlacesAutocompleteRef
 } from 'react-native-google-places-autocomplete'
 import { useQuery } from 'react-query'
 
@@ -43,7 +43,7 @@ import {
   getPriceFromItinerary,
   getTripPlanner,
   OtpPlannerProps,
-  s,
+  s
 } from '@utils'
 
 import { ErrorView } from '@components'
@@ -54,12 +54,11 @@ import {
   FavoriteData,
   GooglePlaceDataCorrected,
   ItinerariesWithProvider,
-  LegModes,
   MicromobilityProvider,
   ScheduleType,
   TravelModes,
   TravelModesOtpApi,
-  VehicleData,
+  VehicleData
 } from '@types'
 import defaultFavoriteData from '../../defaultFavoriteData.json'
 
@@ -255,12 +254,12 @@ export default function Planner(props: PlannerProps) {
         undefined,
         accessibleOnly
       )
-      mhdData.plan.itineraries = mhdData?.plan?.itineraries?.filter(
-        (trip) =>
-          trip.legs?.findIndex(
-            (leg) => leg.mode === LegModes.bus || leg.mode === LegModes.tram
-          ) !== -1
-      )
+      // mhdData.plan.itineraries = mhdData?.plan?.itineraries?.filter(
+      //   (trip) =>
+      //     trip.legs?.findIndex(
+      //       (leg) => leg.mode === LegModes.bus || leg.mode === LegModes.tram
+      //     ) !== -1
+      // )
       return mhdData
     },
     { enabled: fromCoordinates && toCoordinates ? true : false }
@@ -729,17 +728,18 @@ export default function Planner(props: PlannerProps) {
     if (!isLoading && error)
       return (
         <View>
-          {error &&
-            renderError({
-              error: error,
-              errorType: 'dataPlannerTrip',
-              provider,
-              action: refetch,
-            })}
-          {data &&
-            data.plan?.itineraries?.length === 0 &&
-            renderError({ errorType: 'plannerNoRoute', provider })}
+          {renderError({
+            error: error,
+            errorType: 'dataPlannerTrip',
+            provider,
+            action: refetch,
+          })}
         </View>
+      )
+
+    if (!isLoading && data && data.plan?.itineraries?.length === 0)
+      return (
+        <View>{renderError({ errorType: 'plannerNoRoute', provider })}</View>
       )
 
     return (
@@ -751,53 +751,44 @@ export default function Planner(props: PlannerProps) {
           // first result for TRANSIT trip is often walking whole trip,
           // when the trip distance is smaller than the 'maxWalkDistance'
 
-          // alternative is to reduce walking distance in request 'maxWalkDistance' http://dev.opentripplanner.org/apidoc/1.4.0/resource_PlannerResource.html
-          if (
-            selectedVehicle === TravelModes.mhd &&
-            index === 0 &&
-            tripChoice.legs?.findIndex(
-              (leg) => leg.mode === LegModes.bus || leg.mode === LegModes.tram
-            ) === -1
-          ) {
-            return undefined
-          } else
-            return (
-              <TripMiniature
-                key={index}
-                onPress={() =>
-                  navigation.navigate(
-                    'PlannerScreen' as never,
-                    {
-                      legs: tripChoice?.legs,
-                      provider: provider,
-                      isScooter: selectedVehicle === TravelModes.scooter,
-                      travelMode: selectedVehicle,
-                      fromPlace: fromName,
-                      toPlace: toName,
-                      price: getPriceFromItinerary(
-                        tripChoice,
-                        selectedVehicle,
-                        provider
-                      ),
-                    } as never
-                  )
-                }
-                provider={provider}
-                duration={Math.round(tripChoice.duration / 60)}
-                departureDateTime={LocalDateTime.ofInstant(
-                  Instant.ofEpochMilli(tripChoice.startTime)
-                )}
-                arriveDateTime={LocalDateTime.ofInstant(
-                  Instant.ofEpochMilli(tripChoice.endTime)
-                )}
-                legs={
-                  tripChoice.legs
-                    ? aggregateBicycleLegs(tripChoice.legs)
-                    : undefined
-                }
-                isScooter={selectedVehicle === TravelModes.scooter}
-              />
-            )
+          // alternative is to reduce walking distance in request 'maxWalkDistance' http://dev.opentripplanner.org/apidoc/1.4.0/resource_PlannerResource.html{
+          return (
+            <TripMiniature
+              key={index}
+              onPress={() =>
+                navigation.navigate(
+                  'PlannerScreen' as never,
+                  {
+                    legs: tripChoice?.legs,
+                    provider: provider,
+                    isScooter: selectedVehicle === TravelModes.scooter,
+                    travelMode: selectedVehicle,
+                    fromPlace: fromName,
+                    toPlace: toName,
+                    price: getPriceFromItinerary(
+                      tripChoice,
+                      selectedVehicle,
+                      provider
+                    ),
+                  } as never
+                )
+              }
+              provider={provider}
+              duration={Math.round(tripChoice.duration / 60)}
+              departureDateTime={LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(tripChoice.startTime)
+              )}
+              arriveDateTime={LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(tripChoice.endTime)
+              )}
+              legs={
+                tripChoice.legs
+                  ? aggregateBicycleLegs(tripChoice.legs)
+                  : undefined
+              }
+              isScooter={selectedVehicle === TravelModes.scooter}
+            />
+          )
         })}
       </>
     )
@@ -817,7 +808,9 @@ export default function Planner(props: PlannerProps) {
     return (
       <ErrorView
         error={error}
-        errorMessage={i18n.t(`components.ErrorView.errors.${errorType}`)}
+        errorMessage={i18n.t(`components.ErrorView.errors.${errorType}`, {
+          provider: provider ? ` ${provider}` : '',
+        })}
         action={action}
         plainStyle
       />

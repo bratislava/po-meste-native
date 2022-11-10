@@ -36,7 +36,7 @@ export enum LegModes {
   bus = 'BUS',
   walk = 'WALK',
   bicycle = 'BICYCLE',
-  scooter = '',
+  scooter = 'SCOOTER',
 }
 
 export enum ChargerStatus {

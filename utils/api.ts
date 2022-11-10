@@ -9,6 +9,7 @@ import '@js-joda/timezone'
 import * as Sentry from '@sentry/react-native'
 import {
   GooglePlacesResult,
+  LegModes,
   MicromobilityProvider,
   TravelModesOtpApi,
 } from '@types'
@@ -148,10 +149,10 @@ export const getTripPlanner = async (
   dateTime: LocalDateTime,
   arriveBy: boolean,
   mode: TravelModesOtpApi = TravelModesOtpApi.transit,
-  plannerApi?: MicromobilityProvider,
+  provider?: MicromobilityProvider,
   wheelchair = false
 ) => {
-  if (plannerApi === MicromobilityProvider.tier) {
+  if (provider === MicromobilityProvider.tier) {
     dateTime = dateTime.plusHours(24)
   }
   const zonedTime = ZonedDateTime.of(dateTime, ZoneId.of('Europe/Bratislava'))
@@ -167,13 +168,36 @@ export const getTripPlanner = async (
       wheelchair: wheelchair,
       debugItineraryFilter: wheelchair.toString(),
       locale: 'en',
-      allowedVehicleRentalNetworks: plannerApi?.toLowerCase(),
+      allowedVehicleRentalNetworks: provider?.toLowerCase(),
     },
     { addQueryPrefix: true }
   )
-  return apiOtpPlanner.validateSync(
+
+  const validatedData = apiOtpPlanner.validateSync(
     await fetchJsonFromOtpApi(otpPlannerUrl, data)
   )
+
+  const filteredTrips = validatedData.plan.itineraries?.filter(
+    (tripChoice, index) => {
+      const shouldBeExcluded =
+        (provider &&
+          tripChoice.legs?.findIndex((leg) =>
+            mode === TravelModesOtpApi.rented
+              ? leg.mode === LegModes.bicycle || leg.mode === LegModes.scooter
+              : true
+          ) === -1) ||
+        (mode === TravelModesOtpApi.transit &&
+          index === 0 &&
+          tripChoice.legs?.findIndex(
+            (leg) => leg.mode === LegModes.bus || leg.mode === LegModes.tram
+          ) === -1)
+      return !shouldBeExcluded
+    }
+  )
+
+  validatedData.plan.itineraries = filteredTrips
+
+  return validatedData
 }
 
 export const googlePlacesReverseGeocode = (

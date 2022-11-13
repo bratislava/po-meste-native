@@ -106,7 +106,6 @@ export default function PlannerScreen({
                 : modeColors[leg.mode || 'DEFAULT'],
               Platform.OS === 'ios' ? 0.8 : 0.6
             )
-            console.log({ color })
             const marker = (
               <Polyline
                 key={index}

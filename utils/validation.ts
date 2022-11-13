@@ -218,6 +218,7 @@ const leg = yup.object().shape({
     stopId: yup.string(), //'1:000000008700002',
     stopIndex: yup.number(), //18,
     zoneId: yup.string(), //'100',
+    bikeShareId: yup.string(),
   }),
   to: yup.object().shape({
     name: yup.string(), //"corner of sidewalk and service road",

@@ -41,6 +41,7 @@ import {
   LegProps,
   s,
 } from '@utils'
+import { SvgProps } from 'react-native-svg'
 import MhdTransitCard from './_partials/MhdTransitCard'
 
 interface TextItineraryProps {
@@ -82,7 +83,6 @@ export const TextItinerary = ({
     }
   }, [])
 
-  const ProviderIcon = provider && getIcon(provider, isScooter)
   const title = provider && getProviderName(provider)
   const getHeaderIcon = (
     provider: MicromobilityProvider | undefined,
@@ -139,7 +139,10 @@ export const TextItinerary = ({
     return <DashedLine spacing={4} dashLength={2} color={colors.darkText} />
   }
 
-  const renderProviderIconWithText = (text?: string) => {
+  const renderProviderIconWithText = (
+    text?: string,
+    ProviderIcon?: React.FC<SvgProps>
+  ) => {
     return (
       <View style={[styles.card, s.horizontalMargin]}>
         <View style={styles.left}>
@@ -371,10 +374,12 @@ export const TextItinerary = ({
                     )}
                   </View>
                 )}
-                {getFirstRentedInstanceIndex === index &&
-                  renderProviderIconWithText(leg.from.name)}
-                {getLastRentedInstanceIndex === index &&
-                  renderProviderIconWithText(leg.from.name)}
+                {(getFirstRentedInstanceIndex === index ||
+                  getLastRentedInstanceIndex === index) &&
+                  renderProviderIconWithText(
+                    leg.from.name,
+                    getIcon(provider, isScooter, leg.from.bikeShareId)
+                  )}
                 {leg.mode === LegModes.walk &&
                   // if the last leg is walking and shorter than 1 minute, it does not render
                   !(

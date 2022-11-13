@@ -32,6 +32,7 @@ type Props = {
   onPress?: () => void
   isLoading?: boolean
   isScooter?: boolean
+  isMultimodal?: boolean
 }
 
 const TripMiniature = ({
@@ -43,6 +44,7 @@ const TripMiniature = ({
   onPress,
   isLoading,
   isScooter,
+  isMultimodal = false,
 }: Props) => {
   const [startStationName, setStartStationName] = useState('')
   const [diffMinutes, setDiffMinutes] = useState<number | undefined>(undefined)
@@ -130,6 +132,7 @@ const TripMiniature = ({
                     if (index === legs.length - 1 && ignoreLastShortWalk) {
                       return null
                     }
+                    console.log({ stationId: leg.from })
                     return (
                       <Leg
                         key={index}
@@ -140,7 +143,11 @@ const TripMiniature = ({
                         duration={leg.duration}
                         color={leg.routeColor}
                         shortName={leg.routeShortName}
-                        TransportIcon={getIcon(provider, isScooter)}
+                        TransportIcon={getIcon(
+                          provider,
+                          isScooter,
+                          leg.from.bikeShareId
+                        )}
                       />
                     )
                   })}
@@ -200,7 +207,16 @@ const TripMiniature = ({
                     )}`}
                 </Text>
               </View>
-              <View style={styles.rightContainerBackground}></View>
+              <View
+                style={[
+                  styles.rightContainerBackground,
+                  {
+                    backgroundColor: isMultimodal
+                      ? colors.gold
+                      : colors.lightGray,
+                  },
+                ]}
+              ></View>
             </View>
           </View>
         </View>
@@ -256,7 +272,6 @@ const styles = StyleSheet.create({
     top: -100,
     bottom: -100,
     left: 20,
-    backgroundColor: colors.lightGray,
     transform: [{ rotate: '15deg' }, { scale: 1.6 }],
   },
   legsContainer: {

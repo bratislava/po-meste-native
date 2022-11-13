@@ -29,6 +29,7 @@ export const colors = {
   available: '#5DB56E',
   ownVehicleHeaderColor: '#8D8D8D',
   brightGreen: '#ADCD00',
+  gold: '#FFC700',
 }
 
 export const inputSelectionColor = colors.primary

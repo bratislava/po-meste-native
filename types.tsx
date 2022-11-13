@@ -29,6 +29,7 @@ export enum TravelModesOtpApi {
   rented = 'WALK,BICYCLE_RENT',
   scooter = 'BICYCLE',
   walk = 'WALK',
+  multimodal = 'TRANSIT,BICYCLE_RENT,WALK',
 }
 
 export enum LegModes {

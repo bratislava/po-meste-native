@@ -75,6 +75,11 @@ const fetchJsonFromApi = async (path: string, options?: RequestInit) => {
 }
 
 const fetchJsonFromOtpApi = async (plannerAddress: string, path: string) => {
+  console.log(
+    '%s\x1b[95m%s\x1b[0m',
+    `[${formatTimestamp(new Date())}] `,
+    `Fetched from '${plannerAddress}${path}'`
+  )
   const response = await fetch(`${plannerAddress}${path}`)
   if (response.ok) {
     return response.json()
@@ -168,6 +173,7 @@ export const getTripPlanner = async (
       wheelchair: wheelchair,
       debugItineraryFilter: wheelchair.toString(),
       locale: 'en',
+      numItineraries: mode === TravelModesOtpApi.multimodal ? undefined : 6,
       allowedVehicleRentalNetworks: provider?.toLowerCase(),
     },
     { addQueryPrefix: true }
@@ -190,12 +196,23 @@ export const getTripPlanner = async (
           index === 0 &&
           tripChoice.legs?.findIndex(
             (leg) => leg.mode === LegModes.bus || leg.mode === LegModes.tram
-          ) === -1)
+          ) === -1) ||
+        (mode === TravelModesOtpApi.multimodal &&
+          (tripChoice.legs?.findIndex(
+            (leg) => leg.mode === LegModes.bus || leg.mode === LegModes.tram
+          ) === -1 ||
+            tripChoice.legs?.findIndex(
+              (leg) =>
+                leg.mode === LegModes.bicycle || leg.mode === LegModes.scooter
+            ) === -1))
       return !shouldBeExcluded
     }
   )
 
-  validatedData.plan.itineraries = filteredTrips
+  validatedData.plan.itineraries =
+    mode === TravelModesOtpApi.multimodal
+      ? filteredTrips?.slice(0, 5)
+      : filteredTrips
 
   return validatedData
 }

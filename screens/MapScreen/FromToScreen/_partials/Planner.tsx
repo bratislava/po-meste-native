@@ -5,7 +5,7 @@ import {
   DateTimeFormatter,
   Duration,
   Instant,
-  LocalDateTime
+  LocalDateTime,
 } from '@js-joda/core'
 import { useNavigation } from '@react-navigation/native'
 import * as Location from 'expo-location'
@@ -16,20 +16,20 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useState
+  useState,
 } from 'react'
 import {
-  FlatList,
   InteractionManager,
   Platform,
+  SectionList,
   StyleSheet,
   Switch,
-  View
+  View,
 } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import {
   GooglePlaceDetail,
-  GooglePlacesAutocompleteRef
+  GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete'
 import { useQuery } from 'react-query'
 
@@ -43,7 +43,7 @@ import {
   getPriceFromItinerary,
   getTripPlanner,
   OtpPlannerProps,
-  s
+  s,
 } from '@utils'
 
 import { ErrorView } from '@components'
@@ -58,7 +58,7 @@ import {
   ScheduleType,
   TravelModes,
   TravelModesOtpApi,
-  VehicleData
+  VehicleData,
 } from '@types'
 import defaultFavoriteData from '../../defaultFavoriteData.json'
 
@@ -254,13 +254,37 @@ export default function Planner(props: PlannerProps) {
         undefined,
         accessibleOnly
       )
-      // mhdData.plan.itineraries = mhdData?.plan?.itineraries?.filter(
-      //   (trip) =>
-      //     trip.legs?.findIndex(
-      //       (leg) => leg.mode === LegModes.bus || leg.mode === LegModes.tram
-      //     ) !== -1
-      // )
       return mhdData
+    },
+    { enabled: fromCoordinates && toCoordinates ? true : false }
+  )
+
+  const {
+    data: dataMultimodal,
+    isLoading: isLoadingMultimodal,
+    error: errorMultimodal,
+    refetch: refetchMultimodal,
+  } = useQuery(
+    [
+      'getOtpDataMultimodal',
+      fromCoordinates,
+      toCoordinates,
+      dateTime,
+      scheduledTime,
+      accessibleOnly,
+    ],
+    async () => {
+      if (!fromCoordinates || !toCoordinates) return
+      const multimodalData = await getTripPlanner(
+        `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+        `${toCoordinates.latitude},${toCoordinates.longitude}`,
+        dateTime,
+        scheduledTime === ScheduleType.arrival,
+        TravelModesOtpApi.multimodal,
+        undefined,
+        accessibleOnly
+      )
+      return multimodalData
     },
     { enabled: fromCoordinates && toCoordinates ? true : false }
   )
@@ -1086,8 +1110,19 @@ export default function Planner(props: PlannerProps) {
           )} */}
           </ScrollView>
         ) : (
-          <FlatList
-            data={dataMhd?.plan?.itineraries}
+          <SectionList
+            sections={[
+              {
+                title: i18n.t('screens.FromToScreen.Planner.transit'),
+                data: dataMhd?.plan?.itineraries ?? [],
+              },
+              {
+                title:
+                  'Multimodálna doprava' ??
+                  i18n.t('screens.FromToScreen.Planner.transit'),
+                data: dataMultimodal?.plan?.itineraries ?? [],
+              },
+            ]}
             contentContainerStyle={[
               styles.scrollView,
               !dataMhd?.plan?.itineraries && {
@@ -1113,48 +1148,43 @@ export default function Planner(props: PlannerProps) {
                   renderError({ errorType: 'plannerNoRoute', provider: 'MHD' })}
               </View>
             }
-            ListHeaderComponent={
+            renderSectionHeader={({ section: { title } }) => (
               <View>
                 {(isLoadingMhd || dataMhd || errorMhd) && (
-                  <Text style={styles.textSizeBig}>
-                    {i18n.t('screens.FromToScreen.Planner.transit')}
-                  </Text>
+                  <Text style={styles.textSizeBig}>{title}</Text>
                 )}
                 {isLoadingMhd && <TripMiniature isLoading={isLoadingMhd} />}
               </View>
-            }
+            )}
             nestedScrollEnabled
-            renderItem={(data) => (
+            renderItem={({ item, section }) => (
               <TripMiniature
                 onPress={() =>
                   navigation.navigate(
                     'PlannerScreen' as never,
                     {
-                      legs: data.item.legs,
+                      legs: item.legs,
                       isScooter: false,
                       travelMode: selectedVehicle,
                       fromPlace: fromName,
                       toPlace: toName,
                       price: getPriceFromItinerary(
-                        data.item,
+                        item,
                         selectedVehicle,
                         undefined
                       ),
                     } as never
                   )
                 }
-                duration={Math.round(data.item.duration / 60)}
+                duration={Math.round(item.duration / 60)}
                 departureDateTime={LocalDateTime.ofInstant(
-                  Instant.ofEpochMilli(data.item.startTime)
+                  Instant.ofEpochMilli(item.startTime)
                 )}
                 arriveDateTime={LocalDateTime.ofInstant(
-                  Instant.ofEpochMilli(data.item.endTime)
+                  Instant.ofEpochMilli(item.endTime)
                 )}
-                legs={
-                  data.item.legs
-                    ? aggregateBicycleLegs(data.item.legs)
-                    : undefined
-                }
+                legs={item.legs ? aggregateBicycleLegs(item.legs) : undefined}
+                isMultimodal={section.title === 'Multimodálna doprava'}
               />
             )}
           />

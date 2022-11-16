@@ -15,6 +15,7 @@ import {
   colors,
   getColor,
   getHeaderBgColor,
+  getProviderFromStationId,
   hexToRgba,
   mapStyles,
   modeColors,
@@ -100,7 +101,9 @@ export default function PlannerScreen({
                 leg.routeColor === '898989'
                 ? colors.primary
                 : leg.rentedBike
-                ? getColor(provider) || '#aaa'
+                ? getColor(
+                    provider ?? getProviderFromStationId(leg.from.bikeShareId)
+                  ) || '#aaa'
                 : leg.routeColor
                 ? `#${leg.routeColor}`
                 : modeColors[leg.mode || 'DEFAULT'],

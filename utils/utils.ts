@@ -81,19 +81,8 @@ export const getProviderName = (provider: MicromobilityProvider) => {
 
 export const getIcon = (
   provider?: MicromobilityProvider,
-  isScooter?: boolean,
-  stationId?: string
+  isScooter?: boolean
 ) => {
-  if (stationId) {
-    const parsedStationId = Number.parseInt(stationId)
-    //OTP does not return the provider in the trip response, has to be picked based on station_id
-    //TODO: find other way, we could get all station ids from the live api and compare, this would be safe in case the providers would change their id format
-    return Number.isNaN(parsedStationId)
-      ? TierSvg
-      : parsedStationId < 200
-      ? SlovnaftbajkSvg
-      : RekoloSvg
-  }
   switch (provider) {
     case MicromobilityProvider.rekola:
       return RekoloSvg
@@ -105,6 +94,21 @@ export const getIcon = (
       return TierSvg
     default:
       return isScooter ? ScooterSvg : CyclingSvg
+  }
+}
+
+export const getProviderFromStationId = (stationId?: string) => {
+  if (stationId) {
+    const parsedStationId = Number.parseInt(stationId)
+    //OTP does not return the provider in the trip response, has to be picked based on station_id
+    //TODO: find other way, we could get all station ids from the live api and compare, this would be safe in case the providers would change their id format
+    return Number.isNaN(parsedStationId)
+      ? stationId.startsWith('s')
+        ? MicromobilityProvider.bolt
+        : MicromobilityProvider.tier
+      : parsedStationId < 200
+      ? MicromobilityProvider.slovnaftbajk
+      : MicromobilityProvider.rekola
   }
 }
 

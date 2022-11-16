@@ -245,15 +245,14 @@ export default function Planner(props: PlannerProps) {
     ],
     async () => {
       if (!fromCoordinates || !toCoordinates) return
-      const mhdData = await getTripPlanner(
-        `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
-        `${toCoordinates.latitude},${toCoordinates.longitude}`,
+      const mhdData = await getTripPlanner({
+        from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+        to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
         dateTime,
-        scheduledTime === ScheduleType.arrival,
-        TravelModesOtpApi.transit,
-        undefined,
-        accessibleOnly
-      )
+        arriveBy: scheduledTime === ScheduleType.arrival,
+        mode: TravelModesOtpApi.transit,
+        accessibleOnly,
+      })
       return mhdData
     },
     { enabled: fromCoordinates && toCoordinates ? true : false }
@@ -275,15 +274,14 @@ export default function Planner(props: PlannerProps) {
     ],
     async () => {
       if (!fromCoordinates || !toCoordinates) return
-      const multimodalData = await getTripPlanner(
-        `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
-        `${toCoordinates.latitude},${toCoordinates.longitude}`,
+      const multimodalData = await getTripPlanner({
+        from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+        to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
         dateTime,
-        scheduledTime === ScheduleType.arrival,
-        TravelModesOtpApi.multimodal,
-        undefined,
-        accessibleOnly
-      )
+        arriveBy: scheduledTime === ScheduleType.arrival,
+        mode: TravelModesOtpApi.multimodal,
+        accessibleOnly,
+      })
       return multimodalData
     },
     { enabled: fromCoordinates && toCoordinates ? true : false }
@@ -299,13 +297,14 @@ export default function Planner(props: PlannerProps) {
     () =>
       fromCoordinates &&
       toCoordinates &&
-      getTripPlanner(
-        `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
-        `${toCoordinates.latitude},${toCoordinates.longitude}`,
+      getTripPlanner({
+        from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+        to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
         dateTime,
-        scheduledTime === ScheduleType.arrival,
-        TravelModesOtpApi.walk
-      ),
+        arriveBy: scheduledTime === ScheduleType.arrival,
+        mode: TravelModesOtpApi.walk,
+        accessibleOnly,
+      }),
     { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
@@ -325,13 +324,14 @@ export default function Planner(props: PlannerProps) {
     () =>
       fromCoordinates &&
       toCoordinates &&
-      getTripPlanner(
-        `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
-        `${toCoordinates.latitude},${toCoordinates.longitude}`,
+      getTripPlanner({
+        from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+        to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
         dateTime,
-        scheduledTime === ScheduleType.arrival,
-        TravelModesOtpApi.bicycle
-      ),
+        arriveBy: scheduledTime === ScheduleType.arrival,
+        mode: TravelModesOtpApi.bicycle,
+        accessibleOnly,
+      }),
     { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
@@ -351,13 +351,14 @@ export default function Planner(props: PlannerProps) {
     () =>
       fromCoordinates &&
       toCoordinates &&
-      getTripPlanner(
-        `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
-        `${toCoordinates.latitude},${toCoordinates.longitude}`,
+      getTripPlanner({
+        from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+        to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
         dateTime,
-        scheduledTime === ScheduleType.arrival,
-        TravelModesOtpApi.bicycle
-      ),
+        arriveBy: scheduledTime === ScheduleType.arrival,
+        mode: TravelModesOtpApi.bicycle,
+        accessibleOnly,
+      }),
     { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
@@ -377,14 +378,15 @@ export default function Planner(props: PlannerProps) {
     () =>
       fromCoordinates &&
       toCoordinates &&
-      getTripPlanner(
-        `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
-        `${toCoordinates.latitude},${toCoordinates.longitude}`,
+      getTripPlanner({
+        from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+        to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
         dateTime,
-        scheduledTime === ScheduleType.arrival,
-        TravelModesOtpApi.rented,
-        MicromobilityProvider.rekola
-      ),
+        arriveBy: scheduledTime === ScheduleType.arrival,
+        mode: TravelModesOtpApi.rented,
+        provider: MicromobilityProvider.rekola,
+        accessibleOnly,
+      }),
     { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
@@ -404,14 +406,15 @@ export default function Planner(props: PlannerProps) {
     () =>
       fromCoordinates &&
       toCoordinates &&
-      getTripPlanner(
-        `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
-        `${toCoordinates.latitude},${toCoordinates.longitude}`,
+      getTripPlanner({
+        from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+        to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
         dateTime,
-        scheduledTime === ScheduleType.arrival,
-        TravelModesOtpApi.rented,
-        MicromobilityProvider.slovnaftbajk
-      ),
+        arriveBy: scheduledTime === ScheduleType.arrival,
+        mode: TravelModesOtpApi.rented,
+        provider: MicromobilityProvider.slovnaftbajk,
+        accessibleOnly,
+      }),
     { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
@@ -425,14 +428,15 @@ export default function Planner(props: PlannerProps) {
     () =>
       fromCoordinates &&
       toCoordinates &&
-      getTripPlanner(
-        `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
-        `${toCoordinates.latitude},${toCoordinates.longitude}`,
+      getTripPlanner({
+        from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+        to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
         dateTime,
-        scheduledTime === ScheduleType.arrival,
-        TravelModesOtpApi.rented,
-        MicromobilityProvider.tier
-      ),
+        arriveBy: scheduledTime === ScheduleType.arrival,
+        mode: TravelModesOtpApi.rented,
+        provider: MicromobilityProvider.tier,
+        accessibleOnly,
+      }),
     { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 

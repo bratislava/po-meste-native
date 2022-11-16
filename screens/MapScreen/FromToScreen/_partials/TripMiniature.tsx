@@ -16,6 +16,7 @@ import {
   colors,
   getColor,
   getIcon,
+  getProviderFromStationId,
   getProviderName,
   getTextColor,
   LegProps,
@@ -132,7 +133,6 @@ const TripMiniature = ({
                     if (index === legs.length - 1 && ignoreLastShortWalk) {
                       return null
                     }
-                    console.log({ stationId: leg.from })
                     return (
                       <Leg
                         key={index}
@@ -144,9 +144,9 @@ const TripMiniature = ({
                         color={leg.routeColor}
                         shortName={leg.routeShortName}
                         TransportIcon={getIcon(
-                          provider,
-                          isScooter,
-                          leg.from.bikeShareId
+                          getProviderFromStationId(leg.from.bikeShareId) ??
+                            provider,
+                          isScooter
                         )}
                       />
                     )

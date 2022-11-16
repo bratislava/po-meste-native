@@ -148,15 +148,23 @@ export const getBoltFreeBikeStatus = () =>
 
 export const getChargersStops = async () => fetchJsonFromApi('/zse')
 
-export const getTripPlanner = async (
-  from: string,
-  to: string,
-  dateTime: LocalDateTime,
-  arriveBy: boolean,
-  mode: TravelModesOtpApi = TravelModesOtpApi.transit,
-  provider?: MicromobilityProvider,
-  wheelchair = false
-) => {
+export const getTripPlanner = async ({
+  from,
+  to,
+  dateTime,
+  arriveBy,
+  mode = TravelModesOtpApi.transit,
+  provider,
+  accessibleOnly = false,
+}: {
+  from: string
+  to: string
+  dateTime: LocalDateTime
+  arriveBy: boolean
+  mode: TravelModesOtpApi
+  provider?: MicromobilityProvider
+  accessibleOnly: boolean
+}) => {
   if (provider === MicromobilityProvider.tier) {
     dateTime = dateTime.plusHours(24)
   }
@@ -171,8 +179,8 @@ export const getTripPlanner = async (
       maxWalkDistance: mode === TravelModesOtpApi.walk ? 10000.0 : 1000.0, // was '4828.032'
       walkReluctance: 15.0, // 0-20 Note: maxWalkDistance does not do much anymore, we have to use this
       arriveBy: arriveBy,
-      wheelchair: wheelchair,
-      debugItineraryFilter: wheelchair.toString(),
+      wheelchair: accessibleOnly,
+      debugItineraryFilter: accessibleOnly.toString(),
       locale: 'en',
       numItineraries: mode === TravelModesOtpApi.multimodal ? undefined : 6,
       allowedVehicleRentalNetworks: provider?.toLowerCase(),

@@ -34,6 +34,7 @@ import {
   getHeaderBgColor,
   getIcon,
   getMicromobilityImage,
+  getProviderFromStationId,
   getProviderName,
   getShortAddress,
   ITINERARY_ICON_WIDTH,
@@ -378,7 +379,11 @@ export const TextItinerary = ({
                   getLastRentedInstanceIndex === index) &&
                   renderProviderIconWithText(
                     leg.from.name,
-                    getIcon(provider, isScooter, leg.from.bikeShareId)
+                    getIcon(
+                      getProviderFromStationId(leg.from.bikeShareId) ??
+                        provider,
+                      isScooter
+                    )
                   )}
                 {leg.mode === LegModes.walk &&
                   // if the last leg is walking and shorter than 1 minute, it does not render

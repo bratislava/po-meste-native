@@ -26,7 +26,6 @@ import {
   Switch,
   View,
 } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
 import {
   GooglePlaceDetail,
   GooglePlacesAutocompleteRef,
@@ -42,6 +41,7 @@ import {
   getMinMaxPrice,
   getPriceFromItinerary,
   getTripPlanner,
+  OtpData,
   OtpPlannerProps,
   s,
 } from '@utils'
@@ -103,6 +103,16 @@ interface ElementsProps {
   provider?: MicromobilityProvider
   error?: any
   refetch?: () => unknown
+}
+
+enum SectionKey {
+  transit = 'transit',
+  multimodal = 'multimodal',
+  myBike = 'myBike',
+  rentedBike = 'rentedBike',
+  myScooter = 'myScooter',
+  rentedScooter = 'rentedScooter',
+  walk = 'walk',
 }
 
 import SearchFromToScreen from '@screens/MapScreen/SearchFromToScreen'
@@ -178,9 +188,6 @@ export default function Planner(props: PlannerProps) {
   const datetimeSheetRef = useRef<BottomSheet>(null)
   const datetimePickerRef = useRef<DateTimePickerRef>(null)
 
-  const [headerHeight, setHeaderHeight] = useState(0)
-  const [containerHeight, setContainerHeight] = useState(0)
-
   const [vehicles, setVehicles] = useState<VehicleData[]>(vehiclesDefault)
 
   const [selectedVehicle, setSelectedVehicle] = useState<TravelModes>(
@@ -229,12 +236,7 @@ export default function Planner(props: PlannerProps) {
     Location.LocationGeocodedAddress[] | null
   >(null)
 
-  const {
-    data: dataMhd,
-    isLoading: isLoadingMhd,
-    error: errorMhd,
-    refetch: refetchMhd,
-  } = useQuery(
+  const mhdQuery = useQuery(
     [
       'getOtpDataMhd',
       fromCoordinates,
@@ -258,12 +260,7 @@ export default function Planner(props: PlannerProps) {
     { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
-  const {
-    data: dataMultimodal,
-    isLoading: isLoadingMultimodal,
-    error: errorMultimodal,
-    refetch: refetchMultimodal,
-  } = useQuery(
+  const multimodalQuery = useQuery(
     [
       'getOtpDataMultimodal',
       fromCoordinates,
@@ -287,12 +284,7 @@ export default function Planner(props: PlannerProps) {
     { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
-  const {
-    data: dataWalk,
-    isLoading: isLoadingWalk,
-    error: errorWalk,
-    refetch: refetchWalk,
-  } = useQuery(
+  const walkQuery = useQuery(
     ['getOtpDataWalk', fromCoordinates, toCoordinates, dateTime, scheduledTime],
     () =>
       fromCoordinates &&
@@ -308,12 +300,7 @@ export default function Planner(props: PlannerProps) {
     { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
-  const {
-    data: dataMyBike,
-    isLoading: isLoadingMyBike,
-    error: errorMyBike,
-    refetch: refetchMyBike,
-  } = useQuery(
+  const myBikeQuery = useQuery(
     [
       'getOtpDataMyBike',
       fromCoordinates,
@@ -335,12 +322,7 @@ export default function Planner(props: PlannerProps) {
     { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
-  const {
-    data: dataMyScooter,
-    isLoading: isLoadingMyScooter,
-    error: errorMyScooter,
-    refetch: refetchMyScooter,
-  } = useQuery(
+  const myScooterQuery = useQuery(
     [
       'getOtpDataMyScooter',
       fromCoordinates,
@@ -362,12 +344,7 @@ export default function Planner(props: PlannerProps) {
     { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
-  const {
-    data: dataRekola,
-    isLoading: isLoadingRekola,
-    error: errorRekola,
-    refetch: refetchRekola,
-  } = useQuery(
+  const rekolaQuery = useQuery(
     [
       'getOtpRekolaData',
       fromCoordinates,
@@ -390,12 +367,7 @@ export default function Planner(props: PlannerProps) {
     { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
-  const {
-    data: dataSlovnaftbajk,
-    isLoading: isLoadingSlovnaftbajk,
-    error: errorSlovnaftbajk,
-    refetch: refetchSlovnaftbajk,
-  } = useQuery(
+  const slovnaftbajkQuery = useQuery(
     [
       'getOtpSlovnaftbajkData',
       fromCoordinates,
@@ -418,12 +390,7 @@ export default function Planner(props: PlannerProps) {
     { enabled: fromCoordinates && toCoordinates ? true : false }
   )
 
-  const {
-    data: dataTier,
-    isLoading: isLoadingTier,
-    error: errorTier,
-    refetch: refetchTier,
-  } = useQuery(
+  const tierQuery = useQuery(
     ['getOtpTierData', fromCoordinates, toCoordinates, dateTime, scheduledTime],
     () =>
       fromCoordinates &&
@@ -503,70 +470,75 @@ export default function Planner(props: PlannerProps) {
   useEffect(() => {
     adjustMinMaxTravelTime(
       [
-        dataSlovnaftbajk?.plan?.itineraries
+        slovnaftbajkQuery.data?.plan?.itineraries
           ? {
-              itineraries: dataSlovnaftbajk?.plan?.itineraries,
+              itineraries: slovnaftbajkQuery.data?.plan?.itineraries,
               provider: MicromobilityProvider.slovnaftbajk,
             }
           : { itineraries: [] },
-        dataRekola?.plan?.itineraries
+        rekolaQuery.data?.plan?.itineraries
           ? {
-              itineraries: dataRekola?.plan?.itineraries,
+              itineraries: rekolaQuery.data?.plan?.itineraries,
               provider: MicromobilityProvider.rekola,
             }
           : { itineraries: [] },
-        dataMyBike?.plan?.itineraries
+        myBikeQuery.data?.plan?.itineraries
           ? {
-              itineraries: dataMyBike?.plan?.itineraries,
+              itineraries: myBikeQuery.data?.plan?.itineraries,
             }
           : { itineraries: [] },
       ],
       TravelModes.bicycle
     )
-  }, [dataSlovnaftbajk, dataRekola, dataMyBike, adjustMinMaxTravelTime])
+  }, [
+    slovnaftbajkQuery.data,
+    rekolaQuery.data,
+    myBikeQuery.data,
+    adjustMinMaxTravelTime,
+  ])
 
   useEffect(() => {
     adjustMinMaxTravelTime(
       [
-        dataTier?.plan?.itineraries
+        tierQuery.data?.plan?.itineraries
           ? {
-              itineraries: dataTier?.plan?.itineraries,
+              itineraries: tierQuery.data?.plan?.itineraries,
               provider: MicromobilityProvider.tier,
             }
           : { itineraries: [] },
-        dataMyScooter?.plan?.itineraries
+        myScooterQuery.data?.plan?.itineraries
           ? {
-              itineraries: dataMyScooter?.plan?.itineraries,
+              itineraries: myScooterQuery.data?.plan?.itineraries,
             }
           : { itineraries: [] },
       ],
       TravelModes.scooter
     )
-  }, [dataTier, dataMyScooter, adjustMinMaxTravelTime])
+  }, [tierQuery.data, myScooterQuery.data, adjustMinMaxTravelTime])
 
   useEffect(() => {
     adjustMinMaxTravelTime(
       [
-        dataMhd?.plan?.itineraries
+        mhdQuery.data?.plan?.itineraries
           ? {
-              itineraries: dataMhd?.plan?.itineraries,
+              itineraries: mhdQuery.data?.plan?.itineraries,
             }
           : { itineraries: [] },
       ],
       TravelModes.mhd
     )
-  }, [adjustMinMaxTravelTime, dataMhd])
+  }, [adjustMinMaxTravelTime, mhdQuery.data])
 
   useEffect(() => {
     adjustMinMaxTravelTime(
       [
-        dataWalk?.plan?.itineraries
-          ? { itineraries: dataWalk?.plan?.itineraries }
+        walkQuery.data?.plan?.itineraries
+          ? { itineraries: walkQuery.data?.plan?.itineraries }
           : { itineraries: [] },
       ],
       TravelModes.walk
     )
-  }, [adjustMinMaxTravelTime, dataWalk])
+  }, [adjustMinMaxTravelTime, walkQuery.data])
 
   const getGeocodeAsync = useCallback(
     async (
@@ -873,327 +845,384 @@ export default function Planner(props: PlannerProps) {
     ? i18n.t('common.now')
     : dateTime.format(DateTimeFormatter.ofPattern('dd.MM. HH:mm'))
 
-  return (
-    <View
-      style={styles.outerContainer}
-      onLayout={(event) => setContainerHeight(event.nativeEvent.layout.height)}
-    >
-      <ScrollView
-        style={styles.container}
-        bounces={false}
-        contentContainerStyle={[
-          styles.contentContainer,
+  const getLoading = (itineraryType: SectionKey) => {
+    switch (itineraryType) {
+      case SectionKey.transit:
+        return mhdQuery.isLoading ? <TripMiniature isLoading /> : null
+      case SectionKey.multimodal:
+        return multimodalQuery.isLoading ? <TripMiniature isLoading /> : null
+      case SectionKey.myBike:
+        return myBikeQuery.isLoading ? <TripMiniature isLoading /> : null
+      case SectionKey.rentedBike:
+        return (
+          <>
+            {slovnaftbajkQuery.isLoading ? <TripMiniature isLoading /> : null}
+            {rekolaQuery.isLoading ? <TripMiniature isLoading /> : null}
+          </>
+        )
+      case SectionKey.myScooter:
+        return myScooterQuery.isLoading ? <TripMiniature isLoading /> : null
+      case SectionKey.rentedScooter:
+        return tierQuery.isLoading ? <TripMiniature isLoading /> : null
+      case SectionKey.walk:
+        return walkQuery.isLoading ? <TripMiniature isLoading /> : null
+    }
+  }
+
+  const getErrorComponent = (itineraryType: SectionKey) => {
+    const errors: {
+      error: any
+      refetch: () => void
+      data?: OtpData
+      provider?: MicromobilityProvider | 'MHD'
+    }[] = []
+    switch (itineraryType) {
+      case SectionKey.transit:
+        errors.push({
+          ...mhdQuery,
+          provider: 'MHD',
+        })
+        break
+      case SectionKey.multimodal:
+        errors.push({
+          ...multimodalQuery,
+        })
+        break
+      case SectionKey.myBike:
+        errors.push({
+          ...myBikeQuery,
+        })
+        break
+      case SectionKey.rentedBike:
+        errors.push({
+          ...slovnaftbajkQuery,
+          provider: MicromobilityProvider.slovnaftbajk,
+        })
+        errors.push({
+          ...rekolaQuery,
+          provider: MicromobilityProvider.rekola,
+        })
+        break
+      case SectionKey.myScooter:
+        errors.push({
+          ...myScooterQuery,
+        })
+        break
+      case SectionKey.rentedScooter:
+        errors.push({
+          ...tierQuery,
+          provider: MicromobilityProvider.tier,
+        })
+        break
+      case SectionKey.walk:
+        errors.push({
+          ...walkQuery,
+        })
+        break
+    }
+
+    if (errors.length === 0) return null
+
+    return (
+      <>
+        {errors.map(({ error, refetch, data, provider }, index) => (
+          <View
+            key={index}
+            style={{
+              justifyContent: 'center',
+            }}
+          >
+            {error &&
+              renderError({
+                error: error,
+                errorType: 'dataPlannerTrip',
+                provider,
+                action: refetch,
+              })}
+            {data &&
+              data.plan?.itineraries?.length === 0 &&
+              renderError({ errorType: 'plannerNoRoute', provider })}
+          </View>
+        ))}
+      </>
+    )
+  }
+
+  const sections =
+    selectedVehicle === TravelModes.mhd
+      ? [
           {
-            height: containerHeight + headerHeight, // remove `+ headerHeight` and the header will not scroll
+            title: i18n.t('screens.FromToScreen.Planner.transit'),
+            key: SectionKey.transit,
+            data: mhdQuery.data?.plan?.itineraries ?? [],
           },
-        ]}
-      >
-        <View
-          style={styles.header}
-          onLayout={(event) => setHeaderHeight(event.nativeEvent.layout.height)}
-        >
-          <FromToSelector
-            onFromPlacePress={() => {
-              fromBottomSheetRef?.current?.snapToIndex(0)
-              fromRef?.current?.focus()
-            }}
-            onToPlacePress={() => {
-              toBottomSheetRef?.current?.snapToIndex(0)
-              toRef?.current?.focus()
-            }}
-            fromPlaceText={
-              fromName ||
-              (fromProp?.latitude !== undefined &&
-              fromProp?.longitude !== undefined
-                ? `${fromProp.latitude}, ${fromProp.longitude}`
-                : undefined)
-            }
-            toPlaceText={
-              toName ||
-              (toProp?.latitude !== undefined && toProp?.longitude !== undefined
-                ? `${toProp.latitude}, ${toProp.longitude}`
-                : undefined)
-            }
-            fromPlaceTextPlaceholder={i18n.t(
-              'screens.FromToScreen.Planner.fromPlaceholder'
-            )}
-            toPlaceTextPlaceholder={i18n.t(
-              'screens.FromToScreen.Planner.toPlaceholder'
-            )}
-            onSwitchPlacesPress={onSwitchPlacesPress}
-          />
-          <View style={styles.schedulingContainer}>
-            <View style={[styles.row, { justifyContent: 'space-between' }]}>
-              <View
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignContent: 'center',
-                }}
+          {
+            title:
+              'Multimodálna doprava' ??
+              i18n.t('screens.FromToScreen.Planner.transit'),
+            key: SectionKey.multimodal,
+            data: multimodalQuery.data?.plan?.itineraries ?? [],
+          },
+        ]
+      : selectedVehicle === TravelModes.bicycle
+      ? [
+          {
+            title: i18n.t('screens.FromToScreen.Planner.myBike'),
+            key: SectionKey.myBike,
+            data: myBikeQuery.data?.plan?.itineraries ?? [],
+          },
+          {
+            title: i18n.t('screens.FromToScreen.Planner.rentedBike'),
+            key: SectionKey.rentedBike,
+            data:
+              slovnaftbajkQuery.data?.plan?.itineraries?.concat(
+                rekolaQuery.data?.plan?.itineraries ?? []
+              ) ?? [],
+          },
+        ]
+      : selectedVehicle === TravelModes.scooter
+      ? [
+          {
+            title: i18n.t('screens.FromToScreen.Planner.myScooter'),
+            key: SectionKey.myScooter,
+            data: myScooterQuery.data?.plan?.itineraries ?? [],
+          },
+          {
+            title: i18n.t('screens.FromToScreen.Planner.rentedScooter'),
+            key: SectionKey.rentedScooter,
+            data: tierQuery.data?.plan?.itineraries ?? [],
+          },
+        ]
+      : selectedVehicle === TravelModes.walk
+      ? [
+          {
+            title: i18n.t('screens.FromToScreen.Planner.walk'),
+            key: SectionKey.walk,
+            data: walkQuery.data?.plan?.itineraries ?? [],
+          },
+        ]
+      : []
+
+  const ListHeader = (
+    <>
+      <View style={styles.header}>
+        <FromToSelector
+          onFromPlacePress={() => {
+            fromBottomSheetRef?.current?.snapToIndex(0)
+            fromRef?.current?.focus()
+          }}
+          onToPlacePress={() => {
+            toBottomSheetRef?.current?.snapToIndex(0)
+            toRef?.current?.focus()
+          }}
+          fromPlaceText={
+            fromName ||
+            (fromProp?.latitude !== undefined &&
+            fromProp?.longitude !== undefined
+              ? `${fromProp.latitude}, ${fromProp.longitude}`
+              : undefined)
+          }
+          toPlaceText={
+            toName ||
+            (toProp?.latitude !== undefined && toProp?.longitude !== undefined
+              ? `${toProp.latitude}, ${toProp.longitude}`
+              : undefined)
+          }
+          fromPlaceTextPlaceholder={i18n.t(
+            'screens.FromToScreen.Planner.fromPlaceholder'
+          )}
+          toPlaceTextPlaceholder={i18n.t(
+            'screens.FromToScreen.Planner.toPlaceholder'
+          )}
+          onSwitchPlacesPress={onSwitchPlacesPress}
+        />
+        <View style={styles.schedulingContainer}>
+          <View style={[styles.row, { justifyContent: 'space-between' }]}>
+            <View
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignContent: 'center',
+              }}
+            >
+              <TouchableOpacity
+                onPress={showSchedulePicker}
+                style={[
+                  styles.row,
+                  {
+                    justifyContent: 'flex-start',
+                  },
+                ]}
               >
-                <TouchableOpacity
-                  onPress={showSchedulePicker}
-                  style={[
-                    styles.row,
-                    {
-                      justifyContent: 'flex-start',
-                    },
-                  ]}
-                >
-                  <Feather
-                    name="clock"
-                    size={20}
-                    style={styles.schedulingIcon}
-                  />
-                  <Text style={styles.schedulingText}>
-                    {scheduledTime === ScheduleType.departure &&
-                      i18n.t('screens.FromToScreen.Planner.departure', {
-                        time: dateTimeToPrint,
-                      })}
-                    {scheduledTime === ScheduleType.arrival &&
-                      i18n.t('screens.FromToScreen.Planner.arrival', {
-                        time: dateTimeToPrint,
-                      })}
-                  </Text>
-                  <Ionicons
-                    size={15}
-                    style={styles.ionicon}
-                    name="chevron-down"
-                  />
-                </TouchableOpacity>
-              </View>
+                <Feather name="clock" size={20} style={styles.schedulingIcon} />
+                <Text style={styles.schedulingText}>
+                  {scheduledTime === ScheduleType.departure &&
+                    i18n.t('screens.FromToScreen.Planner.departure', {
+                      time: dateTimeToPrint,
+                    })}
+                  {scheduledTime === ScheduleType.arrival &&
+                    i18n.t('screens.FromToScreen.Planner.arrival', {
+                      time: dateTimeToPrint,
+                    })}
+                </Text>
+                <Ionicons
+                  size={15}
+                  style={styles.ionicon}
+                  name="chevron-down"
+                />
+              </TouchableOpacity>
+            </View>
+            <View
+              style={[
+                styles.row,
+                {
+                  paddingLeft: 20,
+                  justifyContent: 'flex-end',
+                  flex: 1,
+                },
+              ]}
+            >
               <View
                 style={[
                   styles.row,
-                  { paddingLeft: 20, justifyContent: 'flex-end', flex: 1 },
+                  { flex: 0, position: 'relative', left: 12 },
                 ]}
               >
-                <View
-                  style={[
-                    styles.row,
-                    { flex: 0, position: 'relative', left: 12 },
-                  ]}
-                >
-                  <WheelchairSvg
-                    fill={colors.white}
-                    width={20}
-                    height={20}
-                    style={styles.schedulingIcon}
-                  />
-                  <Text style={styles.schedulingText}>
-                    {i18n.t('screens.FromToScreen.Planner.accessibleVehicles')}
-                  </Text>
-                </View>
-                <Switch
-                  trackColor={{ false: '#E1E4E8', true: '#ADCD00' }}
-                  thumbColor={colors.white}
-                  ios_backgroundColor="#E1E4E8"
-                  onValueChange={(value) => setAccessibleOnly(value)}
-                  value={accessibleOnly}
-                  style={{
-                    flex: 0,
-                    marginLeft: Platform.select({ ios: 10, android: 0 }),
-                  }}
+                <WheelchairSvg
+                  fill={colors.white}
+                  width={20}
+                  height={20}
+                  style={styles.schedulingIcon}
                 />
+                <Text style={styles.schedulingText}>
+                  {i18n.t('screens.FromToScreen.Planner.accessibleVehicles')}
+                </Text>
               </View>
+              <Switch
+                trackColor={{ false: '#E1E4E8', true: '#ADCD00' }}
+                thumbColor={colors.white}
+                ios_backgroundColor="#E1E4E8"
+                onValueChange={(value) => setAccessibleOnly(value)}
+                value={accessibleOnly}
+                style={{
+                  flex: 0,
+                  marginLeft: Platform.select({
+                    ios: 10,
+                    android: 0,
+                  }),
+                }}
+              />
             </View>
           </View>
         </View>
-        <View>
-          <VehicleSelector
-            vehicles={vehicles}
-            onVehicleChange={onVehicleChange}
-            selectedVehicle={selectedVehicle}
-          />
-        </View>
-        {selectedVehicle !== TravelModes.mhd ? (
-          <ScrollView
-            contentContainerStyle={styles.scrollView}
-            nestedScrollEnabled
-          >
-            {selectedVehicle === TravelModes.bicycle && (
-              <>
-                {(isLoadingMyBike || dataMyBike || errorMyBike) &&
-                  selectedVehicle === TravelModes.bicycle && (
-                    <Text style={styles.textSizeBig}>
-                      {i18n.t('screens.FromToScreen.Planner.myBike')}
-                    </Text>
-                  )}
-                {getElements({
-                  isLoading: isLoadingMyBike,
-                  data: dataMyBike,
-                  provider: undefined,
-                  error: errorMyBike,
-                  refetch: refetchMyBike,
-                })}
-                {(isLoadingSlovnaftbajk ||
-                  isLoadingRekola ||
-                  dataSlovnaftbajk ||
-                  dataRekola ||
-                  errorSlovnaftbajk ||
-                  errorRekola) && (
-                  <Text style={styles.textSizeBig}>
-                    {i18n.t('screens.FromToScreen.Planner.rentedBike')}
-                  </Text>
-                )}
-                <View style={styles.providerContainer}>
-                  {getElements({
-                    isLoading: isLoadingSlovnaftbajk,
-                    data: dataSlovnaftbajk,
-                    provider: MicromobilityProvider.slovnaftbajk,
-                    error: errorSlovnaftbajk,
-                    refetch: refetchSlovnaftbajk,
-                  })}
-                </View>
-                <View style={styles.providerContainer}>
-                  {getElements({
-                    isLoading: isLoadingRekola,
-                    data: dataRekola,
-                    provider: MicromobilityProvider.rekola,
-                    error: errorRekola,
-                    refetch: refetchRekola,
-                  })}
-                </View>
-              </>
-            )}
-            {selectedVehicle === TravelModes.scooter && (
-              <>
-                {(isLoadingMyScooter || dataMyScooter || errorMyScooter) && (
-                  <Text style={styles.textSizeBig}>
-                    {i18n.t('screens.FromToScreen.Planner.myScooter')}
-                  </Text>
-                )}
-                {getElements({
-                  isLoading: isLoadingMyScooter,
-                  data: dataMyScooter,
-                  provider: undefined,
-                  error: errorMyScooter,
-                  refetch: refetchMyScooter,
-                })}
+      </View>
+      <View>
+        <VehicleSelector
+          vehicles={vehicles}
+          onVehicleChange={onVehicleChange}
+          selectedVehicle={selectedVehicle}
+        />
+      </View>
+    </>
+  )
 
-                {(isLoadingTier || dataTier || errorTier) && (
-                  <Text style={styles.textSizeBig}>
-                    {i18n.t('screens.FromToScreen.Planner.rentedScooter')}
-                  </Text>
-                )}
-                <View style={styles.providerContainer}>
-                  {getElements({
-                    isLoading: isLoadingTier,
-                    data: dataTier,
-                    provider: MicromobilityProvider.tier,
-                    error: errorTier,
-                    refetch: refetchTier,
-                  })}
-                </View>
-              </>
-            )}
-            {selectedVehicle === TravelModes.walk && (
-              <>
-                {(isLoadingWalk || dataWalk || errorWalk) && (
-                  <Text style={styles.textSizeBig}>
-                    {i18n.t('screens.FromToScreen.Planner.walk')}
-                  </Text>
-                )}
-                {getElements({
-                  isLoading: isLoadingWalk,
-                  data: dataWalk,
-                  provider: undefined,
-                  error: errorWalk,
-                  refetch: refetchWalk,
-                })}
-              </>
-            )}
-            {/* {dataStandard?.plan?.itineraries?.length != undefined &&
-          dataStandard.plan.itineraries.length > 0 && (
-            <FeedbackAsker
-              onNegativeFeedbackPress={() => {
-                navigation.navigate('Feedback')
-              }}
-              onPositiveFeedbackPress={handlePositiveFeedback}
+  const renderHeader = (sectionKey: SectionKey) => {
+    switch (sectionKey) {
+      case SectionKey.transit:
+        return mhdQuery.isFetched || mhdQuery.isLoading
+      case SectionKey.multimodal:
+        return multimodalQuery.isFetched || multimodalQuery.isLoading
+      case SectionKey.myBike:
+        return myBikeQuery.isFetched || myBikeQuery.isLoading
+      case SectionKey.rentedBike:
+        return (
+          rekolaQuery.isFetched ||
+          slovnaftbajkQuery.isFetched ||
+          rekolaQuery.isLoading ||
+          slovnaftbajkQuery.isLoading
+        )
+      case SectionKey.myScooter:
+        return myScooterQuery.isFetched || myScooterQuery.isLoading
+      case SectionKey.rentedScooter:
+        return tierQuery.isFetched || tierQuery.isLoading
+      case SectionKey.walk:
+        return walkQuery.isFetched || walkQuery.isLoading
+    }
+  }
+
+  return (
+    <View style={styles.outerContainer}>
+      <SectionList
+        sections={sections}
+        style={styles.sectionList}
+        contentContainerStyle={styles.sectionListContainer}
+        ListHeaderComponent={ListHeader}
+        stickySectionHeadersEnabled={false}
+        renderSectionHeader={({ section }) => {
+          const Loading = getLoading(section.key as SectionKey)
+          return (
+            <View>
+              {renderHeader(section.key as SectionKey) && (
+                <Text style={[styles.textSizeBig, { marginHorizontal: 20 }]}>
+                  {section.title}
+                </Text>
+              )}
+              {Loading}
+            </View>
+          )
+        }}
+        renderItem={({ item, section, index }) => {
+          const key = section.key as SectionKey
+          const provider =
+            key === SectionKey.rentedBike
+              ? index === 0
+                ? MicromobilityProvider.slovnaftbajk
+                : MicromobilityProvider.rekola
+              : key === SectionKey.rentedScooter
+              ? MicromobilityProvider.tier
+              : undefined
+          return (
+            <TripMiniature
+              onPress={() =>
+                navigation.navigate(
+                  'PlannerScreen' as never,
+                  {
+                    legs: item.legs,
+                    isScooter:
+                      key === SectionKey.myScooter ||
+                      key === SectionKey.rentedScooter,
+                    travelMode: selectedVehicle,
+                    fromPlace: fromName,
+                    toPlace: toName,
+                    price: getPriceFromItinerary(
+                      item,
+                      selectedVehicle,
+                      provider
+                    ),
+                    provider: provider,
+                  } as never
+                )
+              }
+              duration={Math.round(item.duration / 60)}
+              departureDateTime={LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(item.startTime)
+              )}
+              arriveDateTime={LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(item.endTime)
+              )}
+              legs={item.legs ? aggregateBicycleLegs(item.legs) : undefined}
+              isScooter={
+                key === SectionKey.myScooter || key === SectionKey.rentedScooter
+              }
+              isMultimodal={key === SectionKey.multimodal}
+              provider={provider}
             />
-          )} */}
-          </ScrollView>
-        ) : (
-          <SectionList
-            sections={[
-              {
-                title: i18n.t('screens.FromToScreen.Planner.transit'),
-                data: dataMhd?.plan?.itineraries ?? [],
-              },
-              {
-                title:
-                  'Multimodálna doprava' ??
-                  i18n.t('screens.FromToScreen.Planner.transit'),
-                data: dataMultimodal?.plan?.itineraries ?? [],
-              },
-            ]}
-            contentContainerStyle={[
-              styles.scrollView,
-              !dataMhd?.plan?.itineraries && {
-                height: containerHeight - headerHeight - 90,
-              },
-            ]}
-            ListEmptyComponent={
-              <View
-                style={{
-                  height: '100%',
-                  justifyContent: 'center',
-                }}
-              >
-                {errorMhd &&
-                  renderError({
-                    error: errorMhd,
-                    errorType: 'dataPlannerTrip',
-                    provider: 'MHD',
-                    action: refetchMhd,
-                  })}
-                {dataMhd &&
-                  dataMhd.plan?.itineraries?.length === 0 &&
-                  renderError({ errorType: 'plannerNoRoute', provider: 'MHD' })}
-              </View>
-            }
-            renderSectionHeader={({ section: { title } }) => (
-              <View>
-                {(isLoadingMhd || dataMhd || errorMhd) && (
-                  <Text style={styles.textSizeBig}>{title}</Text>
-                )}
-                {isLoadingMhd && <TripMiniature isLoading={isLoadingMhd} />}
-              </View>
-            )}
-            nestedScrollEnabled
-            renderItem={({ item, section }) => (
-              <TripMiniature
-                onPress={() =>
-                  navigation.navigate(
-                    'PlannerScreen' as never,
-                    {
-                      legs: item.legs,
-                      isScooter: false,
-                      travelMode: selectedVehicle,
-                      fromPlace: fromName,
-                      toPlace: toName,
-                      price: getPriceFromItinerary(
-                        item,
-                        selectedVehicle,
-                        undefined
-                      ),
-                    } as never
-                  )
-                }
-                duration={Math.round(item.duration / 60)}
-                departureDateTime={LocalDateTime.ofInstant(
-                  Instant.ofEpochMilli(item.startTime)
-                )}
-                arriveDateTime={LocalDateTime.ofInstant(
-                  Instant.ofEpochMilli(item.endTime)
-                )}
-                legs={item.legs ? aggregateBicycleLegs(item.legs) : undefined}
-                isMultimodal={section.title === 'Multimodálna doprava'}
-              />
-            )}
-          />
-        )}
-      </ScrollView>
+          )
+        }}
+        renderSectionFooter={({ section }) => {
+          return getErrorComponent(section.key as SectionKey)
+        }}
+      />
       <Portal hostName="MapScreen">
         <SearchFromToScreen
           sheetRef={fromBottomSheetRef}
@@ -1245,15 +1274,6 @@ const styles = StyleSheet.create({
     flex: 1,
     height: '100%',
   },
-  contentContainer: {
-    alignItems: 'stretch',
-    justifyContent: 'center',
-    backgroundColor: colors.lightLightGray,
-  },
-  container: {
-    flex: 1,
-    height: '100%',
-  },
   textSizeBig: {
     color: colors.darkText,
     fontSize: 16,
@@ -1289,13 +1309,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 10,
   },
-  scrollView: {
+  sectionList: {
     minWidth: '100%',
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 65,
+    flex: 1,
   },
-  providerContainer: {
-    marginBottom: 10,
+  sectionListContainer: {
+    minHeight: '100%',
+    paddingBottom: 65,
   },
 })

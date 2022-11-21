@@ -276,6 +276,8 @@ export const apiOtpPlanner = yup.object().shape({
   }),
 })
 
+export type OtpData = yup.TypeOf<typeof apiOtpPlanner>
+
 export type ConnectorProps = yup.Asserts<typeof connectors>
 const connectors = yup.object().shape({
   id: yup.number(), // 147118,

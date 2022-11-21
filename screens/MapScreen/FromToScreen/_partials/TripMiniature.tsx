@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: 'white',
   },
-  containerOuter: { ...s.shadow },
+  containerOuter: { ...s.shadow, marginHorizontal: 20 },
   container: { minHeight: 100 },
   row: {
     display: 'flex',

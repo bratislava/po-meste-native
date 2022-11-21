@@ -216,7 +216,7 @@ export const getTripPlanner = async ({
   )
 
   validatedData.plan.itineraries =
-    mode === TravelModesOtpApi.multimodal
+    mode === TravelModesOtpApi.multimodal || mode === TravelModesOtpApi.transit
       ? filteredTrips?.slice(0, 5)
       : filteredTrips
 

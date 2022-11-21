@@ -17,6 +17,7 @@ import i18n from 'i18n-js'
 import { PreferredLanguage, VehicleType } from '@types'
 
 import { useLocationWithPermision } from '@hooks/miscHooks'
+import useBoltData from '@hooks/useBoltData'
 import useMhdData from '@hooks/useMhdStopsData'
 import BicyclesChosen from '@icons/map-filters/bicycles-filter-chosen.svg'
 import BicyclesUnchosen from '@icons/map-filters/bicycles-filter-unchosen.svg'
@@ -33,6 +34,7 @@ import MotorScooterUnchosen from '@icons/map-filters/motor-scooters-filter-uncho
 import ScooterChosen from '@icons/map-filters/scooters-filter-chosen.svg'
 import ScooterUnchosen from '@icons/map-filters/scooters-filter-unchosen.svg'
 import { NetInfoState, useNetInfo } from '@react-native-community/netinfo'
+import { ApiFreeBikeStatusScooter, ApiMhdStops } from '@utils/validation'
 import { LocationObject } from 'expo-location'
 import { QueryObserverResult } from 'react-query'
 
@@ -55,10 +57,18 @@ interface ContextProps {
   ) => Promise<LocationObject | null | undefined>
   location: LocationObject | undefined
   mhdStopsData: {
-    data: any
+    data: ApiMhdStops
     isLoading: boolean
     errors: unknown
-    refetch: () => Promise<QueryObserverResult<any, unknown>> | null
+    refetch: () => Promise<QueryObserverResult<ApiMhdStops, unknown>> | null
+  }
+  boltData: {
+    data?: ApiFreeBikeStatusScooter['data']
+    isLoading: boolean
+    errors: unknown
+    refetch: () => Promise<
+      QueryObserverResult<ApiFreeBikeStatusScooter, unknown>
+    > | null
   }
   netInfo: NetInfoState
 }
@@ -136,6 +146,8 @@ export default function GlobalStateProvider({ children }: Props) {
 
   const mhdStopsData = useMhdData()
 
+  const boltData = useBoltData()
+
   const netInfo = useNetInfo()
 
   return (
@@ -152,6 +164,7 @@ export default function GlobalStateProvider({ children }: Props) {
         getLocationWithPermission,
         location,
         mhdStopsData,
+        boltData,
         netInfo,
       }}
     >

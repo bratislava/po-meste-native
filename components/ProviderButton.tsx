@@ -1,4 +1,5 @@
 import ChevronRightIconSVG from '@icons/chevron-right-small.svg'
+import { GlobalStateContext } from '@state/GlobalStateProvider'
 import {
   ChargersProvider,
   MicromobilityProvider,
@@ -10,7 +11,7 @@ import {
   StationMicromobilityProps,
 } from '@utils/validation'
 import i18n from 'i18n-js'
-import React from 'react'
+import React, { useContext } from 'react'
 import { Platform } from 'react-native'
 import AppLink from 'react-native-app-link'
 import Button from './Button'
@@ -33,6 +34,8 @@ const ProviderButton = ({ provider, station }: ProviderButtonProps) => {
       : provider === ChargersProvider.zse
       ? 'Bolt'
       : ''
+
+  const { boltData } = useContext(GlobalStateContext)
 
   return (
     <Button
@@ -73,8 +76,14 @@ const ProviderButton = ({ provider, station }: ProviderButtonProps) => {
           case MicromobilityProvider.bolt:
             AppLink.maybeOpenURL(
               Platform.select({
-                android: station?.original.rental_uris.android,
-                ios: station?.original.rental_uris.ios,
+                android: boltData.data?.rental_uris?.android.replace(
+                  '{{id}}',
+                  station?.bike_id ?? ''
+                ),
+                ios: boltData.data?.rental_uris?.ios.replace(
+                  '{{id}}',
+                  station?.bike_id ?? ''
+                ),
               }) ?? '',
               {
                 appName: 'bolt',

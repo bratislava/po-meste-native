@@ -11,6 +11,7 @@ import {
   boltPrice,
   colors,
   FreeBikeStatusProps,
+  FreeBikeStatusScooterProps,
   getMicromobilityImage,
   googlePlacesReverseGeocode,
   rekolaPrice,
@@ -24,7 +25,10 @@ import ProviderButton from '@components/ProviderButton'
 import InfoRow from '../InforRow'
 
 interface StationMicromobilityInfoProps {
-  station: StationMicromobilityProps | FreeBikeStatusProps
+  station:
+    | StationMicromobilityProps
+    | FreeBikeStatusProps
+    | FreeBikeStatusScooterProps
   provider: MicromobilityProvider
 }
 
@@ -37,12 +41,7 @@ const StationMicromobilityInfo = ({
   }, [provider])
   const [nameBasedOnLocation, setNameBasedOnLocation] = useState('')
   useEffect(() => {
-    if (
-      station.name ||
-      station.original?.attributes?.licencePlate ||
-      !station.lat ||
-      !station.lon
-    )
+    if (station.name || station.licencePlate || !station.lat || !station.lon)
       return
     googlePlacesReverseGeocode(station.lat, station.lon, (results) =>
       setNameBasedOnLocation(
@@ -121,9 +120,9 @@ const StationMicromobilityInfo = ({
         <Text style={s.textTiny}>{providerTitleAndPrice.title}</Text>
         {station.name ? (
           <Text style={[s.boldText, styles.fontBigger]}>{station.name}</Text>
-        ) : station.original?.attributes?.licencePlate ? (
+        ) : station.licencePlate ? (
           <Text style={[s.boldText, styles.fontBigger]}>
-            {station.original.attributes.licencePlate}
+            {station.licencePlate}
           </Text>
         ) : (
           <Text style={[s.boldText, styles.fontBigger]}>
@@ -153,31 +152,28 @@ const StationMicromobilityInfo = ({
                 title={i18n.t('screens.MapScreen.freeBikeSpaces')}
               />
             )}
-            {station?.original?.attributes?.batteryLevel != null && ( // TODO remove from original
+            {station?.current_fuel_percent != null && ( // TODO remove from original
               <InfoRow
-                value={station?.original?.attributes?.batteryLevel + '%'}
+                value={station?.current_fuel_percent + '%'}
                 title={i18n.t('screens.MapScreen.batteryCharge')}
                 Icon={BatteryIcon}
               />
             )}
-            {(station?.original?.current_range_meters != null ||
-              station?.original?.attributes?.currentRangeMeters != null) && ( // TODO remove from original
+            {(station?.current_range_meters != null ||
+              station?.currentRangeMeters != null) && ( // TODO remove from original
               <InfoRow
                 value={`${
-                  ((station?.original?.current_range_meters ||
-                    station?.original?.attributes?.currentRangeMeters) ??
+                  ((station.current_range_meters ||
+                    station.currentRangeMeters) ??
                     0) / 1000
                 } km`}
                 title={i18n.t('screens.MapScreen.currentRange')}
                 Icon={RangeIcon}
               />
             )}
-            {station.original?.attributes?.hasHelmet != null && ( // TODO remove from original
+            {station.hasHelmet != null && ( // TODO remove from original
               <InfoRow
-                value={i18n.t(
-                  'common.' +
-                    (station.original.attributes.hasHelmet ? 'yes' : 'no')
-                )}
+                value={i18n.t('common.' + (station.hasHelmet ? 'yes' : 'no'))}
                 title={i18n.t('screens.MapScreen.helmet')}
                 Icon={HelmetIcon}
               />

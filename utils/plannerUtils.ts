@@ -4,11 +4,24 @@ import {
   MicromobilityProvider,
   TravelModes,
 } from '@types'
-import {
-  getMhdTicketPrice,
-  getMicromobilityPrice,
-  IteneraryProps,
-} from '@utils'
+import { prices } from './constants'
+import { IteneraryProps } from './validation'
+
+export const getMhdTicketPrice = (duration: number) =>
+  duration < 30 ? 90 : duration < 60 ? 130 : duration < 90 ? 210 : 280
+
+export const getMicromobilityPrice = (provider: MicromobilityProvider) => {
+  switch (provider) {
+    case MicromobilityProvider.rekola:
+      return prices.rekola
+    case MicromobilityProvider.slovnaftbajk:
+      return prices.slovnaftbajk
+    case MicromobilityProvider.tier:
+      return prices.tier
+    case MicromobilityProvider.bolt:
+      return prices.bolt
+  }
+}
 
 export const getMinMaxDuration = (itineraries: ItinerariesWithProvider[]) => {
   let min = Infinity

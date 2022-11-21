@@ -2,7 +2,8 @@ import { useNetInfo } from '@react-native-community/netinfo'
 import { useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
 import { getTierFreeBikeStatus } from '../utils/api'
-import { apiFreeBikeStatus } from '../utils/validation'
+import { apiFreeBikeStatusScooter } from '../utils/validation'
+import JSONH from '../vendor/jsonh/jsonh'
 
 export default function useTierData() {
   const netInfo = useNetInfo()
@@ -17,7 +18,11 @@ export default function useTierData() {
     if (data) {
       try {
         const validatedStationInformation =
-          apiFreeBikeStatus.validateSync(data).data.bikes
+          apiFreeBikeStatusScooter.validateSync({
+            data: {
+              bikes: JSONH.unpack(data.data.bikes),
+            },
+          }).data
         return validatedStationInformation
       } catch (e: any) {
         setValidationErrors(e.errors)

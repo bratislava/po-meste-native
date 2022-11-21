@@ -2,7 +2,8 @@ import { useNetInfo } from '@react-native-community/netinfo'
 import { getBoltFreeBikeStatus } from '@utils/api'
 import { useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
-import { apiFreeBikeStatusBolt } from '../utils/validation'
+import { apiFreeBikeStatusScooter } from '../utils/validation'
+import JSONH from '../vendor/jsonh/jsonh'
 
 export default function useBoltData() {
   const netInfo = useNetInfo()
@@ -17,7 +18,12 @@ export default function useBoltData() {
     if (data) {
       try {
         const validatedStationInformation =
-          apiFreeBikeStatusBolt.validateSync(data).data.bikes
+          apiFreeBikeStatusScooter.validateSync({
+            data: {
+              rental_uris: data.data.rental_uris,
+              bikes: JSONH.unpack(data.data.bikes),
+            },
+          }).data
         return validatedStationInformation
       } catch (e: any) {
         setValidationErrors(e.errors)

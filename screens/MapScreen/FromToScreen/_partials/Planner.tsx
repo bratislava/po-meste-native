@@ -30,7 +30,7 @@ import {
   GooglePlaceDetail,
   GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete'
-import { useQuery } from 'react-query'
+import { useQueries } from 'react-query'
 
 import {
   aggregateBicycleLegs,
@@ -236,176 +236,192 @@ export default function Planner(props: PlannerProps) {
     Location.LocationGeocodedAddress[] | null
   >(null)
 
-  const mhdQuery = useQuery(
-    [
-      'getOtpDataMhd',
-      fromCoordinates,
-      toCoordinates,
-      dateTime,
-      scheduledTime,
-      accessibleOnly,
-    ],
-    async () => {
-      if (!fromCoordinates || !toCoordinates) return
-      const mhdData = await getTripPlanner({
-        from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
-        to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
+  const [
+    mhdQuery,
+    multimodalQuery,
+    myBikeQuery,
+    myScooterQuery,
+    rekolaQuery,
+    slovnaftbajkQuery,
+    tierQuery,
+    walkQuery,
+  ] = useQueries([
+    {
+      queryKey: [
+        'getOtpDataMhd',
+        fromCoordinates,
+        toCoordinates,
         dateTime,
-        arriveBy: scheduledTime === ScheduleType.arrival,
-        mode: TravelModesOtpApi.transit,
+        scheduledTime,
         accessibleOnly,
-      })
-      return mhdData
+      ],
+      queryFn: async () => {
+        if (!fromCoordinates || !toCoordinates) return
+        const mhdData = await getTripPlanner({
+          from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+          to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
+          dateTime,
+          arriveBy: scheduledTime === ScheduleType.arrival,
+          mode: TravelModesOtpApi.transit,
+          accessibleOnly,
+        })
+        return mhdData
+      },
+      enabled: fromCoordinates && toCoordinates ? true : false,
     },
-    { enabled: fromCoordinates && toCoordinates ? true : false }
-  )
-
-  const multimodalQuery = useQuery(
-    [
-      'getOtpDataMultimodal',
-      fromCoordinates,
-      toCoordinates,
-      dateTime,
-      scheduledTime,
-      accessibleOnly,
-    ],
-    async () => {
-      if (!fromCoordinates || !toCoordinates) return
-      const multimodalData = await getTripPlanner({
-        from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
-        to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
+    {
+      queryKey: [
+        'getOtpDataMultimodal',
+        fromCoordinates,
+        toCoordinates,
         dateTime,
-        arriveBy: scheduledTime === ScheduleType.arrival,
-        mode: TravelModesOtpApi.multimodal,
+        scheduledTime,
         accessibleOnly,
-      })
-      return multimodalData
+      ],
+      queryFn: async () => {
+        if (!fromCoordinates || !toCoordinates) return
+        const multimodalData = await getTripPlanner({
+          from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+          to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
+          dateTime,
+          arriveBy: scheduledTime === ScheduleType.arrival,
+          mode: TravelModesOtpApi.multimodal,
+          accessibleOnly,
+        })
+        return multimodalData
+      },
+      enabled: fromCoordinates && toCoordinates ? true : false,
     },
-    { enabled: fromCoordinates && toCoordinates ? true : false }
-  )
-
-  const walkQuery = useQuery(
-    ['getOtpDataWalk', fromCoordinates, toCoordinates, dateTime, scheduledTime],
-    () =>
-      fromCoordinates &&
-      toCoordinates &&
-      getTripPlanner({
-        from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
-        to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
+    {
+      queryKey: [
+        'getOtpDataMyBike',
+        fromCoordinates,
+        toCoordinates,
         dateTime,
-        arriveBy: scheduledTime === ScheduleType.arrival,
-        mode: TravelModesOtpApi.walk,
-        accessibleOnly,
-      }),
-    { enabled: fromCoordinates && toCoordinates ? true : false }
-  )
-
-  const myBikeQuery = useQuery(
-    [
-      'getOtpDataMyBike',
-      fromCoordinates,
-      toCoordinates,
-      dateTime,
-      scheduledTime,
-    ],
-    () =>
-      fromCoordinates &&
-      toCoordinates &&
-      getTripPlanner({
-        from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
-        to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
+        scheduledTime,
+      ],
+      queryFn: () =>
+        fromCoordinates &&
+        toCoordinates &&
+        getTripPlanner({
+          from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+          to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
+          dateTime,
+          arriveBy: scheduledTime === ScheduleType.arrival,
+          mode: TravelModesOtpApi.bicycle,
+          accessibleOnly,
+        }),
+      enabled: fromCoordinates && toCoordinates ? true : false,
+    },
+    {
+      queryKey: [
+        'getOtpDataMyScooter',
+        fromCoordinates,
+        toCoordinates,
         dateTime,
-        arriveBy: scheduledTime === ScheduleType.arrival,
-        mode: TravelModesOtpApi.bicycle,
-        accessibleOnly,
-      }),
-    { enabled: fromCoordinates && toCoordinates ? true : false }
-  )
-
-  const myScooterQuery = useQuery(
-    [
-      'getOtpDataMyScooter',
-      fromCoordinates,
-      toCoordinates,
-      dateTime,
-      scheduledTime,
-    ],
-    () =>
-      fromCoordinates &&
-      toCoordinates &&
-      getTripPlanner({
-        from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
-        to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
+        scheduledTime,
+      ],
+      queryFn: () =>
+        fromCoordinates &&
+        toCoordinates &&
+        getTripPlanner({
+          from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+          to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
+          dateTime,
+          arriveBy: scheduledTime === ScheduleType.arrival,
+          mode: TravelModesOtpApi.bicycle,
+          accessibleOnly,
+        }),
+      enabled: fromCoordinates && toCoordinates ? true : false,
+    },
+    {
+      queryKey: [
+        'getOtpRekolaData',
+        fromCoordinates,
+        toCoordinates,
         dateTime,
-        arriveBy: scheduledTime === ScheduleType.arrival,
-        mode: TravelModesOtpApi.bicycle,
-        accessibleOnly,
-      }),
-    { enabled: fromCoordinates && toCoordinates ? true : false }
-  )
-
-  const rekolaQuery = useQuery(
-    [
-      'getOtpRekolaData',
-      fromCoordinates,
-      toCoordinates,
-      dateTime,
-      scheduledTime,
-    ],
-    () =>
-      fromCoordinates &&
-      toCoordinates &&
-      getTripPlanner({
-        from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
-        to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
+        scheduledTime,
+      ],
+      queryFn: () =>
+        fromCoordinates &&
+        toCoordinates &&
+        getTripPlanner({
+          from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+          to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
+          dateTime,
+          arriveBy: scheduledTime === ScheduleType.arrival,
+          mode: TravelModesOtpApi.rented,
+          provider: MicromobilityProvider.rekola,
+          accessibleOnly,
+        }),
+      enabled: fromCoordinates && toCoordinates ? true : false,
+    },
+    {
+      queryKey: [
+        'getOtpSlovnaftbajkData',
+        fromCoordinates,
+        toCoordinates,
         dateTime,
-        arriveBy: scheduledTime === ScheduleType.arrival,
-        mode: TravelModesOtpApi.rented,
-        provider: MicromobilityProvider.rekola,
-        accessibleOnly,
-      }),
-    { enabled: fromCoordinates && toCoordinates ? true : false }
-  )
-
-  const slovnaftbajkQuery = useQuery(
-    [
-      'getOtpSlovnaftbajkData',
-      fromCoordinates,
-      toCoordinates,
-      dateTime,
-      scheduledTime,
-    ],
-    () =>
-      fromCoordinates &&
-      toCoordinates &&
-      getTripPlanner({
-        from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
-        to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
+        scheduledTime,
+      ],
+      queryFn: () =>
+        fromCoordinates &&
+        toCoordinates &&
+        getTripPlanner({
+          from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+          to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
+          dateTime,
+          arriveBy: scheduledTime === ScheduleType.arrival,
+          mode: TravelModesOtpApi.rented,
+          provider: MicromobilityProvider.slovnaftbajk,
+          accessibleOnly,
+        }),
+      enabled: fromCoordinates && toCoordinates ? true : false,
+    },
+    {
+      queryKey: [
+        'getOtpTierData',
+        fromCoordinates,
+        toCoordinates,
         dateTime,
-        arriveBy: scheduledTime === ScheduleType.arrival,
-        mode: TravelModesOtpApi.rented,
-        provider: MicromobilityProvider.slovnaftbajk,
-        accessibleOnly,
-      }),
-    { enabled: fromCoordinates && toCoordinates ? true : false }
-  )
-
-  const tierQuery = useQuery(
-    ['getOtpTierData', fromCoordinates, toCoordinates, dateTime, scheduledTime],
-    () =>
-      fromCoordinates &&
-      toCoordinates &&
-      getTripPlanner({
-        from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
-        to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
+        scheduledTime,
+      ],
+      queryFn: () =>
+        fromCoordinates &&
+        toCoordinates &&
+        getTripPlanner({
+          from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+          to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
+          dateTime,
+          arriveBy: scheduledTime === ScheduleType.arrival,
+          mode: TravelModesOtpApi.rented,
+          provider: MicromobilityProvider.tier,
+          accessibleOnly,
+        }),
+      enabled: fromCoordinates && toCoordinates ? true : false,
+    },
+    {
+      queryKey: [
+        'getOtpDataWalk',
+        fromCoordinates,
+        toCoordinates,
         dateTime,
-        arriveBy: scheduledTime === ScheduleType.arrival,
-        mode: TravelModesOtpApi.rented,
-        provider: MicromobilityProvider.tier,
-        accessibleOnly,
-      }),
-    { enabled: fromCoordinates && toCoordinates ? true : false }
-  )
+        scheduledTime,
+      ],
+      queryFn: () =>
+        fromCoordinates &&
+        toCoordinates &&
+        getTripPlanner({
+          from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+          to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
+          dateTime,
+          arriveBy: scheduledTime === ScheduleType.arrival,
+          mode: TravelModesOtpApi.walk,
+          accessibleOnly,
+        }),
+      enabled: fromCoordinates && toCoordinates ? true : false,
+    },
+  ])
 
   useEffect(() => {
     setFromCoordinates(fromPropCoordinates)
@@ -717,82 +733,6 @@ export default function Planner(props: PlannerProps) {
     )
     toBottomSheetRef?.current?.close()
   }, [fromCoordinates, navigation, toCoordinates, fromName, toName])
-
-  const getElements = ({
-    isLoading,
-    data,
-    provider,
-    error,
-    refetch,
-  }: ElementsProps) => {
-    if (!isLoading && error)
-      return (
-        <View>
-          {renderError({
-            error: error,
-            errorType: 'dataPlannerTrip',
-            provider,
-            action: refetch,
-          })}
-        </View>
-      )
-
-    if (!isLoading && data && data.plan?.itineraries?.length === 0)
-      return (
-        <View>{renderError({ errorType: 'plannerNoRoute', provider })}</View>
-      )
-
-    return (
-      <>
-        {isLoading && (
-          <TripMiniature provider={provider} isLoading={isLoading} />
-        )}
-        {data?.plan?.itineraries?.map((tripChoice, index) => {
-          // first result for TRANSIT trip is often walking whole trip,
-          // when the trip distance is smaller than the 'maxWalkDistance'
-
-          // alternative is to reduce walking distance in request 'maxWalkDistance' http://dev.opentripplanner.org/apidoc/1.4.0/resource_PlannerResource.html{
-          return (
-            <TripMiniature
-              key={index}
-              onPress={() =>
-                navigation.navigate(
-                  'PlannerScreen' as never,
-                  {
-                    legs: tripChoice?.legs,
-                    provider: provider,
-                    isScooter: selectedVehicle === TravelModes.scooter,
-                    travelMode: selectedVehicle,
-                    fromPlace: fromName,
-                    toPlace: toName,
-                    price: getPriceFromItinerary(
-                      tripChoice,
-                      selectedVehicle,
-                      provider
-                    ),
-                  } as never
-                )
-              }
-              provider={provider}
-              duration={Math.round(tripChoice.duration / 60)}
-              departureDateTime={LocalDateTime.ofInstant(
-                Instant.ofEpochMilli(tripChoice.startTime)
-              )}
-              arriveDateTime={LocalDateTime.ofInstant(
-                Instant.ofEpochMilli(tripChoice.endTime)
-              )}
-              legs={
-                tripChoice.legs
-                  ? aggregateBicycleLegs(tripChoice.legs)
-                  : undefined
-              }
-              isScooter={selectedVehicle === TravelModes.scooter}
-            />
-          )
-        })}
-      </>
-    )
-  }
 
   const renderError = ({
     error,

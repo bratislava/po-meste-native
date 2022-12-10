@@ -161,7 +161,10 @@ export const getTripPlanner = async ({
   provider?: MicromobilityProvider
   accessibleOnly: boolean
 }) => {
-  if (provider === MicromobilityProvider.tier) {
+  if (
+    provider === MicromobilityProvider.tier ||
+    provider === MicromobilityProvider.bolt
+  ) {
     dateTime = dateTime.plusHours(24)
   }
   const zonedTime = ZonedDateTime.of(dateTime, ZoneId.of('Europe/Bratislava'))

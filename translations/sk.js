@@ -94,6 +94,7 @@ export default {
       end: 'Koniec',
       departAt: 'Vyraziť o',
       price: 'cena ~{{count}}€',
+      polygon: 'Polygón',
     },
     ChooseLocationScreen: {
       screenTitle: 'Výber miesta',

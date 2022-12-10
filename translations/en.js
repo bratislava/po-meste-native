@@ -92,6 +92,7 @@ export default {
       end: 'End',
       departAt: 'Depart at',
       price: 'price ~{{count}}€',
+      polygon: 'Polygon',
     },
     ChooseLocationScreen: {
       screenTitle: 'Choose location',

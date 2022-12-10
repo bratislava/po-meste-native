@@ -18,6 +18,7 @@ import React, { useEffect, useState } from 'react'
 
 // import WheelchairSvg from '@icons/wheelchair.svg'
 
+import BoltHeaderSvg from '@icons/bottom-route-headers/bolt.svg'
 import RekolaHeaderSvg from '@icons/bottom-route-headers/rekola.svg'
 import SlovnaftbajkHeaderSvg from '@icons/bottom-route-headers/slovnaftbajk.svg'
 import TierHeaderSvg from '@icons/bottom-route-headers/tier.svg'
@@ -37,6 +38,7 @@ import {
   getProviderFromStationId,
   getProviderName,
   getShortAddress,
+  googlePlacesReverseGeocode,
   ITINERARY_ICON_WIDTH,
   ITINERARY_PADDING_HORIZONTAL,
   LegProps,
@@ -72,7 +74,10 @@ export const TextItinerary = ({
   const [updateEveryMinuteInterval, setUpdateEveryMinuteInterval] = useState<
     number | undefined
   >(undefined)
-
+  const [boltStationNames, setBoltStationNames] = useState([
+    i18n.t('screens.PlannerScreen.polygon'),
+    i18n.t('screens.PlannerScreen.polygon'),
+  ])
   useEffect(() => {
     if (travelMode === TravelModes.mhd)
       setUpdateEveryMinuteInterval(
@@ -96,6 +101,8 @@ export const TextItinerary = ({
         return SlovnaftbajkHeaderSvg
       case MicromobilityProvider.tier:
         return TierHeaderSvg
+      case MicromobilityProvider.bolt:
+        return BoltHeaderSvg
       default:
         break
     }
@@ -132,6 +139,38 @@ export const TextItinerary = ({
     legs,
     (leg) => leg.from.vertexType === BIKESHARE_PROPERTY
   )
+
+  if (provider === MicromobilityProvider.bolt) {
+    const origin = legs[getFirstRentedInstanceIndex]
+    const destination = legs[getLastRentedInstanceIndex]
+    if (origin.from.lat && origin.from.lon) {
+      googlePlacesReverseGeocode(origin.from.lat, origin.from.lon, (result) =>
+        setBoltStationNames((old) => {
+          old[0] = getShortAddress(
+            `${i18n.t('screens.PlannerScreen.polygon')} ${
+              result[0].formatted_address
+            }`
+          )
+          return old
+        })
+      )
+    }
+    if (destination.from.lat && destination.from.lon) {
+      googlePlacesReverseGeocode(
+        destination.from.lat,
+        destination.from.lon,
+        (result) =>
+          setBoltStationNames((old) => {
+            old[1] = getShortAddress(
+              `${i18n.t('screens.PlannerScreen.polygon')} ${
+                result[0].formatted_address
+              }`
+            )
+            return old
+          })
+      )
+    }
+  }
 
   const firstStop = legs.find((leg) => leg.from.vertexType === 'TRANSIT')
   const isMhd = !!firstStop
@@ -378,7 +417,13 @@ export const TextItinerary = ({
                 {(getFirstRentedInstanceIndex === index ||
                   getLastRentedInstanceIndex === index) &&
                   renderProviderIconWithText(
-                    leg.from.name,
+                    provider === MicromobilityProvider.bolt
+                      ? index === getFirstRentedInstanceIndex
+                        ? boltStationNames[0]
+                        : index === getLastRentedInstanceIndex
+                        ? boltStationNames[1]
+                        : leg.from.name
+                      : leg.from.name,
                     getIcon(
                       getProviderFromStationId(leg.from.bikeShareId) ??
                         provider,

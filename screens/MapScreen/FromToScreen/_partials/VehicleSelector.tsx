@@ -39,6 +39,9 @@ const VehicleSelector = ({
             if (vehicle.mode === TravelModes.mhd || min === max) {
               return `~${min}€`
             }
+            if ((vehicle.priceMax ?? 0) > 1000) {
+              return `>${min}€`
+            }
             return `${min}${min && max && ` - `}${max}${(min || max) && '€'}`
           }
 
@@ -48,8 +51,11 @@ const VehicleSelector = ({
             if (!min) {
               return null
             }
-            if (min === max || min >= 100) {
+            if (min === max) {
               return `${min} min`
+            }
+            if (min >= 100 || (max && max >= 100)) {
+              return `>${min} min`
             }
             return `${min}${min && max && ` - `}${max}${(min || max) && ' min'}`
           }

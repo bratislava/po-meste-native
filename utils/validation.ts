@@ -412,7 +412,7 @@ export const apiMhdTrip = yup.object().shape({
     ),
 })
 
-export const apiMhdGrafikon = yup.object().shape({
+export const oldApiMhdGrafikon = yup.object().shape({
   lineNumber: yup.string(),
   // .required('error-malformed-apiMhdGrafikon-lineNumber'),
   currentStopName: yup.string(),
@@ -435,6 +435,45 @@ export const apiMhdGrafikon = yup.object().shape({
           excludeEmptyStrings: true,
         })
         .required('error-malformed-apiMhdGrafikon-time')
+    ),
+})
+
+export const apiMhdGrafikon = yup.object().shape({
+  lineNumber: yup.string(),
+  // .required('error-malformed-apiMhdGrafikon-lineNumber'),
+  currentStopName: yup.string(),
+  // .required('error-malformed-apiMhdGrafikon-currentStopName'),
+  finalStopName: yup.string(),
+  // .required('error-malformed-apiMhdGrafikon-finalStopName'),
+  lineColor: yup.string().matches(colorRegex, {
+    message: 'error-malformed-apiMhdGrafikon-lineColor-wrong-format',
+    excludeEmptyStrings: true,
+  }),
+  notes: yup
+    .array()
+    .ensure()
+    .of(
+      yup.object().shape({
+        note: yup.string(),
+        description: yup.string(),
+        value: yup.string(),
+      })
+    ),
+  // .required('error-malformed-apiMhdGrafikon-lineColor'),
+  timetable: yup
+    .array()
+    .ensure()
+    .of(
+      yup.object().shape({
+        time: yup
+          .string()
+          .matches(timeStringRegex, {
+            message: 'error-malformed-apiMhdGrafikon-time-wrong-format',
+            excludeEmptyStrings: true,
+          })
+          .required('error-malformed-apiMhdGrafikon-time'),
+        notes: yup.string(),
+      })
     ),
 })
 

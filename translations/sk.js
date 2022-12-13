@@ -106,6 +106,10 @@ export default {
     },
     LineTimetableScreen: {
       screenTitle: 'Grafikon linky %{lineNumber}',
+      differentFinalStop:
+        'Na zastávke {{value}} buď linka končí svoju cestu alebo sa vychýli zo svojej tradičnej trasy (napríklad do depa).',
+      wheelchairAccessible: 'Vozidlo je garantovane nízkopodlažné.',
+      allAccessible: 'Všetky vozidlá sú nízkopodlažné.',
     },
     LineTimelineScreen: {
       screenTitle: 'Časová os linky %{lineNumber}',

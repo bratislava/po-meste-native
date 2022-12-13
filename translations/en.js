@@ -104,6 +104,11 @@ export default {
     },
     LineTimetableScreen: {
       screenTitle: 'Timetable line %{lineNumber}',
+      differentFinalStop:
+        'At the stop {{value}} the line either terminates or starts taking a different route.',
+      wheelchairAccessible:
+        'The vehicle is guaranteed to be wheelchair accessible.',
+      allAccessible: 'All vehicles are wheelchair accessible.',
     },
     LineTimelineScreen: {
       screenTitle: 'Timeline line %{lineNumber}',

@@ -15,6 +15,7 @@ import {
   colors,
   getColor,
   getHeaderBgColor,
+  getProviderFromStationId,
   hexToRgba,
   mapStyles,
   modeColors,
@@ -96,17 +97,20 @@ export default function PlannerScreen({
             const latlngs = googlePolyline.decode(leg.legGeometry.points)
             const color = hexToRgba(
               Platform.OS === 'ios' &&
-                (leg.mode === LegModes.bus || leg.mode === LegModes.tram) &&
+                (leg.mode === LegModes.bus ||
+                  leg.mode === LegModes.tram ||
+                  leg.mode === LegModes.trolleybus) &&
                 leg.routeColor === '898989'
                 ? colors.primary
                 : leg.rentedBike
-                ? getColor(provider) || '#aaa'
+                ? getColor(
+                    provider ?? getProviderFromStationId(leg.from.bikeShareId)
+                  )
                 : leg.routeColor
                 ? `#${leg.routeColor}`
                 : modeColors[leg.mode || 'DEFAULT'],
               Platform.OS === 'ios' ? 0.8 : 0.6
             )
-            console.log({ color })
             const marker = (
               <Polyline
                 key={index}

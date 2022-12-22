@@ -176,6 +176,7 @@ const leg = yup.object().shape({
     stopId: yup.string(), //'1:000000008700002',
     stopIndex: yup.number(), //18,
     zoneId: yup.string(), //'100',
+    bikeShareId: yup.string(),
   }),
   to: yup.object().shape({
     name: yup.string(), //"corner of sidewalk and service road",
@@ -274,6 +275,8 @@ export const apiOtpPlanner = yup.object().shape({
     itineraries: yup.array().ensure().of(iteneraryObject),
   }),
 })
+
+export type OtpData = yup.TypeOf<typeof apiOtpPlanner>
 
 export type ConnectorProps = yup.Asserts<typeof connectors>
 const connectors = yup.object().shape({
@@ -409,7 +412,7 @@ export const apiMhdTrip = yup.object().shape({
     ),
 })
 
-export const apiMhdGrafikon = yup.object().shape({
+export const oldApiMhdGrafikon = yup.object().shape({
   lineNumber: yup.string(),
   // .required('error-malformed-apiMhdGrafikon-lineNumber'),
   currentStopName: yup.string(),
@@ -432,6 +435,45 @@ export const apiMhdGrafikon = yup.object().shape({
           excludeEmptyStrings: true,
         })
         .required('error-malformed-apiMhdGrafikon-time')
+    ),
+})
+
+export const apiMhdGrafikon = yup.object().shape({
+  lineNumber: yup.string(),
+  // .required('error-malformed-apiMhdGrafikon-lineNumber'),
+  currentStopName: yup.string(),
+  // .required('error-malformed-apiMhdGrafikon-currentStopName'),
+  finalStopName: yup.string(),
+  // .required('error-malformed-apiMhdGrafikon-finalStopName'),
+  lineColor: yup.string().matches(colorRegex, {
+    message: 'error-malformed-apiMhdGrafikon-lineColor-wrong-format',
+    excludeEmptyStrings: true,
+  }),
+  notes: yup
+    .array()
+    .ensure()
+    .of(
+      yup.object().shape({
+        note: yup.string(),
+        description: yup.string(),
+        value: yup.string(),
+      })
+    ),
+  // .required('error-malformed-apiMhdGrafikon-lineColor'),
+  timetable: yup
+    .array()
+    .ensure()
+    .of(
+      yup.object().shape({
+        time: yup
+          .string()
+          .matches(timeStringRegex, {
+            message: 'error-malformed-apiMhdGrafikon-time-wrong-format',
+            excludeEmptyStrings: true,
+          })
+          .required('error-malformed-apiMhdGrafikon-time'),
+        notes: yup.string(),
+      })
     ),
 })
 

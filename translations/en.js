@@ -92,6 +92,7 @@ export default {
       end: 'End',
       departAt: 'Depart at',
       price: 'price ~{{count}}€',
+      polygon: 'Polygon',
     },
     ChooseLocationScreen: {
       screenTitle: 'Choose location',
@@ -103,6 +104,11 @@ export default {
     },
     LineTimetableScreen: {
       screenTitle: 'Timetable line %{lineNumber}',
+      differentFinalStop:
+        'At the stop {{value}} the line either terminates or starts taking a different route.',
+      wheelchairAccessible:
+        'The vehicle is guaranteed to be wheelchair accessible.',
+      allAccessible: 'All vehicles are wheelchair accessible.',
     },
     LineTimelineScreen: {
       screenTitle: 'Timeline line %{lineNumber}',
@@ -251,7 +257,7 @@ export default {
         disconnected: 'Please connect to the internet to use this feature.',
         plannerUnsupportedArea:
           'It seems that you are trying to plan a journey outside the supported area.\nTry adjusting search criteria to find a route you are looking for. ',
-        plannerNoRoute: 'No route found.',
+        plannerNoRoute: 'No suitable{{provider}} route found.',
         mapUnsupportedArea: 'Your location is outside of Bratislava.',
       },
     },

@@ -54,7 +54,9 @@ export const getPriceFromItinerary = (
   switch (travelMode) {
     case TravelModes.mhd:
       legModesPredicate = (mode: LegModes) =>
-        mode === LegModes.bus || mode === LegModes.tram
+        mode === LegModes.bus ||
+        mode === LegModes.tram ||
+        mode === LegModes.trolleybus
       break
     case TravelModes.bicycle:
       legModesPredicate = (mode: LegModes) => mode === LegModes.bicycle

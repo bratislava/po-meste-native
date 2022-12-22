@@ -9,6 +9,7 @@ import '@js-joda/timezone'
 import * as Sentry from '@sentry/react-native'
 import {
   GooglePlacesResult,
+  LegModes,
   MicromobilityProvider,
   TravelModesOtpApi,
 } from '@types'
@@ -23,10 +24,10 @@ import {
   apiOtpPlanner,
 } from './validation'
 
-const host = 'planner.dev.bratislava.sk'
-const tempHost = 'planner.bratislava.sk'
+const host = 'planner.bratislava.sk'
 const dataHostUrl = `https://live.${host}`
-const otpPlannerUrl = `https://api.${tempHost || host}/otp/routers/default/plan` // TODO use otp.planner.bratislava.sk
+const mhdDataHostUrl = 'https://live.planner.dev.bratislava.sk'
+const otpPlannerUrl = `https://api.${host}/otp/routers/default/plan` // TODO use otp.planner.bratislava.sk
 
 // we should throw throwables only, so it's useful to extend Error class to contain useful info
 // export class ApiError extends Error {
@@ -52,7 +53,14 @@ const formatTimestamp = (date: Date) => {
 // helper with a common fetch pattern for json endpoints & baked in host
 const fetchJsonFromApi = async (path: string, options?: RequestInit) => {
   // leaving this console.log here because it is very important to keep track of fetches
-  const response = await fetch(`${dataHostUrl}${path}`, options)
+  const response = await fetch(
+    `${
+      path.startsWith('/mhd') && path.includes('grafikon')
+        ? mhdDataHostUrl
+        : dataHostUrl
+    }${path}`,
+    options
+  )
   const responseLength = response.headers.get('content-length')
   console.log(
     '%s\x1b[95m%s\x1b[0m%s',
@@ -71,6 +79,11 @@ const fetchJsonFromApi = async (path: string, options?: RequestInit) => {
 }
 
 const fetchJsonFromOtpApi = async (plannerAddress: string, path: string) => {
+  console.log(
+    '%s\x1b[95m%s\x1b[0m',
+    `[${formatTimestamp(new Date())}] `,
+    `Fetched from '${plannerAddress}${path}'`
+  )
   const response = await fetch(`${plannerAddress}${path}`)
   if (response.ok) {
     return response.json()
@@ -139,16 +152,27 @@ export const getBoltFreeBikeStatus = () =>
 
 export const getChargersStops = async () => fetchJsonFromApi('/zse')
 
-export const getTripPlanner = async (
-  from: string,
-  to: string,
-  dateTime: LocalDateTime,
-  arriveBy: boolean,
-  mode: TravelModesOtpApi = TravelModesOtpApi.transit,
-  plannerApi?: MicromobilityProvider,
-  wheelchair = false
-) => {
-  if (plannerApi === MicromobilityProvider.tier) {
+export const getTripPlanner = async ({
+  from,
+  to,
+  dateTime,
+  arriveBy,
+  mode = TravelModesOtpApi.transit,
+  provider,
+  accessibleOnly = false,
+}: {
+  from: string
+  to: string
+  dateTime: LocalDateTime
+  arriveBy: boolean
+  mode: TravelModesOtpApi
+  provider?: MicromobilityProvider
+  accessibleOnly: boolean
+}) => {
+  if (
+    provider === MicromobilityProvider.tier ||
+    provider === MicromobilityProvider.bolt
+  ) {
     dateTime = dateTime.plusHours(24)
   }
   const zonedTime = ZonedDateTime.of(dateTime, ZoneId.of('Europe/Bratislava'))
@@ -160,17 +184,59 @@ export const getTripPlanner = async (
       time: zonedTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
       mode: mode,
       maxWalkDistance: mode === TravelModesOtpApi.walk ? 10000.0 : 1000.0, // was '4828.032'
+      walkReluctance: 7.0, // Note: maxWalkDistance does not do much anymore, we have to use this
       arriveBy: arriveBy,
-      wheelchair: wheelchair,
-      debugItineraryFilter: wheelchair.toString(),
+      wheelchair: accessibleOnly,
+      debugItineraryFilter: accessibleOnly.toString(),
       locale: 'en',
-      allowedVehicleRentalNetworks: plannerApi?.toLowerCase(),
+      numItineraries: mode === TravelModesOtpApi.multimodal ? undefined : 6,
+      allowedVehicleRentalNetworks: provider?.toLowerCase(),
     },
     { addQueryPrefix: true }
   )
-  return apiOtpPlanner.validateSync(
+
+  const validatedData = apiOtpPlanner.validateSync(
     await fetchJsonFromOtpApi(otpPlannerUrl, data)
   )
+
+  const filteredTrips = validatedData.plan.itineraries?.filter(
+    (tripChoice, index) => {
+      const shouldBeExcluded =
+        (provider &&
+          tripChoice.legs?.findIndex((leg) =>
+            mode === TravelModesOtpApi.rented
+              ? leg.mode === LegModes.bicycle || leg.mode === LegModes.scooter
+              : true
+          ) === -1) ||
+        (mode === TravelModesOtpApi.transit &&
+          index === 0 &&
+          tripChoice.legs?.findIndex(
+            (leg) =>
+              leg.mode === LegModes.bus ||
+              leg.mode === LegModes.tram ||
+              leg.mode === LegModes.trolleybus
+          ) === -1) ||
+        (mode === TravelModesOtpApi.multimodal &&
+          (tripChoice.legs?.findIndex(
+            (leg) =>
+              leg.mode === LegModes.bus ||
+              leg.mode === LegModes.tram ||
+              leg.mode === LegModes.trolleybus
+          ) === -1 ||
+            tripChoice.legs?.findIndex(
+              (leg) =>
+                leg.mode === LegModes.bicycle || leg.mode === LegModes.scooter
+            ) === -1))
+      return !shouldBeExcluded
+    }
+  )
+
+  validatedData.plan.itineraries =
+    mode === TravelModesOtpApi.multimodal || mode === TravelModesOtpApi.transit
+      ? filteredTrips?.slice(0, 5)
+      : filteredTrips
+
+  return validatedData
 }
 
 export const googlePlacesReverseGeocode = (

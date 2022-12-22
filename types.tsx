@@ -29,6 +29,7 @@ export enum TravelModesOtpApi {
   rented = 'WALK,BICYCLE_RENT',
   scooter = 'BICYCLE',
   walk = 'WALK',
+  multimodal = 'TRANSIT,BICYCLE_RENT,WALK',
 }
 
 export enum LegModes {
@@ -36,7 +37,8 @@ export enum LegModes {
   bus = 'BUS',
   walk = 'WALK',
   bicycle = 'BICYCLE',
-  scooter = '',
+  scooter = 'SCOOTER',
+  trolleybus = 'TROLLEYBUS',
 }
 
 export enum ChargerStatus {
@@ -157,7 +159,7 @@ export type MobilityProvider = MicromobilityProvider | ChargersProvider
 
 export enum TransitVehicleType {
   tram = '0',
-  trolleybus = '800',
+  trolleybus = '11',
   bus = '3',
 }
 

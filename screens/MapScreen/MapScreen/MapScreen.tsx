@@ -703,7 +703,6 @@ export default function MapScreen() {
                     }}
                     tracksViewChanges={false}
                     icon={getIcon(IconType.zse)}
-                    image={getIcon(IconType.zse)}
                     onPress={() => operateBottomSheet({ charger })}
                   >
                     {Platform.OS === 'ios' && getIosIcon(IconType.zse)}

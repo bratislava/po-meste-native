@@ -86,7 +86,7 @@ const ErrorView = ({
         },
       })
     } else if (errorMessage) {
-      Sentry.captureMessage(errorMessage, Sentry.Severity.Error)
+      Sentry.captureMessage(errorMessage, 'error')
     }
   }, [error, errorMessage, netInfo.isConnected])
 

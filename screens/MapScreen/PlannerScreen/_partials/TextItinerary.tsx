@@ -18,6 +18,7 @@ import React, { useEffect, useState } from 'react'
 
 // import WheelchairSvg from '@icons/wheelchair.svg'
 
+import BoltHeaderSvg from '@icons/bottom-route-headers/bolt.svg'
 import RekolaHeaderSvg from '@icons/bottom-route-headers/rekola.svg'
 import SlovnaftbajkHeaderSvg from '@icons/bottom-route-headers/slovnaftbajk.svg'
 import TierHeaderSvg from '@icons/bottom-route-headers/tier.svg'
@@ -34,13 +35,16 @@ import {
   getHeaderBgColor,
   getIcon,
   getMicromobilityImage,
+  getProviderFromStationId,
   getProviderName,
   getShortAddress,
+  googlePlacesReverseGeocode,
   ITINERARY_ICON_WIDTH,
   ITINERARY_PADDING_HORIZONTAL,
   LegProps,
   s,
 } from '@utils'
+import { SvgProps } from 'react-native-svg'
 import MhdTransitCard from './_partials/MhdTransitCard'
 
 interface TextItineraryProps {
@@ -70,7 +74,10 @@ export const TextItinerary = ({
   const [updateEveryMinuteInterval, setUpdateEveryMinuteInterval] = useState<
     number | undefined
   >(undefined)
-
+  const [boltStationNames, setBoltStationNames] = useState([
+    i18n.t('screens.PlannerScreen.polygon'),
+    i18n.t('screens.PlannerScreen.polygon'),
+  ])
   useEffect(() => {
     if (travelMode === TravelModes.mhd)
       setUpdateEveryMinuteInterval(
@@ -82,7 +89,6 @@ export const TextItinerary = ({
     }
   }, [])
 
-  const ProviderIcon = provider && getIcon(provider, isScooter)
   const title = provider && getProviderName(provider)
   const getHeaderIcon = (
     provider: MicromobilityProvider | undefined,
@@ -95,6 +101,8 @@ export const TextItinerary = ({
         return SlovnaftbajkHeaderSvg
       case MicromobilityProvider.tier:
         return TierHeaderSvg
+      case MicromobilityProvider.bolt:
+        return BoltHeaderSvg
       default:
         break
     }
@@ -132,6 +140,38 @@ export const TextItinerary = ({
     (leg) => leg.from.vertexType === BIKESHARE_PROPERTY
   )
 
+  if (provider === MicromobilityProvider.bolt) {
+    const origin = legs[getFirstRentedInstanceIndex]
+    const destination = legs[getLastRentedInstanceIndex]
+    if (origin.from.lat && origin.from.lon) {
+      googlePlacesReverseGeocode(origin.from.lat, origin.from.lon, (result) =>
+        setBoltStationNames((old) => {
+          old[0] = getShortAddress(
+            `${i18n.t('screens.PlannerScreen.polygon')} ${
+              result[0].formatted_address
+            }`
+          )
+          return old
+        })
+      )
+    }
+    if (destination.from.lat && destination.from.lon) {
+      googlePlacesReverseGeocode(
+        destination.from.lat,
+        destination.from.lon,
+        (result) =>
+          setBoltStationNames((old) => {
+            old[1] = getShortAddress(
+              `${i18n.t('screens.PlannerScreen.polygon')} ${
+                result[0].formatted_address
+              }`
+            )
+            return old
+          })
+      )
+    }
+  }
+
   const firstStop = legs.find((leg) => leg.from.vertexType === 'TRANSIT')
   const isMhd = !!firstStop
 
@@ -139,7 +179,10 @@ export const TextItinerary = ({
     return <DashedLine spacing={4} dashLength={2} color={colors.darkText} />
   }
 
-  const renderProviderIconWithText = (text?: string) => {
+  const renderProviderIconWithText = (
+    text?: string,
+    ProviderIcon?: React.FC<SvgProps>
+  ) => {
     return (
       <View style={[styles.card, s.horizontalMargin]}>
         <View style={styles.left}>
@@ -371,10 +414,22 @@ export const TextItinerary = ({
                     )}
                   </View>
                 )}
-                {getFirstRentedInstanceIndex === index &&
-                  renderProviderIconWithText(leg.from.name)}
-                {getLastRentedInstanceIndex === index &&
-                  renderProviderIconWithText(leg.from.name)}
+                {(getFirstRentedInstanceIndex === index ||
+                  getLastRentedInstanceIndex === index) &&
+                  renderProviderIconWithText(
+                    provider === MicromobilityProvider.bolt
+                      ? index === getFirstRentedInstanceIndex
+                        ? boltStationNames[0]
+                        : index === getLastRentedInstanceIndex
+                        ? boltStationNames[1]
+                        : leg.from.name
+                      : leg.from.name,
+                    getIcon(
+                      getProviderFromStationId(leg.from.bikeShareId) ??
+                        provider,
+                      isScooter
+                    )
+                  )}
                 {leg.mode === LegModes.walk &&
                   // if the last leg is walking and shorter than 1 minute, it does not render
                   !(

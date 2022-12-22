@@ -1,8 +1,9 @@
 import Text from '@components/Text'
 import { Ionicons } from '@expo/vector-icons'
+import WheelchairIcon from '@icons/wheelchair.svg'
 import { DateTimeFormatter, Instant, LocalDate } from '@js-joda/core'
 import { StackScreenProps } from '@react-navigation/stack'
-import i18n from 'i18n-js'
+import i18n, { t } from 'i18n-js'
 import _ from 'lodash'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
@@ -44,7 +45,21 @@ export default function LineTimetableScreen({
   const [highlightedMinutePositionY, setHighlightedMinutePositionY] =
     useState<number>(0)
 
+  const allAccessible = useMemo(
+    // a note is a string with each character representing a timetable note, for wheelchair accessibility the `_` is used
+    () => data?.timetable?.every((time) => time.notes?.includes('_')),
+    [data]
+  )
+
   const isToday = (d: LocalDate) => d.equals(LocalDate.now())
+
+  const timetableHours = useMemo(
+    () =>
+      lineNumber.toLowerCase().startsWith('n')
+        ? [23, 0, 1, 2, 3, 4]
+        : _.range(4, 24).concat(0),
+    [lineNumber]
+  )
 
   //scroll to highlighted minute on layout event
   useEffect(() => {
@@ -69,21 +84,23 @@ export default function LineTimetableScreen({
 
   const formattedData = useMemo(() => {
     const timetableByHours = _.groupBy(data?.timetable, (value) => {
-      return parseInt(value.split(':')[0])
+      return parseInt(value.time.split(':')[0])
     })
-    return _.range(4, 24)
-      .concat(0) // after midnight links is marked '00:24:00'
-      .map((hour) => {
-        return {
-          hour,
-          minutes: timetableByHours[hour]
-            ? timetableByHours[hour].map((value) => ({
-                minute: value.split(':')[1],
-                additionalInfo: '',
-              }))
-            : [],
-        }
-      })
+    return (
+      timetableHours
+        // after midnight links is marked '00:24:00'
+        .map((hour) => {
+          return {
+            hour,
+            minutes: timetableByHours[hour]
+              ? timetableByHours[hour].map((value) => ({
+                  minute: value.time.split(':')[1],
+                  notes: value.notes,
+                }))
+              : [],
+          }
+        })
+    )
   }, [data])
 
   const activeIndex = useMemo(() => {
@@ -242,10 +259,7 @@ export default function LineTimetableScreen({
             horizontal
             contentContainerStyle={styles.flexColumn}
           >
-            {[
-              4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-              22, 23, 0,
-            ].map((hour, indexHours) => {
+            {timetableHours.map((hour, indexHours) => {
               const dataToShow = formattedData.find(
                 (hourDataRow) => hourDataRow.hour === hour
               )
@@ -297,11 +311,16 @@ export default function LineTimetableScreen({
                               ? styles.highlightedMinuteText
                               : null,
                             indexHours % 2 === 0 ? styles.hourEven : null,
+                            // a note is a string with each character representing a timetable note, for wheelchair accessibility the `_` is used
+                            minuteData.notes?.includes('_') &&
+                            allAccessible === false
+                              ? { textDecorationLine: 'underline' }
+                              : null,
                           ]}
                         >
                           {minuteData.minute}
-                          {minuteData.additionalInfo
-                            ? minuteData.additionalInfo
+                          {minuteData.notes
+                            ? minuteData.notes.replace('_', '')
                             : ''}
                         </Text>
                       </View>
@@ -311,6 +330,78 @@ export default function LineTimetableScreen({
               )
             })}
           </ScrollView>
+          <View style={{ marginBottom: 100 }}>
+            {data?.notes?.map((note) => {
+              if (
+                note.description === 'wheelchairAccessible' &&
+                allAccessible
+              ) {
+                return (
+                  <View
+                    key={note.note}
+                    style={{ flexDirection: 'row', marginBottom: 5 }}
+                  >
+                    <View style={{ width: 40 }}>
+                      <WheelchairIcon
+                        fill={colors.primary}
+                        width={24}
+                        height={24}
+                      />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text>
+                        {t('screens.LineTimetableScreen.allAccessible')}
+                      </Text>
+                    </View>
+                  </View>
+                )
+              }
+              return (
+                <View
+                  key={note.note}
+                  style={{ flexDirection: 'row', marginBottom: 5 }}
+                >
+                  {note.description === 'wheelchairAccessible' ? (
+                    <Text
+                      style={{
+                        width: 40,
+                        textDecorationColor: colors.primary,
+                        textDecorationLine: 'underline',
+                      }}
+                    >
+                      min
+                    </Text>
+                  ) : (
+                    <Text
+                      style={{
+                        width: 40,
+                        color: colors.primary,
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {note.note}
+                    </Text>
+                  )}
+                  <View style={{ flex: 1 }}>
+                    <Text>
+                      {note.description === 'differentFinalStop'
+                        ? t('screens.LineTimetableScreen.differentFinalStop', {
+                            value: note.value,
+                          })
+                        : note.description === 'customSkEn'
+                        ? note.value?.split('|')[
+                            i18n.currentLocale() === 'sk' ? 0 : 1
+                          ]
+                        : note.description === 'wheelchairAccessible' &&
+                          allAccessible === false
+                        ? t('screens.LineTimetableScreen.wheelchairAccessible')
+                        : ''}
+                    </Text>
+                  </View>
+                </View>
+              )
+            })}
+          </View>
         </ScrollView>
       </View>
       <DateTimePickerModal
@@ -367,7 +458,7 @@ const styles = StyleSheet.create({
   flexColumn: {
     flexDirection: 'column',
     alignItems: 'stretch',
-    marginBottom: 100,
+    marginBottom: 25,
     minWidth: '100%',
   },
   timetableRow: {

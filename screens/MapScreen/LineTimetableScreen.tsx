@@ -77,7 +77,11 @@ export default function LineTimetableScreen({
     const timetableByHours = _.groupBy(data?.timetable, (value) => {
       return parseInt(value.time.split(':')[0])
     })
-    return _.range(4, 24)
+    return (
+      lineNumber.toLowerCase().startsWith('n')
+        ? [23, 0, 1, 2, 3, 4]
+        : _.range(4, 24)
+    )
       .concat(0) // after midnight links is marked '00:24:00'
       .map((hour) => {
         return {
@@ -248,10 +252,13 @@ export default function LineTimetableScreen({
             horizontal
             contentContainerStyle={styles.flexColumn}
           >
-            {[
-              4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-              22, 23, 0,
-            ].map((hour, indexHours) => {
+            {(lineNumber.toLowerCase().startsWith('n')
+              ? [23, 0, 1, 2, 3, 4]
+              : [
+                  4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+                  21, 22, 23, 0,
+                ]
+            ).map((hour, indexHours) => {
               const dataToShow = formattedData.find(
                 (hourDataRow) => hourDataRow.hour === hour
               )
@@ -379,6 +386,10 @@ export default function LineTimetableScreen({
                         ? t('screens.LineTimetableScreen.differentFinalStop', {
                             value: note.value,
                           })
+                        : note.description === 'customSkEn'
+                        ? note.value?.split('|')[
+                            i18n.currentLocale() === 'sk' ? 0 : 1
+                          ]
                         : note.description === 'wheelchairAccessible' &&
                           allAccessible === false
                         ? t('screens.LineTimetableScreen.wheelchairAccessible')

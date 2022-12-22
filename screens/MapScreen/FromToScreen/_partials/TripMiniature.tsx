@@ -58,7 +58,10 @@ const TripMiniature = ({
   useEffect(() => {
     if (legs) {
       const firstStop = legs.find(
-        (leg) => leg.mode === LegModes.bus || leg.mode === LegModes.tram
+        (leg) =>
+          leg.mode === LegModes.bus ||
+          leg.mode === LegModes.tram ||
+          leg.mode === LegModes.trolleybus
       )
       if (firstStop) {
         if (firstStop.realTime) setIsFirstStopLive(true)

@@ -12,7 +12,6 @@ import { DateTimeFormatter, Instant, LocalTime } from '@js-joda/core'
 import { LegModes } from '@types'
 import { ITINERARY_ICON_WIDTH, ITINERARY_PADDING_HORIZONTAL } from '@utils'
 import { getMhdTrip } from '@utils/api'
-import { trolleybusLineNumbers } from '@utils/constants'
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
 import { LegProps } from '@utils/validation'
@@ -128,20 +127,20 @@ const MhdTransitCard = ({ leg, isLastLeg }: MhdTransitCardProps) => {
             fill={`#${leg.routeColor}`}
           />
         )}
-        {leg.mode === LegModes.bus &&
-          (trolleybusLineNumbers.includes(leg.routeShortName ?? '') ? (
-            <TrolleybusSvg
-              width={ITINERARY_ICON_WIDTH}
-              height={32}
-              fill={`#${leg.routeColor}`}
-            />
-          ) : (
-            <BusSvg
-              width={ITINERARY_ICON_WIDTH}
-              height={32}
-              fill={`#${leg.routeColor}`}
-            />
-          ))}
+        {leg.mode === LegModes.trolleybus && (
+          <TrolleybusSvg
+            width={ITINERARY_ICON_WIDTH}
+            height={32}
+            fill={`#${leg.routeColor}`}
+          />
+        )}
+        {leg.mode === LegModes.bus && (
+          <BusSvg
+            width={ITINERARY_ICON_WIDTH}
+            height={32}
+            fill={`#${leg.routeColor}`}
+          />
+        )}
         <View style={styles.line}>
           <Line color={`#${leg.routeColor}`} />
         </View>

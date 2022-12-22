@@ -211,11 +211,17 @@ export const getTripPlanner = async ({
         (mode === TravelModesOtpApi.transit &&
           index === 0 &&
           tripChoice.legs?.findIndex(
-            (leg) => leg.mode === LegModes.bus || leg.mode === LegModes.tram
+            (leg) =>
+              leg.mode === LegModes.bus ||
+              leg.mode === LegModes.tram ||
+              leg.mode === LegModes.trolleybus
           ) === -1) ||
         (mode === TravelModesOtpApi.multimodal &&
           (tripChoice.legs?.findIndex(
-            (leg) => leg.mode === LegModes.bus || leg.mode === LegModes.tram
+            (leg) =>
+              leg.mode === LegModes.bus ||
+              leg.mode === LegModes.tram ||
+              leg.mode === LegModes.trolleybus
           ) === -1 ||
             tripChoice.legs?.findIndex(
               (leg) =>

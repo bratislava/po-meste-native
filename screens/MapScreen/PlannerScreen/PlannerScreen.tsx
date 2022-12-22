@@ -97,7 +97,9 @@ export default function PlannerScreen({
             const latlngs = googlePolyline.decode(leg.legGeometry.points)
             const color = hexToRgba(
               Platform.OS === 'ios' &&
-                (leg.mode === LegModes.bus || leg.mode === LegModes.tram) &&
+                (leg.mode === LegModes.bus ||
+                  leg.mode === LegModes.tram ||
+                  leg.mode === LegModes.trolleybus) &&
                 leg.routeColor === '898989'
                 ? colors.primary
                 : leg.rentedBike

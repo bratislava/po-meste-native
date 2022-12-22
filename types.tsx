@@ -38,6 +38,7 @@ export enum LegModes {
   walk = 'WALK',
   bicycle = 'BICYCLE',
   scooter = 'SCOOTER',
+  trolleybus = 'TROLLEYBUS',
 }
 
 export enum ChargerStatus {
@@ -158,7 +159,7 @@ export type MobilityProvider = MicromobilityProvider | ChargersProvider
 
 export enum TransitVehicleType {
   tram = '0',
-  trolleybus = '800',
+  trolleybus = '11',
   bus = '3',
 }
 

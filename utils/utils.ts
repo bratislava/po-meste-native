@@ -14,11 +14,7 @@ import i18n from 'i18n-js'
 import _ from 'lodash'
 import AppLink from 'react-native-app-link'
 import { ValidationError } from 'yup'
-import {
-  API_ERROR_TEXT,
-  LATEST_DATASET_INDEX,
-  trolleybusLineNumbers,
-} from './constants'
+import { API_ERROR_TEXT, LATEST_DATASET_INDEX } from './constants'
 import { colors } from './theme'
 import { LegProps } from './validation'
 
@@ -175,16 +171,13 @@ export const getVehicle = (
   vehicletype?: TransitVehicleType,
   lineNumber?: string
 ) => {
-  const isTrolleybus = lineNumber
-    ? trolleybusLineNumbers.includes(lineNumber)
-    : false
   switch (vehicletype) {
     case TransitVehicleType.trolleybus:
       return TrolleybusSvg
     case TransitVehicleType.tram:
       return TramSvg
     case TransitVehicleType.bus:
-      return isTrolleybus ? TrolleybusSvg : BusSvg
+      return BusSvg
     default:
       return BusSvg
   }

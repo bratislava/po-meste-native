@@ -244,6 +244,7 @@ export default function Planner(props: PlannerProps) {
     rekolaQuery,
     slovnaftbajkQuery,
     tierQuery,
+    boltQuery,
     walkQuery,
   ] = useQueries([
     {
@@ -402,6 +403,28 @@ export default function Planner(props: PlannerProps) {
     },
     {
       queryKey: [
+        'getOtpBoltData',
+        fromCoordinates,
+        toCoordinates,
+        dateTime,
+        scheduledTime,
+      ],
+      queryFn: () =>
+        fromCoordinates &&
+        toCoordinates &&
+        getTripPlanner({
+          from: `${fromCoordinates.latitude},${fromCoordinates.longitude}`,
+          to: `${toCoordinates.latitude},${toCoordinates.longitude}`,
+          dateTime,
+          arriveBy: scheduledTime === ScheduleType.arrival,
+          mode: TravelModesOtpApi.rented,
+          provider: MicromobilityProvider.bolt,
+          accessibleOnly,
+        }),
+      enabled: fromCoordinates && toCoordinates ? true : false,
+    },
+    {
+      queryKey: [
         'getOtpDataWalk',
         fromCoordinates,
         toCoordinates,
@@ -527,10 +550,21 @@ export default function Planner(props: PlannerProps) {
               itineraries: myScooterQuery.data?.plan?.itineraries,
             }
           : { itineraries: [] },
+        boltQuery.data?.plan?.itineraries
+          ? {
+              itineraries: boltQuery.data?.plan?.itineraries,
+              provider: MicromobilityProvider.bolt,
+            }
+          : { itineraries: [] },
       ],
       TravelModes.scooter
     )
-  }, [tierQuery.data, myScooterQuery.data, adjustMinMaxTravelTime])
+  }, [
+    tierQuery.data,
+    myScooterQuery.data,
+    boltQuery.data,
+    adjustMinMaxTravelTime,
+  ])
 
   useEffect(() => {
     adjustMinMaxTravelTime(
@@ -803,7 +837,12 @@ export default function Planner(props: PlannerProps) {
       case SectionKey.myScooter:
         return myScooterQuery.isLoading ? <TripMiniature isLoading /> : null
       case SectionKey.rentedScooter:
-        return tierQuery.isLoading ? <TripMiniature isLoading /> : null
+        return (
+          <>
+            {tierQuery.isLoading ? <TripMiniature isLoading /> : null}
+            {boltQuery.isLoading ? <TripMiniature isLoading /> : null}
+          </>
+        )
       case SectionKey.walk:
         return walkQuery.isLoading ? <TripMiniature isLoading /> : null
     }
@@ -852,6 +891,10 @@ export default function Planner(props: PlannerProps) {
         errors.push({
           ...tierQuery,
           provider: MicromobilityProvider.tier,
+        })
+        errors.push({
+          ...boltQuery,
+          provider: MicromobilityProvider.bolt,
         })
         break
       case SectionKey.walk:
@@ -930,7 +973,10 @@ export default function Planner(props: PlannerProps) {
           {
             title: i18n.t('screens.FromToScreen.Planner.rentedScooter'),
             key: SectionKey.rentedScooter,
-            data: tierQuery.data?.plan?.itineraries ?? [],
+            data:
+              tierQuery.data?.plan?.itineraries?.concat(
+                boltQuery.data?.plan?.itineraries ?? []
+              ) ?? [],
           },
         ]
       : selectedVehicle === TravelModes.walk
@@ -1039,9 +1085,12 @@ export default function Planner(props: PlannerProps) {
                 </Text>
               </View>
               <Switch
-                trackColor={{ false: '#E1E4E8', true: '#ADCD00' }}
+                trackColor={{
+                  false: colors.switchGray,
+                  true: colors.switchGreen,
+                }}
                 thumbColor={colors.white}
-                ios_backgroundColor="#E1E4E8"
+                ios_backgroundColor={colors.switchGray}
                 onValueChange={(value) => setAccessibleOnly(value)}
                 value={accessibleOnly}
                 style={{
@@ -1084,7 +1133,12 @@ export default function Planner(props: PlannerProps) {
       case SectionKey.myScooter:
         return myScooterQuery.isFetched || myScooterQuery.isLoading
       case SectionKey.rentedScooter:
-        return tierQuery.isFetched || tierQuery.isLoading
+        return (
+          tierQuery.isFetched ||
+          tierQuery.isLoading ||
+          boltQuery.isFetched ||
+          boltQuery.isLoading
+        )
       case SectionKey.walk:
         return walkQuery.isFetched || walkQuery.isLoading
     }
@@ -1119,7 +1173,9 @@ export default function Planner(props: PlannerProps) {
                 ? MicromobilityProvider.slovnaftbajk
                 : MicromobilityProvider.rekola
               : key === SectionKey.rentedScooter
-              ? MicromobilityProvider.tier
+              ? index === 0
+                ? MicromobilityProvider.tier
+                : MicromobilityProvider.bolt
               : undefined
           return (
             <TripMiniature

@@ -4,7 +4,7 @@ export default {
   name: 'Po Meste',
   owner: 'bratislava',
   slug: 'hybaj',
-  version: '1.2.7',
+  version: '1.2.8',
   orientation: 'portrait',
   icon: './assets/images/icon.png',
   scheme: 'myapp',
@@ -21,7 +21,7 @@ export default {
   ios: {
     bundleIdentifier: 'com.bratislava.hybaj',
     supportsTablet: false,
-    buildNumber: '39',
+    buildNumber: '40',
     infoPlist: {
       NSLocationWhenInUseUsageDescription:
         'Allow the app to use your location to show it on map and suggest navigation.',
@@ -37,7 +37,7 @@ export default {
   android: {
     softwareKeyboardLayoutMode: 'pan',
     package: 'com.bratislava.hybaj',
-    versionCode: 39,
+    versionCode: 40,
     permissions: ['ACCESS_COARSE_LOCATION', 'ACCESS_FINE_LOCATION'],
     adaptiveIcon: {
       foregroundImage: './assets/images/adaptive-icon.png',
@@ -62,9 +62,6 @@ export default {
       'https://pomeste.bratislava.sk/terms-conditions/',
     privacyPolicyLink: 'https://pomeste.bratislava.sk/privacy-policy/',
     googlePlacesApiKeyUnlocked: process.env.GOOGLE_PLACES_API_KEY_UNLOCKED,
-    eas: {
-      projectId: 'b82083fa-1b6a-451e-83a2-709930c3c20b',
-    },
   },
   packagerOpts: {
     config: 'metro.config.js',

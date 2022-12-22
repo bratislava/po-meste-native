@@ -39,6 +39,7 @@ import {
 } from '@types'
 import produce from 'immer'
 import { omit } from 'lodash'
+import { Shadow as NativeShadow } from 'react-native-shadow-2'
 
 interface SearchFromToScreen {
   sheetRef: MutableRefObject<BottomSheet | null>
@@ -90,11 +91,19 @@ export default function SearchFromToScreen({
   }
 
   const renderAddButton = (onPress: () => void) => (
-    <View style={styles.addButtonWrapper}>
-      <TouchableOpacity style={styles.addButton} onPress={onPress}>
-        <PlusButtonSvg width={30} height={30} />
-      </TouchableOpacity>
-    </View>
+    <NativeShadow
+      startColor="rgba(255,255,255,0.9)"
+      endColor="rgba(255,255,255,0.0)"
+      offset={[10, 0]}
+      distance={30}
+      containerStyle={styles.addButtonWrapper}
+    >
+      <View style={{ padding: 17 }}>
+        <TouchableOpacity style={styles.addButton} onPress={onPress}>
+          <PlusButtonSvg width={30} height={30} />
+        </TouchableOpacity>
+      </View>
+    </NativeShadow>
   )
 
   const handleFavoritePress = (favoriteItem: FavoriteItem) => {
@@ -241,12 +250,13 @@ export default function SearchFromToScreen({
               addToHistory={addToHistory}
             />
           </View>
-          <View style={s.horizontalMargin}>
-            <Text style={styles.categoriesTitle}>
+          <View>
+            <Text style={[styles.categoriesTitle, s.horizontalMargin]}>
               {i18n.t('screens.SearchFromToScreen.myAddresses')}
             </Text>
             <ScrollView
               contentContainerStyle={styles.horizontalScrollView}
+              style={{ marginLeft: s.horizontalMargin.marginHorizontal }}
               horizontal
               showsHorizontalScrollIndicator={false}
               keyboardShouldPersistTaps="always"
@@ -276,12 +286,13 @@ export default function SearchFromToScreen({
               })
             )}
           </View>
-          <View style={[styles.categoryStops, s.horizontalMargin]}>
-            <Text style={styles.categoriesTitle}>
+          <View style={styles.categoryStops}>
+            <Text style={[styles.categoriesTitle, s.horizontalMargin]}>
               {i18n.t('screens.SearchFromToScreen.myStops')}
             </Text>
             <ScrollView
               contentContainerStyle={styles.horizontalScrollView}
+              style={{ marginLeft: s.horizontalMargin.marginHorizontal }}
               horizontal
               showsHorizontalScrollIndicator={false}
               keyboardShouldPersistTaps="always"
@@ -481,11 +492,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 2,
     bottom: 0,
-    right: -20,
-    backgroundColor: colors.white,
-    padding: 17,
-    borderTopLeftRadius: 32,
-    borderBottomLeftRadius: 32,
+    right: 0,
   },
   googleForm: {
     flexDirection: 'row',

@@ -26,6 +26,7 @@ import {
 
 const host = 'planner.bratislava.sk'
 const dataHostUrl = `https://live.${host}`
+const mhdDataHostUrl = 'https://live.planner.dev.bratislava.sk'
 const otpPlannerUrl = `https://api.${host}/otp/routers/default/plan` // TODO use otp.planner.bratislava.sk
 
 // we should throw throwables only, so it's useful to extend Error class to contain useful info
@@ -52,7 +53,14 @@ const formatTimestamp = (date: Date) => {
 // helper with a common fetch pattern for json endpoints & baked in host
 const fetchJsonFromApi = async (path: string, options?: RequestInit) => {
   // leaving this console.log here because it is very important to keep track of fetches
-  const response = await fetch(`${dataHostUrl}${path}`, options)
+  const response = await fetch(
+    `${
+      path.startsWith('/mhd') && path.includes('grafikon')
+        ? mhdDataHostUrl
+        : dataHostUrl
+    }${path}`,
+    options
+  )
   const responseLength = response.headers.get('content-length')
   console.log(
     '%s\x1b[95m%s\x1b[0m%s',
@@ -161,7 +169,10 @@ export const getTripPlanner = async ({
   provider?: MicromobilityProvider
   accessibleOnly: boolean
 }) => {
-  if (provider === MicromobilityProvider.tier) {
+  if (
+    provider === MicromobilityProvider.tier ||
+    provider === MicromobilityProvider.bolt
+  ) {
     dateTime = dateTime.plusHours(24)
   }
   const zonedTime = ZonedDateTime.of(dateTime, ZoneId.of('Europe/Bratislava'))
@@ -200,11 +211,17 @@ export const getTripPlanner = async ({
         (mode === TravelModesOtpApi.transit &&
           index === 0 &&
           tripChoice.legs?.findIndex(
-            (leg) => leg.mode === LegModes.bus || leg.mode === LegModes.tram
+            (leg) =>
+              leg.mode === LegModes.bus ||
+              leg.mode === LegModes.tram ||
+              leg.mode === LegModes.trolleybus
           ) === -1) ||
         (mode === TravelModesOtpApi.multimodal &&
           (tripChoice.legs?.findIndex(
-            (leg) => leg.mode === LegModes.bus || leg.mode === LegModes.tram
+            (leg) =>
+              leg.mode === LegModes.bus ||
+              leg.mode === LegModes.tram ||
+              leg.mode === LegModes.trolleybus
           ) === -1 ||
             tripChoice.legs?.findIndex(
               (leg) =>

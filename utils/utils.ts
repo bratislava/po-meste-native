@@ -14,14 +14,11 @@ import i18n from 'i18n-js'
 import _ from 'lodash'
 import AppLink from 'react-native-app-link'
 import { ValidationError } from 'yup'
-import {
-  API_ERROR_TEXT,
-  LATEST_DATASET_INDEX,
-  trolleybusLineNumbers,
-} from './constants'
+import { API_ERROR_TEXT, LATEST_DATASET_INDEX } from './constants'
 import { colors } from './theme'
 import { LegProps } from './validation'
 
+import BoltSvg from '@icons/bolt.svg'
 import RekoloSvg from '@icons/rekolo.svg'
 import SlovnaftbajkSvg from '@icons/slovnaftbajk.svg'
 import TierSvg from '@icons/tier.svg'
@@ -90,7 +87,7 @@ export const getIcon = (
     case MicromobilityProvider.tier:
       return TierSvg
     case MicromobilityProvider.bolt:
-      return TierSvg
+      return BoltSvg
     default:
       return isScooter ? ScooterSvg : CyclingSvg
   }
@@ -102,7 +99,9 @@ export const getProviderFromStationId = (stationId?: string) => {
     //OTP does not return the provider in the trip response, has to be picked based on station_id
     //TODO: find other way, we could get all station ids from the live api and compare, this would be safe in case the providers would change their id format
     return Number.isNaN(parsedStationId)
-      ? stationId.startsWith('s')
+      ? stationId.match(
+          /[\d|a-f]{8}-[\d|a-f]{4}-[\d|a-f]{4}-[\d|a-f]{4}-[\d|a-f]{12}/
+        )
         ? MicromobilityProvider.bolt
         : MicromobilityProvider.tier
       : parsedStationId < 200
@@ -172,16 +171,13 @@ export const getVehicle = (
   vehicletype?: TransitVehicleType,
   lineNumber?: string
 ) => {
-  const isTrolleybus = lineNumber
-    ? trolleybusLineNumbers.includes(lineNumber)
-    : false
   switch (vehicletype) {
     case TransitVehicleType.trolleybus:
       return TrolleybusSvg
     case TransitVehicleType.tram:
       return TramSvg
     case TransitVehicleType.bus:
-      return isTrolleybus ? TrolleybusSvg : BusSvg
+      return BusSvg
     default:
       return BusSvg
   }

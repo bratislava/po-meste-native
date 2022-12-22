@@ -105,7 +105,7 @@ export default function PlannerScreen({
                 : leg.rentedBike
                 ? getColor(
                     provider ?? getProviderFromStationId(leg.from.bikeShareId)
-                  ) || '#aaa'
+                  )
                 : leg.routeColor
                 ? `#${leg.routeColor}`
                 : modeColors[leg.mode || 'DEFAULT'],

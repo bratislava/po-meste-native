@@ -1085,9 +1085,12 @@ export default function Planner(props: PlannerProps) {
                 </Text>
               </View>
               <Switch
-                trackColor={{ false: '#E1E4E8', true: '#ADCD00' }}
+                trackColor={{
+                  false: colors.switchGray,
+                  true: colors.switchGreen,
+                }}
                 thumbColor={colors.white}
-                ios_backgroundColor="#E1E4E8"
+                ios_backgroundColor={colors.switchGray}
                 onValueChange={(value) => setAccessibleOnly(value)}
                 value={accessibleOnly}
                 style={{

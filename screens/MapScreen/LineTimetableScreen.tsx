@@ -46,11 +46,20 @@ export default function LineTimetableScreen({
     useState<number>(0)
 
   const allAccessible = useMemo(
+    // a note is a string with each character representing a timetable note, for wheelchair accessibility the `_` is used
     () => data?.timetable?.every((time) => time.notes?.includes('_')),
     [data]
   )
 
   const isToday = (d: LocalDate) => d.equals(LocalDate.now())
+
+  const timetableHours = useMemo(
+    () =>
+      lineNumber.toLowerCase().startsWith('n')
+        ? [23, 0, 1, 2, 3, 4]
+        : _.range(4, 24).concat(0),
+    [lineNumber]
+  )
 
   //scroll to highlighted minute on layout event
   useEffect(() => {
@@ -78,22 +87,20 @@ export default function LineTimetableScreen({
       return parseInt(value.time.split(':')[0])
     })
     return (
-      lineNumber.toLowerCase().startsWith('n')
-        ? [23, 0, 1, 2, 3, 4]
-        : _.range(4, 24)
+      timetableHours
+        // after midnight links is marked '00:24:00'
+        .map((hour) => {
+          return {
+            hour,
+            minutes: timetableByHours[hour]
+              ? timetableByHours[hour].map((value) => ({
+                  minute: value.time.split(':')[1],
+                  notes: value.notes,
+                }))
+              : [],
+          }
+        })
     )
-      .concat(0) // after midnight links is marked '00:24:00'
-      .map((hour) => {
-        return {
-          hour,
-          minutes: timetableByHours[hour]
-            ? timetableByHours[hour].map((value) => ({
-                minute: value.time.split(':')[1],
-                additionalInfo: value.notes,
-              }))
-            : [],
-        }
-      })
   }, [data])
 
   const activeIndex = useMemo(() => {
@@ -252,13 +259,7 @@ export default function LineTimetableScreen({
             horizontal
             contentContainerStyle={styles.flexColumn}
           >
-            {(lineNumber.toLowerCase().startsWith('n')
-              ? [23, 0, 1, 2, 3, 4]
-              : [
-                  4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-                  21, 22, 23, 0,
-                ]
-            ).map((hour, indexHours) => {
+            {timetableHours.map((hour, indexHours) => {
               const dataToShow = formattedData.find(
                 (hourDataRow) => hourDataRow.hour === hour
               )
@@ -310,15 +311,16 @@ export default function LineTimetableScreen({
                               ? styles.highlightedMinuteText
                               : null,
                             indexHours % 2 === 0 ? styles.hourEven : null,
-                            minuteData.additionalInfo?.includes('_') &&
+                            // a note is a string with each character representing a timetable note, for wheelchair accessibility the `_` is used
+                            minuteData.notes?.includes('_') &&
                             allAccessible === false
                               ? { textDecorationLine: 'underline' }
                               : null,
                           ]}
                         >
                           {minuteData.minute}
-                          {minuteData.additionalInfo
-                            ? minuteData.additionalInfo.replace('_', '')
+                          {minuteData.notes
+                            ? minuteData.notes.replace('_', '')
                             : ''}
                         </Text>
                       </View>

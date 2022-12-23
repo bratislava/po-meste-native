@@ -9,8 +9,8 @@ import { MapParamList } from '@types'
 
 import TabView from '@components/TabView'
 import { Route, SceneRendererProps } from 'react-native-tab-view'
-import Planner from './_partials/Planner'
-import SearchMhd from './_partials/SearchMhd'
+import Planner from './_partials/Planner/Planner'
+import SearchMhd from './_partials/SearchMhd/SearchMhd'
 
 enum Routes {
   planner = 'planner',

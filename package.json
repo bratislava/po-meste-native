@@ -3,7 +3,7 @@
   "scripts": {
     "start": "expo start",
     "start-production": "expo start --no-dev --minify",
-    "android": "expo start --localhost --android",
+    "android": "expo start --localhost",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",

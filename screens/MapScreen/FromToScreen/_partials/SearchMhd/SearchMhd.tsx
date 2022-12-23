@@ -58,9 +58,10 @@ const icons = {
 
 const SearchMhd = () => {
   const globalContext = useContext(GlobalStateContext)
-  const stopsData: MhdStopProps[] = globalContext.mhdStopsData?.data?.stops
+  const stopsData: MhdStopProps[] | undefined =
+    globalContext.mhdStopsData?.data?.stops
   const uniqueStopNames = Array.from(
-    new Set(stopsData.map((stop: MhdStopProps) => stop.name))
+    new Set(stopsData?.map((stop: MhdStopProps) => stop.name))
   )
   const uniqueStops: UniqueStop[] = uniqueStopNames.map((stopName, index) => ({
     id: index + '',

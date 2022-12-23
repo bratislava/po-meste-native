@@ -60,7 +60,7 @@ import {
   TravelModesOtpApi,
   VehicleData,
 } from '@types'
-import defaultFavoriteData from '../../defaultFavoriteData.json'
+import defaultFavoriteData from '../../../defaultFavoriteData.json'
 
 const vehiclesDefault: VehicleData[] = [
   {
@@ -117,9 +117,9 @@ enum SectionKey {
 
 import SearchFromToScreen from '@screens/MapScreen/SearchFromToScreen'
 
-import FromToSelector from './FromToSelector'
-import TripMiniature from './TripMiniature'
-import VehicleSelector from './VehicleSelector'
+import FromToSelector from './_partials/FromToSelector'
+import TripMiniature from './_partials/TripMiniature'
+import VehicleSelector from './_partials/VehicleSelector'
 
 import { Portal } from '@gorhom/portal'
 import CyclingSvg from '@icons/vehicles/cycling.svg'

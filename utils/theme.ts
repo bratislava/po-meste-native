@@ -32,7 +32,7 @@ export const colors = {
   gold: '#FFC700',
 
   switchGreen: '#ADCD00',
-  switchGray: '#E1E4E8',
+  disabledGray: '#E1E4E8',
 }
 
 export const inputSelectionColor = colors.primary

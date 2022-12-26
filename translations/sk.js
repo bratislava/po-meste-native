@@ -139,7 +139,14 @@ export default {
         departureText: 'Odchod',
         arrivalText: 'Príchod',
         currentPosition: 'Aktuálna poloha',
-        accessibleVehicles: 'Nízkopodl.\nvozidlá',
+        accessibleVehicles: 'Nízkopodlažné vozidlá',
+        Filter: {
+          transit: 'MHD',
+          multimodalMode: 'Multimodálny mód',
+          multimodalPrefferedProviders:
+            'Preferovaní provideri v multimodálnom móde',
+          maxTransfers: 'Max. prestupy',
+        },
       },
       SearchMhd: {
         stopName: 'Názov zastávky',

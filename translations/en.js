@@ -138,7 +138,14 @@ export default {
         departureText: 'Departure',
         arrivalText: 'Arrival',
         currentPosition: 'Current location',
-        accessibleVehicles: 'Accessible\nvehicles',
+        accessibleVehicles: 'Accessible vehicles',
+        Filter: {
+          transit: 'Transit',
+          multimodalMode: 'Multimodal mode',
+          multimodalPrefferedProviders:
+            'Preffered providers in the multimodal mode',
+          maxTransfers: 'Max. transfers',
+        },
       },
       SearchMhd: {
         stopName: 'Stop name',

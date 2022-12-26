@@ -64,14 +64,14 @@ export const s = StyleSheet.create({
   roundedBorder: {
     borderRadius: STYLES.borderRadius,
   },
-  textSmall: {
-    fontSize: 14,
-    lineHeight: 16,
-    textAlignVertical: 'center',
-  },
   textTiny: {
     fontSize: 12,
     lineHeight: 14,
+    textAlignVertical: 'center',
+  },
+  textSmall: {
+    fontSize: 14,
+    lineHeight: 16,
     textAlignVertical: 'center',
   },
   textMedium: {

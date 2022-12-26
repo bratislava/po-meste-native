@@ -23,7 +23,6 @@ import {
   Platform,
   SectionList,
   StyleSheet,
-  Switch,
   View,
 } from 'react-native'
 import {
@@ -61,6 +60,21 @@ import {
   VehicleData,
 } from '@types'
 import defaultFavoriteData from '../../../defaultFavoriteData.json'
+
+import SearchFromToScreen from '@screens/MapScreen/SearchFromToScreen'
+
+import FromToSelector from './_partials/FromToSelector'
+import TripMiniature from './_partials/TripMiniature'
+import VehicleSelector from './_partials/VehicleSelector'
+
+import { Portal } from '@gorhom/portal'
+import FilterSvg from '@icons/burger-menu.svg'
+import CyclingSvg from '@icons/vehicles/cycling.svg'
+import MhdSvg from '@icons/vehicles/mhd.svg'
+import ScooterSvg from '@icons/vehicles/scooter.svg'
+import WalkingSvg from '@icons/walking.svg'
+
+import Filter from './_partials/Filter'
 
 const vehiclesDefault: VehicleData[] = [
   {
@@ -114,20 +128,6 @@ enum SectionKey {
   rentedScooter = 'rentedScooter',
   walk = 'walk',
 }
-
-import SearchFromToScreen from '@screens/MapScreen/SearchFromToScreen'
-
-import FromToSelector from './_partials/FromToSelector'
-import TripMiniature from './_partials/TripMiniature'
-import VehicleSelector from './_partials/VehicleSelector'
-
-import { Portal } from '@gorhom/portal'
-import CyclingSvg from '@icons/vehicles/cycling.svg'
-import MhdSvg from '@icons/vehicles/mhd.svg'
-import ScooterSvg from '@icons/vehicles/scooter.svg'
-import WalkingSvg from '@icons/walking.svg'
-
-import WheelchairSvg from '@icons/wheelchair.svg'
 
 interface PlannerProps {
   from: { name: string; latitude: number; longitude: number }
@@ -187,6 +187,7 @@ export default function Planner(props: PlannerProps) {
   const toBottomSheetRef = useRef<BottomSheet>(null)
   const datetimeSheetRef = useRef<BottomSheet>(null)
   const datetimePickerRef = useRef<DateTimePickerRef>(null)
+  const filterRef = useRef<BottomSheet>(null)
 
   const [vehicles, setVehicles] = useState<VehicleData[]>(vehiclesDefault)
 
@@ -1068,39 +1069,18 @@ export default function Planner(props: PlannerProps) {
                 },
               ]}
             >
-              <View
+              <TouchableOpacity
+                onPress={() => filterRef.current?.snapToIndex(0)}
                 style={[
                   styles.row,
-                  { flex: 0, position: 'relative', left: 12 },
+                  {
+                    justifyContent: 'flex-start',
+                  },
                 ]}
               >
-                <WheelchairSvg
-                  fill={colors.white}
-                  width={20}
-                  height={20}
-                  style={styles.schedulingIcon}
-                />
-                <Text style={styles.schedulingText}>
-                  {i18n.t('screens.FromToScreen.Planner.accessibleVehicles')}
-                </Text>
-              </View>
-              <Switch
-                trackColor={{
-                  false: colors.switchGray,
-                  true: colors.switchGreen,
-                }}
-                thumbColor={colors.white}
-                ios_backgroundColor={colors.switchGray}
-                onValueChange={(value) => setAccessibleOnly(value)}
-                value={accessibleOnly}
-                style={{
-                  flex: 0,
-                  marginLeft: Platform.select({
-                    ios: 10,
-                    android: 0,
-                  }),
-                }}
-              />
+                <FilterSvg width={26} height={26} fill={colors.white} />
+                <Text style={styles.schedulingText}>Filter</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -1245,6 +1225,15 @@ export default function Planner(props: PlannerProps) {
           favoriteData={favoriteData}
           setFavoriteData={setFavoriteData}
         />
+        <BottomSheet
+          ref={filterRef}
+          index={-1}
+          snapPoints={['95%']}
+          enablePanDownToClose
+          handleIndicatorStyle={s.handleStyle}
+        >
+          <Filter />
+        </BottomSheet>
       </Portal>
       {interactionsFinished && (
         <BottomSheet

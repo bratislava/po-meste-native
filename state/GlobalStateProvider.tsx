@@ -14,11 +14,12 @@ import {
 import * as ExpoLocalization from 'expo-localization'
 import i18n from 'i18n-js'
 
-import { PreferredLanguage, VehicleType } from '@types'
+import { MicromobilityProvider, PreferredLanguage, VehicleType } from '@types'
 
 import { useLocationWithPermision } from '@hooks/miscHooks'
 import useBoltData from '@hooks/useBoltData'
 import useMhdData from '@hooks/useMhdStopsData'
+import { useStateWithStorage } from '@hooks/useStateWithStorage'
 import BicyclesChosen from '@icons/map-filters/bicycles-filter-chosen.svg'
 import BicyclesUnchosen from '@icons/map-filters/bicycles-filter-unchosen.svg'
 import CarsChosen from '@icons/map-filters/cars-filter-chosen.svg'
@@ -34,6 +35,8 @@ import MotorScooterUnchosen from '@icons/map-filters/motor-scooters-filter-uncho
 import ScooterChosen from '@icons/map-filters/scooters-filter-chosen.svg'
 import ScooterUnchosen from '@icons/map-filters/scooters-filter-unchosen.svg'
 import { NetInfoState, useNetInfo } from '@react-native-community/netinfo'
+import { FilterData } from '@screens/MapScreen/FromToScreen/_partials/Planner/_partials/Filter'
+import { FILTER_INDEX } from '@utils/constants'
 import { ApiFreeBikeStatusScooter, ApiMhdStops } from '@utils/validation'
 import { LocationObject } from 'expo-location'
 import { QueryObserverResult } from 'react-query'
@@ -71,6 +74,11 @@ interface ContextProps {
     > | null
   }
   netInfo: NetInfoState
+  filterData: [
+    FilterData,
+    React.Dispatch<React.SetStateAction<FilterData>>,
+    () => void
+  ]
 }
 
 export interface VehicleProps {
@@ -150,6 +158,23 @@ export default function GlobalStateProvider({ children }: Props) {
 
   const netInfo = useNetInfo()
 
+  const filterData = useStateWithStorage<FilterData>(FILTER_INDEX, {
+    maxTransfers: null,
+    accessibleOnly: false,
+    preferredProviders: [
+      MicromobilityProvider.slovnaftbajk,
+      MicromobilityProvider.rekola,
+      MicromobilityProvider.tier,
+      MicromobilityProvider.bolt,
+    ],
+    bikeRouteOptions: {
+      fastest: false,
+      leastSlope: false,
+      bikeFriendly: false,
+    },
+    walkingPace: 4.5,
+  })
+
   return (
     <GlobalStateContext.Provider
       value={{
@@ -166,6 +191,7 @@ export default function GlobalStateProvider({ children }: Props) {
         mhdStopsData,
         boltData,
         netInfo,
+        filterData,
       }}
     >
       {children}

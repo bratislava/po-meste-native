@@ -144,7 +144,16 @@ export default {
           multimodalMode: 'Multimodal mode',
           multimodalPrefferedProviders:
             'Preffered providers in the multimodal mode',
-          maxTransfers: 'Max. transfers',
+          maxTransfers: 'Max. transfers:',
+          bikesAndScooters: 'Bikes and scooters',
+          others: 'Others',
+          fastestRoute: 'Fastest route',
+          leastSlopeRoute: 'Least slope',
+          bikeFriendlyRoute: 'Prefer bike lanes',
+          walkingPace: 'Walking pace',
+          slow: 'Slow',
+          fast: 'Fast',
+          submitFilter: 'Submit filter',
         },
       },
       SearchMhd: {

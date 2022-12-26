@@ -26,6 +26,7 @@
     "@gorhom/portal": "^1.0.14",
     "@js-joda/core": "^4.3.1",
     "@js-joda/timezone": "^2.10.0",
+    "@miblanchard/react-native-slider": "^2.1.0",
     "@react-native-async-storage/async-storage": "~1.17.3",
     "@react-native-community/datetimepicker": "6.2.0",
     "@react-native-community/masked-view": "0.1.11",

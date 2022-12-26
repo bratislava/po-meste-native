@@ -6,6 +6,7 @@ import {
   ZoneId,
 } from '@js-joda/core'
 import '@js-joda/timezone'
+import { BikeRouteOptions } from '@screens/MapScreen/FromToScreen/_partials/Planner/_partials/Filter'
 import * as Sentry from '@sentry/react-native'
 import {
   GooglePlacesResult,
@@ -152,6 +153,10 @@ export const getTripPlanner = async ({
   mode = TravelModesOtpApi.transit,
   provider,
   accessibleOnly = false,
+  maxTransfers,
+  preferredProviders,
+  walkingPace,
+  bikeRouteOptions,
 }: {
   from: string
   to: string
@@ -160,6 +165,10 @@ export const getTripPlanner = async ({
   mode: TravelModesOtpApi
   provider?: MicromobilityProvider
   accessibleOnly: boolean
+  maxTransfers?: number | null
+  preferredProviders?: MicromobilityProvider[]
+  walkingPace?: number
+  bikeRouteOptions?: BikeRouteOptions
 }) => {
   if (
     provider === MicromobilityProvider.tier ||
@@ -182,7 +191,18 @@ export const getTripPlanner = async ({
       debugItineraryFilter: accessibleOnly.toString(),
       locale: 'en',
       numItineraries: mode === TravelModesOtpApi.multimodal ? undefined : 6,
-      allowedVehicleRentalNetworks: provider?.toLowerCase(),
+      allowedVehicleRentalNetworks:
+        provider?.toLowerCase() ??
+        preferredProviders?.reduce(
+          (acc, provider, index) =>
+            acc + `${index === 0 ? '' : ','}${provider.toLowerCase()}`,
+          ''
+        ),
+      maxTransfers: maxTransfers == null ? undefined : maxTransfers + 1,
+      walkSpeed: walkingPace && walkingPace * 0.28, // to m/s
+      triangleSafetyFactor: bikeRouteOptions?.bikeFriendly ? 1 : 0,
+      triangleSlopeFactor: bikeRouteOptions?.leastSlope ? 1 : 0,
+      triangleTimeFactor: bikeRouteOptions?.fastest ? 1 : 0,
     },
     { addQueryPrefix: true }
   )

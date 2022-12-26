@@ -171,8 +171,12 @@ export default function Planner(props: PlannerProps) {
   const fromPropName = fromProp?.name
   const toPropName = toProp?.name
 
-  const { setFeedbackSent, getLocationWithPermission, location } =
-    useContext(GlobalStateContext)
+  const {
+    setFeedbackSent,
+    getLocationWithPermission,
+    location,
+    filterData: [filter, setFilter],
+  } = useContext(GlobalStateContext)
 
   const navigation = useNavigation()
   const [fromCoordinates, setFromCoordinates] = useState(fromPropCoordinates)
@@ -228,6 +232,10 @@ export default function Planner(props: PlannerProps) {
   }
   //#endregion "Favorites"
 
+  //#region "Filter"
+
+  //#endregion "Filter"
+
   const [locationPermisionError, setLocationPermisionError] =
     useState<string>('')
   const [fromGeocode, setFromGeocode] = useState<
@@ -256,6 +264,7 @@ export default function Planner(props: PlannerProps) {
         dateTime,
         scheduledTime,
         accessibleOnly,
+        filter,
       ],
       queryFn: async () => {
         if (!fromCoordinates || !toCoordinates) return
@@ -265,7 +274,7 @@ export default function Planner(props: PlannerProps) {
           dateTime,
           arriveBy: scheduledTime === ScheduleType.arrival,
           mode: TravelModesOtpApi.transit,
-          accessibleOnly,
+          ...filter,
         })
         return mhdData
       },
@@ -279,6 +288,7 @@ export default function Planner(props: PlannerProps) {
         dateTime,
         scheduledTime,
         accessibleOnly,
+        filter,
       ],
       queryFn: async () => {
         if (!fromCoordinates || !toCoordinates) return
@@ -288,7 +298,7 @@ export default function Planner(props: PlannerProps) {
           dateTime,
           arriveBy: scheduledTime === ScheduleType.arrival,
           mode: TravelModesOtpApi.multimodal,
-          accessibleOnly,
+          ...filter,
         })
         return multimodalData
       },
@@ -301,6 +311,7 @@ export default function Planner(props: PlannerProps) {
         toCoordinates,
         dateTime,
         scheduledTime,
+        filter,
       ],
       queryFn: () =>
         fromCoordinates &&
@@ -311,7 +322,7 @@ export default function Planner(props: PlannerProps) {
           dateTime,
           arriveBy: scheduledTime === ScheduleType.arrival,
           mode: TravelModesOtpApi.bicycle,
-          accessibleOnly,
+          ...filter,
         }),
       enabled: fromCoordinates && toCoordinates ? true : false,
     },
@@ -322,6 +333,7 @@ export default function Planner(props: PlannerProps) {
         toCoordinates,
         dateTime,
         scheduledTime,
+        filter,
       ],
       queryFn: () =>
         fromCoordinates &&
@@ -332,7 +344,7 @@ export default function Planner(props: PlannerProps) {
           dateTime,
           arriveBy: scheduledTime === ScheduleType.arrival,
           mode: TravelModesOtpApi.bicycle,
-          accessibleOnly,
+          ...filter,
         }),
       enabled: fromCoordinates && toCoordinates ? true : false,
     },
@@ -343,6 +355,7 @@ export default function Planner(props: PlannerProps) {
         toCoordinates,
         dateTime,
         scheduledTime,
+        filter,
       ],
       queryFn: () =>
         fromCoordinates &&
@@ -354,7 +367,7 @@ export default function Planner(props: PlannerProps) {
           arriveBy: scheduledTime === ScheduleType.arrival,
           mode: TravelModesOtpApi.rented,
           provider: MicromobilityProvider.rekola,
-          accessibleOnly,
+          ...filter,
         }),
       enabled: fromCoordinates && toCoordinates ? true : false,
     },
@@ -365,6 +378,7 @@ export default function Planner(props: PlannerProps) {
         toCoordinates,
         dateTime,
         scheduledTime,
+        filter,
       ],
       queryFn: () =>
         fromCoordinates &&
@@ -376,7 +390,7 @@ export default function Planner(props: PlannerProps) {
           arriveBy: scheduledTime === ScheduleType.arrival,
           mode: TravelModesOtpApi.rented,
           provider: MicromobilityProvider.slovnaftbajk,
-          accessibleOnly,
+          ...filter,
         }),
       enabled: fromCoordinates && toCoordinates ? true : false,
     },
@@ -387,6 +401,7 @@ export default function Planner(props: PlannerProps) {
         toCoordinates,
         dateTime,
         scheduledTime,
+        filter,
       ],
       queryFn: () =>
         fromCoordinates &&
@@ -398,7 +413,7 @@ export default function Planner(props: PlannerProps) {
           arriveBy: scheduledTime === ScheduleType.arrival,
           mode: TravelModesOtpApi.rented,
           provider: MicromobilityProvider.tier,
-          accessibleOnly,
+          ...filter,
         }),
       enabled: fromCoordinates && toCoordinates ? true : false,
     },
@@ -409,6 +424,7 @@ export default function Planner(props: PlannerProps) {
         toCoordinates,
         dateTime,
         scheduledTime,
+        filter,
       ],
       queryFn: () =>
         fromCoordinates &&
@@ -420,7 +436,7 @@ export default function Planner(props: PlannerProps) {
           arriveBy: scheduledTime === ScheduleType.arrival,
           mode: TravelModesOtpApi.rented,
           provider: MicromobilityProvider.bolt,
-          accessibleOnly,
+          ...filter,
         }),
       enabled: fromCoordinates && toCoordinates ? true : false,
     },
@@ -431,6 +447,7 @@ export default function Planner(props: PlannerProps) {
         toCoordinates,
         dateTime,
         scheduledTime,
+        filter,
       ],
       queryFn: () =>
         fromCoordinates &&
@@ -441,7 +458,7 @@ export default function Planner(props: PlannerProps) {
           dateTime,
           arriveBy: scheduledTime === ScheduleType.arrival,
           mode: TravelModesOtpApi.walk,
-          accessibleOnly,
+          ...filter,
         }),
       enabled: fromCoordinates && toCoordinates ? true : false,
     },
@@ -990,6 +1007,20 @@ export default function Planner(props: PlannerProps) {
         ]
       : []
 
+  const filterBadge: number = useMemo(() => {
+    let activeFilters = 0
+    if (filter.accessibleOnly) activeFilters++
+    if (
+      filter.bikeRouteOptions.bikeFriendly ||
+      filter.bikeRouteOptions.fastest ||
+      filter.bikeRouteOptions.leastSlope
+    )
+      activeFilters++
+    if (filter.maxTransfers != null) activeFilters++
+    if (filter.preferredProviders.length !== 4) activeFilters++
+    return activeFilters
+  }, [filter])
+
   const ListHeader = (
     <>
       <View style={styles.header}>
@@ -1078,7 +1109,14 @@ export default function Planner(props: PlannerProps) {
                   },
                 ]}
               >
-                <FilterSvg width={26} height={26} fill={colors.white} />
+                <View style={{ paddingVertical: 12 }}>
+                  {filterBadge > 0 && (
+                    <View style={styles.filterBadge}>
+                      <Text style={styles.filterBadgeText}>{filterBadge}</Text>
+                    </View>
+                  )}
+                  <FilterSvg width={26} height={26} fill={colors.white} />
+                </View>
                 <Text style={styles.schedulingText}>Filter</Text>
               </TouchableOpacity>
             </View>
@@ -1232,7 +1270,12 @@ export default function Planner(props: PlannerProps) {
           enablePanDownToClose
           handleIndicatorStyle={s.handleStyle}
         >
-          <Filter />
+          <Filter
+            onSubmit={(newFilterData) => {
+              filterRef.current?.close()
+              setFilter(newFilterData)
+            }}
+          />
         </BottomSheet>
       </Portal>
       {interactionsFinished && (
@@ -1276,7 +1319,6 @@ const styles = StyleSheet.create({
   },
   schedulingContainer: {
     marginTop: 0,
-    paddingVertical: 12,
   },
   schedulingText: {
     color: colors.white,
@@ -1301,5 +1343,23 @@ const styles = StyleSheet.create({
   sectionListContainer: {
     minHeight: '100%',
     paddingBottom: 65,
+  },
+  filterBadge: {
+    backgroundColor: colors.white,
+    width: 14,
+    height: 14,
+    borderRadius: 10,
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 2,
+    left: 9,
+    top: 8,
+  },
+  filterBadgeText: {
+    fontSize: 9,
+    lineHeight: 11,
+    color: colors.primary,
+    fontWeight: 'bold',
   },
 })

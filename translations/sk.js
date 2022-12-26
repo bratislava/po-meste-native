@@ -145,7 +145,16 @@ export default {
           multimodalMode: 'Multimodálny mód',
           multimodalPrefferedProviders:
             'Preferovaní provideri v multimodálnom móde',
-          maxTransfers: 'Max. prestupy',
+          maxTransfers: 'Max. prestupy:',
+          bikesAndScooters: 'Bicykle a kolobežky',
+          others: 'Iné',
+          fastestRoute: 'Rýchla cesta',
+          leastSlopeRoute: 'Minimalizovať prevýšenia',
+          bikeFriendlyRoute: 'Preferovať cyklotrasy',
+          walkingPace: 'Tempo chôdze',
+          slow: 'Pomalé',
+          fast: 'Rýchle',
+          submitFilter: 'Potvrdiť filter',
         },
       },
       SearchMhd: {

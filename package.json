@@ -1,7 +1,8 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start --dev-client",
+    "start": "expo start",
+    "start-dev-client": "expo start --dev-client",
     "start-production": "expo start --no-dev --minify",
     "android": "expo start --localhost --android",
     "ios": "expo start --ios",

@@ -1,4 +1,5 @@
 import Constants from 'expo-constants'
+import 'expo-dev-client'
 import * as Localization from 'expo-localization'
 import * as Location from 'expo-location'
 import { StatusBar } from 'expo-status-bar'

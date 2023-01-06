@@ -16,6 +16,10 @@ export default {
   },
   updates: {
     fallbackToCacheTimeout: 5000,
+    url: 'https://u.expo.dev/b82083fa-1b6a-451e-83a2-709930c3c20b',
+  },
+  runtimeVersion: {
+    policy: 'sdkVersion',
   },
   assetBundlePatterns: ['**/*'],
   ios: {
@@ -62,6 +66,9 @@ export default {
       'https://pomeste.bratislava.sk/terms-conditions/',
     privacyPolicyLink: 'https://pomeste.bratislava.sk/privacy-policy/',
     googlePlacesApiKeyUnlocked: process.env.GOOGLE_PLACES_API_KEY_UNLOCKED,
+    eas: {
+      projectId: 'b82083fa-1b6a-451e-83a2-709930c3c20b',
+    },
   },
   packagerOpts: {
     config: 'metro.config.js',

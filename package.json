@@ -14,8 +14,9 @@
     "check-code": "yarn check-eslint && yarn check-ts",
     "create-production-apk": "expo build:android --release-channel production -t apk --no-publish",
     "create-production-ipa": "expo build:ios --release-channel production -t archive --no-publish",
-    "publish-production": "expo publish --release-channel production",
-    "publish-staging": "expo publish --release-channel staging",
+    "publish-production": "eas update --branch production",
+    "publish-staging": "eas update --branch staging",
+    "publish-development": "eas update --branch development",
     "postinstall": "patch-package"
   },
   "jest": {

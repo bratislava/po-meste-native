@@ -16,6 +16,10 @@ export default {
   },
   updates: {
     fallbackToCacheTimeout: 5000,
+    url: 'https://u.expo.dev/b82083fa-1b6a-451e-83a2-709930c3c20b',
+  },
+  runtimeVersion: {
+    policy: 'sdkVersion',
   },
   assetBundlePatterns: ['**/*'],
   ios: {

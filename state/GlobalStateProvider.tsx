@@ -35,9 +35,13 @@ import MotorScooterUnchosen from '@icons/map-filters/motor-scooters-filter-uncho
 import ScooterChosen from '@icons/map-filters/scooters-filter-chosen.svg'
 import ScooterUnchosen from '@icons/map-filters/scooters-filter-unchosen.svg'
 import { NetInfoState, useNetInfo } from '@react-native-community/netinfo'
-import { FilterData } from '@screens/MapScreen/FromToScreen/_partials/Planner/_partials/Filter'
 import { FILTER_INDEX } from '@utils/constants'
-import { ApiFreeBikeStatusScooter, ApiMhdStops } from '@utils/validation'
+import {
+  ApiFreeBikeStatusScooter,
+  ApiMhdStops,
+  FilterData,
+  filterDataSchema,
+} from '@utils/validation'
 import { LocationObject } from 'expo-location'
 import { QueryObserverResult } from 'react-query'
 
@@ -158,22 +162,26 @@ export default function GlobalStateProvider({ children }: Props) {
 
   const netInfo = useNetInfo()
 
-  const filterData = useStateWithStorage<FilterData>(FILTER_INDEX, {
-    maxTransfers: null,
-    accessibleOnly: false,
-    preferredProviders: [
-      MicromobilityProvider.slovnaftbajk,
-      MicromobilityProvider.rekola,
-      MicromobilityProvider.tier,
-      MicromobilityProvider.bolt,
-    ],
-    bikeRouteOptions: {
-      fastest: false,
-      leastSlope: false,
-      bikeFriendly: false,
-    },
-    walkingPace: 4.5,
-  })
+  const filterData = useStateWithStorage<FilterData>(
+    FILTER_INDEX,
+    filterDataSchema.validateSync({
+      maxTransfers: null,
+      accessibleOnly: false,
+      preferredProviders: [
+        MicromobilityProvider.slovnaftbajk,
+        MicromobilityProvider.rekola,
+        MicromobilityProvider.tier,
+        MicromobilityProvider.bolt,
+      ],
+      bikeRouteOptions: {
+        fastest: false,
+        bikeFriendly: false,
+        leastSlope: false,
+      },
+      walkingPace: 4.5,
+    }),
+    (item) => filterDataSchema.validateSync(item)
+  )
 
   return (
     <GlobalStateContext.Provider

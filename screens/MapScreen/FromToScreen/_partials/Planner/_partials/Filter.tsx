@@ -5,9 +5,14 @@ import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import WheelchairSvg from '@icons/wheelchair.svg'
 import { Slider } from '@miblanchard/react-native-slider'
 import { GlobalStateContext } from '@state/GlobalStateProvider'
-import { MicromobilityProvider } from '@types'
+import { MicromobilityProvider, RemoveIndex } from '@types'
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
+import {
+  BikeRouteOptions,
+  FilterData,
+  filterDataSchema,
+} from '@utils/validation'
 import i18n from 'i18n-js'
 import _ from 'lodash'
 import React, { useCallback, useContext, useState } from 'react'
@@ -18,20 +23,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-
-export interface FilterData {
-  maxTransfers: number | null
-  accessibleOnly: boolean
-  preferredProviders: MicromobilityProvider[]
-  bikeRouteOptions: BikeRouteOptions
-  walkingPace: number
-}
-
-export interface BikeRouteOptions {
-  fastest?: boolean
-  leastSlope?: boolean
-  bikeFriendly?: boolean
-}
 
 interface FilterProps {
   onSubmit: (filterData: FilterData) => void
@@ -62,7 +53,9 @@ const Filter = ({ onSubmit }: FilterProps) => {
     MicromobilityProvider[]
   >(filterData.preferredProviders ?? allProviders)
 
-  const [bikeRouteOptions, setBikeRouteOptions] = useState<BikeRouteOptions>(
+  const [bikeRouteOptions, setBikeRouteOptions] = useState<
+    RemoveIndex<BikeRouteOptions>
+  >(
     filterData.bikeRouteOptions ?? {
       fastest: false,
       leastSlope: false,
@@ -71,7 +64,7 @@ const Filter = ({ onSubmit }: FilterProps) => {
   )
 
   const handleBikeOptionsPress = useCallback(
-    (option: BikeRouteOptions) =>
+    (option: Partial<RemoveIndex<BikeRouteOptions>>) =>
       setBikeRouteOptions((old) => ({ ...old, ...option })),
     [setBikeRouteOptions]
   )
@@ -321,13 +314,15 @@ const Filter = ({ onSubmit }: FilterProps) => {
         title={i18n.t('screens.FromToScreen.Planner.Filter.submitFilter')}
         titleStyle={{ textTransform: 'uppercase' }}
         onPress={() =>
-          onSubmit({
-            maxTransfers,
-            accessibleOnly,
-            preferredProviders,
-            bikeRouteOptions,
-            walkingPace,
-          })
+          onSubmit(
+            filterDataSchema.validateSync({
+              maxTransfers,
+              accessibleOnly,
+              preferredProviders,
+              bikeRouteOptions,
+              walkingPace,
+            })
+          )
         }
       />
     </BottomSheetScrollView>

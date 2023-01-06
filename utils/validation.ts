@@ -2,6 +2,8 @@ import {
   ChargerStatus,
   ChargerTypes,
   LegModes,
+  MicromobilityProvider,
+  RemoveIndex,
   TransitVehicleType,
 } from '@types'
 import * as yup from 'yup'
@@ -597,3 +599,30 @@ export const favoriteDataSchema = yup.object().shape({
     .required('error-malformed-favoriteStops'),
   history: yup.array().ensure().of(googlePlace).required(),
 })
+
+const filterBikeRouteOptions = yup.object().shape({
+  fastest: yup.boolean().required(),
+  leastSlope: yup.boolean().required(),
+  bikeFriendly: yup.boolean().required(),
+})
+
+export const filterDataSchema = yup.object().shape({
+  maxTransfers: yup.number().nullable().defined(),
+  accessibleOnly: yup.boolean().required(),
+  preferredProviders: yup
+    .array()
+    .of(
+      yup
+        .mixed<MicromobilityProvider>()
+        .oneOf(Object.values(MicromobilityProvider))
+        .required()
+    )
+    .required(),
+  bikeRouteOptions: filterBikeRouteOptions,
+  walkingPace: yup.number().required(),
+})
+
+export type BikeRouteOptions = RemoveIndex<
+  yup.InferType<typeof filterBikeRouteOptions>
+>
+export type FilterData = RemoveIndex<yup.Asserts<typeof filterDataSchema>>

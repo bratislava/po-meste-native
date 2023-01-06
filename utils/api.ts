@@ -6,7 +6,6 @@ import {
   ZoneId,
 } from '@js-joda/core'
 import '@js-joda/timezone'
-import { BikeRouteOptions } from '@screens/MapScreen/FromToScreen/_partials/Planner/_partials/Filter'
 import * as Sentry from '@sentry/react-native'
 import {
   GooglePlacesResult,
@@ -14,6 +13,7 @@ import {
   MicromobilityProvider,
   TravelModesOtpApi,
 } from '@types'
+import { BikeRouteOptions } from '@utils/validation'
 import Constants from 'expo-constants'
 import i18n from 'i18n-js'
 import qs from 'qs'
@@ -193,11 +193,12 @@ export const getTripPlanner = async ({
       numItineraries: mode === TravelModesOtpApi.multimodal ? undefined : 6,
       allowedVehicleRentalNetworks:
         provider?.toLowerCase() ??
-        preferredProviders?.reduce(
-          (acc, provider, index) =>
-            acc + `${index === 0 ? '' : ','}${provider.toLowerCase()}`,
-          ''
-        ),
+        preferredProviders?.map((provider) => provider.toLowerCase()),
+      // preferredProviders?.reduce(
+      //   (acc, provider, index) =>
+      //     acc + `${index === 0 ? '' : ','}${provider.toLowerCase()}`,
+      //   ''
+      // ),
       maxTransfers: maxTransfers == null ? undefined : maxTransfers + 1,
       walkSpeed: walkingPace && walkingPace * 0.28, // to m/s
       triangleSafetyFactor: bikeRouteOptions?.bikeFriendly ? 1 : 0,

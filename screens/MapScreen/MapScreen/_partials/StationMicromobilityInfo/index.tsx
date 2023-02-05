@@ -22,7 +22,7 @@ import {
 } from '@utils'
 
 import ProviderButton from '@components/ProviderButton'
-import InfoRow from '../InforRow'
+import InfoRow from '../InfoRow'
 
 interface StationMicromobilityInfoProps {
   station:

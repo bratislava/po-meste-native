@@ -76,31 +76,35 @@ const VehicleFilterTouchable = ({
   const vehiclesContext = useContext(GlobalStateContext)
   const [isPressed, setIsPressed] = useState(false)
 
-  const onVehicleClick = (id: string) => {
+  const onVehicleClick = (id: VehicleType) => {
     vehiclesContext.setVehicleTypes((oldVehicleTypes) => {
-      let clickedOnShown = false
-      let oneNotShown = false
-      const clickedOnSingleShown = oldVehicleTypes.some((vehicleType) => {
-        if (vehicleType.id === id && vehicleType.show === true) {
-          clickedOnShown = true
-        } else if (vehicleType.id !== id && vehicleType.show === false) {
-          oneNotShown = true
-        }
-        return clickedOnShown && oneNotShown
-      })
-      const newVehicleTypes = oldVehicleTypes.map((vehicleType) => {
-        if (clickedOnSingleShown) {
-          return {
-            ...vehicleType,
-            show: true,
-          }
-        }
-        return {
-          ...vehicleType,
-          show: id === vehicleType.id ? true : false,
-        }
-      })
-      return newVehicleTypes
+      // if all are selected, select only the selected one
+      if (
+        oldVehicleTypes
+          .filter((vehicle) => !vehicle.soonIcon)
+          .every((vehicle) => vehicle.show === true)
+      ) {
+        return oldVehicleTypes.map((vehicle) =>
+          vehicle.id === id
+            ? { ...vehicle, show: true }
+            : { ...vehicle, show: false }
+        )
+      }
+      // if only the pressed one is selected, select all
+      if (
+        oldVehicleTypes
+          .filter((vehicle) => !vehicle.soonIcon)
+          .every(
+            (vehicle) => vehicle.show === (vehicle.id === id ? true : false)
+          )
+      ) {
+        return oldVehicleTypes.map((vehicle) => ({ ...vehicle, show: true }))
+      }
+      // toggle the pressed one
+      return oldVehicleTypes.map((vehicle) => ({
+        ...vehicle,
+        show: vehicle.id === id ? !vehicle.show : vehicle.show,
+      }))
     })
   }
 

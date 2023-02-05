@@ -14,7 +14,7 @@ import MapPinSvg from '@icons/map-pin-marker.svg'
 import CarSvg from '@icons/vehicles/car.svg'
 import ChargerSvg from '@images/charger.svg'
 import { ChargersProvider } from '@types'
-import InfoRow from '../InforRow'
+import InfoRow from '../InfoRow'
 
 interface StationChargerInfoProps {
   name?: string

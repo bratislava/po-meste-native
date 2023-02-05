@@ -86,7 +86,7 @@ interface ContextProps {
 }
 
 export interface VehicleProps {
-  id: string
+  id: VehicleType
   show: boolean
   icon: (show: boolean) => React.FC<SvgProps>
   soonIcon?: React.FC<SvgProps>

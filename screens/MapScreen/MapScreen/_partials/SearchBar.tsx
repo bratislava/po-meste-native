@@ -4,52 +4,71 @@ import { useNavigation } from '@react-navigation/native'
 import { s } from '@utils/globalStyles'
 import { colors } from '@utils/theme'
 import i18n from 'i18n-js'
-import React from 'react'
-import { StyleSheet, TouchableOpacity } from 'react-native'
+import React, { useState } from 'react'
+import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const SearchBar = () => {
   const navigation = useNavigation()
-
   const insets = useSafeAreaInsets()
+  const [isPressed, setIsPressed] = useState(false)
+
   return (
-    <TouchableOpacity
-      style={{
-        ...styles.searchBar,
-        marginTop: Math.max(insets.top, 30),
-      }}
-      onPress={() => navigation.navigate('FromToScreen')}
-      activeOpacity={0.6}
+    <View
+      style={[
+        styles.outerContainer,
+        {
+          marginTop: Math.max(insets.top, 30),
+        },
+      ]}
     >
-      <SearchSvg
-        width={20}
-        height={20}
-        fill={colors.primary}
-        style={styles.searchIcon}
-      />
-      <Text style={styles.searchInput}>
-        {i18n.t('screens.MapScreen.whereTo')}
-      </Text>
-    </TouchableOpacity>
+      <TouchableWithoutFeedback
+        style={styles.searchBar}
+        onPressIn={() => setIsPressed(true)}
+        onPressOut={() => setIsPressed(false)}
+        onPress={() => navigation.navigate('FromToScreen')}
+      >
+        <View
+          style={[
+            styles.container,
+            isPressed && { backgroundColor: colors.lightLightGray },
+          ]}
+        >
+          <SearchSvg
+            width={20}
+            height={20}
+            fill={colors.primary}
+            style={styles.searchIcon}
+          />
+          <Text style={styles.searchInput}>
+            {i18n.t('screens.MapScreen.whereTo')}
+          </Text>
+        </View>
+      </TouchableWithoutFeedback>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  searchBar: {
-    display: 'flex',
-    flex: 1,
+  outerContainer: {
     position: 'absolute',
     top: 10,
-    width: '90%',
-    height: 50,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-    alignItems: 'center',
-    borderRadius: 30,
+    alignSelf: 'center',
     ...s.shadow,
     elevation: 7,
+    width: '90%',
+    borderRadius: 30,
   },
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderRadius: 30,
+    height: 50,
+  },
+  searchBar: {},
   searchInput: {
     marginLeft: 16,
     width: '100%',
